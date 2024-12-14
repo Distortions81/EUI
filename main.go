@@ -39,7 +39,7 @@ func main() {
 		Size:            XYF{X: 300, Y: 300},
 		Position:        XYF{X: 32, Y: 32},
 		Border:          1,
-		ContentsBGColor: color.RGBA{R: 32, G: 32, B: 32, A: 255},
+		ContentsBGColor: color.RGBA{R: 16, G: 16, B: 16, A: 255},
 		BorderColor:     color.RGBA{R: 64, G: 64, B: 64, A: 255}}
 	Windows = append(Windows, newWindow)
 
