@@ -34,7 +34,7 @@ func main() {
 	}
 
 	newWindow := WindowData{
-		TitleSize:       32,
+		TitleSize:       24,
 		Title:           "Test Window Title",
 		Tooltip:         "Tooltip stuff here",
 		Size:            XYF{X: 300, Y: 300},
