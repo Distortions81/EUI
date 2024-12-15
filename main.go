@@ -56,6 +56,7 @@ func main() {
 
 	/*
 		go func() {
+		UIScale = 0.1
 			time.Sleep(time.Second * 5)
 			for x := 0; x < 100; x++ {
 				time.Sleep(time.Second)
@@ -220,7 +221,7 @@ var (
 	signalHandle    chan os.Signal
 	mplusFaceSource *text.GoTextFaceSource
 	Windows         []WindowData
-	UIScale         float32 = 0.1
+	UIScale         float32 = 1.0
 )
 
 type Game struct {
