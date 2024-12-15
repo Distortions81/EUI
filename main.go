@@ -9,7 +9,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/hajimehoshi/ebiten/examples/resources/fonts"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -55,13 +54,15 @@ func main() {
 
 	go startEbiten()
 
-	go func() {
-		//time.Sleep(time.Second * 5)
-		for x := 0; x < 100; x++ {
-			time.Sleep(time.Second)
-			UIScale = UIScale + 0.1
-		}
-	}()
+	/*
+		go func() {
+			time.Sleep(time.Second * 5)
+			for x := 0; x < 100; x++ {
+				time.Sleep(time.Second)
+				UIScale = UIScale + 0.1
+			}
+		}()
+	*/
 
 	<-signalHandle
 }
