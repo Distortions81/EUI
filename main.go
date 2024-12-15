@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/examples/resources/fonts"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -53,6 +54,14 @@ func main() {
 	Windows = append(Windows, newWindow)
 
 	go startEbiten()
+
+	go func() {
+		//time.Sleep(time.Second * 5)
+		for x := 0; x < 100; x++ {
+			time.Sleep(time.Second)
+			UIScale = UIScale + 0.1
+		}
+	}()
 
 	<-signalHandle
 }
@@ -155,31 +164,32 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 			var buttonsWidth float32 = 0
 			if win.Closable {
-				var xpad float32 = win.TitleSize / 4
+				var xpad float32 = (win.TitleSize * UIScale) / 4.0
 				vector.StrokeLine(screen,
-					win.Position.X+(win.Size.X*UIScale)-(win.TitleSize)+xpad,
+					win.Position.X+(win.Size.X*UIScale)-(win.TitleSize*UIScale)+xpad,
 					win.Position.Y+xpad,
 
 					win.Position.X+(win.Size.X*UIScale)-xpad,
-					win.Position.Y+win.TitleSize-xpad,
-					3, win.TitleColor, true)
+					win.Position.Y+(win.TitleSize*UIScale)-xpad,
+					3*UIScale, win.TitleColor, true)
 				vector.StrokeLine(screen,
 					win.Position.X+(win.Size.X*UIScale)-xpad,
 					win.Position.Y+xpad,
 
-					win.Position.X+(win.Size.X*UIScale)-(win.TitleSize)+xpad,
-					win.Position.Y+win.TitleSize-xpad,
-					3, win.TitleColor, true)
+					win.Position.X+(win.Size.X*UIScale)-(win.TitleSize*UIScale)+xpad,
+					win.Position.Y+(win.TitleSize*UIScale)-xpad,
+					3*UIScale, win.TitleColor, true)
 
-				buttonsWidth += win.TitleSize
+				buttonsWidth += (win.TitleSize * UIScale)
 			}
 
 			//Drag bar
 			if win.Movable {
+				dpad := (win.TitleSize * UIScale) / 5
 				for x := textWidth + float64((win.TitleSize*UIScale)/1.5); x < float64((win.Size.X*UIScale)-buttonsWidth); x = x + float64(UIScale*5.0) {
 					vector.StrokeLine(screen,
-						win.Position.X+float32(x), win.Position.Y+4,
-						win.Position.X+float32(x), win.Position.Y+(win.TitleSize*UIScale)-4,
+						win.Position.X+float32(x), win.Position.Y+dpad,
+						win.Position.X+float32(x), win.Position.Y+(win.TitleSize*UIScale)-dpad,
 						1, win.DragColor, false)
 				}
 			}
@@ -209,7 +219,7 @@ var (
 	signalHandle    chan os.Signal
 	mplusFaceSource *text.GoTextFaceSource
 	Windows         []WindowData
-	UIScale         float32 = 1.0
+	UIScale         float32 = 0.1
 )
 
 type Game struct {
