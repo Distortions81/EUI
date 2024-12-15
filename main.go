@@ -43,9 +43,10 @@ func main() {
 		Size:            XYF{X: 300, Y: 300},
 		Position:        XYF{X: 32, Y: 32},
 		Border:          1,
+		TitleColor:      color.RGBA{R: 255, G: 255, B: 255, A: 255},
 		ContentsBGColor: color.RGBA{R: 16, G: 16, B: 16, A: 255},
 		BorderColor:     color.RGBA{R: 64, G: 64, B: 64, A: 255},
-		DragColor:       color.RGBA{R: 32, G: 32, B: 32, A: 255},
+		SizeColor:       color.RGBA{R: 48, G: 48, B: 48, A: 255},
 		Movable:         true, Closable: true, Resizable: true,
 	}
 	Windows = append(Windows, newWindow)
@@ -120,6 +121,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 					float64(win.Position.Y+((win.TitleSize*UIScale)/2)))
 
 				top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+				top.ColorScale.ScaleWithColor(win.TitleColor)
 				text.Draw(screen, win.Title, face, top)
 			} else {
 				textWidth = 0
@@ -134,6 +136,49 @@ func (g *Game) Draw(screen *ebiten.Image) {
 						1, win.DragColor, false)
 				}
 			}
+		}
+
+		//Resize bar
+		if win.Resizable {
+			vector.StrokeLine(screen,
+				win.Position.X+(win.Size.X*UIScale)-1,
+				win.Position.Y+(win.Size.Y*UIScale)-(14*UIScale)-(win.TitleSize*UIScale),
+
+				win.Position.X+(win.Size.X*UIScale)-(14*UIScale),
+				win.Position.Y+(win.Size.Y*UIScale)-(win.TitleSize*UIScale)-1,
+				1, win.SizeColor, true)
+			vector.StrokeLine(screen,
+				win.Position.X+(win.Size.X*UIScale)-1,
+				win.Position.Y+(win.Size.Y*UIScale)-(10*UIScale)-(win.TitleSize*UIScale),
+
+				win.Position.X+(win.Size.X*UIScale)-(10*UIScale),
+				win.Position.Y+(win.Size.Y*UIScale)-(win.TitleSize*UIScale)-1,
+				1, win.SizeColor, true)
+			vector.StrokeLine(screen,
+				win.Position.X+(win.Size.X*UIScale)-1,
+				win.Position.Y+(win.Size.Y*UIScale)-(6*UIScale)-(win.TitleSize*UIScale),
+
+				win.Position.X+(win.Size.X*UIScale)-(6*UIScale),
+				win.Position.Y+(win.Size.Y*UIScale)-(win.TitleSize*UIScale)-1,
+				1, win.SizeColor, true)
+		}
+
+		if win.Closable {
+			var xpad float32 = win.TitleSize / 4
+			vector.StrokeLine(screen,
+				win.Position.X+(win.Size.X*UIScale)-(win.TitleSize)+xpad,
+				win.Position.Y+xpad,
+
+				win.Position.X+(win.Size.X*UIScale)-xpad,
+				win.Position.Y+win.TitleSize-xpad,
+				3, win.TitleColor, true)
+			vector.StrokeLine(screen,
+				win.Position.X+(win.Size.X*UIScale)-xpad,
+				win.Position.Y+xpad,
+
+				win.Position.X+(win.Size.X*UIScale)-(win.TitleSize)+xpad,
+				win.Position.Y+win.TitleSize-xpad,
+				3, win.TitleColor, true)
 		}
 
 		//Draw frames
@@ -174,9 +219,9 @@ type WindowData struct {
 	Title, Tooltip string
 	Size, Position XYF
 
-	Open, Closable, Movable, Resizable, Scrollable, Maximizable, Minimizeable bool
-	ContentsBGColor, TitleBGColor, TitleColor, BorderColor, DragColor         color.RGBA
-	TitleSize, Padding, Border                                                float32
+	Open, Closable, Movable, Resizable, Scrollable, Maximizable, Minimizeable    bool
+	ContentsBGColor, TitleBGColor, TitleColor, BorderColor, SizeColor, DragColor color.RGBA
+	TitleSize, Padding, Border                                                   float32
 
 	Contents []ItemData
 }
