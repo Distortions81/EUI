@@ -9,7 +9,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/hajimehoshi/ebiten/examples/resources/fonts"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -82,14 +81,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 	return defaultWindowWidth, defaultWindowHeight
 }
 
-var lastIncrease time.Time
-
 func (g *Game) Draw(screen *ebiten.Image) {
-
-	if time.Since(lastIncrease) > time.Millisecond*500 {
-		UIScale += 0.1
-		lastIncrease = time.Now()
-	}
 
 	for _, win := range Windows {
 
@@ -139,7 +131,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 					vector.StrokeLine(screen,
 						win.Position.X+float32(x), win.Position.Y+4,
 						win.Position.X+float32(x), win.Position.Y+(win.TitleSize*UIScale)-4,
-						1, win.DragColor, true)
+						1, win.DragColor, false)
 				}
 			}
 		}
@@ -150,13 +142,13 @@ func (g *Game) Draw(screen *ebiten.Image) {
 				vector.StrokeRect(screen,
 					win.Position.X, win.Position.Y,
 					win.Size.X*UIScale, (win.TitleSize * UIScale),
-					win.Border, win.BorderColor, true)
+					win.Border, win.BorderColor, false)
 			}
 			//Window border
 			vector.StrokeRect(screen,
 				win.Position.X, win.Position.Y,
 				win.Size.X*UIScale, (win.Size.Y*UIScale)-(win.TitleSize*UIScale),
-				win.Border, win.BorderColor, true)
+				win.Border, win.BorderColor, false)
 		}
 	}
 
@@ -168,7 +160,7 @@ var (
 	signalHandle    chan os.Signal
 	mplusFaceSource *text.GoTextFaceSource
 	Windows         []WindowData
-	UIScale         float32 = 0.1
+	UIScale         float32 = 1.0
 )
 
 type Game struct {
