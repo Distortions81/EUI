@@ -35,12 +35,15 @@ func main() {
 
 	newWindow := WindowData{
 		TitleSize:       32,
-		Title:           "Test",
+		Title:           "Test Window Title",
+		Tooltip:         "Tooltip stuff here",
 		Size:            XYF{X: 300, Y: 300},
 		Position:        XYF{X: 32, Y: 32},
 		Border:          1,
 		ContentsBGColor: color.RGBA{R: 16, G: 16, B: 16, A: 255},
-		BorderColor:     color.RGBA{R: 64, G: 64, B: 64, A: 255}}
+		BorderColor:     color.RGBA{R: 64, G: 64, B: 64, A: 255},
+		Movable:         true, Closable: true, Resizable: true,
+	}
 	Windows = append(Windows, newWindow)
 
 	go startEbiten()
@@ -82,28 +85,57 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 		//Draw Title
 		if win.Title != "" {
-			//Title text
-			loo := text.LayoutOptions{
-				LineSpacing:    0,
-				PrimaryAlign:   text.AlignStart,
-				SecondaryAlign: text.AlignStart,
-			}
-			tdop := ebiten.DrawImageOptions{}
-			textSize := (win.TitleSize - 10.0)
-			tdop.GeoM.Translate(float64(win.Position.X+(textSize/5.0)), float64(win.Position.Y))
 
-			top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
-			text.Draw(screen, win.Title, &text.GoTextFace{
+			textSize := (win.TitleSize - 10.0)
+			face := &text.GoTextFace{
 				Source: mplusFaceSource,
 				Size:   float64(textSize),
-			}, top)
+			}
+
+			skipTitleText := false
+			textWidth, textHeight := text.Measure(win.Title, face, 0)
+			if textWidth > float64(win.Size.X) ||
+				textHeight > float64(win.TitleSize) {
+				skipTitleText = true
+				log.Fatal("Title text too big for title size.")
+			}
+
+			textSpacer := (textSize / 5.0)
+
+			if win.Movable {
+				for x := int(textWidth + float64(textSpacer*2)); x < int(win.Size.X-textSpacer); x++ {
+					if x%6 == 0 {
+						vector.StrokeLine(screen,
+							win.Position.X+float32(x), win.Position.Y+4,
+							win.Position.X+float32(x), win.Position.Y+win.TitleSize-4,
+							1, win.BorderColor, false)
+					}
+				}
+			}
+
+			//Title text
+			if !skipTitleText {
+				loo := text.LayoutOptions{
+					LineSpacing:    0,
+					PrimaryAlign:   text.AlignStart,
+					SecondaryAlign: text.AlignStart,
+				}
+				tdop := ebiten.DrawImageOptions{}
+				tdop.GeoM.Translate(float64(win.Position.X+textSpacer), float64(win.Position.Y))
+
+				top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+				text.Draw(screen, win.Title, face, top)
+			}
 		}
 
 		//Draw frames
-		if win.TitleSize > 0 {
-			vector.StrokeRect(screen, win.Position.X, win.Position.Y, win.Size.X, win.TitleSize, win.Border, win.BorderColor, false)
+		if win.Border > 0 {
+			if win.TitleSize > 0 {
+				vector.StrokeRect(screen, win.Position.X, win.Position.Y, win.Size.X, win.TitleSize, win.Border, win.BorderColor, false)
+			}
+			//Window border
+			vector.StrokeRect(screen, win.Position.X, win.Position.Y, win.Size.X, win.Size.Y-win.TitleSize, win.Border, win.BorderColor, false)
 		}
-		vector.StrokeRect(screen, win.Position.X, win.Position.Y, win.Size.X, win.Size.Y-win.TitleSize, win.Border, win.BorderColor, false)
 	}
 }
 
