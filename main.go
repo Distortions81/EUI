@@ -2,14 +2,17 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"image/color"
 	"log"
+	"math"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/hajimehoshi/ebiten/examples/resources/fonts"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
@@ -82,10 +85,13 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	for _, win := range Windows {
 
 		//Draw BG Color
-		vector.DrawFilledRect(screen, win.Position.X, win.Position.Y, win.Size.X, win.Size.Y-win.TitleSize, win.ContentsBGColor, false)
+		vector.DrawFilledRect(screen,
+			win.Position.X, win.Position.Y,
+			win.Size.X, win.Size.Y-win.TitleSize,
+			win.ContentsBGColor, false)
 
 		//Draw Title
-		if win.Title != "" {
+		if win.TitleSize > 0 {
 
 			textSize := (win.TitleSize - 10.0)
 			face := &text.GoTextFace{
@@ -139,6 +145,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			vector.StrokeRect(screen, win.Position.X, win.Position.Y, win.Size.X, win.Size.Y-win.TitleSize, win.Border, win.BorderColor, false)
 		}
 	}
+
+	buf := fmt.Sprintf("%4v FPS", int(math.Round(ebiten.ActualFPS())))
+	ebitenutil.DebugPrintAt(screen, buf, defaultWindowWidth-55, defaultWindowHeight-18)
 }
 
 var (
