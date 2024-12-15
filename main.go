@@ -42,6 +42,7 @@ func main() {
 		Border:          1,
 		ContentsBGColor: color.RGBA{R: 16, G: 16, B: 16, A: 255},
 		BorderColor:     color.RGBA{R: 64, G: 64, B: 64, A: 255},
+		DragColor:       color.RGBA{R: 32, G: 32, B: 32, A: 255},
 		Movable:         true, Closable: true, Resizable: true,
 	}
 	Windows = append(Windows, newWindow)
@@ -102,13 +103,14 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 			textSpacer := (textSize / 5.0)
 
+			//Drag bar
 			if win.Movable {
 				for x := int(textWidth + float64(textSpacer*2)); x < int(win.Size.X-textSpacer); x++ {
 					if x%6 == 0 {
 						vector.StrokeLine(screen,
 							win.Position.X+float32(x), win.Position.Y+4,
 							win.Position.X+float32(x), win.Position.Y+win.TitleSize-4,
-							1, win.BorderColor, false)
+							1, win.DragColor, false)
 					}
 				}
 			}
@@ -157,7 +159,7 @@ type WindowData struct {
 	Size, Position XYF
 
 	Open, Closable, Movable, Resizable, Scrollable, Maximizable, Minimizeable bool
-	ContentsBGColor, TitleBGColor, TitleColor, BorderColor                    color.RGBA
+	ContentsBGColor, TitleBGColor, TitleColor, BorderColor, DragColor         color.RGBA
 	TitleSize, Padding, Border                                                float32
 
 	Contents []ItemData
