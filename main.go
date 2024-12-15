@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/examples/resources/fonts"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -38,7 +39,7 @@ func main() {
 
 	newWindow := WindowData{
 		TitleSize:       24,
-		Title:           "Test Window Title",
+		Title:           "Test",
 		Tooltip:         "Tooltip stuff here",
 		Size:            XYF{X: 300, Y: 300},
 		Position:        XYF{X: 32, Y: 32},
@@ -81,19 +82,27 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 	return defaultWindowWidth, defaultWindowHeight
 }
 
+var lastIncrease time.Time
+
 func (g *Game) Draw(screen *ebiten.Image) {
+
+	if time.Since(lastIncrease) > time.Millisecond*500 {
+		UIScale += 0.1
+		lastIncrease = time.Now()
+	}
+
 	for _, win := range Windows {
 
 		//Draw BG Color
 		vector.DrawFilledRect(screen,
 			win.Position.X, win.Position.Y,
-			win.Size.X, win.Size.Y-win.TitleSize,
+			win.Size.X*UIScale, (win.Size.Y*UIScale)-(win.TitleSize*UIScale),
 			win.ContentsBGColor, false)
 
 		//Draw Title
 		if win.TitleSize > 0 {
 
-			textSize := (win.TitleSize - 10.0)
+			textSize := ((win.TitleSize * UIScale) / 1.5)
 			face := &text.GoTextFace{
 				Source: mplusFaceSource,
 				Size:   float64(textSize),
@@ -101,24 +110,10 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 			skipTitleText := false
 			textWidth, textHeight := text.Measure(win.Title, face, 0)
-			if textWidth > float64(win.Size.X) ||
-				textHeight > float64(win.TitleSize) {
+			if textWidth > float64(win.Size.X*UIScale) ||
+				textHeight > float64(win.TitleSize*UIScale) {
 				skipTitleText = true
-				log.Fatal("Title text too big for title size.")
-			}
-
-			textSpacer := (textSize / 5.0)
-
-			//Drag bar
-			if win.Movable {
-				for x := int(textWidth + float64(textSpacer*2)); x < int(win.Size.X-textSpacer); x++ {
-					if x%6 == 0 {
-						vector.StrokeLine(screen,
-							win.Position.X+float32(x), win.Position.Y+4,
-							win.Position.X+float32(x), win.Position.Y+win.TitleSize-4,
-							1, win.DragColor, false)
-					}
-				}
+				//log.Print("Title text too big for title size.")
 			}
 
 			//Title text
@@ -126,23 +121,42 @@ func (g *Game) Draw(screen *ebiten.Image) {
 				loo := text.LayoutOptions{
 					LineSpacing:    0,
 					PrimaryAlign:   text.AlignStart,
-					SecondaryAlign: text.AlignStart,
+					SecondaryAlign: text.AlignCenter,
 				}
 				tdop := ebiten.DrawImageOptions{}
-				tdop.GeoM.Translate(float64(win.Position.X+textSpacer), float64(win.Position.Y))
+				tdop.GeoM.Translate(float64(win.Position.X+((win.TitleSize*UIScale)/4)),
+					float64(win.Position.Y+((win.TitleSize*UIScale)/2)))
 
 				top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 				text.Draw(screen, win.Title, face, top)
+			} else {
+				textWidth = 0
+			}
+
+			//Drag bar
+			if win.Movable {
+				for x := textWidth + float64((win.TitleSize*UIScale)/1.5); x < float64(win.Size.X*UIScale); x = x + float64(UIScale*5.0) {
+					vector.StrokeLine(screen,
+						win.Position.X+float32(x), win.Position.Y+4,
+						win.Position.X+float32(x), win.Position.Y+(win.TitleSize*UIScale)-4,
+						1, win.DragColor, true)
+				}
 			}
 		}
 
 		//Draw frames
 		if win.Border > 0 {
 			if win.TitleSize > 0 {
-				vector.StrokeRect(screen, win.Position.X, win.Position.Y, win.Size.X, win.TitleSize, win.Border, win.BorderColor, false)
+				vector.StrokeRect(screen,
+					win.Position.X, win.Position.Y,
+					win.Size.X*UIScale, (win.TitleSize * UIScale),
+					win.Border, win.BorderColor, true)
 			}
 			//Window border
-			vector.StrokeRect(screen, win.Position.X, win.Position.Y, win.Size.X, win.Size.Y-win.TitleSize, win.Border, win.BorderColor, false)
+			vector.StrokeRect(screen,
+				win.Position.X, win.Position.Y,
+				win.Size.X*UIScale, (win.Size.Y*UIScale)-(win.TitleSize*UIScale),
+				win.Border, win.BorderColor, true)
 		}
 	}
 
@@ -154,6 +168,7 @@ var (
 	signalHandle    chan os.Signal
 	mplusFaceSource *text.GoTextFaceSource
 	Windows         []WindowData
+	UIScale         float32 = 0.1
 )
 
 type Game struct {
