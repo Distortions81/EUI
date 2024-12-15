@@ -13,6 +13,7 @@ import (
 	"github.com/hajimehoshi/ebiten/examples/resources/fonts"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
@@ -40,19 +41,20 @@ func main() {
 		TitleSize:  24,
 		Title:      "Test",
 		Tooltip:    "Tooltip stuff here",
-		Size:       XYF{X: 300, Y: 300},
-		Position:   XYF{X: 32, Y: 32},
+		Size:       Magnatude{X: 300, Y: 300},
+		Position:   Point{X: 32, Y: 32},
 		Border:     1,
 		TitleColor: color.RGBA{R: 255, G: 255, B: 255, A: 255},
 
 		BorderColor: color.RGBA{R: 64, G: 64, B: 64, A: 255},
 
-		SizeColor: color.RGBA{R: 48, G: 48, B: 48, A: 255},
-		DragColor: color.RGBA{R: 48, G: 48, B: 48, A: 255},
+		SizeColor:  color.RGBA{R: 48, G: 48, B: 48, A: 255},
+		DragColor:  color.RGBA{R: 48, G: 48, B: 48, A: 255},
+		HoverColor: color.RGBA{R: 80, G: 80, B: 80, A: 255},
 
 		ContentsBGColor: color.RGBA{R: 16, G: 16, B: 16, A: 255},
 
-		Movable: true, Closable: true, Resizable: true,
+		Movable: true, Closable: true, Resizable: true, Open: true,
 	}
 	Windows = append(Windows, newWindow)
 
@@ -101,6 +103,9 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 func (g *Game) Draw(screen *ebiten.Image) {
 
 	for _, win := range Windows {
+		if !win.Open {
+			continue
+		}
 
 		//Draw BG Color
 		vector.DrawFilledRect(screen,
@@ -203,17 +208,21 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 		//Draw frames
 		if win.Border > 0 {
+			FrameColor := win.BorderColor
+			if win.Hovered {
+				FrameColor = win.HoverColor
+			}
 			if win.TitleSize > 0 {
 				vector.StrokeRect(screen,
 					win.Position.X, win.Position.Y,
 					win.Size.X*UIScale, (win.TitleSize * UIScale),
-					win.Border, win.BorderColor, false)
+					win.Border, FrameColor, false)
 			}
 			//Window border
 			vector.StrokeRect(screen,
 				win.Position.X, win.Position.Y,
 				win.Size.X*UIScale, (win.Size.Y*UIScale)-(win.TitleSize*UIScale),
-				win.Border, win.BorderColor, false)
+				win.Border, FrameColor, false)
 		}
 	}
 
@@ -232,39 +241,107 @@ type Game struct {
 }
 
 func (g *Game) Update() error {
+	mx, my := ebiten.CursorPosition()
+	mpos := Point{X: float32(mx), Y: float32(my)}
+
+	click := inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0)
+	//clickHeld := inpututil.MouseButtonPressDuration(ebiten.MouseButton0)
+
+	//altClick := inpututil.IsMouseButtonJustPressed(ebiten.MouseButton1)
+	//altClickHeld := inpututil.MouseButtonPressDuration(ebiten.MouseButton1)
+
+	//Check all windows
+	for w, win := range Windows {
+		if !win.Open {
+			continue
+		}
+
+		winRect := win.GetRect()
+		if winRect.ContainsPoint(mpos) {
+			Windows[w].Hovered = true
+
+			//Window contents
+			if win.Dumb {
+				continue
+			}
+			for i, item := range win.Contents {
+				if item.Rect.ContainsPoint(mpos) {
+					if click {
+						win.Contents[i].Activated = true
+						win.Contents[i].Hovered = false
+					} else {
+						win.Contents[i].Activated = false
+						win.Contents[i].Hovered = true
+					}
+				} else {
+					win.Contents[i].Activated = false
+					win.Contents[i].Hovered = false
+				}
+			}
+		} else {
+			Windows[w].Hovered = false
+		}
+	}
+
 	return nil
+}
+
+func (rect Rect) ContainsPoint(b Point) bool {
+	return b.X >= rect.X0 && b.Y >= rect.Y0 &&
+		b.X <= rect.X1 && b.Y <= rect.Y1
+}
+
+func (win WindowData) GetRect() Rect {
+	return Rect{
+		X0: win.Position.X, Y0: win.Position.Y,
+		X1: win.Position.X + (win.Size.X * UIScale),
+		Y1: win.Position.Y + (win.Size.Y * UIScale) + (win.TitleSize * UIScale),
+	}
 }
 
 type WindowData struct {
 	Title, Tooltip string
-	Size, Position XYF
+	Position       Point
+	Size           Magnatude
 
-	Open, Closable, Movable, Resizable, Scrollable, Maximizable, Minimizeable    bool
-	ContentsBGColor, TitleBGColor, TitleColor, BorderColor, SizeColor, DragColor color.RGBA
-	TitleSize, Padding, Border                                                   float32
+	Open, Hovered, Dumb                                                                      bool
+	Closable, Movable, Resizable, Scrollable, Maximizable, Minimizeable                      bool
+	ContentsBGColor, TitleBGColor, TitleColor, BorderColor, SizeColor, DragColor, HoverColor color.RGBA
+	TitleSize, Padding, Border                                                               float32
 
 	Contents []ItemData
 }
 
 type ItemData struct {
-	Text                                 string
-	Position, Size, Value                XYF
+	Text     string
+	Position Point
+	Size     Magnatude
+	Rect     Rect
+
+	Value float32
+
 	Hovered, Activated, Checked, Enabled bool
 	FlowType                             FlowType
 	FlowWrap                             bool
 	Padding                              float32
-	Scroll                               XYF
+	Scroll                               Point
 
 	Color, HoverColor, ActivatedColor, DisabledColor, CheckedColor color.RGBA
 
 	Contents []ItemData
 }
 
-type XYF struct {
+type Point struct {
 	X, Y float32
 }
 
+type Magnatude Point
+
 type FlowType int
+
+type Rect struct {
+	X0, Y0, X1, Y1 float32
+}
 
 const (
 	FLOW_HORIZONTAL = iota
