@@ -47,6 +47,7 @@ func main() {
 		ContentsBGColor: color.RGBA{R: 16, G: 16, B: 16, A: 255},
 		BorderColor:     color.RGBA{R: 64, G: 64, B: 64, A: 255},
 		SizeColor:       color.RGBA{R: 48, G: 48, B: 48, A: 255},
+		DragColor:       color.RGBA{R: 48, G: 48, B: 48, A: 255},
 		Movable:         true, Closable: true, Resizable: true,
 	}
 	Windows = append(Windows, newWindow)
@@ -127,58 +128,61 @@ func (g *Game) Draw(screen *ebiten.Image) {
 				textWidth = 0
 			}
 
+			//Resize bar
+			if win.Resizable {
+				vector.StrokeLine(screen,
+					win.Position.X+(win.Size.X*UIScale)-1,
+					win.Position.Y+(win.Size.Y*UIScale)-(14*UIScale)-(win.TitleSize*UIScale),
+
+					win.Position.X+(win.Size.X*UIScale)-(14*UIScale),
+					win.Position.Y+(win.Size.Y*UIScale)-(win.TitleSize*UIScale)-1,
+					1, win.SizeColor, true)
+				vector.StrokeLine(screen,
+					win.Position.X+(win.Size.X*UIScale)-1,
+					win.Position.Y+(win.Size.Y*UIScale)-(10*UIScale)-(win.TitleSize*UIScale),
+
+					win.Position.X+(win.Size.X*UIScale)-(10*UIScale),
+					win.Position.Y+(win.Size.Y*UIScale)-(win.TitleSize*UIScale)-1,
+					1, win.SizeColor, true)
+				vector.StrokeLine(screen,
+					win.Position.X+(win.Size.X*UIScale)-1,
+					win.Position.Y+(win.Size.Y*UIScale)-(6*UIScale)-(win.TitleSize*UIScale),
+
+					win.Position.X+(win.Size.X*UIScale)-(6*UIScale),
+					win.Position.Y+(win.Size.Y*UIScale)-(win.TitleSize*UIScale)-1,
+					1, win.SizeColor, true)
+			}
+
+			var buttonsWidth float32 = 0
+			if win.Closable {
+				var xpad float32 = win.TitleSize / 4
+				vector.StrokeLine(screen,
+					win.Position.X+(win.Size.X*UIScale)-(win.TitleSize)+xpad,
+					win.Position.Y+xpad,
+
+					win.Position.X+(win.Size.X*UIScale)-xpad,
+					win.Position.Y+win.TitleSize-xpad,
+					3, win.TitleColor, true)
+				vector.StrokeLine(screen,
+					win.Position.X+(win.Size.X*UIScale)-xpad,
+					win.Position.Y+xpad,
+
+					win.Position.X+(win.Size.X*UIScale)-(win.TitleSize)+xpad,
+					win.Position.Y+win.TitleSize-xpad,
+					3, win.TitleColor, true)
+
+				buttonsWidth += win.TitleSize
+			}
+
 			//Drag bar
 			if win.Movable {
-				for x := textWidth + float64((win.TitleSize*UIScale)/1.5); x < float64(win.Size.X*UIScale); x = x + float64(UIScale*5.0) {
+				for x := textWidth + float64((win.TitleSize*UIScale)/1.5); x < float64((win.Size.X*UIScale)-buttonsWidth); x = x + float64(UIScale*5.0) {
 					vector.StrokeLine(screen,
 						win.Position.X+float32(x), win.Position.Y+4,
 						win.Position.X+float32(x), win.Position.Y+(win.TitleSize*UIScale)-4,
 						1, win.DragColor, false)
 				}
 			}
-		}
-
-		//Resize bar
-		if win.Resizable {
-			vector.StrokeLine(screen,
-				win.Position.X+(win.Size.X*UIScale)-1,
-				win.Position.Y+(win.Size.Y*UIScale)-(14*UIScale)-(win.TitleSize*UIScale),
-
-				win.Position.X+(win.Size.X*UIScale)-(14*UIScale),
-				win.Position.Y+(win.Size.Y*UIScale)-(win.TitleSize*UIScale)-1,
-				1, win.SizeColor, true)
-			vector.StrokeLine(screen,
-				win.Position.X+(win.Size.X*UIScale)-1,
-				win.Position.Y+(win.Size.Y*UIScale)-(10*UIScale)-(win.TitleSize*UIScale),
-
-				win.Position.X+(win.Size.X*UIScale)-(10*UIScale),
-				win.Position.Y+(win.Size.Y*UIScale)-(win.TitleSize*UIScale)-1,
-				1, win.SizeColor, true)
-			vector.StrokeLine(screen,
-				win.Position.X+(win.Size.X*UIScale)-1,
-				win.Position.Y+(win.Size.Y*UIScale)-(6*UIScale)-(win.TitleSize*UIScale),
-
-				win.Position.X+(win.Size.X*UIScale)-(6*UIScale),
-				win.Position.Y+(win.Size.Y*UIScale)-(win.TitleSize*UIScale)-1,
-				1, win.SizeColor, true)
-		}
-
-		if win.Closable {
-			var xpad float32 = win.TitleSize / 4
-			vector.StrokeLine(screen,
-				win.Position.X+(win.Size.X*UIScale)-(win.TitleSize)+xpad,
-				win.Position.Y+xpad,
-
-				win.Position.X+(win.Size.X*UIScale)-xpad,
-				win.Position.Y+win.TitleSize-xpad,
-				3, win.TitleColor, true)
-			vector.StrokeLine(screen,
-				win.Position.X+(win.Size.X*UIScale)-xpad,
-				win.Position.Y+xpad,
-
-				win.Position.X+(win.Size.X*UIScale)-(win.TitleSize)+xpad,
-				win.Position.Y+win.TitleSize-xpad,
-				3, win.TitleColor, true)
 		}
 
 		//Draw frames
