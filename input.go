@@ -28,6 +28,17 @@ func (g *Game) Update() error {
 		if !win.Open {
 			continue
 		}
+		//Checked seperately, we need to check previous mouse position for drag
+		if win.Resizable {
+			if win.DragbarRect().ContainsPoint(mposOld) {
+				win.HoverDragbar = true
+				if clickDrag {
+					win.Position = PointAdd(win.Position, PointSubract(mpos, mposOld))
+				}
+			}
+		}
+
+		//If current mouse pos is within this window.
 		if win.GetRect().ContainsPoint(mpos) {
 			Windows[w].Hovered = true
 
@@ -43,7 +54,6 @@ func (g *Game) Update() error {
 				}
 			}
 
-			//Window contents
 			if win.Dumb {
 				continue
 			}
@@ -56,17 +66,6 @@ func (g *Game) Update() error {
 						continue
 					}
 				}
-			}
-		}
-
-		//We check this seperately, because the drag can go outside the window bounds frame-to-frame
-		if win.Resizable {
-			if win.DragbarRect().ContainsPoint(mposOld) {
-				win.HoverDragbar = true
-				if clickDrag {
-					win.Position = PointAdd(win.Position, PointSubract(mpos, mposOld))
-				}
-				continue
 			}
 		}
 	}
