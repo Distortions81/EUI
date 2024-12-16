@@ -58,7 +58,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 				textWidth = 0
 			}
 
-			//Resize bar
+			//Resize tab
 			if win.Resizable {
 				vector.StrokeLine(screen,
 					win.Position.X+(win.Size.X*UIScale)-1,
@@ -89,6 +89,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 				xThick := 3 * UIScale
 				if win.HoverX {
 					xThick += 1
+					win.HoverX = false
 				}
 				vector.StrokeLine(screen,
 					win.Position.X+(win.Size.X*UIScale)-(win.TitleSize*UIScale)+xpad,
@@ -108,14 +109,19 @@ func (g *Game) Draw(screen *ebiten.Image) {
 				buttonsWidth += (win.TitleSize * UIScale)
 			}
 
-			//Drag bar
+			//Dragbar
 			if win.Movable {
+				var xThick float32 = 1
+				if win.HoverDragbar {
+					xThick += 1
+					win.HoverDragbar = false
+				}
 				dpad := (win.TitleSize * UIScale) / 5
 				for x := textWidth + float64((win.TitleSize*UIScale)/1.5); x < float64((win.Size.X*UIScale)-buttonsWidth); x = x + float64(UIScale*5.0) {
 					vector.StrokeLine(screen,
 						win.Position.X+float32(x), win.Position.Y+dpad,
 						win.Position.X+float32(x), win.Position.Y+(win.TitleSize*UIScale)-dpad,
-						1, win.DragColor, false)
+						xThick, win.DragColor, false)
 				}
 			}
 		}
@@ -125,6 +131,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			FrameColor := win.BorderColor
 			if win.Hovered {
 				FrameColor = win.HoverColor
+				win.Hovered = false
 			}
 			if win.TitleSize > 0 {
 				vector.StrokeRect(screen,
