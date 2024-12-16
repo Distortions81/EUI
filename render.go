@@ -147,12 +147,21 @@ func (g *Game) Draw(screen *ebiten.Image) {
 				win.Border, FrameColor, false)
 		}
 
-		if debugMode {
+		if *debugMode {
 			grab := win.DragbarRect()
 			vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{R: 255, A: 255}, false)
 
 			grab = win.XRect()
 			vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{G: 255, A: 255}, false)
+
+			grab = win.ResizetabRect()
+			vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{B: 255, A: 255}, false)
+
+			grab = win.GetMainRect()
+			vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{R: 255, G: 255, A: 255}, false)
+
+			grab = win.GetTitleRect()
+			vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{B: 255, G: 255, A: 255}, false)
 		}
 	}
 

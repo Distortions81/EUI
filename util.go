@@ -9,9 +9,19 @@ func (rect Rect) ContainsPoint(b Point) bool {
 
 func (win WindowData) GetRect() Rect {
 	return Rect{
-		X0: win.Position.X, Y0: win.Position.Y,
+		X0: win.Position.X,
+		Y0: win.Position.Y,
 		X1: win.Position.X + (win.Size.X * UIScale),
-		Y1: win.Position.Y + (win.Size.Y * UIScale) + (win.TitleSize * UIScale),
+		Y1: win.Position.Y + (win.Size.Y * UIScale) - (win.TitleSize * UIScale),
+	}
+}
+
+func (win WindowData) GetMainRect() Rect {
+	return Rect{
+		X0: win.Position.X,
+		Y0: win.Position.Y + (win.TitleSize * UIScale) + 1,
+		X1: win.Position.X + (win.Size.X * UIScale),
+		Y1: win.Position.Y + (win.Size.Y * UIScale) - (win.TitleSize * UIScale),
 	}
 }
 
@@ -31,7 +41,7 @@ func (win WindowData) XRect() Rect {
 		return Rect{}
 	}
 
-	var xpad float32 = (win.TitleSize * UIScale) / 4.0
+	var xpad float32 = win.Border
 	return Rect{
 		X0: win.Position.X + (win.Size.X * UIScale) - (win.TitleSize * UIScale) + xpad,
 		Y0: win.Position.Y + xpad,
@@ -46,7 +56,7 @@ func (win WindowData) DragbarRect() Rect {
 		return Rect{}
 	}
 	textSize := win.TitleTextWidth()
-	buttonsWidth := (win.TitleSize * UIScale)
+	buttonsWidth := (win.TitleSize * UIScale) - 1
 
 	dpad := (win.TitleSize * UIScale) / 5
 	xStart := textSize.X + float32((win.TitleSize*UIScale)/1.5)
@@ -54,6 +64,20 @@ func (win WindowData) DragbarRect() Rect {
 	return Rect{
 		X0: win.Position.X + xStart, Y0: win.Position.Y + dpad,
 		X1: win.Position.X + xEnd, Y1: win.Position.Y + (win.TitleSize * UIScale) - dpad,
+	}
+}
+
+func (win WindowData) ResizetabRect() Rect {
+	if win.TitleSize <= 0 && !win.Resizable {
+		return Rect{}
+	}
+
+	return Rect{
+		X0: win.Position.X + (win.Size.X * UIScale) - 1,
+		Y0: win.Position.Y + (win.Size.Y * UIScale) - (14 * UIScale) - (win.TitleSize * UIScale),
+
+		X1: win.Position.X + (win.Size.X * UIScale) - (14 * UIScale),
+		Y1: win.Position.Y + (win.Size.Y * UIScale) - (win.TitleSize * UIScale) - 1,
 	}
 }
 

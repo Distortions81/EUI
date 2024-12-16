@@ -13,11 +13,11 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
-var debugMode bool
+var debugMode *bool
 
 func main() {
 
-	debugMode = *flag.Bool("debug", false, "enable debug visuals")
+	debugMode = flag.Bool("debug", false, "enable debug visuals")
 	flag.Parse()
 
 	signalHandle = make(chan os.Signal, 1)
