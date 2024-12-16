@@ -12,6 +12,7 @@ var DefaultTheme = WindowData{
 	TitleColor:      color.RGBA{R: 255, G: 255, B: 255, A: 255},
 	BorderColor:     color.RGBA{R: 64, G: 64, B: 64, A: 255},
 	SizeColor:       color.RGBA{R: 48, G: 48, B: 48, A: 255},
+	SizeHoverColor:  color.RGBA{R: 80, G: 80, B: 80, A: 255},
 	DragColor:       color.RGBA{R: 48, G: 48, B: 48, A: 255},
 	HoverColor:      color.RGBA{R: 80, G: 80, B: 80, A: 255},
 	ContentsBGColor: color.RGBA{R: 16, G: 16, B: 16, A: 255},

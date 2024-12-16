@@ -15,6 +15,7 @@ var (
 func (g *Game) Update() error {
 	mx, my := ebiten.CursorPosition()
 	mpos := Point{X: float32(mx), Y: float32(my)}
+	defer func() { mposOld = mpos }()
 
 	click := inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0)
 	clickHeld := inpututil.MouseButtonPressDuration(ebiten.MouseButton0)
@@ -24,53 +25,59 @@ func (g *Game) Update() error {
 	//altClickHeld := inpututil.MouseButtonPressDuration(ebiten.MouseButton1)
 
 	//Check all windows
-	for w, win := range Windows {
+	for _, win := range Windows {
 		if !win.Open {
 			continue
 		}
-		//Checked seperately, we need to check previous mouse position for drag
+
 		if win.Resizable {
-			if win.DragbarRect().ContainsPoint(mposOld) {
-				win.HoverDragbar = true
+			if win.ResizeTabRect().ContainsPoint(mposOld) {
+				win.HoverResizeTab = true
 				if clickDrag {
-					win.Position = PointAdd(win.Position, PointSubract(mpos, mposOld))
+					change := PointToMag(PointSubract(mpos, mposOld))
+					win.Size = MagAdd(win.Size, change)
 				}
 			}
 		}
 
-		//If current mouse pos is within this window.
-		if win.GetRect().ContainsPoint(mpos) {
-			Windows[w].Hovered = true
-
-			if win.TitleSize > 0 && win.GetTitleRect().ContainsPoint(mpos) {
-				if win.Closable {
+		if win.TitleSize > 0 {
+			if win.Movable {
+				if win.TitleRect().ContainsPoint(mposOld) {
+					if win.DragbarRect().ContainsPoint(mposOld) {
+						win.HoverDragbar = true
+						if clickDrag {
+							win.Position = PointAdd(win.Position, PointSubract(mpos, mposOld))
+						}
+					}
+				}
+			}
+			if win.Closable {
+				if win.TitleRect().ContainsPoint(mpos) {
 					if win.XRect().ContainsPoint(mpos) {
 						win.HoverX = true
 						if click {
 							win.Open = false
 						}
-						continue
 					}
 				}
 			}
+		}
 
-			if win.Dumb {
-				continue
-			}
+		if win.GetWinRect().ContainsPoint(mpos) {
+			win.Hovered = true
 
-			for i, item := range win.Contents {
-				if item.Rect.ContainsPoint(mpos) {
-					win.Contents[i].Hovered = true
-					if click {
-						win.Contents[i].Activated = true
-						continue
+			if win.GetMainRect().ContainsPoint(mpos) {
+				for i, item := range win.Contents {
+					if item.Rect.ContainsPoint(mpos) {
+						win.Contents[i].Hovered = true
+						if click {
+							win.Contents[i].Activated = true
+						}
 					}
 				}
 			}
 		}
 	}
-
-	mposOld = mpos
 
 	return nil
 }

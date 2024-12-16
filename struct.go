@@ -7,10 +7,10 @@ type WindowData struct {
 	Position       Point
 	Size           Magnatude
 
-	Open, Hovered, Dumb                                                                      bool
-	Closable, Movable, Resizable, Scrollable, Maximizable, Minimizeable                      bool
-	ContentsBGColor, TitleBGColor, TitleColor, BorderColor, SizeColor, DragColor, HoverColor color.RGBA
-	TitleSize, Padding, Border                                                               float32
+	Open, Hovered, Dumb                                                                                      bool
+	Closable, Movable, Resizable, Scrollable, Maximizable, Minimizeable                                      bool
+	ContentsBGColor, TitleBGColor, TitleColor, BorderColor, SizeColor, SizeHoverColor, DragColor, HoverColor color.RGBA
+	TitleSize, Padding, Border                                                                               float32
 
 	HoverX, HoverDragbar, HoverResizeTab bool
 

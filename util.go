@@ -7,7 +7,7 @@ func (rect Rect) ContainsPoint(b Point) bool {
 		b.X <= rect.X1 && b.Y <= rect.Y1
 }
 
-func (win WindowData) GetRect() Rect {
+func (win WindowData) GetWinRect() Rect {
 	return Rect{
 		X0: win.Position.X,
 		Y0: win.Position.Y,
@@ -25,7 +25,7 @@ func (win WindowData) GetMainRect() Rect {
 	}
 }
 
-func (win WindowData) GetTitleRect() Rect {
+func (win WindowData) TitleRect() Rect {
 	if win.TitleSize <= 0 {
 		return Rect{}
 	}
@@ -56,27 +56,28 @@ func (win WindowData) DragbarRect() Rect {
 		return Rect{}
 	}
 	textSize := win.TitleTextWidth()
-	buttonsWidth := (win.TitleSize * UIScale) - 1
+	xRect := win.XRect()
+	buttonsWidth := xRect.X1 - xRect.X0 + 3
 
 	dpad := (win.TitleSize * UIScale) / 5
 	xStart := textSize.X + float32((win.TitleSize*UIScale)/1.5)
-	xEnd := ((win.Size.X * UIScale) - (buttonsWidth * UIScale))
+	xEnd := ((win.Size.X * UIScale) - buttonsWidth)
 	return Rect{
 		X0: win.Position.X + xStart, Y0: win.Position.Y + dpad,
 		X1: win.Position.X + xEnd, Y1: win.Position.Y + (win.TitleSize * UIScale) - dpad,
 	}
 }
 
-func (win WindowData) ResizetabRect() Rect {
+func (win WindowData) ResizeTabRect() Rect {
 	if win.TitleSize <= 0 && !win.Resizable {
 		return Rect{}
 	}
 
 	return Rect{
-		X0: win.Position.X + (win.Size.X * UIScale) - 1,
+		X1: win.Position.X + (win.Size.X * UIScale) - 1,
 		Y0: win.Position.Y + (win.Size.Y * UIScale) - (14 * UIScale) - (win.TitleSize * UIScale),
 
-		X1: win.Position.X + (win.Size.X * UIScale) - (14 * UIScale),
+		X0: win.Position.X + (win.Size.X * UIScale) - (14 * UIScale),
 		Y1: win.Position.Y + (win.Size.Y * UIScale) - (win.TitleSize * UIScale) - 1,
 	}
 }
@@ -100,4 +101,16 @@ func PointAdd(a, b Point) Point {
 
 func PointSubract(a, b Point) Point {
 	return Point{X: a.X - b.X, Y: a.Y - b.Y}
+}
+
+func MagAdd(a, b Magnatude) Magnatude {
+	return Magnatude{X: a.X + b.X, Y: a.Y + b.Y}
+}
+
+func MadSubtract(a, b Magnatude) Magnatude {
+	return Magnatude{X: a.X - b.X, Y: a.Y - b.Y}
+}
+
+func PointToMag(a Point) Magnatude {
+	return Magnatude{X: a.X, Y: a.Y}
 }

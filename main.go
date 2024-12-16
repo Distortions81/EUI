@@ -32,6 +32,8 @@ func main() {
 		mplusFaceSource = s
 	}
 
+	UIScale = 1
+
 	newWindow := NewWindow(
 		&WindowData{
 			TitleSize: 24,

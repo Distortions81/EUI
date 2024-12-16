@@ -59,37 +59,13 @@ func (g *Game) Draw(screen *ebiten.Image) {
 				textWidth = 0
 			}
 
-			//Resize tab
-			if win.Resizable {
-				vector.StrokeLine(screen,
-					win.Position.X+(win.Size.X*UIScale)-1,
-					win.Position.Y+(win.Size.Y*UIScale)-(14*UIScale)-(win.TitleSize*UIScale),
-
-					win.Position.X+(win.Size.X*UIScale)-(14*UIScale),
-					win.Position.Y+(win.Size.Y*UIScale)-(win.TitleSize*UIScale)-1,
-					1, win.SizeColor, true)
-				vector.StrokeLine(screen,
-					win.Position.X+(win.Size.X*UIScale)-1,
-					win.Position.Y+(win.Size.Y*UIScale)-(10*UIScale)-(win.TitleSize*UIScale),
-
-					win.Position.X+(win.Size.X*UIScale)-(10*UIScale),
-					win.Position.Y+(win.Size.Y*UIScale)-(win.TitleSize*UIScale)-1,
-					1, win.SizeColor, true)
-				vector.StrokeLine(screen,
-					win.Position.X+(win.Size.X*UIScale)-1,
-					win.Position.Y+(win.Size.Y*UIScale)-(6*UIScale)-(win.TitleSize*UIScale),
-
-					win.Position.X+(win.Size.X*UIScale)-(6*UIScale),
-					win.Position.Y+(win.Size.Y*UIScale)-(win.TitleSize*UIScale)-1,
-					1, win.SizeColor, true)
-			}
-
+			//Close X
 			var buttonsWidth float32 = 0
 			if win.Closable {
 				var xpad float32 = (win.TitleSize * UIScale) / 4.0
 				xThick := 3 * UIScale
 				if win.HoverX {
-					xThick += 1
+					xThick *= 1.25
 					win.HoverX = false
 				}
 				vector.StrokeLine(screen,
@@ -127,7 +103,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			}
 		}
 
-		//Draw frames
+		//Draw borders
 		if win.Border > 0 {
 			FrameColor := win.BorderColor
 			if win.Hovered {
@@ -147,20 +123,52 @@ func (g *Game) Draw(screen *ebiten.Image) {
 				win.Border, FrameColor, false)
 		}
 
+		//Resize tab
+		if win.Resizable {
+			var xThick float32 = 1.0
+			xColor := win.SizeColor
+
+			if win.HoverResizeTab {
+				xColor = win.SizeHoverColor
+				win.HoverResizeTab = false
+			}
+			vector.StrokeLine(screen,
+				win.Position.X+(win.Size.X*UIScale)-1,
+				win.Position.Y+(win.Size.Y*UIScale)-(14*UIScale)-(win.TitleSize*UIScale),
+
+				win.Position.X+(win.Size.X*UIScale)-(14*UIScale),
+				win.Position.Y+(win.Size.Y*UIScale)-(win.TitleSize*UIScale)-1,
+				xThick, xColor, true)
+			vector.StrokeLine(screen,
+				win.Position.X+(win.Size.X*UIScale)-1,
+				win.Position.Y+(win.Size.Y*UIScale)-(10*UIScale)-(win.TitleSize*UIScale),
+
+				win.Position.X+(win.Size.X*UIScale)-(10*UIScale),
+				win.Position.Y+(win.Size.Y*UIScale)-(win.TitleSize*UIScale)-1,
+				xThick, xColor, true)
+			vector.StrokeLine(screen,
+				win.Position.X+(win.Size.X*UIScale)-1,
+				win.Position.Y+(win.Size.Y*UIScale)-(6*UIScale)-(win.TitleSize*UIScale),
+
+				win.Position.X+(win.Size.X*UIScale)-(6*UIScale),
+				win.Position.Y+(win.Size.Y*UIScale)-(win.TitleSize*UIScale)-1,
+				xThick, xColor, true)
+		}
+
 		if *debugMode {
-			grab := win.DragbarRect()
+			grab := win.GetMainRect()
+			vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{R: 255, G: 255, A: 255}, false)
+
+			grab = win.DragbarRect()
 			vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{R: 255, A: 255}, false)
 
 			grab = win.XRect()
 			vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{G: 255, A: 255}, false)
 
-			grab = win.ResizetabRect()
+			grab = win.ResizeTabRect()
 			vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{B: 255, A: 255}, false)
 
-			grab = win.GetMainRect()
-			vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{R: 255, G: 255, A: 255}, false)
-
-			grab = win.GetTitleRect()
+			grab = win.TitleRect()
 			vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{B: 255, G: 255, A: 255}, false)
 		}
 	}
