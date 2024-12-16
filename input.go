@@ -5,9 +5,12 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
-const minDrag = 10
+const minDrag = 2
 
-var mposOld Point
+var (
+	mposOld   Point
+	dragStart Point
+)
 
 func (g *Game) Update() error {
 	mx, my := ebiten.CursorPosition()
@@ -25,7 +28,6 @@ func (g *Game) Update() error {
 		if !win.Open {
 			continue
 		}
-
 		if win.GetRect().ContainsPoint(mpos) {
 			Windows[w].Hovered = true
 
@@ -35,15 +37,6 @@ func (g *Game) Update() error {
 						win.HoverX = true
 						if click {
 							win.Open = false
-						}
-						continue
-					}
-				}
-				if win.Resizable {
-					if win.DragbarRect().ContainsPoint(mpos) {
-						win.HoverDragbar = true
-						if clickDrag {
-							win.Position = PointAdd(win.Position, PointSubract(mpos, mposOld))
 						}
 						continue
 					}
@@ -60,10 +53,22 @@ func (g *Game) Update() error {
 					win.Contents[i].Hovered = true
 					if click {
 						win.Contents[i].Activated = true
+						continue
 					}
 				}
 			}
 		}
+
+		if win.Resizable {
+			if win.DragbarRect().ContainsPoint(mposOld) {
+				win.HoverDragbar = true
+				if clickDrag {
+					win.Position = PointAdd(win.Position, PointSubract(mpos, mposOld))
+				}
+				continue
+			}
+		}
+
 	}
 
 	mposOld = mpos
