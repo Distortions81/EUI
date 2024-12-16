@@ -48,10 +48,23 @@ func isZeroValue(v reflect.Value) bool {
 func (target *WindowData) AddWindow() {
 	for _, win := range Windows {
 		if win == target {
-			log.Fatal("Window already exists")
+			log.Println("Window already exists")
+			return
 		}
 	}
 	Windows = append(Windows, target)
+}
+
+// RemoveWindow removes a *WindowData from the slice if it exists
+func (target *WindowData) RemoveWindow() {
+	for i, win := range Windows {
+		if win == target { // Compare pointers
+			Windows = append(Windows[:i], Windows[i+1:]...)
+			return
+		}
+	}
+
+	log.Println("Window not found")
 }
 
 func NewWindow(win *WindowData) *WindowData {
