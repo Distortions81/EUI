@@ -65,7 +65,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 				var xpad float32 = (win.TitleSize * UIScale) / 4.0
 				xThick := 3 * UIScale
 				if win.HoverX {
-					xThick *= 1.25
+					xThick *= (1.5)
 					win.HoverX = false
 				}
 				vector.StrokeLine(screen,
@@ -89,8 +89,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			//Dragbar
 			if win.Movable {
 				var xThick float32 = 1
+				xColor := win.DragColor
 				if win.HoverDragbar {
-					xThick += 1
+					xColor = win.DragHoverColor
 					win.HoverDragbar = false
 				}
 				dpad := (win.TitleSize * UIScale) / 5
@@ -98,7 +99,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 					vector.StrokeLine(screen,
 						win.Position.X+float32(x), win.Position.Y+dpad,
 						win.Position.X+float32(x), win.Position.Y+(win.TitleSize*UIScale)-dpad,
-						xThick, win.DragColor, false)
+						xThick, xColor, false)
 				}
 			}
 		}
@@ -130,6 +131,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 			if win.HoverResizeTab {
 				xColor = win.SizeHoverColor
+				xThick = 2
 				win.HoverResizeTab = false
 			}
 			vector.StrokeLine(screen,
