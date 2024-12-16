@@ -59,6 +59,7 @@ func (g *Game) Update() error {
 			}
 		}
 
+		//We check this seperately, because the drag can go outside the window bounds frame-to-frame
 		if win.Resizable {
 			if win.DragbarRect().ContainsPoint(mposOld) {
 				win.HoverDragbar = true
@@ -68,7 +69,6 @@ func (g *Game) Update() error {
 				continue
 			}
 		}
-
 	}
 
 	mposOld = mpos
