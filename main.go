@@ -40,17 +40,6 @@ func main() {
 
 	go startEbiten()
 
-	/*
-		go func() {
-		UIScale = 0.1
-			time.Sleep(time.Second * 5)
-			for x := 0; x < 100; x++ {
-				time.Sleep(time.Second)
-				UIScale = UIScale + 0.1
-			}
-		}()
-	*/
-
 	<-signalHandle
 }
 
