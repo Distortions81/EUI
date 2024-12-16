@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"image/color"
 	"log"
 	"os"
 	"os/signal"
@@ -27,26 +26,17 @@ func main() {
 		mplusFaceSource = s
 	}
 
-	newWindow := WindowData{
-		TitleSize:  24,
-		Title:      "Test",
-		Tooltip:    "Tooltip stuff here",
-		Size:       Magnatude{X: 300, Y: 300},
-		Position:   Point{X: 32, Y: 32},
-		Border:     1,
-		TitleColor: color.RGBA{R: 255, G: 255, B: 255, A: 255},
+	newWindow := NewWindow(
+		&WindowData{
+			TitleSize: 24,
+			Title:     "Test",
+			Tooltip:   "Tooltip stuff here",
+			Size:      Magnatude{X: 300, Y: 300},
+			Position:  Point{X: 32, Y: 32},
 
-		BorderColor: color.RGBA{R: 64, G: 64, B: 64, A: 255},
-
-		SizeColor:  color.RGBA{R: 48, G: 48, B: 48, A: 255},
-		DragColor:  color.RGBA{R: 48, G: 48, B: 48, A: 255},
-		HoverColor: color.RGBA{R: 80, G: 80, B: 80, A: 255},
-
-		ContentsBGColor: color.RGBA{R: 16, G: 16, B: 16, A: 255},
-
-		Movable: true, Closable: true, Resizable: true, Open: true,
-	}
-	Windows = append(Windows, newWindow)
+			Movable: true, Closable: true, Resizable: true, Open: true,
+		})
+	newWindow.AddWindow()
 
 	go startEbiten()
 

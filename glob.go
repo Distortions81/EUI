@@ -14,7 +14,7 @@ const (
 var (
 	signalHandle    chan os.Signal
 	mplusFaceSource *text.GoTextFaceSource
-	Windows         []WindowData
+	Windows         []*WindowData
 	UIScale         float32 = 1.0
 )
 
