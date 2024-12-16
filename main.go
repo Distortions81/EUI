@@ -30,7 +30,6 @@ func main() {
 		&WindowData{
 			TitleSize: 24,
 			Title:     "Test",
-			Tooltip:   "Tooltip stuff here",
 			Size:      Magnatude{X: 300, Y: 300},
 			Position:  Point{X: 32, Y: 32},
 
