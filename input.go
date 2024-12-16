@@ -21,14 +21,29 @@ func (g *Game) Update() error {
 			continue
 		}
 
-		winRect := win.GetRect()
-		if winRect.ContainsPoint(mpos) {
-			Windows[w].Hovered = true
+		if Windows[w].Hovered = win.GetRect().ContainsPoint(mpos); Windows[w].Hovered {
+			if win.GetTitleRect().ContainsPoint(mpos) {
+				var xpad float32 = (win.TitleSize * UIScale) / 4.0
+				closeRect := Rect{
+					X0: win.Position.X + (win.Size.X * UIScale) - (win.TitleSize * UIScale) + xpad,
+					Y0: win.Position.Y + xpad,
+
+					X1: win.Position.X + (win.Size.X * UIScale) - xpad,
+					Y1: win.Position.Y + (win.TitleSize * UIScale) - xpad,
+				}
+				if win.HoverX = closeRect.ContainsPoint(mpos); win.HoverX {
+					if click {
+						win.Open = false
+					}
+				}
+				continue
+			}
 
 			//Window contents
 			if win.Dumb {
 				continue
 			}
+
 			for i, item := range win.Contents {
 				if item.Rect.ContainsPoint(mpos) {
 					if click {
@@ -43,8 +58,6 @@ func (g *Game) Update() error {
 					win.Contents[i].Hovered = false
 				}
 			}
-		} else {
-			Windows[w].Hovered = false
 		}
 	}
 

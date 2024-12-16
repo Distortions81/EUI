@@ -12,6 +12,8 @@ type WindowData struct {
 	ContentsBGColor, TitleBGColor, TitleColor, BorderColor, SizeColor, DragColor, HoverColor color.RGBA
 	TitleSize, Padding, Border                                                               float32
 
+	HoverX bool
+
 	Contents []ItemData
 }
 

@@ -86,20 +86,24 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			var buttonsWidth float32 = 0
 			if win.Closable {
 				var xpad float32 = (win.TitleSize * UIScale) / 4.0
+				xThick := 3 * UIScale
+				if win.HoverX {
+					xThick += 1
+				}
 				vector.StrokeLine(screen,
 					win.Position.X+(win.Size.X*UIScale)-(win.TitleSize*UIScale)+xpad,
 					win.Position.Y+xpad,
 
 					win.Position.X+(win.Size.X*UIScale)-xpad,
 					win.Position.Y+(win.TitleSize*UIScale)-xpad,
-					3*UIScale, win.TitleColor, true)
+					xThick, win.TitleColor, true)
 				vector.StrokeLine(screen,
 					win.Position.X+(win.Size.X*UIScale)-xpad,
 					win.Position.Y+xpad,
 
 					win.Position.X+(win.Size.X*UIScale)-(win.TitleSize*UIScale)+xpad,
 					win.Position.Y+(win.TitleSize*UIScale)-xpad,
-					3*UIScale, win.TitleColor, true)
+					xThick, win.TitleColor, true)
 
 				buttonsWidth += (win.TitleSize * UIScale)
 			}
