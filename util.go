@@ -27,7 +27,7 @@ func (win WindowData) GetTitleRect() Rect {
 }
 
 func (win WindowData) XRect() Rect {
-	if win.TitleSize <= 0 && !win.Closable {
+	if win.TitleSize <= 0 || !win.Closable {
 		return Rect{}
 	}
 
@@ -45,14 +45,12 @@ func (win WindowData) DragbarRect() Rect {
 	if win.TitleSize <= 0 && !win.Resizable {
 		return Rect{}
 	}
-	//temporary
 	textSize := win.TitleTextWidth()
-	buttonDims := win.XRect()
-	buttonsWidth := buttonDims.X1 - buttonDims.X0
+	buttonsWidth := (win.TitleSize * UIScale)
 
 	dpad := (win.TitleSize * UIScale) / 5
 	xStart := textSize.X + float32((win.TitleSize*UIScale)/1.5)
-	xEnd := ((win.Size.X * UIScale) - buttonsWidth)
+	xEnd := ((win.Size.X * UIScale) - (buttonsWidth * UIScale))
 	return Rect{
 		X0: win.Position.X + xStart, Y0: win.Position.Y + dpad,
 		X1: win.Position.X + xEnd, Y1: win.Position.Y + (win.TitleSize * UIScale) - dpad,

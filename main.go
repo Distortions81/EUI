@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"flag"
 	"log"
 	"os"
 	"os/signal"
@@ -12,7 +13,12 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
+var debugMode bool
+
 func main() {
+
+	debugMode = *flag.Bool("debug", false, "enable debug visuals")
+	flag.Parse()
 
 	signalHandle = make(chan os.Signal, 1)
 	signal.Notify(signalHandle, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
@@ -29,7 +35,7 @@ func main() {
 	newWindow := NewWindow(
 		&WindowData{
 			TitleSize: 24,
-			Title:     "Test",
+			Title:     "Test Window",
 			Size:      Magnatude{X: 300, Y: 300},
 			Position:  Point{X: 32, Y: 32},
 

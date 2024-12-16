@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"image/color"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -144,6 +145,14 @@ func (g *Game) Draw(screen *ebiten.Image) {
 				win.Position.X, win.Position.Y,
 				win.Size.X*UIScale, (win.Size.Y*UIScale)-(win.TitleSize*UIScale),
 				win.Border, FrameColor, false)
+		}
+
+		if debugMode {
+			grab := win.DragbarRect()
+			vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{R: 255, A: 255}, false)
+
+			grab = win.XRect()
+			vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{G: 255, A: 255}, false)
 		}
 	}
 
