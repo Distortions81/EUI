@@ -40,8 +40,6 @@ func main() {
 			Title:     "Test Window",
 			Size:      Magnatude{X: 300, Y: 300},
 			Position:  Point{X: 32, Y: 32},
-
-			Movable: true, Closable: true, Resizable: true, Open: true,
 		})
 	newWindow.AddWindow()
 

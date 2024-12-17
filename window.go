@@ -17,6 +17,8 @@ var DefaultTheme = WindowData{
 	DragHoverColor:  color.RGBA{R: 128, G: 128, B: 128, A: 255},
 	HoverColor:      color.RGBA{R: 80, G: 80, B: 80, A: 255},
 	ContentsBGColor: color.RGBA{R: 16, G: 16, B: 16, A: 255},
+
+	Movable: true, Closable: true, Resizable: true, Open: true,
 }
 
 // MergeStructs merges the non-zero fields of updates into original.
