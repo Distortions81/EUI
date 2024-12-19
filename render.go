@@ -18,13 +18,13 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			continue
 		}
 
-		//Draw BG Color
+		//Window BG Color
 		vector.DrawFilledRect(screen,
 			win.Position.X, win.Position.Y,
 			win.Size.X*UIScale, (win.Size.Y*UIScale)-(win.TitleSize*UIScale),
 			win.ContentsBGColor, false)
 
-		//Draw Title
+		//Window Title
 		if win.TitleSize > 0 {
 
 			textSize := ((win.TitleSize * UIScale) / 1.5)
@@ -134,6 +134,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 				xThick = 2
 				win.HoverResizeTab = false
 			}
+			//Outer
 			vector.StrokeLine(screen,
 				win.Position.X+(win.Size.X*UIScale)-1,
 				win.Position.Y+(win.Size.Y*UIScale)-(14*UIScale)-(win.TitleSize*UIScale),
@@ -141,6 +142,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 				win.Position.X+(win.Size.X*UIScale)-(14*UIScale),
 				win.Position.Y+(win.Size.Y*UIScale)-(win.TitleSize*UIScale)-1,
 				xThick, xColor, true)
+			//Middle
 			vector.StrokeLine(screen,
 				win.Position.X+(win.Size.X*UIScale)-1,
 				win.Position.Y+(win.Size.Y*UIScale)-(10*UIScale)-(win.TitleSize*UIScale),
@@ -148,6 +150,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 				win.Position.X+(win.Size.X*UIScale)-(10*UIScale),
 				win.Position.Y+(win.Size.Y*UIScale)-(win.TitleSize*UIScale)-1,
 				xThick, xColor, true)
+			//Inner
 			vector.StrokeLine(screen,
 				win.Position.X+(win.Size.X*UIScale)-1,
 				win.Position.Y+(win.Size.Y*UIScale)-(6*UIScale)-(win.TitleSize*UIScale),
@@ -175,6 +178,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		}
 	}
 
+	vector.DrawFilledRect(screen, 0, 0, 58, 16, color.RGBA{R: 0, G: 0, B: 0, A: 192}, false)
 	buf := fmt.Sprintf("%4v FPS", int(math.Round(ebiten.ActualFPS())))
 	ebitenutil.DebugPrintAt(screen, buf, 0, 0)
 }
