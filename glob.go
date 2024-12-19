@@ -6,9 +6,9 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
-const (
-	defaultWindowWidth  = 1280
-	defaultWindowHeight = 720
+var (
+	windowWidth  = 1280
+	windowHeight = 720
 )
 
 var (

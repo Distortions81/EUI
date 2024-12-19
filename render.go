@@ -176,5 +176,5 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 
 	buf := fmt.Sprintf("%4v FPS", int(math.Round(ebiten.ActualFPS())))
-	ebitenutil.DebugPrintAt(screen, buf, defaultWindowWidth-55, defaultWindowHeight-18)
+	ebitenutil.DebugPrintAt(screen, buf, 0, 0)
 }

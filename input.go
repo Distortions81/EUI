@@ -30,6 +30,7 @@ func (g *Game) Update() error {
 			continue
 		}
 
+		//Resize tab
 		if win.Resizable {
 			if win.ResizeTabRect().ContainsPoint(mposOld) {
 				win.HoverResizeTab = true
@@ -40,7 +41,10 @@ func (g *Game) Update() error {
 			}
 		}
 
+		//Titlebar items
 		if win.TitleSize > 0 {
+
+			//Dragbar
 			if win.Movable {
 				if win.TitleRect().ContainsPoint(mposOld) {
 					if win.DragbarRect().ContainsPoint(mposOld) {
@@ -51,6 +55,7 @@ func (g *Game) Update() error {
 					}
 				}
 			}
+			//Close X
 			if win.Closable {
 				if win.TitleRect().ContainsPoint(mpos) {
 					if win.XRect().ContainsPoint(mpos) {
@@ -63,6 +68,7 @@ func (g *Game) Update() error {
 			}
 		}
 
+		//Window items
 		if win.GetWinRect().ContainsPoint(mpos) {
 			win.Hovered = true
 
