@@ -34,46 +34,8 @@ func (g *Game) Update() error {
 		}
 
 		if win.Resizable {
-			//Resize Edge
-			side := win.GetWindowEdge(mposOld)
-
-			//If needed, set cursoer
-			if !cursorChanged && side != SIDE_NONE {
-				c := ebiten.CursorShapeEWResize
-				if side == SIDE_TOP || side == SIDE_BOTTOM {
-					c = ebiten.CursorShapeNSResize
-				}
-				if cursorShape != c {
-					cursorShape = c
-					ebiten.SetCursorShape(cursorShape)
-				}
-				cursorChanged = true
-			}
-
-			//Drag rezie edge
-			if clickDrag {
-				if side == SIDE_TOP {
-					change := PointSubract(mpos, mposOld)
-					change.X = 0
-					win.Position = PointAdd(win.Position, change)
-					win.Size = Magnatude(PointSubract(MagToPoint(win.Size), change))
-				} else if side == SIDE_BOTTOM {
-					change := PointSubract(mpos, mposOld)
-					change.X = 0
-					win.Size = Magnatude(PointAdd(MagToPoint(win.Size), change))
-				} else if side == SIDE_LEFT {
-					change := PointSubract(mpos, mposOld)
-					change.Y = 0
-					win.Position = PointAdd(win.Position, change)
-					win.Size = Magnatude(PointSubract(MagToPoint(win.Size), change))
-				} else if side == SIDE_RIGHT {
-					change := PointSubract(mpos, mposOld)
-					change.Y = 0
-					win.Size = Magnatude(PointAdd(MagToPoint(win.Size), change))
-				}
-			}
 			//Resize Tab
-			if !cursorChanged && win.ResizeTabRect().ContainsPoint(mposOld) {
+			if win.ResizeTabRect().ContainsPoint(mposOld) {
 				win.HoverResizeTab = true
 				if !cursorChanged {
 					if cursorShape != ebiten.CursorShapeNWSEResize {
@@ -85,6 +47,45 @@ func (g *Game) Update() error {
 				if clickDrag {
 					change := PointToMag(PointSubract(mpos, mposOld))
 					win.Size = MagAdd(win.Size, change)
+				}
+			} else {
+				//Resize Edge
+				side := win.GetWindowEdge(mposOld)
+
+				//If needed, set cursoer
+				if !cursorChanged && side != SIDE_NONE {
+					c := ebiten.CursorShapeEWResize
+					if side == SIDE_TOP || side == SIDE_BOTTOM {
+						c = ebiten.CursorShapeNSResize
+					}
+					if cursorShape != c {
+						cursorShape = c
+						ebiten.SetCursorShape(cursorShape)
+					}
+					cursorChanged = true
+				}
+
+				//Drag rezie edge
+				if clickDrag {
+					if side == SIDE_TOP {
+						change := PointSubract(mpos, mposOld)
+						change.X = 0
+						win.Position = PointAdd(win.Position, change)
+						win.Size = Magnatude(PointSubract(MagToPoint(win.Size), change))
+					} else if side == SIDE_BOTTOM {
+						change := PointSubract(mpos, mposOld)
+						change.X = 0
+						win.Size = Magnatude(PointAdd(MagToPoint(win.Size), change))
+					} else if side == SIDE_LEFT {
+						change := PointSubract(mpos, mposOld)
+						change.Y = 0
+						win.Position = PointAdd(win.Position, change)
+						win.Size = Magnatude(PointSubract(MagToPoint(win.Size), change))
+					} else if side == SIDE_RIGHT {
+						change := PointSubract(mpos, mposOld)
+						change.Y = 0
+						win.Size = Magnatude(PointAdd(MagToPoint(win.Size), change))
+					}
 				}
 			}
 		}

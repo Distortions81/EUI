@@ -78,11 +78,11 @@ func (win WindowData) ResizeTabRect() Rect {
 	}
 
 	return Rect{
-		X1: win.Position.X + (win.Size.X * UIScale) - 1,
+		X1: win.Position.X + (win.Size.X * UIScale),
 		Y0: win.Position.Y + (win.Size.Y * UIScale) - (14 * UIScale) - (win.TitleSize * UIScale),
 
 		X0: win.Position.X + (win.Size.X * UIScale) - (14 * UIScale),
-		Y1: win.Position.Y + (win.Size.Y * UIScale) - (win.TitleSize * UIScale) - 1,
+		Y1: win.Position.Y + (win.Size.Y * UIScale) - (win.TitleSize * UIScale),
 	}
 }
 
@@ -91,16 +91,23 @@ func (win WindowData) GetWindowEdge(mpos Point) WindowSide {
 	if !win.Resizable {
 		return SIDE_NONE
 	}
-	if WithinEdgeRange(mpos.X, win.Position.X, tol) {
+	if WithinEdgeRange(mpos.X, win.Position.X, tol) &&
+		mpos.Y > win.Position.Y && mpos.Y < win.Position.Y+win.Size.Y-win.TitleSize {
 		return SIDE_LEFT
 	}
-	if WithinEdgeRange(mpos.X, win.Position.X+win.Size.X, tol) {
+	if WithinEdgeRange(mpos.X, win.Position.X+win.Size.X, tol) &&
+		mpos.Y > win.Position.Y && mpos.Y < win.Position.Y+win.Size.Y-win.TitleSize &&
+		mpos.Y < win.Position.Y+win.Size.Y-win.TitleSize-14 {
 		return SIDE_RIGHT
 	}
-	if WithinEdgeRange(mpos.Y, win.Position.Y, tol) {
+	if WithinEdgeRange(mpos.Y, win.Position.Y, tol) &&
+		mpos.X > win.Position.X && mpos.X < win.Position.X+win.Size.X {
+
 		return SIDE_TOP
 	}
-	if WithinEdgeRange(mpos.Y, win.Position.Y+win.Size.Y-win.TitleSize, tol) {
+	if WithinEdgeRange(mpos.Y, win.Position.Y+win.Size.Y-win.TitleSize, tol) &&
+		mpos.X > win.Position.X && mpos.X < win.Position.X+win.Size.X &&
+		mpos.X < win.Position.X+win.Size.X-14 {
 		return SIDE_BOTTOM
 	}
 
@@ -110,7 +117,7 @@ func (win WindowData) GetWindowEdge(mpos Point) WindowSide {
 const tol = 3
 
 func WithinEdgeRange(a, b float32, tol float32) bool {
-	if math.Abs(float64(a-b))-1 <= float64(tol) {
+	if math.Abs(float64(a-b)) <= float64(tol) {
 		return true
 	}
 	return false
