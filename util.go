@@ -1,6 +1,10 @@
 package main
 
-import "github.com/hajimehoshi/ebiten/v2/text/v2"
+import (
+	"math"
+
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
+)
 
 func (rect Rect) ContainsPoint(b Point) bool {
 	return b.X >= rect.X0 && b.Y >= rect.Y0 &&
@@ -69,7 +73,7 @@ func (win WindowData) DragbarRect() Rect {
 }
 
 func (win WindowData) ResizeTabRect() Rect {
-	if win.TitleSize <= 0 && !win.Resizable {
+	if !win.Resizable {
 		return Rect{}
 	}
 
@@ -80,6 +84,36 @@ func (win WindowData) ResizeTabRect() Rect {
 		X0: win.Position.X + (win.Size.X * UIScale) - (14 * UIScale),
 		Y1: win.Position.Y + (win.Size.Y * UIScale) - (win.TitleSize * UIScale) - 1,
 	}
+}
+
+func (win WindowData) GetWindowEdge(mpos Point) WindowSide {
+
+	if !win.Resizable {
+		return SIDE_NONE
+	}
+	if WithinEdgeRange(mpos.X, win.Position.X, tol) {
+		return SIDE_LEFT
+	}
+	if WithinEdgeRange(mpos.X, win.Position.X+win.Size.X, tol) {
+		return SIDE_RIGHT
+	}
+	if WithinEdgeRange(mpos.Y, win.Position.Y, tol) {
+		return SIDE_TOP
+	}
+	if WithinEdgeRange(mpos.Y, win.Position.Y+win.Size.Y-win.TitleSize, tol) {
+		return SIDE_BOTTOM
+	}
+
+	return SIDE_NONE
+}
+
+const tol = 3
+
+func WithinEdgeRange(a, b float32, tol float32) bool {
+	if math.Abs(float64(a-b))-1 <= float64(tol) {
+		return true
+	}
+	return false
 }
 
 func (win WindowData) TitleTextWidth() Magnatude {
@@ -107,10 +141,14 @@ func MagAdd(a, b Magnatude) Magnatude {
 	return Magnatude{X: a.X + b.X, Y: a.Y + b.Y}
 }
 
-func MadSubtract(a, b Magnatude) Magnatude {
+func MagSubtract(a, b Magnatude) Magnatude {
 	return Magnatude{X: a.X - b.X, Y: a.Y - b.Y}
 }
 
 func PointToMag(a Point) Magnatude {
 	return Magnatude{X: a.X, Y: a.Y}
+}
+
+func MagToPoint(a Magnatude) Point {
+	return Point{X: a.X, Y: a.Y}
 }

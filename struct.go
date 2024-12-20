@@ -52,3 +52,13 @@ const (
 	FLOW_HORIZONTAL = iota
 	FLOW_VERTICAL
 )
+
+type WindowSide int
+
+const (
+	SIDE_NONE = iota
+	SIDE_TOP
+	SIDE_RIGHT
+	SIDE_BOTTOM
+	SIDE_LEFT
+)
