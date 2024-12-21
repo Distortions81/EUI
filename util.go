@@ -167,6 +167,7 @@ func (win WindowData) GetSizeY() float32 {
 	return win.Mag.Y * UIScale
 }
 
+// Sets MagTemp, TitleSizeTemp
 func (win *WindowData) PreCalcSize() {
 	win.MagTemp = Magnatude{X: win.Mag.X * UIScale, Y: win.Mag.Y * UIScale}
 	win.TitleSizeTemp = win.TitleSize * UIScale

@@ -56,6 +56,7 @@ func (target *WindowData) AddWindow() {
 			return
 		}
 	}
+	target.PreCalcSize()
 	Windows = append(Windows, target)
 }
 

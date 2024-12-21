@@ -18,7 +18,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			continue
 		}
 
-		//Sets MagTemp, TitleSizeTemp
+		//Reduce UI scaling calculations
 		win.PreCalcSize()
 
 		//Window BG Color

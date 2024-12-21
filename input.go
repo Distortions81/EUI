@@ -33,9 +33,6 @@ func (g *Game) Update() error {
 			continue
 		}
 
-		//Sets MagTemp, TitleSizeTemp
-		win.PreCalcSize()
-
 		if win.Resizable {
 			//Resize Tab
 			if win.ResizeTabRect().ContainsPoint(mposOld) {
