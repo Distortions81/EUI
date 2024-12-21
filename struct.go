@@ -5,7 +5,7 @@ import "image/color"
 type WindowData struct {
 	Title, Tooltip string
 	Position       Point
-	Size           Magnatude
+	Mag            Magnatude
 
 	Open, Hovered, Dumb                                                                                                      bool
 	Closable, Movable, Resizable, Scrollable, Maximizable, Minimizeable                                                      bool

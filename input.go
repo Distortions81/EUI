@@ -45,14 +45,14 @@ func (g *Game) Update() error {
 					cursorChanged = true
 				}
 				if clickDrag {
-					change := PointToMag(PointSubract(mpos, mposOld))
-					win.Size = MagAdd(win.Size, change)
+					change := Magnatude(PointSubract(mpos, mposOld))
+					win.Mag = MagAdd(win.Mag, change)
 				}
 			} else {
 				//Resize Edge
 				side := win.GetWindowEdge(mposOld)
 
-				//If needed, set cursoer
+				//If needed, set cursor
 				if !cursorChanged && side != SIDE_NONE {
 					c := ebiten.CursorShapeEWResize
 					if side == SIDE_TOP || side == SIDE_BOTTOM {
@@ -65,26 +65,23 @@ func (g *Game) Update() error {
 					cursorChanged = true
 				}
 
-				//Drag rezie edge
+				//Drag resize edge
 				if clickDrag {
+					change := PointSubract(mpos, mposOld)
 					if side == SIDE_TOP {
-						change := PointSubract(mpos, mposOld)
 						change.X = 0
 						win.Position = PointAdd(win.Position, change)
-						win.Size = Magnatude(PointSubract(MagToPoint(win.Size), change))
+						win.Mag = Magnatude(PointSubract(Point(win.Mag), change))
 					} else if side == SIDE_BOTTOM {
-						change := PointSubract(mpos, mposOld)
 						change.X = 0
-						win.Size = Magnatude(PointAdd(MagToPoint(win.Size), change))
+						win.Mag = Magnatude(PointAdd(Point(win.Mag), change))
 					} else if side == SIDE_LEFT {
-						change := PointSubract(mpos, mposOld)
 						change.Y = 0
 						win.Position = PointAdd(win.Position, change)
-						win.Size = Magnatude(PointSubract(MagToPoint(win.Size), change))
+						win.Mag = Magnatude(PointSubract(Point(win.Mag), change))
 					} else if side == SIDE_RIGHT {
-						change := PointSubract(mpos, mposOld)
 						change.Y = 0
-						win.Size = Magnatude(PointAdd(MagToPoint(win.Size), change))
+						win.Mag = Magnatude(PointAdd(Point(win.Mag), change))
 					}
 				}
 			}

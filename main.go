@@ -38,7 +38,7 @@ func main() {
 		&WindowData{
 			TitleSize: 24,
 			Title:     "Test Window",
-			Size:      Magnatude{X: 300, Y: 300},
+			Mag:       Magnatude{X: 300, Y: 300},
 			Position:  Point{X: 32, Y: 32},
 		})
 	newWindow.AddWindow()
