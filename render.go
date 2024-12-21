@@ -18,16 +18,19 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			continue
 		}
 
+		//Sets MagTemp, TitleSizeTemp
+		win.PreCalcSize()
+
 		//Window BG Color
 		vector.DrawFilledRect(screen,
 			win.Position.X, win.Position.Y,
-			win.GetSizeX(), win.GetSizeY()-(win.GetTitleSize()),
+			win.MagTemp.X, win.MagTemp.Y-(win.TitleSizeTemp),
 			win.ContentsBGColor, false)
 
 		//Window Title
 		if win.TitleSize > 0 {
 
-			textSize := (win.GetTitleSize() / 1.5)
+			textSize := (win.TitleSizeTemp / 1.5)
 			face := &text.GoTextFace{
 				Source: mplusFaceSource,
 				Size:   float64(textSize),
@@ -35,8 +38,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 			skipTitleText := false
 			textWidth, textHeight := text.Measure(win.Title, face, 0)
-			if textWidth > float64(win.GetSizeX()) ||
-				textHeight > float64(win.GetTitleSize()) {
+			if textWidth > float64(win.MagTemp.X) ||
+				textHeight > float64(win.TitleSizeTemp) {
 				skipTitleText = true
 				//log.Print("Title text too big for title size.")
 			}
@@ -49,8 +52,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 					SecondaryAlign: text.AlignCenter,
 				}
 				tdop := ebiten.DrawImageOptions{}
-				tdop.GeoM.Translate(float64(win.Position.X+(win.GetTitleSize()/4)),
-					float64(win.Position.Y+(win.GetTitleSize()/2)))
+				tdop.GeoM.Translate(float64(win.Position.X+(win.TitleSizeTemp/4)),
+					float64(win.Position.Y+(win.TitleSizeTemp/2)))
 
 				top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 				top.ColorScale.ScaleWithColor(win.TitleColor)
@@ -62,28 +65,28 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			//Close X
 			var buttonsWidth float32 = 0
 			if win.Closable {
-				var xpad float32 = win.GetTitleSize() / 4.0
+				var xpad float32 = win.TitleSizeTemp / 4.0
 				xThick := 3 * UIScale
 				if win.HoverX {
 					xThick *= (1.5)
 					win.HoverX = false
 				}
 				vector.StrokeLine(screen,
-					win.Position.X+win.GetSizeX()-win.GetTitleSize()+xpad,
+					win.Position.X+win.MagTemp.X-win.TitleSizeTemp+xpad,
 					win.Position.Y+xpad,
 
-					win.Position.X+win.GetSizeX()-xpad,
-					win.Position.Y+win.GetTitleSize()-xpad,
+					win.Position.X+win.MagTemp.X-xpad,
+					win.Position.Y+win.TitleSizeTemp-xpad,
 					xThick, win.TitleColor, true)
 				vector.StrokeLine(screen,
-					win.Position.X+win.GetSizeX()-xpad,
+					win.Position.X+win.MagTemp.X-xpad,
 					win.Position.Y+xpad,
 
-					win.Position.X+win.GetSizeX()-win.GetTitleSize()+xpad,
-					win.Position.Y+win.GetTitleSize()-xpad,
+					win.Position.X+win.MagTemp.X-win.TitleSizeTemp+xpad,
+					win.Position.Y+win.TitleSizeTemp-xpad,
 					xThick, win.TitleColor, true)
 
-				buttonsWidth += win.GetTitleSize()
+				buttonsWidth += win.TitleSizeTemp
 			}
 
 			//Dragbar
@@ -94,11 +97,11 @@ func (g *Game) Draw(screen *ebiten.Image) {
 					xColor = win.DragHoverColor
 					win.HoverDragbar = false
 				}
-				dpad := win.GetTitleSize() / 5
-				for x := textWidth + float64(win.GetTitleSize()/1.5); x < float64(win.GetSizeX()-buttonsWidth); x = x + float64(UIScale*5.0) {
+				dpad := win.TitleSizeTemp / 5
+				for x := textWidth + float64(win.TitleSizeTemp/1.5); x < float64(win.MagTemp.X-buttonsWidth); x = x + float64(UIScale*5.0) {
 					vector.StrokeLine(screen,
 						win.Position.X+float32(x), win.Position.Y+dpad,
-						win.Position.X+float32(x), win.Position.Y+win.GetTitleSize()-dpad,
+						win.Position.X+float32(x), win.Position.Y+win.TitleSizeTemp-dpad,
 						xThick, xColor, false)
 				}
 			}
@@ -114,13 +117,13 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			if win.TitleSize > 0 {
 				vector.StrokeRect(screen,
 					win.Position.X, win.Position.Y,
-					win.GetSizeX(), win.GetTitleSize(),
+					win.MagTemp.X, win.TitleSizeTemp,
 					win.Border, FrameColor, false)
 			}
 			//Window border
 			vector.StrokeRect(screen,
 				win.Position.X, win.Position.Y,
-				win.GetSizeX(), win.GetSizeY()-win.GetTitleSize(),
+				win.MagTemp.X, win.MagTemp.Y-win.TitleSizeTemp,
 				win.Border, FrameColor, false)
 		}
 
@@ -134,29 +137,31 @@ func (g *Game) Draw(screen *ebiten.Image) {
 				xThick = 2
 				win.HoverResizeTab = false
 			}
+			var Outer, Middle, Inner float32 = 14 * UIScale, 10 * UIScale, 6 * UIScale
+
 			//Outer
 			vector.StrokeLine(screen,
-				win.Position.X+win.GetSizeX()-1,
-				win.Position.Y+win.GetSizeY()-(14*UIScale)-win.GetTitleSize(),
+				win.Position.X+win.MagTemp.X-1,
+				win.Position.Y+win.MagTemp.Y-Outer-win.TitleSizeTemp,
 
-				win.Position.X+win.GetSizeX()-(14*UIScale),
-				win.Position.Y+win.GetSizeY()-win.GetTitleSize()-1,
+				win.Position.X+win.MagTemp.X-Outer,
+				win.Position.Y+win.MagTemp.Y-win.TitleSizeTemp-1,
 				xThick, xColor, true)
 			//Middle
 			vector.StrokeLine(screen,
-				win.Position.X+win.GetSizeX()-1,
-				win.Position.Y+win.GetSizeY()-(10*UIScale)-win.GetTitleSize(),
+				win.Position.X+win.MagTemp.X-1,
+				win.Position.Y+win.MagTemp.Y-Middle-win.TitleSizeTemp,
 
-				win.Position.X+win.GetSizeX()-(10*UIScale),
-				win.Position.Y+win.GetSizeY()-win.GetTitleSize()-1,
+				win.Position.X+win.MagTemp.X-Middle,
+				win.Position.Y+win.MagTemp.Y-win.TitleSizeTemp-1,
 				xThick, xColor, true)
 			//Inner
 			vector.StrokeLine(screen,
-				win.Position.X+win.GetSizeX()-1,
-				win.Position.Y+win.GetSizeY()-(6*UIScale)-win.GetTitleSize(),
+				win.Position.X+win.MagTemp.X-1,
+				win.Position.Y+win.MagTemp.Y-Inner-win.TitleSizeTemp,
 
-				win.Position.X+win.GetSizeX()-(6*UIScale),
-				win.Position.Y+win.GetSizeY()-win.GetTitleSize()-1,
+				win.Position.X+win.MagTemp.X-Inner,
+				win.Position.Y+win.MagTemp.Y-win.TitleSizeTemp-1,
 				xThick, xColor, true)
 		}
 

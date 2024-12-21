@@ -5,12 +5,12 @@ import "image/color"
 type WindowData struct {
 	Title, Tooltip string
 	Position       Point
-	Mag            Magnatude
+	Mag, MagTemp   Magnatude
 
 	Open, Hovered, Dumb                                                                                                      bool
 	Closable, Movable, Resizable, Scrollable, Maximizable, Minimizeable                                                      bool
 	ContentsBGColor, TitleBGColor, TitleColor, BorderColor, SizeColor, SizeHoverColor, DragColor, DragHoverColor, HoverColor color.RGBA
-	TitleSize, Padding, Border                                                                                               float32
+	TitleSize, TitleSizeTemp, Padding, Border                                                                                float32
 
 	HoverX, HoverDragbar, HoverResizeTab bool
 

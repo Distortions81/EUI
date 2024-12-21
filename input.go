@@ -33,6 +33,9 @@ func (g *Game) Update() error {
 			continue
 		}
 
+		//Sets MagTemp, TitleSizeTemp
+		win.PreCalcSize()
+
 		if win.Resizable {
 			//Resize Tab
 			if win.ResizeTabRect().ContainsPoint(mposOld) {
@@ -47,6 +50,7 @@ func (g *Game) Update() error {
 				if clickDrag {
 					change := Magnatude(PointSubract(mpos, mposOld))
 					win.Mag = MagAdd(win.Mag, change)
+					continue
 				}
 			} else {
 				//Resize Edge
@@ -72,16 +76,20 @@ func (g *Game) Update() error {
 						change.X = 0
 						win.Position = PointAdd(win.Position, change)
 						win.Mag = Magnatude(PointSubract(Point(win.Mag), change))
+						continue
 					} else if side == SIDE_BOTTOM {
 						change.X = 0
 						win.Mag = Magnatude(PointAdd(Point(win.Mag), change))
+						continue
 					} else if side == SIDE_LEFT {
 						change.Y = 0
 						win.Position = PointAdd(win.Position, change)
 						win.Mag = Magnatude(PointSubract(Point(win.Mag), change))
+						continue
 					} else if side == SIDE_RIGHT {
 						change.Y = 0
 						win.Mag = Magnatude(PointAdd(Point(win.Mag), change))
+						continue
 					}
 				}
 			}

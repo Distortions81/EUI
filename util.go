@@ -15,17 +15,17 @@ func (win WindowData) GetWinRect() Rect {
 	return Rect{
 		X0: win.Position.X,
 		Y0: win.Position.Y,
-		X1: win.Position.X + win.GetSizeX(),
-		Y1: win.Position.Y + win.GetSizeY() - win.GetTitleSize(),
+		X1: win.Position.X + win.MagTemp.X,
+		Y1: win.Position.Y + win.MagTemp.Y - win.TitleSizeTemp,
 	}
 }
 
 func (win WindowData) GetMainRect() Rect {
 	return Rect{
 		X0: win.Position.X,
-		Y0: win.Position.Y + win.GetTitleSize() + 1,
-		X1: win.Position.X + win.GetSizeX(),
-		Y1: win.Position.Y + win.GetSizeY() - win.GetTitleSize(),
+		Y0: win.Position.Y + win.TitleSizeTemp + 1,
+		X1: win.Position.X + win.MagTemp.X,
+		Y1: win.Position.Y + win.MagTemp.Y - win.TitleSizeTemp,
 	}
 }
 
@@ -35,8 +35,8 @@ func (win WindowData) TitleRect() Rect {
 	}
 	return Rect{
 		X0: win.Position.X, Y0: win.Position.Y,
-		X1: win.Position.X + win.GetSizeX(),
-		Y1: win.Position.Y + win.GetTitleSize(),
+		X1: win.Position.X + win.MagTemp.X,
+		Y1: win.Position.Y + win.TitleSizeTemp,
 	}
 }
 
@@ -47,11 +47,11 @@ func (win WindowData) XRect() Rect {
 
 	var xpad float32 = win.Border
 	return Rect{
-		X0: win.Position.X + win.GetSizeX() - win.GetTitleSize() + xpad,
+		X0: win.Position.X + win.MagTemp.X - win.TitleSizeTemp + xpad,
 		Y0: win.Position.Y + xpad,
 
-		X1: win.Position.X + win.GetSizeX() - xpad,
-		Y1: win.Position.Y + win.GetTitleSize() - xpad,
+		X1: win.Position.X + win.MagTemp.X - xpad,
+		Y1: win.Position.Y + win.TitleSizeTemp - xpad,
 	}
 }
 
@@ -65,7 +65,7 @@ func (win WindowData) DragbarRect() Rect {
 
 	dpad := (win.TitleSize * UIScale) / 5
 	xStart := textSize.X + float32((win.TitleSize*UIScale)/1.5)
-	xEnd := (win.GetSizeX() - buttonsWidth)
+	xEnd := (win.MagTemp.X - buttonsWidth)
 	return Rect{
 		X0: win.Position.X + xStart, Y0: win.Position.Y + dpad,
 		X1: win.Position.X + xEnd, Y1: win.Position.Y + (win.TitleSize * UIScale) - dpad,
@@ -78,10 +78,10 @@ func (win WindowData) ResizeTabRect() Rect {
 	}
 
 	return Rect{
-		X1: win.Position.X + win.GetSizeX(),
-		Y0: win.Position.Y + win.GetSizeY() - (14 * UIScale) - win.GetTitleSize(),
-		X0: win.Position.X + win.GetSizeX() - (14 * UIScale),
-		Y1: win.Position.Y + win.GetSizeY() - win.GetTitleSize(),
+		X1: win.Position.X + win.MagTemp.X,
+		Y0: win.Position.Y + win.MagTemp.Y - (14 * UIScale) - win.TitleSizeTemp,
+		X0: win.Position.X + win.MagTemp.X - (14 * UIScale),
+		Y1: win.Position.Y + win.MagTemp.Y - win.TitleSizeTemp,
 	}
 }
 
@@ -91,22 +91,22 @@ func (win WindowData) GetWindowEdge(mpos Point) WindowSide {
 		return SIDE_NONE
 	}
 	if WithinEdgeRange(mpos.X, win.Position.X, tol) &&
-		mpos.Y > win.Position.Y && mpos.Y < win.Position.Y+win.GetSizeY()-win.GetTitleSize() {
+		mpos.Y > win.Position.Y && mpos.Y < win.Position.Y+win.MagTemp.Y-win.TitleSizeTemp {
 		return SIDE_LEFT
 	}
-	if WithinEdgeRange(mpos.X, win.Position.X+win.GetSizeX(), tol) &&
-		mpos.Y > win.Position.Y && mpos.Y < win.Position.Y+win.GetSizeY()-win.GetTitleSize() &&
-		mpos.Y < win.Position.Y+win.GetSizeY()-win.GetTitleSize()-14 {
+	if WithinEdgeRange(mpos.X, win.Position.X+win.MagTemp.X, tol) &&
+		mpos.Y > win.Position.Y && mpos.Y < win.Position.Y+win.MagTemp.Y-win.TitleSizeTemp &&
+		mpos.Y < win.Position.Y+win.MagTemp.Y-win.TitleSizeTemp-14 {
 		return SIDE_RIGHT
 	}
 	if WithinEdgeRange(mpos.Y, win.Position.Y, tol) &&
-		mpos.X > win.Position.X && mpos.X < win.Position.X+win.GetSizeX() {
+		mpos.X > win.Position.X && mpos.X < win.Position.X+win.MagTemp.X {
 
 		return SIDE_TOP
 	}
-	if WithinEdgeRange(mpos.Y, win.Position.Y+win.GetSizeY()-win.GetTitleSize(), tol) &&
-		mpos.X > win.Position.X && mpos.X < win.Position.X+win.GetSizeY() &&
-		mpos.X < win.Position.X+win.GetSizeX()-14 {
+	if WithinEdgeRange(mpos.Y, win.Position.Y+win.MagTemp.Y-win.TitleSizeTemp, tol) &&
+		mpos.X > win.Position.X && mpos.X < win.Position.X+win.MagTemp.Y &&
+		mpos.X < win.Position.X+win.MagTemp.X-14 {
 		return SIDE_BOTTOM
 	}
 
@@ -167,18 +167,16 @@ func (win WindowData) GetSizeY() float32 {
 	return win.Mag.Y * UIScale
 }
 
-func (win WindowData) GetSize() Magnatude {
-	return Magnatude{X: win.Mag.X * UIScale, Y: win.Mag.Y * UIScale}
+func (win *WindowData) PreCalcSize() {
+	win.MagTemp = Magnatude{X: win.Mag.X * UIScale, Y: win.Mag.Y * UIScale}
+	win.TitleSizeTemp = win.TitleSize * UIScale
 }
 
-func (win WindowData) SetSize(size Magnatude) {
+func (win *WindowData) SetSize(size Magnatude) {
 	win.Mag = Magnatude{X: size.X / UIScale, Y: size.Y / UIScale}
+	win.PreCalcSize()
 }
 
-func (win WindowData) GetTitleSize() float32 {
-	return win.TitleSize * UIScale
-}
-
-func (win WindowData) SetTitleSize(size float32) {
+func (win *WindowData) SetTitleSize(size float32) {
 	win.TitleSize = size / UIScale
 }
