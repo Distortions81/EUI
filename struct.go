@@ -18,12 +18,12 @@ type WindowData struct {
 }
 
 type ItemData struct {
-	Text     string
-	Position Point
-	Size     Point
-	FontSize float32
-	Rect     Rect
-	ItemType ItemTypeData
+	Text      string
+	Position  Point
+	Size      Point
+	FontSize  float32
+	LineSpace float32 //Multiplier, 1.0 = no gap between lines
+	ItemType  ItemTypeData
 
 	Value float32
 
@@ -70,4 +70,5 @@ const (
 	ITEM_NONE = iota
 	ITEM_TEXT
 	ITEM_BUTTON
+	ITEM_FLOW
 )
