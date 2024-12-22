@@ -14,6 +14,7 @@ var (
 )
 
 func (g *Game) Update() error {
+
 	cursorChanged := false
 
 	mx, my := ebiten.CursorPosition()
@@ -33,6 +34,9 @@ func (g *Game) Update() error {
 			continue
 		}
 
+		//Reduce UI scaling calculations
+		win.PreCalcSize()
+
 		if win.Resizable {
 			//Resize Tab
 			if win.ResizeTabRect().ContainsPoint(mposOld) {
@@ -45,8 +49,9 @@ func (g *Game) Update() error {
 					cursorChanged = true
 				}
 				if clickDrag {
-					change := Magnatude(PointSubract(mpos, mposOld))
-					win.Mag = MagAdd(win.Mag, change)
+					change := PointSubract(mpos, mposOld)
+					change = PointScale(change)
+					win.Size = PointAdd(win.Size, change)
 					continue
 				}
 			} else {
@@ -69,23 +74,24 @@ func (g *Game) Update() error {
 				//Drag resize edge
 				if clickDrag {
 					change := PointSubract(mpos, mposOld)
+					change = PointScale(change)
 					if side == SIDE_TOP {
 						change.X = 0
 						win.Position = PointAdd(win.Position, change)
-						win.Mag = Magnatude(PointSubract(Point(win.Mag), change))
+						win.Size = PointSubract(win.Size, change)
 						continue
 					} else if side == SIDE_BOTTOM {
 						change.X = 0
-						win.Mag = Magnatude(PointAdd(Point(win.Mag), change))
+						win.Size = PointAdd(win.Size, change)
 						continue
 					} else if side == SIDE_LEFT {
 						change.Y = 0
 						win.Position = PointAdd(win.Position, change)
-						win.Mag = Magnatude(PointSubract(Point(win.Mag), change))
+						win.Size = PointSubract(win.Size, change)
 						continue
 					} else if side == SIDE_RIGHT {
 						change.Y = 0
-						win.Mag = Magnatude(PointAdd(Point(win.Mag), change))
+						win.Size = PointAdd(win.Size, change)
 						continue
 					}
 				}

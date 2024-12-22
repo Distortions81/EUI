@@ -5,7 +5,7 @@ import "image/color"
 type WindowData struct {
 	Title, Tooltip string
 	Position       Point
-	Mag, MagTemp   Magnatude
+	Size, SizeTemp Point
 
 	Open, Hovered, Dumb                                                                                                      bool
 	Closable, Movable, Resizable, Scrollable, Maximizable, Minimizeable                                                      bool
@@ -20,7 +20,7 @@ type WindowData struct {
 type ItemData struct {
 	Text     string
 	Position Point
-	Size     Magnatude
+	Size     Point
 	Rect     Rect
 
 	Value float32
@@ -39,8 +39,6 @@ type ItemData struct {
 type Point struct {
 	X, Y float32
 }
-
-type Magnatude Point
 
 type FlowType int
 
