@@ -230,7 +230,7 @@ func (win *WindowData) DrawContents(screen *ebiten.Image) {
 				Size:   float64(textSize),
 			}
 			loo := text.LayoutOptions{
-				LineSpacing:    0,
+				LineSpacing:    float64(textSize) * 1.2,
 				PrimaryAlign:   text.AlignStart,
 				SecondaryAlign: text.AlignStart,
 			}

@@ -37,7 +37,7 @@ func main() {
 
 	//Done button
 	newButton := DefaultButton
-	newButton.Text = "Done"
+	newButton.Text = "Generate"
 	newButton.Position = Point{
 		X: 300 - 128 - 16,
 		Y: 300 - 24 - 64 - 16}
@@ -46,7 +46,7 @@ func main() {
 	//Text
 	newText := ItemData{}
 	newText.ItemType = ITEM_TEXT
-	newText.Text = "Stuff and things..."
+	newText.Text = "Click 'generate' to\ngenerate a new code."
 	newText.FontSize = 24
 	newText.Position = Point{
 		X: 16,
@@ -65,7 +65,11 @@ func main() {
 	newWindow.AddWindow()
 
 	newButton.Action = func() {
-		newWindow.Open = false
+		newButton.Text = "Okay"
+		newText.Text = "Secret code: 1234"
+		newButton.Action = func() {
+			newWindow.Open = false
+		}
 	}
 
 	go startEbiten()

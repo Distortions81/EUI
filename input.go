@@ -144,6 +144,9 @@ func (g *Game) Update() error {
 
 			if win.GetMainRect().ContainsPoint(mpos) {
 				for i, item := range win.Contents {
+					if item.ItemType != ITEM_BUTTON {
+						continue
+					}
 					if item.ContainsPoint(win, mpos) {
 						win.Contents[i].Hovered = true
 						if click {
