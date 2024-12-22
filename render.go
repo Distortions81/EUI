@@ -197,8 +197,9 @@ func (win *WindowData) DrawContents(screen *ebiten.Image) {
 			}
 
 			vector.DrawFilledRect(screen,
-				win.Position.X+item.Position.X, win.Position.Y+item.Position.Y+win.TitleSize,
-				item.Size.X*UIScale, item.Size.Y*UIScale, itemColor, false)
+				win.Position.X+item.Position.X,
+				win.Position.Y+item.Position.Y,
+				item.Size.X, item.Size.Y, itemColor, false)
 
 			textSize := item.FontSize
 			face := &text.GoTextFace{
@@ -213,7 +214,30 @@ func (win *WindowData) DrawContents(screen *ebiten.Image) {
 			tdop := ebiten.DrawImageOptions{}
 			tdop.GeoM.Translate(
 				float64(win.Position.X+item.Position.X+(item.Size.X/2)),
-				float64(win.Position.Y+win.TitleSize+item.Position.Y)+(float64(item.Size.Y/2)))
+				float64(win.Position.Y+item.Position.Y+(item.Size.Y/2)))
+
+			top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+
+			top.ColorScale.ScaleWithColor(item.TextColor)
+			text.Draw(screen, item.Text, face, top)
+
+			//Text
+		} else if item.ItemType == ITEM_TEXT {
+
+			textSize := item.FontSize
+			face := &text.GoTextFace{
+				Source: mplusFaceSource,
+				Size:   float64(textSize),
+			}
+			loo := text.LayoutOptions{
+				LineSpacing:    0,
+				PrimaryAlign:   text.AlignStart,
+				SecondaryAlign: text.AlignStart,
+			}
+			tdop := ebiten.DrawImageOptions{}
+			tdop.GeoM.Translate(
+				float64(win.Position.X+item.Position.X),
+				float64(win.Position.Y+item.Position.Y))
 
 			top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 

@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"flag"
+	"image/color"
 	"log"
 	"os"
 	"os/signal"
@@ -34,15 +35,32 @@ func main() {
 
 	//UIScale = 1
 
+	//Done button
 	newButton := DefaultButton
 	newButton.Text = "Done"
+	newButton.Position = Point{
+		X: 300 - 128 - 16,
+		Y: 300 - 24 - 64 - 16}
+	newButton.Size = Point{X: 128, Y: 64}
+
+	//Text
+	newText := ItemData{}
+	newText.ItemType = ITEM_TEXT
+	newText.Text = "Stuff and things..."
+	newText.FontSize = 24
+	newText.Position = Point{
+		X: 16,
+		Y: 24 + 16}
+	newText.Size = Point{X: 128, Y: 128}
+	newText.TextColor = color.RGBA{R: 255, G: 255, B: 255, A: 255}
+
 	newWindow := NewWindow(
 		&WindowData{
 			TitleSize: 24,
 			Title:     "Test Window",
 			Size:      Point{X: 300, Y: 300},
 			Position:  Point{X: 32, Y: 32},
-			Contents:  []*ItemData{&newButton},
+			Contents:  []*ItemData{&newButton, &newText},
 		})
 	newWindow.AddWindow()
 
