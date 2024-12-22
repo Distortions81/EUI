@@ -92,11 +92,15 @@ func main() {
 	}
 
 	newScaleup.Action = func() {
-		UIScale += 0.1
+		if UIScale < 8 {
+			UIScale += 0.1
+		}
 	}
 
 	newScaledown.Action = func() {
-		UIScale -= 0.1
+		if UIScale > 0.2 {
+			UIScale -= 0.1
+		}
 	}
 
 	go startEbiten()
