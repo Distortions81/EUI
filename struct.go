@@ -39,6 +39,13 @@ type ItemData struct {
 	Contents []ItemData
 }
 
+type RoundRect struct {
+	Size, Position         Point
+	Roundness, Border      float32
+	Filled                 bool
+	FillColor, BorderColor color.RGBA
+}
+
 type Rect struct {
 	X0, Y0, X1, Y1 float32
 }

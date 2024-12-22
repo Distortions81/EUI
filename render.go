@@ -29,6 +29,16 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		win.DrawDebug(screen)
 	}
 
+	item := RoundRect{
+		Position:    Point{X: 16, Y: 160},
+		Size:        Point{X: 128, Y: 64},
+		Roundness:   16,
+		Border:      1.5,
+		BorderColor: color.RGBA{R: 255, G: 255, B: 255, A: 255},
+		Filled:      false,
+	}
+	DrawRoundRect(screen, item)
+
 	DrawFPS(screen)
 }
 
@@ -276,6 +286,64 @@ func (win *WindowData) DrawDebug(screen *ebiten.Image) {
 		grab = win.TitleRect()
 		vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{B: 255, G: 255, A: 255}, false)
 	}
+}
+
+func DrawRoundRect(screen *ebiten.Image, item RoundRect) {
+	var (
+		path     vector.Path
+		vertices []ebiten.Vertex
+		indices  []uint16
+	)
+
+	//Top left, after corner, clockwise
+	path.MoveTo(item.Position.X+item.Roundness, item.Position.Y)
+	path.LineTo(item.Position.X+item.Size.X-item.Roundness, item.Position.Y)
+	path.QuadTo(
+		item.Position.X+item.Size.X,
+		item.Position.Y,
+		item.Position.X+item.Size.X,
+		item.Position.Y+item.Roundness)
+	path.LineTo(item.Position.X+item.Size.X, item.Position.Y+item.Size.Y-item.Roundness)
+	path.QuadTo(
+		item.Position.X+item.Size.X,
+		item.Position.Y+item.Size.Y,
+		item.Position.X+item.Size.X-item.Roundness,
+		item.Position.Y+item.Size.Y)
+	path.LineTo(item.Position.X+item.Roundness, item.Position.Y+item.Size.Y)
+	path.QuadTo(
+		item.Position.X,
+		item.Position.Y+item.Size.Y,
+		item.Position.X,
+		item.Position.Y+item.Size.Y-item.Roundness)
+	path.LineTo(item.Position.X, item.Position.Y+item.Roundness)
+	path.QuadTo(
+		item.Position.X,
+		item.Position.Y,
+		item.Position.X+item.Roundness,
+		item.Position.Y)
+	path.Close()
+
+	opv := &vector.StrokeOptions{}
+	opv.Width = item.Border
+	vertices, indices = path.AppendVerticesAndIndicesForStroke(vertices[:0], indices[:0], opv)
+
+	pos := Point{X: item.Position.X + 0.3, Y: item.Position.Y + 0.3}
+	for i := range vertices {
+		vertices[i].DstX = (vertices[i].DstX + float32(pos.X))
+		vertices[i].DstY = (vertices[i].DstY + float32(pos.Y))
+		vertices[i].SrcX = 1
+		vertices[i].SrcY = 1
+		vertices[i].ColorR = 1
+		vertices[i].ColorG = 1
+		vertices[i].ColorB = 1
+		vertices[i].ColorA = 1
+	}
+
+	op := &ebiten.DrawTrianglesOptions{}
+	op.FillRule = ebiten.FillRuleNonZero
+	op.AntiAlias = true
+	screen.DrawTriangles(vertices, indices, whiteSubImage, op)
+
 }
 
 func DrawFPS(screen *ebiten.Image) {
