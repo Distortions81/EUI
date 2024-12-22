@@ -32,7 +32,7 @@ func main() {
 		mplusFaceSource = s
 	}
 
-	UIScale = 2
+	//UIScale = 1
 
 	newWindow := NewWindow(
 		&WindowData{

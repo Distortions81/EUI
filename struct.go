@@ -36,15 +36,15 @@ type ItemData struct {
 	Contents []ItemData
 }
 
+type Rect struct {
+	X0, Y0, X1, Y1 float32
+}
+
 type Point struct {
 	X, Y float32
 }
 
 type FlowType int
-
-type Rect struct {
-	X0, Y0, X1, Y1 float32
-}
 
 const (
 	FLOW_HORIZONTAL = iota

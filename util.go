@@ -72,6 +72,24 @@ func (win WindowData) DragbarRect() Rect {
 	}
 }
 
+func (win *WindowData) SetSize(size Point) bool {
+
+	tooSmall := false
+	if size.X < minWinSizeX {
+		size.X = minWinSizeX
+		tooSmall = true
+	}
+
+	if size.Y < minWinSizeY {
+		size.Y = minWinSizeY
+		tooSmall = true
+	}
+	win.Size = size
+	win.PreCalcSize()
+
+	return tooSmall
+}
+
 func (win WindowData) ResizeTabRect() Rect {
 	if !win.Resizable {
 		return Rect{}
@@ -147,6 +165,10 @@ func PointScale(a Point) Point {
 	return Point{X: a.X / UIScale, Y: a.Y / UIScale}
 }
 
+func FloatScale(a float32) float32 {
+	return a / UIScale
+}
+
 func (win WindowData) GetSizeX() float32 {
 	return win.Size.X * UIScale
 }
@@ -159,11 +181,6 @@ func (win WindowData) GetSizeY() float32 {
 func (win *WindowData) PreCalcSize() {
 	win.SizeTemp = Point{X: win.Size.X * UIScale, Y: win.Size.Y * UIScale}
 	win.TitleSizeTemp = win.TitleSize * UIScale
-}
-
-func (win *WindowData) SetSize(size Point) {
-	win.Size = Point{X: size.X / UIScale, Y: size.Y / UIScale}
-	win.PreCalcSize()
 }
 
 func (win *WindowData) SetTitleSize(size float32) {

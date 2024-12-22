@@ -51,7 +51,7 @@ func (g *Game) Update() error {
 				if clickDrag {
 					change := PointSubract(mpos, mposOld)
 					change = PointScale(change)
-					win.Size = PointAdd(win.Size, change)
+					win.SetSize(PointAdd(win.Size, change))
 					continue
 				}
 			} else {
@@ -78,22 +78,24 @@ func (g *Game) Update() error {
 					if side == SIDE_TOP {
 						posCh.X = 0
 						sizeCh.X = 0
-						win.Position = PointAdd(win.Position, posCh)
-						win.Size = PointSubract(win.Size, sizeCh)
+						if !win.SetSize(PointSubract(win.Size, sizeCh)) {
+							win.Position = PointAdd(win.Position, posCh)
+						}
 						continue
 					} else if side == SIDE_BOTTOM {
 						sizeCh.X = 0
-						win.Size = PointAdd(win.Size, sizeCh)
+						win.SetSize(PointAdd(win.Size, sizeCh))
 						continue
 					} else if side == SIDE_LEFT {
 						posCh.Y = 0
 						sizeCh.Y = 0
-						win.Position = PointAdd(win.Position, posCh)
-						win.Size = PointSubract(win.Size, sizeCh)
+						if !win.SetSize(PointSubract(win.Size, sizeCh)) {
+							win.Position = PointAdd(win.Position, posCh)
+						}
 						continue
 					} else if side == SIDE_RIGHT {
 						sizeCh.Y = 0
-						win.Size = PointAdd(win.Size, sizeCh)
+						win.SetSize(PointAdd(win.Size, sizeCh))
 						continue
 					}
 				}

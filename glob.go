@@ -9,13 +9,16 @@ import (
 var (
 	windowWidth  = 1280
 	windowHeight = 720
-)
 
-var (
 	signalHandle    chan os.Signal
 	mplusFaceSource *text.GoTextFaceSource
 	Windows         []*WindowData
 	UIScale         float32 = 1.0
+)
+
+const (
+	minWinSizeX = 192
+	minWinSizeY = 64
 )
 
 type Game struct {
