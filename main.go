@@ -104,7 +104,7 @@ func makeTestWindow() *WindowData {
 		Position: Point{
 			X: 16,
 			Y: 24 + 16},
-		Size:      Point{X: 128, Y: 128},
+		Size:      Point{X: 256, Y: 128},
 		TextColor: color.RGBA{R: 255, G: 255, B: 255, A: 255}})
 
 	newWindow := NewWindow(

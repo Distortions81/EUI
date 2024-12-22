@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image/color"
 	"math"
+	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -21,10 +22,10 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		//Reduce UI scaling calculations
 		win.CalcUIScale()
 		win.DrawBG(screen)
+		win.DrawContents(screen)
 		win.DrawWinTitle(screen)
 		win.DrawBorder(screen)
 		win.DrawResizeTab(screen)
-		win.DrawContents(screen)
 		win.DrawDebug(screen)
 	}
 
@@ -60,7 +61,7 @@ func (win *WindowData) DrawWinTitle(screen *ebiten.Image) {
 		//Title text
 		if !skipTitleText {
 			loo := text.LayoutOptions{
-				LineSpacing:    0,
+				LineSpacing:    0, //No multi-line titles
 				PrimaryAlign:   text.AlignStart,
 				SecondaryAlign: text.AlignCenter,
 			}
@@ -69,8 +70,11 @@ func (win *WindowData) DrawWinTitle(screen *ebiten.Image) {
 				float64(win.Position.Y+(win.TitleSizeTemp/2)))
 
 			top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+
 			top.ColorScale.ScaleWithColor(win.TitleColor)
-			text.Draw(screen, win.Title, face, top)
+			buf := strings.ReplaceAll(win.Title, "\n", "") //Remove newline
+			buf = strings.ReplaceAll(win.Title, "\r", "")  //Remove return
+			text.Draw(screen, buf, face, top)
 		} else {
 			textWidth = 0
 		}
@@ -185,6 +189,14 @@ func (win *WindowData) DrawResizeTab(screen *ebiten.Image) {
 
 func (win *WindowData) DrawContents(screen *ebiten.Image) {
 	for _, item := range win.Contents {
+
+		if item.Position.X > win.Size.X ||
+			item.Position.Y > win.Size.Y-win.TitleSize {
+			continue
+		} else if item.Position.X+item.Size.X > win.Size.X ||
+			item.Position.Y+item.Size.Y > win.Size.Y-win.TitleSize {
+			continue
+		}
 
 		if item.ItemType == ITEM_BUTTON {
 			itemColor := item.Color
