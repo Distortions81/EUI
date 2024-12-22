@@ -200,14 +200,23 @@ func (win *WindowData) DrawContents(screen *ebiten.Image) {
 
 		if item.ItemType == ITEM_BUTTON {
 
-			/*
+			itemColor := item.Color
+			if item.Clicked {
+				itemColor = item.ClickColor
+				item.Clicked = false
+			} else if item.Hovered {
+				itemColor = item.HoverColor
+				item.Hovered = false
+			}
+
+			if item.Fillet < 1 {
 				vector.DrawFilledRect(screen,
 					win.Position.X+(item.Position.X*UIScale),
 					win.Position.Y+(item.Position.Y*UIScale),
-					item.Size.X*UIScale, item.Size.Y*UIScale, color.RGBA{R: 32, G: 32, B: 32}, false)
-			*/
-
-			win.DrawRoundRect(screen, item)
+					item.Size.X*UIScale, item.Size.Y*UIScale, itemColor, false)
+			} else {
+				win.DrawRoundRect(screen, item, itemColor)
+			}
 
 			textSize := item.FontSize * UIScale
 			face := &text.GoTextFace{
@@ -274,41 +283,42 @@ func (win *WindowData) DrawDebug(screen *ebiten.Image) {
 	}
 }
 
-func (win *WindowData) DrawRoundRect(screen *ebiten.Image, item *ItemData) {
+func (win *WindowData) DrawRoundRect(screen *ebiten.Image, item *ItemData, itemColor color.RGBA) {
 	var (
 		path     vector.Path
 		vertices []ebiten.Vertex
 		indices  []uint16
 	)
 
-	pos := PointAdd(win.Position, item.Position)
-	//pos = PointAdd(pos, Point{X: 0.5, Y: 0.5})
+	pos := PointAdd(win.Position, PointScaleMul(item.Position))
+	size := PointScaleMul(item.Size)
+	fillet := item.Fillet * UIScale
 
 	//Top left, after corner, clockwise
-	path.MoveTo(pos.X+item.Fillet, pos.Y)
-	path.LineTo(pos.X+item.Size.X-item.Fillet, pos.Y)
+	path.MoveTo(pos.X+fillet, pos.Y)
+	path.LineTo(pos.X+size.X-fillet, pos.Y)
 	path.QuadTo(
-		pos.X+item.Size.X,
+		pos.X+size.X,
 		pos.Y,
-		pos.X+item.Size.X,
-		pos.Y+item.Fillet)
-	path.LineTo(pos.X+item.Size.X, pos.Y+item.Size.Y-item.Fillet)
+		pos.X+size.X,
+		pos.Y+fillet)
+	path.LineTo(pos.X+size.X, pos.Y+size.Y-fillet)
 	path.QuadTo(
-		pos.X+item.Size.X,
-		pos.Y+item.Size.Y,
-		pos.X+item.Size.X-item.Fillet,
-		pos.Y+item.Size.Y)
-	path.LineTo(pos.X+item.Fillet, pos.Y+item.Size.Y)
+		pos.X+size.X,
+		pos.Y+size.Y,
+		pos.X+size.X-fillet,
+		pos.Y+size.Y)
+	path.LineTo(pos.X+fillet, pos.Y+size.Y)
 	path.QuadTo(
 		pos.X,
-		pos.Y+item.Size.Y,
+		pos.Y+size.Y,
 		pos.X,
-		pos.Y+item.Size.Y-item.Fillet)
-	path.LineTo(pos.X, pos.Y+item.Fillet)
+		pos.Y+size.Y-fillet)
+	path.LineTo(pos.X, pos.Y+fillet)
 	path.QuadTo(
 		pos.X,
 		pos.Y,
-		pos.X+item.Fillet,
+		pos.X+fillet,
 		pos.Y)
 	path.Close()
 
@@ -320,14 +330,6 @@ func (win *WindowData) DrawRoundRect(screen *ebiten.Image, item *ItemData) {
 		vertices, indices = path.AppendVerticesAndIndicesForStroke(vertices[:0], indices[:0], opv)
 	}
 
-	itemColor := item.Color
-	if item.Clicked {
-		itemColor = item.ClickColor
-		item.Clicked = false
-	} else if item.Hovered {
-		itemColor = item.HoverColor
-		item.Hovered = false
-	}
 	for i := range vertices {
 		vertices[i].DstX = (vertices[i].DstX)
 		vertices[i].DstY = (vertices[i].DstY)

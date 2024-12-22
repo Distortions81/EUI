@@ -33,7 +33,7 @@ func main() {
 		mplusFaceSource = s
 	}
 
-	//UIScale = 2
+	UIScale = 2
 
 	newWindow := makeTestWindow()
 	newWindow.AddWindow()
