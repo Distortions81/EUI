@@ -12,10 +12,10 @@ func (rect Rect) ContainsPoint(b Point) bool {
 }
 
 func (item *ItemData) ContainsPoint(win *WindowData, b Point) bool {
-	return b.X >= win.Position.X+item.Position.X &&
-		b.X <= win.Position.X+item.Position.X+item.Size.X &&
-		b.Y >= win.Position.Y+item.Position.Y &&
-		b.Y <= win.Position.Y+item.Position.Y+item.Size.Y
+	return b.X >= win.Position.X+(item.Position.X*UIScale) &&
+		b.X <= win.Position.X+(item.Position.X*UIScale)+(item.Size.X*UIScale) &&
+		b.Y >= win.Position.Y+(item.Position.Y*UIScale) &&
+		b.Y <= win.Position.Y+(item.Position.Y*UIScale)+(item.Size.Y*UIScale)
 }
 
 func (win WindowData) GetWinRect() Rect {

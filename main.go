@@ -43,6 +43,24 @@ func main() {
 		Y: 300 - 24 - 64 - 16}
 	newButton.Size = Point{X: 128, Y: 64}
 
+	//Scaleup button
+	newScaleup := DefaultButton
+	newScaleup.Text = "Scale Up"
+	newScaleup.Position = Point{
+		X: 16,
+		Y: 24 + 128}
+	newScaleup.Size = Point{X: 128, Y: 24}
+	newScaleup.FontSize = 18
+
+	//Scaledown button
+	newScaledown := DefaultButton
+	newScaledown.Text = "Scale Down"
+	newScaledown.Position = Point{
+		X: 16,
+		Y: 24 + 128 + 32}
+	newScaledown.Size = Point{X: 128, Y: 24}
+	newScaledown.FontSize = 18
+
 	//Text
 	newText := ItemData{}
 	newText.ItemType = ITEM_TEXT
@@ -60,7 +78,8 @@ func main() {
 			Title:     "Test Window",
 			Size:      Point{X: 300, Y: 300},
 			Position:  Point{X: 32, Y: 32},
-			Contents:  []*ItemData{&newButton, &newText},
+			Contents: []*ItemData{
+				&newButton, &newText, &newScaleup, &newScaledown},
 		})
 	newWindow.AddWindow()
 
@@ -70,6 +89,14 @@ func main() {
 		newButton.Action = func() {
 			newWindow.Open = false
 		}
+	}
+
+	newScaleup.Action = func() {
+		UIScale += 0.1
+	}
+
+	newScaledown.Action = func() {
+		UIScale -= 0.1
 	}
 
 	go startEbiten()

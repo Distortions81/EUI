@@ -197,11 +197,11 @@ func (win *WindowData) DrawContents(screen *ebiten.Image) {
 			}
 
 			vector.DrawFilledRect(screen,
-				win.Position.X+item.Position.X,
-				win.Position.Y+item.Position.Y,
-				item.Size.X, item.Size.Y, itemColor, false)
+				win.Position.X+(item.Position.X*UIScale),
+				win.Position.Y+(item.Position.Y*UIScale),
+				item.Size.X*UIScale, item.Size.Y*UIScale, itemColor, false)
 
-			textSize := item.FontSize
+			textSize := item.FontSize * UIScale
 			face := &text.GoTextFace{
 				Source: mplusFaceSource,
 				Size:   float64(textSize),
@@ -213,8 +213,8 @@ func (win *WindowData) DrawContents(screen *ebiten.Image) {
 			}
 			tdop := ebiten.DrawImageOptions{}
 			tdop.GeoM.Translate(
-				float64(win.Position.X+item.Position.X+(item.Size.X/2)),
-				float64(win.Position.Y+item.Position.Y+(item.Size.Y/2)))
+				float64(win.Position.X+(item.Position.X*UIScale)+((item.Size.X*UIScale)/2)),
+				float64(win.Position.Y+(item.Position.Y*UIScale)+((item.Size.Y*UIScale)/2)))
 
 			top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 
@@ -224,7 +224,7 @@ func (win *WindowData) DrawContents(screen *ebiten.Image) {
 			//Text
 		} else if item.ItemType == ITEM_TEXT {
 
-			textSize := item.FontSize
+			textSize := item.FontSize * UIScale
 			face := &text.GoTextFace{
 				Source: mplusFaceSource,
 				Size:   float64(textSize),
@@ -236,8 +236,8 @@ func (win *WindowData) DrawContents(screen *ebiten.Image) {
 			}
 			tdop := ebiten.DrawImageOptions{}
 			tdop.GeoM.Translate(
-				float64(win.Position.X+item.Position.X),
-				float64(win.Position.Y+item.Position.Y))
+				float64(win.Position.X+(item.Position.X*UIScale)),
+				float64(win.Position.Y+(item.Position.Y*UIScale)))
 
 			top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 
