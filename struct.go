@@ -14,25 +14,28 @@ type WindowData struct {
 
 	HoverX, HoverDragbar, HoverResizeTab bool
 
-	Contents []ItemData
+	Contents []*ItemData
 }
 
 type ItemData struct {
 	Text     string
 	Position Point
 	Size     Point
+	FontSize float32
 	Rect     Rect
+	ItemType ItemTypeData
 
 	Value float32
 
-	Hovered, Activated, Checked, Enabled bool
-	FlowType                             FlowType
-	FlowWrap                             bool
-	Padding                              float32
-	Scroll                               Point
+	Hovered, Clicked, Checked, Enabled bool
+	FlowType                           FlowType
+	FlowWrap                           bool
+	Padding                            float32
+	Scroll                             Point
 
-	Color, HoverColor, ActivatedColor, DisabledColor, CheckedColor color.RGBA
+	TextColor, Color, HoverColor, ClickColor, DisabledColor, CheckedColor color.RGBA
 
+	Action   func()
 	Contents []ItemData
 }
 
@@ -59,4 +62,12 @@ const (
 	SIDE_RIGHT
 	SIDE_BOTTOM
 	SIDE_LEFT
+)
+
+type ItemTypeData int
+
+const (
+	ITEM_NONE = iota
+	ITEM_TEXT
+	ITEM_BUTTON
 )

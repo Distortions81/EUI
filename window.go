@@ -21,6 +21,19 @@ var DefaultTheme = WindowData{
 	Movable: true, Closable: true, Resizable: true, Open: true,
 }
 
+var DefaultButton = ItemData{
+	Text:       "Button",
+	ItemType:   ITEM_BUTTON,
+	Size:       Point{X: 128, Y: 64},
+	Position:   Point{X: 10, Y: 10},
+	FontSize:   24,
+	Enabled:    true,
+	TextColor:  color.RGBA{R: 0, G: 0, B: 0, A: 255},
+	Color:      color.RGBA{R: 128, G: 128, B: 128, A: 255},
+	HoverColor: color.RGBA{R: 192, G: 192, B: 192, A: 255},
+	ClickColor: color.RGBA{R: 64, G: 64, B: 64, A: 255},
+}
+
 // MergeStructs merges the non-zero fields of updates into original.
 // Uses reflection to handle all fields automatically.
 func (original *WindowData) UpdateWindow(updates interface{}) interface{} {
@@ -56,7 +69,7 @@ func (target *WindowData) AddWindow() {
 			return
 		}
 	}
-	target.PreCalcSize()
+	target.CalcUIScale()
 	Windows = append(Windows, target)
 }
 

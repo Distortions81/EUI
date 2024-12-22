@@ -11,6 +11,13 @@ func (rect Rect) ContainsPoint(b Point) bool {
 		b.X <= rect.X1 && b.Y <= rect.Y1
 }
 
+func (item *ItemData) ContainsPoint(win *WindowData, b Point) bool {
+	return b.X >= win.Position.X+item.Position.X &&
+		b.X <= win.Position.X+win.TitleSize+item.Position.X+item.Size.X &&
+		b.Y >= win.Position.Y+item.Position.Y &&
+		b.Y <= win.Position.Y+win.TitleSize+item.Position.X+item.Size.Y
+}
+
 func (win WindowData) GetWinRect() Rect {
 	return Rect{
 		X0: win.Position.X,
@@ -85,7 +92,7 @@ func (win *WindowData) SetSize(size Point) bool {
 		tooSmall = true
 	}
 	win.Size = size
-	win.PreCalcSize()
+	win.CalcUIScale()
 
 	return tooSmall
 }
@@ -178,7 +185,7 @@ func (win WindowData) GetSizeY() float32 {
 }
 
 // Sets SizeTemp, TitleSizeTemp
-func (win *WindowData) PreCalcSize() {
+func (win *WindowData) CalcUIScale() {
 	win.SizeTemp = Point{X: win.Size.X * UIScale, Y: win.Size.Y * UIScale}
 	win.TitleSizeTemp = win.TitleSize * UIScale
 }

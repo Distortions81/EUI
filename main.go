@@ -34,14 +34,21 @@ func main() {
 
 	//UIScale = 1
 
+	newButton := DefaultButton
+	newButton.Text = "Done"
 	newWindow := NewWindow(
 		&WindowData{
 			TitleSize: 24,
 			Title:     "Test Window",
 			Size:      Point{X: 300, Y: 300},
 			Position:  Point{X: 32, Y: 32},
+			Contents:  []*ItemData{&newButton},
 		})
 	newWindow.AddWindow()
+
+	newButton.Action = func() {
+		newWindow.Open = false
+	}
 
 	go startEbiten()
 

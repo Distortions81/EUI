@@ -35,7 +35,7 @@ func (g *Game) Update() error {
 		}
 
 		//Reduce UI scaling calculations
-		win.PreCalcSize()
+		win.CalcUIScale()
 
 		if win.Resizable {
 			//Resize Tab
@@ -144,10 +144,13 @@ func (g *Game) Update() error {
 
 			if win.GetMainRect().ContainsPoint(mpos) {
 				for i, item := range win.Contents {
-					if item.Rect.ContainsPoint(mpos) {
+					if item.ContainsPoint(win, mpos) {
 						win.Contents[i].Hovered = true
 						if click {
-							win.Contents[i].Activated = true
+							win.Contents[i].Clicked = true
+							if item.Action != nil {
+								item.Action()
+							}
 						}
 					}
 				}
