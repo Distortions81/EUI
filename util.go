@@ -87,22 +87,26 @@ func (win WindowData) ResizeTabRect() Rect {
 
 func (win WindowData) GetWindowEdge(mpos Point) WindowSide {
 
+	var BR_Corner = (14 * UIScale)
+
 	if !win.Resizable {
 		return SIDE_NONE
+
 	} else if WithinEdgeRange(mpos.X, win.Position.X, tol) &&
 		mpos.Y > win.Position.Y && mpos.Y < win.Position.Y+win.SizeTemp.Y-win.TitleSizeTemp {
 		return SIDE_LEFT
+
 	} else if WithinEdgeRange(mpos.X, win.Position.X+win.SizeTemp.X, tol) &&
 		mpos.Y > win.Position.Y && mpos.Y < win.Position.Y+win.SizeTemp.Y-win.TitleSizeTemp &&
-		mpos.Y < win.Position.Y+win.SizeTemp.Y-win.TitleSizeTemp-14 {
+		mpos.Y < win.Position.Y+win.SizeTemp.Y-win.TitleSizeTemp-BR_Corner {
 		return SIDE_RIGHT
+
 	} else if WithinEdgeRange(mpos.Y, win.Position.Y, tol) &&
 		mpos.X > win.Position.X && mpos.X < win.Position.X+win.SizeTemp.X {
-
 		return SIDE_TOP
+
 	} else if WithinEdgeRange(mpos.Y, win.Position.Y+win.SizeTemp.Y-win.TitleSizeTemp, tol) &&
-		mpos.X > win.Position.X && mpos.X < win.Position.X+win.SizeTemp.Y &&
-		mpos.X < win.Position.X+win.SizeTemp.X-14 {
+		mpos.X > win.Position.X && mpos.X < win.Position.X+win.SizeTemp.X-BR_Corner {
 		return SIDE_BOTTOM
 	}
 

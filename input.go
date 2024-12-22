@@ -73,25 +73,27 @@ func (g *Game) Update() error {
 
 				//Drag resize edge
 				if clickDrag {
-					change := PointSubract(mpos, mposOld)
-					change = PointScale(change)
+					posCh := PointSubract(mpos, mposOld)
+					sizeCh := PointScale(posCh)
 					if side == SIDE_TOP {
-						change.X = 0
-						win.Position = PointAdd(win.Position, change)
-						win.Size = PointSubract(win.Size, change)
+						posCh.X = 0
+						sizeCh.X = 0
+						win.Position = PointAdd(win.Position, posCh)
+						win.Size = PointSubract(win.Size, sizeCh)
 						continue
 					} else if side == SIDE_BOTTOM {
-						change.X = 0
-						win.Size = PointAdd(win.Size, change)
+						sizeCh.X = 0
+						win.Size = PointAdd(win.Size, sizeCh)
 						continue
 					} else if side == SIDE_LEFT {
-						change.Y = 0
-						win.Position = PointAdd(win.Position, change)
-						win.Size = PointSubract(win.Size, change)
+						posCh.Y = 0
+						sizeCh.Y = 0
+						win.Position = PointAdd(win.Position, posCh)
+						win.Size = PointSubract(win.Size, sizeCh)
 						continue
 					} else if side == SIDE_RIGHT {
-						change.Y = 0
-						win.Size = PointAdd(win.Size, change)
+						sizeCh.Y = 0
+						win.Size = PointAdd(win.Size, sizeCh)
 						continue
 					}
 				}
