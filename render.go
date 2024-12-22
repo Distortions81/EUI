@@ -29,16 +29,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		win.DrawDebug(screen)
 	}
 
-	item := RoundRect{
-		Position:    Point{X: 16, Y: 160},
-		Size:        Point{X: 128, Y: 64},
-		Roundness:   16,
-		Border:      1.5,
-		BorderColor: color.RGBA{R: 255, G: 255, B: 255, A: 255},
-		Filled:      false,
-	}
-	DrawRoundRect(screen, item)
-
 	DrawFPS(screen)
 }
 
@@ -209,19 +199,15 @@ func (win *WindowData) DrawContents(screen *ebiten.Image) {
 		}
 
 		if item.ItemType == ITEM_BUTTON {
-			itemColor := item.Color
-			if item.Clicked {
-				itemColor = item.ClickColor
-				item.Clicked = false
-			} else if item.Hovered {
-				itemColor = item.HoverColor
-				item.Hovered = false
-			}
 
-			vector.DrawFilledRect(screen,
-				win.Position.X+(item.Position.X*UIScale),
-				win.Position.Y+(item.Position.Y*UIScale),
-				item.Size.X*UIScale, item.Size.Y*UIScale, itemColor, false)
+			/*
+				vector.DrawFilledRect(screen,
+					win.Position.X+(item.Position.X*UIScale),
+					win.Position.Y+(item.Position.Y*UIScale),
+					item.Size.X*UIScale, item.Size.Y*UIScale, color.RGBA{R: 32, G: 32, B: 32}, false)
+			*/
+
+			win.DrawRoundRect(screen, item)
 
 			textSize := item.FontSize * UIScale
 			face := &text.GoTextFace{
@@ -288,62 +274,75 @@ func (win *WindowData) DrawDebug(screen *ebiten.Image) {
 	}
 }
 
-func DrawRoundRect(screen *ebiten.Image, item RoundRect) {
+func (win *WindowData) DrawRoundRect(screen *ebiten.Image, item *ItemData) {
 	var (
 		path     vector.Path
 		vertices []ebiten.Vertex
 		indices  []uint16
 	)
 
+	pos := PointAdd(win.Position, item.Position)
+	//pos = PointAdd(pos, Point{X: 0.5, Y: 0.5})
+
 	//Top left, after corner, clockwise
-	path.MoveTo(item.Position.X+item.Roundness, item.Position.Y)
-	path.LineTo(item.Position.X+item.Size.X-item.Roundness, item.Position.Y)
+	path.MoveTo(pos.X+item.Fillet, pos.Y)
+	path.LineTo(pos.X+item.Size.X-item.Fillet, pos.Y)
 	path.QuadTo(
-		item.Position.X+item.Size.X,
-		item.Position.Y,
-		item.Position.X+item.Size.X,
-		item.Position.Y+item.Roundness)
-	path.LineTo(item.Position.X+item.Size.X, item.Position.Y+item.Size.Y-item.Roundness)
+		pos.X+item.Size.X,
+		pos.Y,
+		pos.X+item.Size.X,
+		pos.Y+item.Fillet)
+	path.LineTo(pos.X+item.Size.X, pos.Y+item.Size.Y-item.Fillet)
 	path.QuadTo(
-		item.Position.X+item.Size.X,
-		item.Position.Y+item.Size.Y,
-		item.Position.X+item.Size.X-item.Roundness,
-		item.Position.Y+item.Size.Y)
-	path.LineTo(item.Position.X+item.Roundness, item.Position.Y+item.Size.Y)
+		pos.X+item.Size.X,
+		pos.Y+item.Size.Y,
+		pos.X+item.Size.X-item.Fillet,
+		pos.Y+item.Size.Y)
+	path.LineTo(pos.X+item.Fillet, pos.Y+item.Size.Y)
 	path.QuadTo(
-		item.Position.X,
-		item.Position.Y+item.Size.Y,
-		item.Position.X,
-		item.Position.Y+item.Size.Y-item.Roundness)
-	path.LineTo(item.Position.X, item.Position.Y+item.Roundness)
+		pos.X,
+		pos.Y+item.Size.Y,
+		pos.X,
+		pos.Y+item.Size.Y-item.Fillet)
+	path.LineTo(pos.X, pos.Y+item.Fillet)
 	path.QuadTo(
-		item.Position.X,
-		item.Position.Y,
-		item.Position.X+item.Roundness,
-		item.Position.Y)
+		pos.X,
+		pos.Y,
+		pos.X+item.Fillet,
+		pos.Y)
 	path.Close()
 
-	opv := &vector.StrokeOptions{}
-	opv.Width = item.Border
-	vertices, indices = path.AppendVerticesAndIndicesForStroke(vertices[:0], indices[:0], opv)
+	if item.Filled {
+		vertices, indices = path.AppendVerticesAndIndicesForFilling(vertices[:0], indices[:0])
+	} else {
+		opv := &vector.StrokeOptions{}
+		opv.Width = item.Border
+		vertices, indices = path.AppendVerticesAndIndicesForStroke(vertices[:0], indices[:0], opv)
+	}
 
-	pos := Point{X: item.Position.X + 0.3, Y: item.Position.Y + 0.3}
+	itemColor := item.Color
+	if item.Clicked {
+		itemColor = item.ClickColor
+		item.Clicked = false
+	} else if item.Hovered {
+		itemColor = item.HoverColor
+		item.Hovered = false
+	}
 	for i := range vertices {
-		vertices[i].DstX = (vertices[i].DstX + float32(pos.X))
-		vertices[i].DstY = (vertices[i].DstY + float32(pos.Y))
+		vertices[i].DstX = (vertices[i].DstX)
+		vertices[i].DstY = (vertices[i].DstY)
 		vertices[i].SrcX = 1
 		vertices[i].SrcY = 1
-		vertices[i].ColorR = 1
-		vertices[i].ColorG = 1
-		vertices[i].ColorB = 1
-		vertices[i].ColorA = 1
+		vertices[i].ColorR = float32(itemColor.R) / 255
+		vertices[i].ColorG = float32(itemColor.G) / 255
+		vertices[i].ColorB = float32(itemColor.B) / 255
+		vertices[i].ColorA = float32(itemColor.A) / 255
 	}
 
 	op := &ebiten.DrawTrianglesOptions{}
 	op.FillRule = ebiten.FillRuleNonZero
 	op.AntiAlias = true
 	screen.DrawTriangles(vertices, indices, whiteSubImage, op)
-
 }
 
 func DrawFPS(screen *ebiten.Image) {

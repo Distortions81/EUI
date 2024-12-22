@@ -164,16 +164,24 @@ func PointAdd(a, b Point) Point {
 	return Point{X: a.X + b.X, Y: a.Y + b.Y}
 }
 
-func PointSubract(a, b Point) Point {
-	return Point{X: a.X - b.X, Y: a.Y - b.Y}
+func PointMul(a, b Point) Point {
+	return Point{X: a.X * b.X, Y: a.Y * b.Y}
 }
 
-func PointScale(a Point) Point {
+func PointScaleMul(a Point) Point {
+	return Point{X: a.X * UIScale, Y: a.Y * UIScale}
+}
+
+func PointScaleDiv(a Point) Point {
 	return Point{X: a.X / UIScale, Y: a.Y / UIScale}
 }
 
-func FloatScale(a float32) float32 {
-	return a / UIScale
+func PointDiv(a, b Point) Point {
+	return Point{X: a.X / b.X, Y: a.Y / b.Y}
+}
+
+func PointSub(a, b Point) Point {
+	return Point{X: a.X - b.X, Y: a.Y - b.Y}
 }
 
 func (win WindowData) GetSizeX() float32 {

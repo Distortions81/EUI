@@ -33,6 +33,11 @@ type ItemData struct {
 	Padding                            float32
 	Scroll                             Point
 
+	//Style
+	Fillet float32
+	Border float32
+	Filled bool
+
 	TextColor, Color, HoverColor, ClickColor, DisabledColor, CheckedColor color.RGBA
 
 	Action   func()
