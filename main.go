@@ -33,75 +33,8 @@ func main() {
 		mplusFaceSource = s
 	}
 
-	//UIScale = 1
-
-	//Done button
-	newButton := DefaultButton
-	newButton.Text = "Generate"
-	newButton.Position = Point{
-		X: 300 - 128 - 16,
-		Y: 300 - 24 - 64 - 16}
-	newButton.Size = Point{X: 128, Y: 64}
-
-	//Scaleup button
-	newScaleup := DefaultButton
-	newScaleup.Text = "Scale Up"
-	newScaleup.Position = Point{
-		X: 16,
-		Y: 24 + 128}
-	newScaleup.Size = Point{X: 128, Y: 24}
-	newScaleup.FontSize = 18
-
-	//Scaledown button
-	newScaledown := DefaultButton
-	newScaledown.Text = "Scale Down"
-	newScaledown.Position = Point{
-		X: 16,
-		Y: 24 + 128 + 32}
-	newScaledown.Size = Point{X: 128, Y: 24}
-	newScaledown.FontSize = 18
-
-	//Text
-	newText := ItemData{}
-	newText.ItemType = ITEM_TEXT
-	newText.Text = "Click 'generate' to\ngenerate a new code."
-	newText.FontSize = 24
-	newText.Position = Point{
-		X: 16,
-		Y: 24 + 16}
-	newText.Size = Point{X: 128, Y: 128}
-	newText.TextColor = color.RGBA{R: 255, G: 255, B: 255, A: 255}
-
-	newWindow := NewWindow(
-		&WindowData{
-			TitleSize: 24,
-			Title:     "Test Window",
-			Size:      Point{X: 300, Y: 300},
-			Position:  Point{X: 32, Y: 32},
-			Contents: []*ItemData{
-				&newButton, &newText, &newScaleup, &newScaledown},
-		})
+	newWindow := makeTestWindow()
 	newWindow.AddWindow()
-
-	newButton.Action = func() {
-		newButton.Text = "Okay"
-		newText.Text = "Secret code: 1234"
-		newButton.Action = func() {
-			newWindow.Open = false
-		}
-	}
-
-	newScaleup.Action = func() {
-		if UIScale < 8 {
-			UIScale += 0.1
-		}
-	}
-
-	newScaledown.Action = func() {
-		if UIScale > 0.2 {
-			UIScale -= 0.1
-		}
-	}
 
 	go startEbiten()
 
@@ -134,4 +67,76 @@ func newGame() *Game {
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 	windowWidth, windowHeight = outsideWidth, outsideHeight
 	return outsideWidth, outsideHeight
+}
+
+func makeTestWindow() *WindowData {
+	//Done button
+	newButton := NewButton(&ItemData{
+		Text: "Generate",
+		Position: Point{
+			X: 300 - 128 - 16,
+			Y: 300 - 24 - 64 - 16},
+		Size: Point{X: 128, Y: 64}})
+
+	//Scaleup button
+	newScaleup := NewButton(&ItemData{
+		Text: "Scale Up",
+		Position: Point{
+			X: 16,
+			Y: 24 + 128},
+		Size:     Point{X: 128, Y: 24},
+		FontSize: 18})
+
+	//Scaledown button
+	newScaledown := NewButton(&ItemData{
+		Text: "Scale Down",
+		Position: Point{
+			X: 16,
+			Y: 24 + 128 + 32},
+		Size:     Point{X: 128, Y: 24},
+		FontSize: 18})
+
+	//Text
+	newText := NewText(&ItemData{
+		ItemType: ITEM_TEXT,
+		Text:     "Click 'generate' to\ngenerate a new code.",
+		FontSize: 24,
+		Position: Point{
+			X: 16,
+			Y: 24 + 16},
+		Size:      Point{X: 128, Y: 128},
+		TextColor: color.RGBA{R: 255, G: 255, B: 255, A: 255}})
+
+	newWindow := NewWindow(
+		&WindowData{
+			TitleSize: 24,
+			Title:     "Test Window",
+			Size:      Point{X: 300, Y: 300},
+			Position:  Point{X: 32, Y: 32},
+			Contents: []*ItemData{
+				newButton, newText, newScaleup, newScaledown},
+		})
+
+	//Gen button actions
+	newButton.Action = func() {
+		newButton.Text = "Okay"
+		newText.Text = "Secret code: 1234"
+		newButton.Action = func() {
+			newWindow.Open = false
+		}
+	}
+
+	newScaleup.Action = func() {
+		if UIScale < 8 {
+			UIScale += 0.1
+		}
+	}
+
+	newScaledown.Action = func() {
+		if UIScale > 0.2 {
+			UIScale -= 0.1
+		}
+	}
+
+	return newWindow
 }
