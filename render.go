@@ -283,6 +283,7 @@ func (win *WindowData) DrawDebug(screen *ebiten.Image) {
 	}
 }
 
+// Break this up, make a generic draw function as well
 func (win *WindowData) DrawRoundRect(screen *ebiten.Image, item *ItemData, itemColor color.RGBA) {
 	var (
 		path     vector.Path
