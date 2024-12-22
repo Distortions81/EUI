@@ -6,7 +6,7 @@ import (
 	"reflect"
 )
 
-var DefaultTheme = WindowData{
+var DefaultTheme = &WindowData{
 	TitleSize:       24,
 	Border:          1,
 	TitleColor:      color.RGBA{R: 255, G: 255, B: 255, A: 255},
@@ -21,12 +21,13 @@ var DefaultTheme = WindowData{
 	Movable: true, Closable: true, Resizable: true, Open: true,
 }
 
-var DefaultButton = ItemData{
+var DefaultButton = &ItemData{
 	Text:       "Button",
 	ItemType:   ITEM_BUTTON,
 	Size:       Point{X: 128, Y: 64},
 	Position:   Point{X: 10, Y: 10},
 	FontSize:   24,
+	LineSpace:  1.2,
 	Enabled:    true,
 	TextColor:  color.RGBA{R: 0, G: 0, B: 0, A: 255},
 	Color:      color.RGBA{R: 128, G: 128, B: 128, A: 255},
@@ -34,12 +35,35 @@ var DefaultButton = ItemData{
 	ClickColor: color.RGBA{R: 64, G: 64, B: 64, A: 255},
 }
 
-// MergeStructs merges the non-zero fields of updates into original.
-// Uses reflection to handle all fields automatically.
-func (original *WindowData) UpdateWindow(updates interface{}) interface{} {
-	// Make sure both original and updates are pointers to structs
-	origVal := reflect.ValueOf(original).Elem()
-	updVal := reflect.ValueOf(updates).Elem()
+var DefaultText = &ItemData{
+	Text:      "Sample text:\nThe quick brown fox\njumps over the lazy dog.",
+	ItemType:  ITEM_TEXT,
+	Size:      Point{X: 128, Y: 128},
+	Position:  Point{X: 16, Y: 24 + 16},
+	FontSize:  24,
+	LineSpace: 1.2,
+	Enabled:   true,
+	TextColor: color.RGBA{R: 255, G: 255, B: 255, A: 255},
+}
+
+func MergeData(original interface{}, updates interface{}) interface{} {
+	// Ensure both original and updates are pointers to structs
+	origVal := reflect.ValueOf(original)
+	updVal := reflect.ValueOf(updates)
+
+	// Check that both are pointers to structs
+	if origVal.Kind() != reflect.Ptr || updVal.Kind() != reflect.Ptr {
+		panic("Both original and updates must be pointers to structs")
+	}
+
+	// Get the elements (dereference the pointers)
+	origVal = origVal.Elem()
+	updVal = updVal.Elem()
+
+	// Ensure that after dereferencing, both are structs
+	if origVal.Kind() != reflect.Struct || updVal.Kind() != reflect.Struct {
+		panic("Both original and updates must be structs")
+	}
 
 	// Iterate through the fields of the updates struct
 	for i := 0; i < updVal.NumField(); i++ {
@@ -47,7 +71,7 @@ func (original *WindowData) UpdateWindow(updates interface{}) interface{} {
 		updField := updVal.Field(i)
 
 		// Check if the update field has a non-zero value
-		if !isZeroValue(updField) {
+		if !isZeroValue(updField) && origField.CanSet() {
 			// Set the original field to the update field's value
 			origField.Set(updField)
 		}
@@ -56,10 +80,8 @@ func (original *WindowData) UpdateWindow(updates interface{}) interface{} {
 	return original
 }
 
-// isZeroValue checks if a reflect.Value is the zero value for its type.
-func isZeroValue(v reflect.Value) bool {
-	zeroValue := reflect.Zero(v.Type())
-	return reflect.DeepEqual(v.Interface(), zeroValue.Interface())
+func isZeroValue(value reflect.Value) bool {
+	return reflect.DeepEqual(value.Interface(), reflect.Zero(value.Type()).Interface())
 }
 
 func (target *WindowData) AddWindow() {
@@ -86,7 +108,19 @@ func (target *WindowData) RemoveWindow() {
 }
 
 func NewWindow(win *WindowData) *WindowData {
-	newWindow := &DefaultTheme
-	newWindow.UpdateWindow(win)
-	return newWindow
+	newWindow := *DefaultTheme
+	MergeData(&newWindow, win)
+	return &newWindow
+}
+
+func NewButton(item *ItemData) *ItemData {
+	newItem := *DefaultButton
+	MergeData(&newItem, item)
+	return &newItem
+}
+
+func NewText(item *ItemData) *ItemData {
+	newItem := *DefaultText
+	MergeData(&newItem, item)
+	return &newItem
 }
