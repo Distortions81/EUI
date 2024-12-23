@@ -6,16 +6,19 @@ import (
 )
 
 type WindowData struct {
-	Title, Tooltip string
-	Position       Point
-	Size, SizeTemp Point
+	Title            string
+	Position         Point
+	Size, ScreenSize Point
+	Padding, Border  float32
 
-	Open, Hovered, Dumb                                                                                                      bool
-	Closable, Movable, Resizable, Scrollable, Maximizable, Minimizeable                                                      bool
-	ContentsBGColor, TitleBGColor, TitleColor, BorderColor, SizeColor, SizeHoverColor, DragColor, DragHoverColor, HoverColor color.RGBA
-	TitleSize, TitleSizeTemp, Padding, Border                                                                                float32
+	Open, Hovered,
+	Closable, Movable, Resizable,
+	HoverClose, HoverDragbar, HoverResizeTab bool
 
-	HoverX, HoverDragbar, HoverResizeTab bool
+	TitleHeight, TitleScreenHeight float32
+
+	BGColor, TitleBGColor, TitleColor, BorderColor,
+	SizeTabColor, SizeTabHoverColor, DragbarColor, DragbarHoverColor, HoverColor color.RGBA
 
 	Contents []*ItemData
 }
@@ -30,18 +33,19 @@ type ItemData struct {
 
 	Value float32
 
-	Hovered, Checked, Enabled bool
-	Clicked                   time.Time
-	FlowType                  FlowType
-	FlowWrap                  bool
-	Scroll                    Point
+	Hovered, Checked,
+	Disabled, Invisable bool
+	Clicked  time.Time
+	FlowType FlowType
+	Scroll   Point
 
 	//Style
 	Fillet            float32
 	Border, BorderPad float32
 	Filled, Outlined  bool
 
-	TextColor, Color, HoverColor, ClickColor, DisabledColor, CheckedColor color.RGBA
+	TextColor, Color, HoverColor,
+	ClickColor, DisabledColor, CheckedColor color.RGBA
 
 	Action   func()
 	Contents []ItemData
@@ -69,14 +73,22 @@ const (
 	FLOW_VERTICAL
 )
 
-type WindowSide int
+type AlignType int
 
 const (
-	SIDE_NONE = iota
-	SIDE_TOP
-	SIDE_RIGHT
-	SIDE_BOTTOM
-	SIDE_LEFT
+	ALIGN_START = iota
+	ALIGN_CENTER
+	ALIGN_END
+)
+
+type WindowEdge int
+
+const (
+	EDGE_NONE = iota
+	EDGE_TOP
+	EDGE_RIGHT
+	EDGE_BOTTOM
+	EDGE_LEFT
 )
 
 type ItemTypeData int

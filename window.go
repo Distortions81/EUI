@@ -7,16 +7,16 @@ import (
 )
 
 var DefaultTheme = &WindowData{
-	TitleSize:       24,
-	Border:          1,
-	TitleColor:      color.RGBA{R: 255, G: 255, B: 255, A: 255},
-	BorderColor:     color.RGBA{R: 64, G: 64, B: 64, A: 255},
-	SizeColor:       color.RGBA{R: 48, G: 48, B: 48, A: 255},
-	SizeHoverColor:  color.RGBA{R: 128, G: 128, B: 128, A: 255},
-	DragColor:       color.RGBA{R: 48, G: 48, B: 48, A: 255},
-	DragHoverColor:  color.RGBA{R: 128, G: 128, B: 128, A: 255},
-	HoverColor:      color.RGBA{R: 80, G: 80, B: 80, A: 255},
-	ContentsBGColor: color.RGBA{R: 16, G: 16, B: 16, A: 255},
+	TitleHeight:       24,
+	Border:            1,
+	TitleColor:        color.RGBA{R: 255, G: 255, B: 255, A: 255},
+	BorderColor:       color.RGBA{R: 64, G: 64, B: 64, A: 255},
+	SizeTabColor:      color.RGBA{R: 48, G: 48, B: 48, A: 255},
+	SizeTabHoverColor: color.RGBA{R: 128, G: 128, B: 128, A: 255},
+	DragbarColor:      color.RGBA{R: 48, G: 48, B: 48, A: 255},
+	DragbarHoverColor: color.RGBA{R: 128, G: 128, B: 128, A: 255},
+	HoverColor:        color.RGBA{R: 80, G: 80, B: 80, A: 255},
+	BGColor:           color.RGBA{R: 16, G: 16, B: 16, A: 255},
 
 	Movable: true, Closable: true, Resizable: true, Open: true,
 }
@@ -28,7 +28,6 @@ var DefaultButton = &ItemData{
 	Position:  Point{X: 10, Y: 10},
 	FontSize:  24,
 	LineSpace: 1.2,
-	Enabled:   true,
 
 	Fillet: 8,
 	Filled: true, Outlined: true,
@@ -48,7 +47,6 @@ var DefaultText = &ItemData{
 	Position:  Point{X: 16, Y: 24 + 16},
 	FontSize:  24,
 	LineSpace: 1.2,
-	Enabled:   true,
 	TextColor: color.RGBA{R: 255, G: 255, B: 255, A: 255},
 }
 

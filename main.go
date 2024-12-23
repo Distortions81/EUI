@@ -111,10 +111,10 @@ func makeTestWindow() *WindowData {
 
 	newWindow := NewWindow(
 		&WindowData{
-			TitleSize: 24,
-			Title:     "Test Window",
-			Size:      Point{X: 300, Y: 300},
-			Position:  Point{X: 32, Y: 32},
+			TitleHeight: 24,
+			Title:       "Test Window",
+			Size:        Point{X: 300, Y: 300},
+			Position:    Point{X: 32, Y: 32},
 			Contents: []*ItemData{
 				newButton, newText, newScaleup, newScaledown},
 		})

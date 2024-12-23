@@ -61,9 +61,9 @@ func (g *Game) Update() error {
 				side := win.GetWindowEdge(mposOld)
 
 				//If needed, set cursor
-				if !cursorChanged && side != SIDE_NONE {
+				if !cursorChanged && side != EDGE_NONE {
 					c := ebiten.CursorShapeEWResize
-					if side == SIDE_TOP || side == SIDE_BOTTOM {
+					if side == EDGE_TOP || side == EDGE_BOTTOM {
 						c = ebiten.CursorShapeNSResize
 					}
 					if cursorShape != c {
@@ -77,25 +77,25 @@ func (g *Game) Update() error {
 				if clickDrag {
 					posCh := PointSub(mpos, mposOld)
 					sizeCh := Point{X: posCh.X / UIScale, Y: posCh.Y / UIScale}
-					if side == SIDE_TOP {
+					if side == EDGE_TOP {
 						posCh.X = 0
 						sizeCh.X = 0
 						if !win.SetSize(PointSub(win.Size, sizeCh)) {
 							win.Position = PointAdd(win.Position, posCh)
 						}
 						continue
-					} else if side == SIDE_BOTTOM {
+					} else if side == EDGE_BOTTOM {
 						sizeCh.X = 0
 						win.SetSize(PointAdd(win.Size, sizeCh))
 						continue
-					} else if side == SIDE_LEFT {
+					} else if side == EDGE_LEFT {
 						posCh.Y = 0
 						sizeCh.Y = 0
 						if !win.SetSize(PointSub(win.Size, sizeCh)) {
 							win.Position = PointAdd(win.Position, posCh)
 						}
 						continue
-					} else if side == SIDE_RIGHT {
+					} else if side == EDGE_RIGHT {
 						sizeCh.Y = 0
 						win.SetSize(PointAdd(win.Size, sizeCh))
 						continue
@@ -105,7 +105,7 @@ func (g *Game) Update() error {
 		}
 
 		//Titlebar items
-		if win.TitleSize > 0 {
+		if win.TitleHeight > 0 {
 
 			//Dragbar
 			if !cursorChanged && win.Movable {
@@ -131,7 +131,7 @@ func (g *Game) Update() error {
 			if win.Closable {
 				if win.TitleRect().ContainsPoint(mpos) {
 					if win.XRect().ContainsPoint(mpos) {
-						win.HoverX = true
+						win.HoverClose = true
 						if click {
 							win.Open = false
 						}
