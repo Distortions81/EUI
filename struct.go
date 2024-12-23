@@ -1,6 +1,9 @@
 package main
 
-import "image/color"
+import (
+	"image/color"
+	"time"
+)
 
 type WindowData struct {
 	Title, Tooltip string
@@ -27,11 +30,12 @@ type ItemData struct {
 
 	Value float32
 
-	Hovered, Clicked, Checked, Enabled bool
-	FlowType                           FlowType
-	FlowWrap                           bool
-	Padding                            float32
-	Scroll                             Point
+	Hovered, Checked, Enabled bool
+	Clicked                   time.Time
+	FlowType                  FlowType
+	FlowWrap                  bool
+	Padding                   float32
+	Scroll                    Point
 
 	//Style
 	Fillet float32

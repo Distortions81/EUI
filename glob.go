@@ -4,6 +4,7 @@ import (
 	"image"
 	"image/color"
 	"os"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
@@ -17,6 +18,7 @@ var (
 	mplusFaceSource *text.GoTextFaceSource
 	Windows         []*WindowData
 	UIScale         float32 = 1.0
+	FlashTime               = time.Millisecond * 200
 
 	whiteImage    = ebiten.NewImage(3, 3)
 	whiteSubImage = whiteImage.SubImage(image.Rect(1, 1, 2, 2)).(*ebiten.Image)

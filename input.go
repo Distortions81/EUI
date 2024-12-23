@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
@@ -150,7 +152,7 @@ func (g *Game) Update() error {
 					if item.ContainsPoint(win, mpos) {
 						win.Contents[i].Hovered = true
 						if click {
-							win.Contents[i].Clicked = true
+							win.Contents[i].Clicked = time.Now()
 							if item.Action != nil {
 								item.Action()
 							}

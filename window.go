@@ -32,10 +32,11 @@ var DefaultButton = &ItemData{
 
 	Fillet: 8,
 	Filled: true,
+	Border: 2,
 
 	TextColor:  color.RGBA{R: 0, G: 0, B: 0, A: 255},
-	Color:      color.RGBA{R: 128, G: 128, B: 128, A: 255},
-	HoverColor: color.RGBA{R: 192, G: 192, B: 192, A: 255},
+	Color:      color.RGBA{R: 96, G: 96, B: 96, A: 255},
+	HoverColor: color.RGBA{R: 128, G: 128, B: 128, A: 255},
 	ClickColor: color.RGBA{R: 64, G: 64, B: 64, A: 255},
 }
 

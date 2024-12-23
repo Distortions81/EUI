@@ -5,6 +5,7 @@ import (
 	"image/color"
 	"math"
 	"strings"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -200,12 +201,14 @@ func (win *WindowData) DrawContents(screen *ebiten.Image) {
 
 		if item.ItemType == ITEM_BUTTON {
 
-			itemColor := item.Color
-			if item.Clicked {
-				itemColor = item.ClickColor
-				item.Clicked = false
+			BGColor := item.Color
+			BorderColor := item.HoverColor
+			if time.Since(item.Clicked) < FlashTime {
+				BGColor = item.ClickColor
+				BorderColor = item.Color
 			} else if item.Hovered {
-				itemColor = item.HoverColor
+				BGColor = item.HoverColor
+				BorderColor = item.Color
 				item.Hovered = false
 			}
 
@@ -213,9 +216,9 @@ func (win *WindowData) DrawContents(screen *ebiten.Image) {
 				vector.DrawFilledRect(screen,
 					win.Position.X+(item.Position.X*UIScale),
 					win.Position.Y+(item.Position.Y*UIScale),
-					item.Size.X*UIScale, item.Size.Y*UIScale, itemColor, false)
+					item.Size.X*UIScale, item.Size.Y*UIScale, BGColor, false)
 			} else {
-				win.DrawRoundRect(screen, item, itemColor)
+				win.DrawRoundRect(screen, item, BGColor, BorderColor)
 			}
 
 			textSize := item.FontSize * UIScale
@@ -284,14 +287,22 @@ func (win *WindowData) DrawDebug(screen *ebiten.Image) {
 }
 
 // Break this up, make a generic draw function as well
-func (win *WindowData) DrawRoundRect(screen *ebiten.Image, item *ItemData, itemColor color.RGBA) {
+func (win *WindowData) DrawRoundRect(screen *ebiten.Image, item *ItemData, BGcolor, BorderColor color.RGBA) {
 	DrawRoundRect(screen, &RoundRect{
 		Size:     PointScaleMul(item.Size),
 		Position: PointAdd(win.Position, PointScaleMul(item.Position)),
-		Fillet:   item.Fillet,
-		Color:    itemColor,
-		Filled:   item.Filled,
-		Border:   item.Border,
+		Fillet:   item.Fillet * UIScale,
+		Color:    BGcolor,
+		Filled:   true,
+		Border:   item.Border * UIScale,
+	})
+	DrawRoundRect(screen, &RoundRect{
+		Size:     PointScaleMul(item.Size),
+		Position: PointAdd(win.Position, PointScaleMul(item.Position)),
+		Fillet:   item.Fillet * UIScale,
+		Color:    BorderColor,
+		Filled:   false,
+		Border:   item.Border * UIScale,
 	})
 }
 
