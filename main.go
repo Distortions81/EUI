@@ -78,7 +78,8 @@ func makeTestWindow() *WindowData {
 		Position: Point{
 			X: 300 - 128 - 16,
 			Y: 300 - 24 - 64 - 16},
-		Size: Point{X: 128, Y: 64}})
+		Size:     Point{X: 128, Y: 64},
+		FontSize: 18})
 
 	//Scaleup button
 	newScaleup := NewButton(&ItemData{
@@ -102,7 +103,7 @@ func makeTestWindow() *WindowData {
 	newText := NewText(&ItemData{
 		ItemType: ITEM_TEXT,
 		Text:     "Click 'generate' to\ngenerate a new code.",
-		FontSize: 24,
+		FontSize: 18,
 		Position: Point{
 			X: 16,
 			Y: 24 + 16},

@@ -84,9 +84,10 @@ func (win *WindowData) DrawWinTitle(screen *ebiten.Image) {
 		var buttonsWidth float32 = 0
 		if win.Closable {
 			var xpad float32 = win.TitleScreenHeight / 4.0
+			color := win.TitleColor
 			xThick := 3 * UIScale
 			if win.HoverClose {
-				xThick *= (1.5)
+				color = win.HoverTitleColor
 				win.HoverClose = false
 			}
 			vector.StrokeLine(screen,
@@ -95,14 +96,14 @@ func (win *WindowData) DrawWinTitle(screen *ebiten.Image) {
 
 				win.Position.X+win.ScreenSize.X-xpad,
 				win.Position.Y+win.TitleScreenHeight-xpad,
-				xThick, win.TitleColor, true)
+				xThick, color, true)
 			vector.StrokeLine(screen,
 				win.Position.X+win.ScreenSize.X-xpad,
 				win.Position.Y+xpad,
 
 				win.Position.X+win.ScreenSize.X-win.TitleScreenHeight+xpad,
 				win.Position.Y+win.TitleScreenHeight-xpad,
-				xThick, win.TitleColor, true)
+				xThick, color, true)
 
 			buttonsWidth += win.TitleScreenHeight
 		}
@@ -112,7 +113,7 @@ func (win *WindowData) DrawWinTitle(screen *ebiten.Image) {
 			var xThick float32 = 1
 			xColor := win.DragbarColor
 			if win.HoverDragbar {
-				xColor = win.DragbarHoverColor
+				xColor = win.HoverTitleColor
 				win.HoverDragbar = false
 			}
 			dpad := win.TitleScreenHeight / 5
@@ -130,7 +131,9 @@ func (win *WindowData) DrawBorder(screen *ebiten.Image) {
 	//Draw borders
 	if win.Border > 0 {
 		FrameColor := win.BorderColor
-		if win.Hovered {
+		if ActiveWindow == win {
+			FrameColor = win.ActiveColor
+		} else if win.Hovered {
 			FrameColor = win.HoverColor
 			win.Hovered = false
 		}
@@ -154,7 +157,9 @@ func (win *WindowData) DrawResizeTab(screen *ebiten.Image) {
 		var xThick float32 = 1.0
 		xColor := win.SizeTabColor
 
-		if win.HoverResizeTab {
+		if ActiveWindow == win {
+			xColor = win.ActiveColor
+		} else if win.HoverResizeTab {
 			xColor = win.SizeTabHoverColor
 			xThick = 2
 			win.HoverResizeTab = false

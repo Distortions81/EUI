@@ -13,10 +13,11 @@ var DefaultTheme = &WindowData{
 	BorderColor:       color.RGBA{R: 64, G: 64, B: 64, A: 255},
 	SizeTabColor:      color.RGBA{R: 48, G: 48, B: 48, A: 255},
 	SizeTabHoverColor: color.RGBA{R: 128, G: 128, B: 128, A: 255},
-	DragbarColor:      color.RGBA{R: 48, G: 48, B: 48, A: 255},
-	DragbarHoverColor: color.RGBA{R: 128, G: 128, B: 128, A: 255},
+	DragbarColor:      color.RGBA{R: 64, G: 64, B: 64, A: 255},
+	HoverTitleColor:   color.RGBA{R: 64, G: 128, B: 128, A: 255},
 	HoverColor:        color.RGBA{R: 80, G: 80, B: 80, A: 255},
 	BGColor:           color.RGBA{R: 16, G: 16, B: 16, A: 255},
+	ActiveColor:       color.RGBA{R: 0, G: 128, B: 128, A: 255},
 
 	Movable: true, Closable: true, Resizable: true, Open: true,
 }
@@ -35,8 +36,8 @@ var DefaultButton = &ItemData{
 	BorderPad: 4,
 
 	TextColor:  color.RGBA{R: 255, G: 255, B: 255, A: 255},
-	Color:      color.RGBA{R: 32, G: 32, B: 32, A: 255},
-	HoverColor: color.RGBA{R: 0, G: 128, B: 128, A: 255},
+	Color:      color.RGBA{R: 48, G: 48, B: 48, A: 255},
+	HoverColor: color.RGBA{R: 64, G: 128, B: 128, A: 255},
 	ClickColor: color.RGBA{R: 64, G: 64, B: 64, A: 255},
 }
 
@@ -96,6 +97,7 @@ func (target *WindowData) AddWindow() {
 		}
 	}
 	target.CalcUIScale()
+	ActiveWindow = target
 	Windows = append(Windows, target)
 }
 

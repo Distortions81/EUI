@@ -17,6 +17,7 @@ var (
 	signalHandle    chan os.Signal
 	mplusFaceSource *text.GoTextFaceSource
 	Windows         []*WindowData
+	ActiveWindow    *WindowData
 	UIScale         float32 = 1.0
 	FlashTime               = time.Millisecond * 200
 
