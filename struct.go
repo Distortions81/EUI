@@ -45,10 +45,10 @@ type ItemData struct {
 }
 
 type RoundRect struct {
-	Size, Position         Point
-	Roundness, Border      float32
-	Filled                 bool
-	FillColor, BorderColor color.RGBA
+	Size, Position Point
+	Fillet, Border float32
+	Filled         bool
+	Color          color.RGBA
 }
 
 type Rect struct {

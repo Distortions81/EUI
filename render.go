@@ -285,42 +285,49 @@ func (win *WindowData) DrawDebug(screen *ebiten.Image) {
 
 // Break this up, make a generic draw function as well
 func (win *WindowData) DrawRoundRect(screen *ebiten.Image, item *ItemData, itemColor color.RGBA) {
+	DrawRoundRect(screen, &RoundRect{
+		Size:     PointScaleMul(item.Size),
+		Position: PointAdd(win.Position, PointScaleMul(item.Position)),
+		Fillet:   item.Fillet,
+		Color:    itemColor,
+		Filled:   item.Filled,
+		Border:   item.Border,
+	})
+}
+
+func DrawRoundRect(screen *ebiten.Image, item *RoundRect) {
 	var (
 		path     vector.Path
 		vertices []ebiten.Vertex
 		indices  []uint16
 	)
 
-	pos := PointAdd(win.Position, PointScaleMul(item.Position))
-	size := PointScaleMul(item.Size)
-	fillet := item.Fillet * UIScale
-
 	//Top left, after corner, clockwise
-	path.MoveTo(pos.X+fillet, pos.Y)
-	path.LineTo(pos.X+size.X-fillet, pos.Y)
+	path.MoveTo(item.Position.X+item.Fillet, item.Position.Y)
+	path.LineTo(item.Position.X+item.Size.X-item.Fillet, item.Position.Y)
 	path.QuadTo(
-		pos.X+size.X,
-		pos.Y,
-		pos.X+size.X,
-		pos.Y+fillet)
-	path.LineTo(pos.X+size.X, pos.Y+size.Y-fillet)
+		item.Position.X+item.Size.X,
+		item.Position.Y,
+		item.Position.X+item.Size.X,
+		item.Position.Y+item.Fillet)
+	path.LineTo(item.Position.X+item.Size.X, item.Position.Y+item.Size.Y-item.Fillet)
 	path.QuadTo(
-		pos.X+size.X,
-		pos.Y+size.Y,
-		pos.X+size.X-fillet,
-		pos.Y+size.Y)
-	path.LineTo(pos.X+fillet, pos.Y+size.Y)
+		item.Position.X+item.Size.X,
+		item.Position.Y+item.Size.Y,
+		item.Position.X+item.Size.X-item.Fillet,
+		item.Position.Y+item.Size.Y)
+	path.LineTo(item.Position.X+item.Fillet, item.Position.Y+item.Size.Y)
 	path.QuadTo(
-		pos.X,
-		pos.Y+size.Y,
-		pos.X,
-		pos.Y+size.Y-fillet)
-	path.LineTo(pos.X, pos.Y+fillet)
+		item.Position.X,
+		item.Position.Y+item.Size.Y,
+		item.Position.X,
+		item.Position.Y+item.Size.Y-item.Fillet)
+	path.LineTo(item.Position.X, item.Position.Y+item.Fillet)
 	path.QuadTo(
-		pos.X,
-		pos.Y,
-		pos.X+fillet,
-		pos.Y)
+		item.Position.X,
+		item.Position.Y,
+		item.Position.X+item.Fillet,
+		item.Position.Y)
 	path.Close()
 
 	if item.Filled {
@@ -336,10 +343,10 @@ func (win *WindowData) DrawRoundRect(screen *ebiten.Image, item *ItemData, itemC
 		vertices[i].DstY = (vertices[i].DstY)
 		vertices[i].SrcX = 1
 		vertices[i].SrcY = 1
-		vertices[i].ColorR = float32(itemColor.R) / 255
-		vertices[i].ColorG = float32(itemColor.G) / 255
-		vertices[i].ColorB = float32(itemColor.B) / 255
-		vertices[i].ColorA = float32(itemColor.A) / 255
+		vertices[i].ColorR = float32(item.Color.R) / 255
+		vertices[i].ColorG = float32(item.Color.G) / 255
+		vertices[i].ColorB = float32(item.Color.B) / 255
+		vertices[i].ColorA = float32(item.Color.A) / 255
 	}
 
 	op := &ebiten.DrawTrianglesOptions{}
