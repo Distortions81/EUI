@@ -34,13 +34,12 @@ type ItemData struct {
 	Clicked                   time.Time
 	FlowType                  FlowType
 	FlowWrap                  bool
-	Padding                   float32
 	Scroll                    Point
 
 	//Style
-	Fillet float32
-	Border float32
-	Filled bool
+	Fillet            float32
+	Border, BorderPad float32
+	Filled, Outlined  bool
 
 	TextColor, Color, HoverColor, ClickColor, DisabledColor, CheckedColor color.RGBA
 

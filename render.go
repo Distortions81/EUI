@@ -296,13 +296,21 @@ func (win *WindowData) DrawRoundRect(screen *ebiten.Image, item *ItemData, BGcol
 		Filled:   true,
 		Border:   item.Border * UIScale,
 	})
+
+	offset := Point{X: item.BorderPad * UIScale, Y: item.BorderPad * UIScale}
 	DrawRoundRect(screen, &RoundRect{
-		Size:     PointScaleMul(item.Size),
-		Position: PointAdd(win.Position, PointScaleMul(item.Position)),
-		Fillet:   item.Fillet * UIScale,
-		Color:    BorderColor,
-		Filled:   false,
-		Border:   item.Border * UIScale,
+		Size: PointSub(
+			PointScaleMul(item.Size),
+			offset,
+		),
+		Position: PointAdd(
+			PointAdd(win.Position, PointScaleMul(item.Position)),
+			PointDiv(offset, Point{X: 2, Y: 2}),
+		),
+		Fillet: item.Fillet * UIScale,
+		Color:  BorderColor,
+		Filled: false,
+		Border: item.Border * UIScale,
 	})
 }
 
@@ -350,8 +358,8 @@ func DrawRoundRect(screen *ebiten.Image, item *RoundRect) {
 	}
 
 	for i := range vertices {
-		vertices[i].DstX = (vertices[i].DstX)
-		vertices[i].DstY = (vertices[i].DstY)
+		vertices[i].DstX = (vertices[i].DstX + 0.5)
+		vertices[i].DstY = (vertices[i].DstY + 0.5)
 		vertices[i].SrcX = 1
 		vertices[i].SrcY = 1
 		vertices[i].ColorR = float32(item.Color.R) / 255

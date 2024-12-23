@@ -82,21 +82,21 @@ func makeTestWindow() *WindowData {
 
 	//Scaleup button
 	newScaleup := NewButton(&ItemData{
-		Text: "Scale Up",
+		Text: "Scale Up +",
 		Position: Point{
 			X: 16,
-			Y: 24 + 128},
+			Y: 300 - 24 - 24 - 16},
 		Size:     Point{X: 128, Y: 24},
-		FontSize: 18})
+		FontSize: 12})
 
 	//Scaledown button
 	newScaledown := NewButton(&ItemData{
-		Text: "Scale Down",
+		Text: "Scale Down -",
 		Position: Point{
 			X: 16,
-			Y: 24 + 128 + 32},
+			Y: 300 - 24 - 24 - 24 - 16 - 16},
 		Size:     Point{X: 128, Y: 24},
-		FontSize: 18})
+		FontSize: 12})
 
 	//Text
 	newText := NewText(&ItemData{
