@@ -60,7 +60,7 @@ func (g *Game) Update() error {
 				cursorChanged = true
 			}
 
-			//Drag resize edge
+			//Drag resize edge or corner
 			if clickDrag {
 				posCh := PointSub(mpos, mposOld)
 				sizeCh := Point{X: posCh.X / UIScale, Y: posCh.Y / UIScale}
@@ -87,7 +87,8 @@ func (g *Game) Update() error {
 					win.SetSize(PointAdd(win.Size, sizeCh))
 					continue
 
-				} else if side == EDGE_TOP_LEFT { //Corner reize
+					//Corner reize
+				} else if side == EDGE_TOP_LEFT {
 					if !win.SetSize(PointSub(win.Size, sizeCh)) {
 						win.Position = PointAdd(win.Position, posCh)
 					}
