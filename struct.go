@@ -13,7 +13,7 @@ type WindowData struct {
 
 	Open, Hovered,
 	Closable, Movable, Resizable,
-	HoverClose, HoverDragbar, HoverResizeTab bool
+	HoverClose, HoverDragbar bool
 
 	TitleHeight, TitleScreenHeight float32
 
@@ -86,10 +86,16 @@ type WindowEdge int
 
 const (
 	EDGE_NONE = iota
+
 	EDGE_TOP
 	EDGE_RIGHT
 	EDGE_BOTTOM
 	EDGE_LEFT
+
+	EDGE_TOP_RIGHT
+	EDGE_BOTTOM_RIGHT
+	EDGE_BOTTOM_LEFT
+	EDGE_TOP_LEFT
 )
 
 type ItemTypeData int

@@ -97,50 +97,61 @@ func (win *WindowData) SetSize(size Point) bool {
 	return tooSmall
 }
 
-func (win WindowData) ResizeTabRect() Rect {
-	if !win.Resizable {
-		return Rect{}
-	}
-
-	return Rect{
-		X1: win.Position.X + win.ScreenSize.X,
-		Y0: win.Position.Y + win.ScreenSize.Y - (14 * UIScale) - win.TitleScreenHeight,
-		X0: win.Position.X + win.ScreenSize.X - (14 * UIScale),
-		Y1: win.Position.Y + win.ScreenSize.Y - win.TitleScreenHeight,
-	}
-}
+const cornerSize = 14
+const tol = 3
 
 func (win WindowData) GetWindowEdge(mpos Point) WindowEdge {
-
-	var BR_Corner = (14 * UIScale)
 
 	if !win.Resizable {
 		return EDGE_NONE
 
-	} else if WithinEdgeRange(mpos.X, win.Position.X, tol) &&
-		mpos.Y > win.Position.Y && mpos.Y < win.Position.Y+win.ScreenSize.Y-win.TitleScreenHeight {
-		return EDGE_LEFT
+	}
 
-	} else if WithinEdgeRange(mpos.X, win.Position.X+win.ScreenSize.X, tol) &&
-		mpos.Y > win.Position.Y && mpos.Y < win.Position.Y+win.ScreenSize.Y-win.TitleScreenHeight &&
-		mpos.Y < win.Position.Y+win.ScreenSize.Y-win.TitleScreenHeight-BR_Corner {
-		return EDGE_RIGHT
+	winRect := win.GetWinRect()
 
-	} else if WithinEdgeRange(mpos.Y, win.Position.Y, tol) &&
-		mpos.X > win.Position.X && mpos.X < win.Position.X+win.ScreenSize.X {
-		return EDGE_TOP
+	//Expand outer window rect
+	outRect := winRect
+	outRect.X0 -= tol
+	outRect.X1 += tol
+	outRect.Y0 -= tol
+	outRect.Y1 += tol
 
-	} else if WithinEdgeRange(mpos.Y, win.Position.Y+win.ScreenSize.Y-win.TitleScreenHeight, tol) &&
-		mpos.X > win.Position.X && mpos.X < win.Position.X+win.ScreenSize.X-BR_Corner {
-		return EDGE_BOTTOM
+	//Contract inner window rect
+	inRect := winRect
+	inRect.X0 += tol
+	inRect.X1 -= tol
+	inRect.Y0 += tol
+	inRect.Y1 -= tol
+
+	//If within outrect, and not within inrect it is window edge
+	if outRect.ContainsPoint(mpos) && !inRect.ContainsPoint(mpos) {
+		if mpos.Y < outRect.Y0+cornerSize {
+			if mpos.X < inRect.X0+cornerSize {
+				return EDGE_TOP_LEFT
+			} else if mpos.X > inRect.X1-cornerSize {
+				return EDGE_TOP_RIGHT
+			} else {
+				return EDGE_TOP
+			}
+		} else if mpos.Y > inRect.Y1-cornerSize {
+			if mpos.X > outRect.X1-cornerSize {
+				return EDGE_BOTTOM_RIGHT
+			} else if mpos.X < outRect.X0+cornerSize {
+				return EDGE_BOTTOM_LEFT
+			} else {
+				return EDGE_BOTTOM
+			}
+		} else if mpos.X < inRect.X0 {
+			return EDGE_LEFT
+		} else if mpos.X < outRect.X1 {
+			return EDGE_RIGHT
+		}
 	}
 
 	return EDGE_NONE
 }
 
-const tol = 3
-
-func WithinEdgeRange(a, b float32, tol float32) bool {
+func WithinRange(a, b float32, tol float32) bool {
 	if math.Abs(float64(a-b)) <= float64(tol) {
 		return true
 	}

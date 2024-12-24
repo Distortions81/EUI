@@ -40,66 +40,77 @@ func (g *Game) Update() error {
 		win.CalcUIScale()
 
 		if win.Resizable {
-			//Resize Tab
-			if win.ResizeTabRect().ContainsPoint(mposOld) {
-				win.HoverResizeTab = true
-				if !cursorChanged {
-					if cursorShape != ebiten.CursorShapeNWSEResize {
-						cursorShape = ebiten.CursorShapeNWSEResize
-						ebiten.SetCursorShape(cursorShape)
-					}
-					cursorChanged = true
+
+			side := win.GetWindowEdge(mposOld)
+
+			//If needed, set cursor
+			if !cursorChanged && side != EDGE_NONE {
+				c := ebiten.CursorShapeEWResize
+				if side == EDGE_TOP || side == EDGE_BOTTOM {
+					c = ebiten.CursorShapeNSResize
+				} else if side == EDGE_TOP_LEFT || side == EDGE_BOTTOM_RIGHT {
+					c = ebiten.CursorShapeNWSEResize
+				} else if side == EDGE_TOP_RIGHT || side == EDGE_BOTTOM_LEFT {
+					c = ebiten.CursorShapeNESWResize
 				}
-				if clickDrag {
-					change := PointSub(mpos, mposOld)
-					change = Point{X: change.X / UIScale, Y: change.Y / UIScale}
-					win.SetSize(PointAdd(win.Size, change))
+				if cursorShape != c {
+					cursorShape = c
+					ebiten.SetCursorShape(cursorShape)
+				}
+				cursorChanged = true
+			}
+
+			//Drag resize edge
+			if clickDrag {
+				posCh := PointSub(mpos, mposOld)
+				sizeCh := Point{X: posCh.X / UIScale, Y: posCh.Y / UIScale}
+				if side == EDGE_TOP {
+					posCh.X = 0
+					sizeCh.X = 0
+					if !win.SetSize(PointSub(win.Size, sizeCh)) {
+						win.Position = PointAdd(win.Position, posCh)
+					}
 					continue
-				}
-			} else {
-				//Resize Edge
-				side := win.GetWindowEdge(mposOld)
+				} else if side == EDGE_BOTTOM {
+					sizeCh.X = 0
+					win.SetSize(PointAdd(win.Size, sizeCh))
+					continue
+				} else if side == EDGE_LEFT {
+					posCh.Y = 0
+					sizeCh.Y = 0
+					if !win.SetSize(PointSub(win.Size, sizeCh)) {
+						win.Position = PointAdd(win.Position, posCh)
+					}
+					continue
+				} else if side == EDGE_RIGHT {
+					sizeCh.Y = 0
+					win.SetSize(PointAdd(win.Size, sizeCh))
+					continue
 
-				//If needed, set cursor
-				if !cursorChanged && side != EDGE_NONE {
-					c := ebiten.CursorShapeEWResize
-					if side == EDGE_TOP || side == EDGE_BOTTOM {
-						c = ebiten.CursorShapeNSResize
+				} else if side == EDGE_TOP_LEFT { //Corner reize
+					if !win.SetSize(PointSub(win.Size, sizeCh)) {
+						win.Position = PointAdd(win.Position, posCh)
 					}
-					if cursorShape != c {
-						cursorShape = c
-						ebiten.SetCursorShape(cursorShape)
-					}
-					cursorChanged = true
-				}
-
-				//Drag resize edge
-				if clickDrag {
-					posCh := PointSub(mpos, mposOld)
-					sizeCh := Point{X: posCh.X / UIScale, Y: posCh.Y / UIScale}
-					if side == EDGE_TOP {
-						posCh.X = 0
-						sizeCh.X = 0
-						if !win.SetSize(PointSub(win.Size, sizeCh)) {
-							win.Position = PointAdd(win.Position, posCh)
-						}
-						continue
-					} else if side == EDGE_BOTTOM {
-						sizeCh.X = 0
-						win.SetSize(PointAdd(win.Size, sizeCh))
-						continue
-					} else if side == EDGE_LEFT {
-						posCh.Y = 0
-						sizeCh.Y = 0
-						if !win.SetSize(PointSub(win.Size, sizeCh)) {
-							win.Position = PointAdd(win.Position, posCh)
-						}
-						continue
-					} else if side == EDGE_RIGHT {
-						sizeCh.Y = 0
-						win.SetSize(PointAdd(win.Size, sizeCh))
-						continue
-					}
+					continue
+				} else if side == EDGE_TOP_RIGHT {
+					win.Size.X += sizeCh.X
+					win.Size.Y -= sizeCh.Y
+					win.Position.Y += posCh.Y
+					continue
+				} else if side == EDGE_BOTTOM_RIGHT {
+					win.Size.X += sizeCh.X
+					win.Size.Y += sizeCh.Y
+					continue
+				} else if side == EDGE_BOTTOM_LEFT {
+					win.Size.Y += sizeCh.Y
+					win.Size.X -= sizeCh.X
+					win.Position.X += posCh.X
+					continue
+				} else if side == EDGE_TOP_LEFT {
+					win.Size.Y -= sizeCh.Y
+					win.Size.X += sizeCh.X
+					win.Position.Y -= posCh.Y
+					continue
 				}
 			}
 		}

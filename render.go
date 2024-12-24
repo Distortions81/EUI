@@ -159,10 +159,6 @@ func (win *WindowData) DrawResizeTab(screen *ebiten.Image) {
 
 		if ActiveWindow == win {
 			xColor = win.ActiveColor
-		} else if win.HoverResizeTab {
-			xColor = win.SizeTabHoverColor
-			xThick = 2
-			win.HoverResizeTab = false
 		}
 		var Outer, Middle, Inner float32 = 14 * UIScale, 10 * UIScale, 6 * UIScale
 
@@ -282,9 +278,6 @@ func (win *WindowData) DrawDebug(screen *ebiten.Image) {
 
 		grab = win.XRect()
 		vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{G: 255, A: 255}, false)
-
-		grab = win.ResizeTabRect()
-		vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{B: 255, A: 255}, false)
 
 		grab = win.TitleRect()
 		vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{B: 255, G: 255, A: 255}, false)
