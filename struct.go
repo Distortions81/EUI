@@ -18,7 +18,7 @@ type WindowData struct {
 	TitleHeight, TitleScreenHeight float32
 
 	BGColor, TitleBGColor, TitleColor, BorderColor,
-	SizeTabColor, SizeTabHoverColor, DragbarColor,
+	SizeTabColor, DragbarColor,
 	HoverTitleColor, HoverColor, ActiveColor color.RGBA
 
 	Contents []*ItemData

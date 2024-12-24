@@ -7,17 +7,16 @@ import (
 )
 
 var DefaultTheme = &WindowData{
-	TitleHeight:       24,
-	Border:            1,
-	TitleColor:        color.RGBA{R: 255, G: 255, B: 255, A: 255},
-	BorderColor:       color.RGBA{R: 64, G: 64, B: 64, A: 255},
-	SizeTabColor:      color.RGBA{R: 48, G: 48, B: 48, A: 255},
-	SizeTabHoverColor: color.RGBA{R: 128, G: 128, B: 128, A: 255},
-	DragbarColor:      color.RGBA{R: 64, G: 64, B: 64, A: 255},
-	HoverTitleColor:   color.RGBA{R: 64, G: 128, B: 128, A: 255},
-	HoverColor:        color.RGBA{R: 80, G: 80, B: 80, A: 255},
-	BGColor:           color.RGBA{R: 16, G: 16, B: 16, A: 255},
-	ActiveColor:       color.RGBA{R: 0, G: 128, B: 128, A: 255},
+	TitleHeight:     24,
+	Border:          1,
+	TitleColor:      color.RGBA{R: 255, G: 255, B: 255, A: 255},
+	BorderColor:     color.RGBA{R: 64, G: 64, B: 64, A: 255},
+	SizeTabColor:    color.RGBA{R: 48, G: 48, B: 48, A: 255},
+	DragbarColor:    color.RGBA{R: 64, G: 64, B: 64, A: 255},
+	HoverTitleColor: color.RGBA{R: 64, G: 128, B: 128, A: 255},
+	HoverColor:      color.RGBA{R: 80, G: 80, B: 80, A: 255},
+	BGColor:         color.RGBA{R: 16, G: 16, B: 16, A: 255},
+	ActiveColor:     color.RGBA{R: 0, G: 128, B: 128, A: 255},
 
 	Movable: true, Closable: true, Resizable: true, Open: true,
 }
