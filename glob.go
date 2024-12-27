@@ -16,10 +16,10 @@ var (
 
 	signalHandle    chan os.Signal
 	mplusFaceSource *text.GoTextFaceSource
-	Windows         []*WindowData
-	ActiveWindow    *WindowData
-	UIScale         float32 = 1.0
-	FlashTime               = time.Millisecond * 200
+	windows         []*WindowData
+	activeWindow    *WindowData
+	uiScale         float32 = 1.0
+	clickFlash              = time.Millisecond * 200
 
 	whiteImage    = ebiten.NewImage(3, 3)
 	whiteSubImage = whiteImage.SubImage(image.Rect(1, 1, 2, 2)).(*ebiten.Image)

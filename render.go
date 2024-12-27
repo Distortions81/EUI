@@ -15,35 +15,35 @@ import (
 
 func (g *Game) Draw(screen *ebiten.Image) {
 
-	for _, win := range Windows {
+	for _, win := range windows {
 		if !win.Open {
 			continue
 		}
 
-		//Reduce UI scaling calculations
-		win.CalcUIScale()
-		win.DrawBG(screen)
-		win.DrawContents(screen)
-		win.DrawWinTitle(screen)
-		win.DrawBorder(screen)
-		win.DrawResizeTab(screen)
-		win.DrawDebug(screen)
+		mainArea := screen.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
+		titleArea := screen.SubImage(win.getTitleRect().getRectangle()).(*ebiten.Image)
+		windowArea := screen.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
+
+		win.drawBG(mainArea)
+		win.drawContents(mainArea)
+		win.drawWinTitle(titleArea)
+		win.drawResizeTab(mainArea)
+		win.drawBorder(windowArea)
+		win.drawDebug(screen)
 	}
 
-	DrawFPS(screen)
+	drawFPS(screen)
 }
 
-func (win *WindowData) DrawBG(screen *ebiten.Image) {
-	//Window BG Color
-	vector.DrawFilledRect(screen,
-		win.Position.X, win.Position.Y,
-		win.ScreenSize.X, win.ScreenSize.Y-(win.TitleScreenHeight),
-		win.BGColor, false)
+func (win *WindowData) drawBG(screen *ebiten.Image) {
+	windowArea := screen.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
+	windowArea.Fill(win.BGColor)
 }
 
-func (win *WindowData) DrawWinTitle(screen *ebiten.Image) {
+func (win *WindowData) drawWinTitle(screen *ebiten.Image) {
 	// Window Title
 	if win.TitleHeight > 0 {
+		screen.Fill(win.TitleBGColor)
 
 		textSize := (win.TitleScreenHeight / 1.5)
 		face := &text.GoTextFace{
@@ -85,7 +85,7 @@ func (win *WindowData) DrawWinTitle(screen *ebiten.Image) {
 		if win.Closable {
 			var xpad float32 = win.TitleScreenHeight / 4.0
 			color := win.TitleColor
-			xThick := 3 * UIScale
+			xThick := 3 * uiScale
 			if win.HoverClose {
 				color = win.HoverTitleColor
 				win.HoverClose = false
@@ -117,7 +117,7 @@ func (win *WindowData) DrawWinTitle(screen *ebiten.Image) {
 				win.HoverDragbar = false
 			}
 			dpad := win.TitleScreenHeight / 5
-			for x := textWidth + float64(win.TitleScreenHeight/1.5); x < float64(win.ScreenSize.X-buttonsWidth); x = x + float64(UIScale*5.0) {
+			for x := textWidth + float64(win.TitleScreenHeight/1.5); x < float64(win.ScreenSize.X-buttonsWidth); x = x + float64(uiScale*5.0) {
 				vector.StrokeLine(screen,
 					win.Position.X+float32(x), win.Position.Y+dpad,
 					win.Position.X+float32(x), win.Position.Y+win.TitleScreenHeight-dpad,
@@ -127,11 +127,11 @@ func (win *WindowData) DrawWinTitle(screen *ebiten.Image) {
 	}
 }
 
-func (win *WindowData) DrawBorder(screen *ebiten.Image) {
+func (win *WindowData) drawBorder(screen *ebiten.Image) {
 	//Draw borders
 	if win.Border > 0 {
 		FrameColor := win.BorderColor
-		if ActiveWindow == win {
+		if activeWindow == win {
 			FrameColor = win.ActiveColor
 		} else if win.Hovered {
 			FrameColor = win.HoverColor
@@ -139,28 +139,28 @@ func (win *WindowData) DrawBorder(screen *ebiten.Image) {
 		}
 		if win.TitleHeight > 0 {
 			vector.StrokeRect(screen,
-				win.Position.X, win.Position.Y,
+				win.Position.X+1, win.Position.Y+1,
 				win.ScreenSize.X, win.TitleScreenHeight,
 				win.Border, FrameColor, false)
 		}
 		//Window border
 		vector.StrokeRect(screen,
-			win.Position.X, win.Position.Y,
-			win.ScreenSize.X, win.ScreenSize.Y-win.TitleScreenHeight,
+			win.Position.X+1, win.Position.Y+1,
+			win.ScreenSize.X-1, win.ScreenSize.Y-win.TitleScreenHeight-1,
 			win.Border, FrameColor, false)
 	}
 }
 
-func (win *WindowData) DrawResizeTab(screen *ebiten.Image) {
+func (win *WindowData) drawResizeTab(screen *ebiten.Image) {
 	//Resize tab
 	if win.Resizable {
 		var xThick float32 = 1.0
 		xColor := win.SizeTabColor
 
-		if ActiveWindow == win {
+		if activeWindow == win {
 			xColor = win.ActiveColor
 		}
-		var Outer, Middle, Inner float32 = 14 * UIScale, 10 * UIScale, 6 * UIScale
+		var Outer, Middle, Inner float32 = 14 * uiScale, 10 * uiScale, 6 * uiScale
 
 		//Outer
 		vector.StrokeLine(screen,
@@ -189,22 +189,14 @@ func (win *WindowData) DrawResizeTab(screen *ebiten.Image) {
 	}
 }
 
-func (win *WindowData) DrawContents(screen *ebiten.Image) {
+func (win *WindowData) drawContents(screen *ebiten.Image) {
 	for _, item := range win.Contents {
-
-		if item.Position.X > win.Size.X ||
-			item.Position.Y > win.Size.Y-win.TitleHeight {
-			continue
-		} else if item.Position.X+item.Size.X > win.Size.X ||
-			item.Position.Y+item.Size.Y > win.Size.Y-win.TitleHeight {
-			continue
-		}
-
+		itemImage := screen.SubImage(item.getItemRect(win).getRectangle()).(*ebiten.Image)
 		if item.ItemType == ITEM_BUTTON {
 
 			BGColor := item.Color
 			BorderColor := item.HoverColor
-			if time.Since(item.Clicked) < FlashTime {
+			if time.Since(item.Clicked) < clickFlash {
 				BGColor = item.ClickColor
 				BorderColor = item.Color
 			} else if item.Hovered {
@@ -214,15 +206,15 @@ func (win *WindowData) DrawContents(screen *ebiten.Image) {
 			}
 
 			if item.Fillet < 1 {
-				vector.DrawFilledRect(screen,
-					win.Position.X+(item.Position.X*UIScale),
-					win.Position.Y+(item.Position.Y*UIScale),
-					item.Size.X*UIScale, item.Size.Y*UIScale, BGColor, false)
+				vector.DrawFilledRect(itemImage,
+					win.Position.X+(item.Position.X*uiScale),
+					win.Position.Y+(item.Position.Y*uiScale),
+					item.Size.X*uiScale, item.Size.Y*uiScale, BGColor, false)
 			} else {
-				win.DrawRoundRect(screen, item, BGColor, BorderColor)
+				win.drawRoundRect(itemImage, item, BGColor, BorderColor)
 			}
 
-			textSize := item.FontSize * UIScale
+			textSize := item.FontSize * uiScale
 			face := &text.GoTextFace{
 				Source: mplusFaceSource,
 				Size:   float64(textSize),
@@ -234,18 +226,18 @@ func (win *WindowData) DrawContents(screen *ebiten.Image) {
 			}
 			tdop := ebiten.DrawImageOptions{}
 			tdop.GeoM.Translate(
-				float64(win.Position.X+(item.Position.X*UIScale)+((item.Size.X*UIScale)/2)),
-				float64(win.Position.Y+(item.Position.Y*UIScale)+((item.Size.Y*UIScale)/2)))
+				float64(win.Position.X+(item.Position.X*uiScale)+((item.Size.X*uiScale)/2)),
+				float64(win.Position.Y+(item.Position.Y*uiScale)+((item.Size.Y*uiScale)/2)))
 
 			top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 
 			top.ColorScale.ScaleWithColor(item.TextColor)
-			text.Draw(screen, item.Text, face, top)
+			text.Draw(itemImage, item.Text, face, top)
 
 			//Text
 		} else if item.ItemType == ITEM_TEXT {
 
-			textSize := item.FontSize * UIScale
+			textSize := item.FontSize * uiScale
 			face := &text.GoTextFace{
 				Source: mplusFaceSource,
 				Size:   float64(textSize),
@@ -257,62 +249,62 @@ func (win *WindowData) DrawContents(screen *ebiten.Image) {
 			}
 			tdop := ebiten.DrawImageOptions{}
 			tdop.GeoM.Translate(
-				float64(win.Position.X+(item.Position.X*UIScale)),
-				float64(win.Position.Y+(item.Position.Y*UIScale)))
+				float64(win.Position.X+(item.Position.X*uiScale)),
+				float64(win.Position.Y+(item.Position.Y*uiScale)))
 
 			top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 
 			top.ColorScale.ScaleWithColor(item.TextColor)
-			text.Draw(screen, item.Text, face, top)
+			text.Draw(itemImage, item.Text, face, top)
 		}
 	}
 }
 
-func (win *WindowData) DrawDebug(screen *ebiten.Image) {
+func (win *WindowData) drawDebug(screen *ebiten.Image) {
 	if *debugMode {
-		grab := win.GetMainRect()
+		grab := win.getMainRect()
 		vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{R: 255, G: 255, A: 255}, false)
 
-		grab = win.DragbarRect()
+		grab = win.dragbarRect()
 		vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{R: 255, A: 255}, false)
 
-		grab = win.XRect()
+		grab = win.xRect()
 		vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{G: 255, A: 255}, false)
 
-		grab = win.TitleRect()
+		grab = win.getTitleRect()
 		vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{B: 255, G: 255, A: 255}, false)
 	}
 }
 
 // Break this up, make a generic draw function as well
-func (win *WindowData) DrawRoundRect(screen *ebiten.Image, item *ItemData, BGcolor, BorderColor color.RGBA) {
-	DrawRoundRect(screen, &RoundRect{
-		Size:     PointScaleMul(item.Size),
-		Position: PointAdd(win.Position, PointScaleMul(item.Position)),
-		Fillet:   item.Fillet * UIScale,
+func (win *WindowData) drawRoundRect(screen *ebiten.Image, item *ItemData, BGcolor, BorderColor color.RGBA) {
+	drawRoundRect(screen, &RoundRect{
+		Size:     pointScaleMul(item.Size),
+		Position: pointAdd(win.Position, pointScaleMul(item.Position)),
+		Fillet:   item.Fillet * uiScale,
 		Color:    BGcolor,
 		Filled:   true,
-		Border:   item.Border * UIScale,
+		Border:   item.Border * uiScale,
 	})
 
-	offset := Point{X: item.BorderPad * UIScale, Y: item.BorderPad * UIScale}
-	DrawRoundRect(screen, &RoundRect{
-		Size: PointSub(
-			PointScaleMul(item.Size),
+	offset := Point{X: item.BorderPad * uiScale, Y: item.BorderPad * uiScale}
+	drawRoundRect(screen, &RoundRect{
+		Size: pointSub(
+			pointScaleMul(item.Size),
 			offset,
 		),
-		Position: PointAdd(
-			PointAdd(win.Position, PointScaleMul(item.Position)),
-			PointDiv(offset, Point{X: 2, Y: 2}),
+		Position: pointAdd(
+			pointAdd(win.Position, pointScaleMul(item.Position)),
+			pointDiv(offset, Point{X: 2, Y: 2}),
 		),
-		Fillet: item.Fillet * UIScale,
+		Fillet: item.Fillet * uiScale,
 		Color:  BorderColor,
 		Filled: false,
-		Border: item.Border * UIScale,
+		Border: item.Border * uiScale,
 	})
 }
 
-func DrawRoundRect(screen *ebiten.Image, item *RoundRect) {
+func drawRoundRect(screen *ebiten.Image, item *RoundRect) {
 	var (
 		path     vector.Path
 		vertices []ebiten.Vertex
@@ -372,7 +364,7 @@ func DrawRoundRect(screen *ebiten.Image, item *RoundRect) {
 	screen.DrawTriangles(vertices, indices, whiteSubImage, op)
 }
 
-func DrawFPS(screen *ebiten.Image) {
+func drawFPS(screen *ebiten.Image) {
 	vector.DrawFilledRect(screen, 0, 0, 58, 16, color.RGBA{R: 0, G: 0, B: 0, A: 192}, false)
 	buf := fmt.Sprintf("%4v FPS", int(math.Round(ebiten.ActualFPS())))
 	ebitenutil.DebugPrintAt(screen, buf, 0, 0)

@@ -1,24 +1,25 @@
 package main
 
 import (
+	"image"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
-func (rect Rect) ContainsPoint(b Point) bool {
+func (rect Rect) containsPoint(b Point) bool {
 	return b.X >= rect.X0 && b.Y >= rect.Y0 &&
 		b.X <= rect.X1 && b.Y <= rect.Y1
 }
 
-func (item *ItemData) ContainsPoint(win *WindowData, b Point) bool {
-	return b.X >= win.Position.X+(item.Position.X*UIScale) &&
-		b.X <= win.Position.X+(item.Position.X*UIScale)+(item.Size.X*UIScale) &&
-		b.Y >= win.Position.Y+(item.Position.Y*UIScale) &&
-		b.Y <= win.Position.Y+(item.Position.Y*UIScale)+(item.Size.Y*UIScale)
+func (item *ItemData) containsPoint(win *WindowData, b Point) bool {
+	return b.X >= win.Position.X+(item.Position.X*uiScale) &&
+		b.X <= win.Position.X+(item.Position.X*uiScale)+(item.Size.X*uiScale) &&
+		b.Y >= win.Position.Y+(item.Position.Y*uiScale) &&
+		b.Y <= win.Position.Y+(item.Position.Y*uiScale)+(item.Size.Y*uiScale)
 }
 
-func (win WindowData) GetWinRect() Rect {
+func (win *WindowData) getWinRect() Rect {
 	return Rect{
 		X0: win.Position.X,
 		Y0: win.Position.Y,
@@ -27,7 +28,20 @@ func (win WindowData) GetWinRect() Rect {
 	}
 }
 
-func (win WindowData) GetMainRect() Rect {
+func (item *ItemData) getItemRect(win *WindowData) Rect {
+	return Rect{
+		X0: win.Position.X + item.Position.X,
+		Y0: win.Position.Y + item.Position.Y,
+		X1: win.Position.X + item.Position.X + item.Size.X,
+		Y1: win.Position.Y + item.Position.Y + item.Size.Y,
+	}
+}
+
+func (rect Rect) getRectangle() image.Rectangle {
+	return image.Rectangle{Min: image.Point{X: int(rect.X0), Y: int(rect.Y0)}, Max: image.Point{X: int(rect.X1), Y: int(rect.Y1)}}
+}
+
+func (win *WindowData) getMainRect() Rect {
 	return Rect{
 		X0: win.Position.X,
 		Y0: win.Position.Y + win.TitleScreenHeight + 1,
@@ -36,7 +50,7 @@ func (win WindowData) GetMainRect() Rect {
 	}
 }
 
-func (win WindowData) TitleRect() Rect {
+func (win *WindowData) getTitleRect() Rect {
 	if win.TitleHeight <= 0 {
 		return Rect{}
 	}
@@ -47,7 +61,7 @@ func (win WindowData) TitleRect() Rect {
 	}
 }
 
-func (win WindowData) XRect() Rect {
+func (win *WindowData) xRect() Rect {
 	if win.TitleHeight <= 0 || !win.Closable {
 		return Rect{}
 	}
@@ -62,24 +76,24 @@ func (win WindowData) XRect() Rect {
 	}
 }
 
-func (win WindowData) DragbarRect() Rect {
+func (win *WindowData) dragbarRect() Rect {
 	if win.TitleHeight <= 0 && !win.Resizable {
 		return Rect{}
 	}
-	textSize := win.TitleTextWidth()
-	xRect := win.XRect()
+	textSize := win.titleTextWidth()
+	xRect := win.xRect()
 	buttonsWidth := xRect.X1 - xRect.X0 + 3
 
-	dpad := (win.TitleHeight * UIScale) / 5
-	xStart := textSize.X + float32((win.TitleHeight*UIScale)/1.5)
+	dpad := (win.TitleHeight * uiScale) / 5
+	xStart := textSize.X + float32((win.TitleHeight*uiScale)/1.5)
 	xEnd := (win.ScreenSize.X - buttonsWidth)
 	return Rect{
 		X0: win.Position.X + xStart, Y0: win.Position.Y + dpad,
-		X1: win.Position.X + xEnd, Y1: win.Position.Y + (win.TitleHeight * UIScale) - dpad,
+		X1: win.Position.X + xEnd, Y1: win.Position.Y + (win.TitleHeight * uiScale) - dpad,
 	}
 }
 
-func (win *WindowData) SetSize(size Point) bool {
+func (win *WindowData) setSize(size Point) bool {
 
 	tooSmall := false
 	if size.X < minWinSizeX {
@@ -92,7 +106,7 @@ func (win *WindowData) SetSize(size Point) bool {
 		tooSmall = true
 	}
 	win.Size = size
-	win.CalcUIScale()
+	win.calcUIScale()
 
 	return tooSmall
 }
@@ -100,14 +114,14 @@ func (win *WindowData) SetSize(size Point) bool {
 const cornerSize = 14
 const tol = 3
 
-func (win WindowData) GetWindowEdge(mpos Point) WindowEdge {
+func (win *WindowData) getWindowEdge(mpos Point) WindowEdge {
 
 	if !win.Resizable {
 		return EDGE_NONE
 
 	}
 
-	winRect := win.GetWinRect()
+	winRect := win.getWinRect()
 
 	//Expand outer window rect
 	outRect := winRect
@@ -124,7 +138,7 @@ func (win WindowData) GetWindowEdge(mpos Point) WindowEdge {
 	inRect.Y1 -= tol
 
 	//If within outrect, and not within inrect it is window edge
-	if outRect.ContainsPoint(mpos) && !inRect.ContainsPoint(mpos) {
+	if outRect.containsPoint(mpos) && !inRect.containsPoint(mpos) {
 		if mpos.Y < outRect.Y0+cornerSize {
 			if mpos.X < inRect.X0+cornerSize {
 				return EDGE_TOP_LEFT
@@ -151,18 +165,18 @@ func (win WindowData) GetWindowEdge(mpos Point) WindowEdge {
 	return EDGE_NONE
 }
 
-func WithinRange(a, b float32, tol float32) bool {
+func withinRange(a, b float32, tol float32) bool {
 	if math.Abs(float64(a-b)) <= float64(tol) {
 		return true
 	}
 	return false
 }
 
-func (win WindowData) TitleTextWidth() Point {
+func (win *WindowData) titleTextWidth() Point {
 	if win.TitleHeight <= 0 {
 		return Point{}
 	}
-	textSize := ((win.TitleHeight * UIScale) / 1.5)
+	textSize := ((win.TitleHeight * uiScale) / 1.5)
 	face := &text.GoTextFace{
 		Source: mplusFaceSource,
 		Size:   float64(textSize),
@@ -171,44 +185,52 @@ func (win WindowData) TitleTextWidth() Point {
 	return Point{X: float32(textWidth), Y: float32(textHeight)}
 }
 
-func PointAdd(a, b Point) Point {
+func pointAdd(a, b Point) Point {
 	return Point{X: a.X + b.X, Y: a.Y + b.Y}
 }
 
-func PointMul(a, b Point) Point {
+func pointMul(a, b Point) Point {
 	return Point{X: a.X * b.X, Y: a.Y * b.Y}
 }
 
-func PointScaleMul(a Point) Point {
-	return Point{X: a.X * UIScale, Y: a.Y * UIScale}
+func pointScaleMul(a Point) Point {
+	return Point{X: a.X * uiScale, Y: a.Y * uiScale}
 }
 
-func PointScaleDiv(a Point) Point {
-	return Point{X: a.X / UIScale, Y: a.Y / UIScale}
+func pointScaleDiv(a Point) Point {
+	return Point{X: a.X / uiScale, Y: a.Y / uiScale}
 }
 
-func PointDiv(a, b Point) Point {
+func pointDiv(a, b Point) Point {
 	return Point{X: a.X / b.X, Y: a.Y / b.Y}
 }
 
-func PointSub(a, b Point) Point {
+func pointSub(a, b Point) Point {
 	return Point{X: a.X - b.X, Y: a.Y - b.Y}
 }
 
-func (win WindowData) GetSizeX() float32 {
-	return win.Size.X * UIScale
+func (win *WindowData) getSizeX() float32 {
+	return win.Size.X * uiScale
 }
 
-func (win WindowData) GetSizeY() float32 {
-	return win.Size.Y * UIScale
+func (win *WindowData) getSizeY() float32 {
+	return win.Size.Y * uiScale
 }
 
 // Sets SizeTemp, TitleSizeTemp
-func (win *WindowData) CalcUIScale() {
-	win.ScreenSize = Point{X: win.Size.X * UIScale, Y: win.Size.Y * UIScale}
-	win.TitleScreenHeight = win.TitleHeight * UIScale
+func (win *WindowData) calcUIScale() {
+	win.ScreenSize = Point{X: win.Size.X * uiScale, Y: win.Size.Y * uiScale}
+	win.TitleScreenHeight = win.TitleHeight * uiScale
 }
 
 func (win *WindowData) SetTitleSize(size float32) {
-	win.TitleHeight = size / UIScale
+	win.TitleHeight = size / uiScale
+}
+
+func SetUIScale(scale float32) {
+	uiScale = scale
+
+	for _, win := range windows {
+		win.calcUIScale()
+	}
 }

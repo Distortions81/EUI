@@ -31,17 +31,17 @@ func (g *Game) Update() error {
 	//altClickHeld := inpututil.MouseButtonPressDuration(ebiten.MouseButton1)
 
 	//Check all windows
-	for _, win := range Windows {
+	for _, win := range windows {
 		if !win.Open {
 			continue
 		}
 
 		//Reduce UI scaling calculations
-		win.CalcUIScale()
+		win.calcUIScale()
 
 		if win.Resizable {
 
-			side := win.GetWindowEdge(mposOld)
+			side := win.getWindowEdge(mposOld)
 
 			//If needed, set cursor
 			if !cursorChanged && side != EDGE_NONE {
@@ -62,54 +62,58 @@ func (g *Game) Update() error {
 
 			//Drag resize edge or corner
 			if clickDrag {
-				posCh := PointSub(mpos, mposOld)
-				sizeCh := Point{X: posCh.X / UIScale, Y: posCh.Y / UIScale}
+				posCh := pointSub(mpos, mposOld)
+				sizeCh := Point{X: posCh.X / uiScale, Y: posCh.Y / uiScale}
 				if side == EDGE_TOP {
 					posCh.X = 0
 					sizeCh.X = 0
-					if !win.SetSize(PointSub(win.Size, sizeCh)) {
-						win.Position = PointAdd(win.Position, posCh)
+					if !win.setSize(pointSub(win.Size, sizeCh)) {
+						win.Position = pointAdd(win.Position, posCh)
 					}
 					continue
 				} else if side == EDGE_BOTTOM {
 					sizeCh.X = 0
-					win.SetSize(PointAdd(win.Size, sizeCh))
+					win.setSize(pointAdd(win.Size, sizeCh))
 					continue
 				} else if side == EDGE_LEFT {
 					posCh.Y = 0
 					sizeCh.Y = 0
-					if !win.SetSize(PointSub(win.Size, sizeCh)) {
-						win.Position = PointAdd(win.Position, posCh)
+					if !win.setSize(pointSub(win.Size, sizeCh)) {
+						win.Position = pointAdd(win.Position, posCh)
 					}
 					continue
 				} else if side == EDGE_RIGHT {
 					sizeCh.Y = 0
-					win.SetSize(PointAdd(win.Size, sizeCh))
+					win.setSize(pointAdd(win.Size, sizeCh))
 					continue
 
 					//Corner reize
 				} else if side == EDGE_TOP_LEFT {
-					if !win.SetSize(PointSub(win.Size, sizeCh)) {
-						win.Position = PointAdd(win.Position, posCh)
+					if !win.setSize(pointSub(win.Size, sizeCh)) {
+						win.Position = pointAdd(win.Position, posCh)
 					}
 					continue
 				} else if side == EDGE_TOP_RIGHT {
 					win.Size.X += sizeCh.X
 					win.Size.Y -= sizeCh.Y
+					win.setSize(win.Size)
 					win.Position.Y += posCh.Y
 					continue
 				} else if side == EDGE_BOTTOM_RIGHT {
 					win.Size.X += sizeCh.X
 					win.Size.Y += sizeCh.Y
+					win.setSize(win.Size)
 					continue
 				} else if side == EDGE_BOTTOM_LEFT {
 					win.Size.Y += sizeCh.Y
 					win.Size.X -= sizeCh.X
+					win.setSize(win.Size)
 					win.Position.X += posCh.X
 					continue
 				} else if side == EDGE_TOP_LEFT {
 					win.Size.Y -= sizeCh.Y
 					win.Size.X += sizeCh.X
+					win.setSize(win.Size)
 					win.Position.Y -= posCh.Y
 					continue
 				}
@@ -121,8 +125,8 @@ func (g *Game) Update() error {
 
 			//Dragbar
 			if !cursorChanged && win.Movable {
-				if win.TitleRect().ContainsPoint(mposOld) {
-					if win.DragbarRect().ContainsPoint(mposOld) {
+				if win.getTitleRect().containsPoint(mposOld) {
+					if win.dragbarRect().containsPoint(mposOld) {
 						win.HoverDragbar = true
 
 						if !cursorChanged {
@@ -134,15 +138,15 @@ func (g *Game) Update() error {
 						}
 
 						if clickDrag {
-							win.Position = PointAdd(win.Position, PointSub(mpos, mposOld))
+							win.Position = pointAdd(win.Position, pointSub(mpos, mposOld))
 						}
 					}
 				}
 			}
 			//Close X
 			if win.Closable {
-				if win.TitleRect().ContainsPoint(mpos) {
-					if win.XRect().ContainsPoint(mpos) {
+				if win.getTitleRect().containsPoint(mpos) {
+					if win.xRect().containsPoint(mpos) {
 						win.HoverClose = true
 						if click {
 							win.Open = false
@@ -153,15 +157,15 @@ func (g *Game) Update() error {
 		}
 
 		//Window items
-		if win.GetWinRect().ContainsPoint(mpos) {
+		if win.getWinRect().containsPoint(mpos) {
 			win.Hovered = true
 
-			if win.GetMainRect().ContainsPoint(mpos) {
+			if win.getMainRect().containsPoint(mpos) {
 				for i, item := range win.Contents {
 					if item.ItemType != ITEM_BUTTON {
 						continue
 					}
-					if item.ContainsPoint(win, mpos) {
+					if item.containsPoint(win, mpos) {
 						win.Contents[i].Hovered = true
 						if click {
 							win.Contents[i].Clicked = time.Now()

@@ -1,56 +1,11 @@
 package main
 
 import (
-	"image/color"
 	"log"
 	"reflect"
 )
 
-var DefaultTheme = &WindowData{
-	TitleHeight:     24,
-	Border:          1,
-	TitleColor:      color.RGBA{R: 255, G: 255, B: 255, A: 255},
-	BorderColor:     color.RGBA{R: 64, G: 64, B: 64, A: 255},
-	SizeTabColor:    color.RGBA{R: 48, G: 48, B: 48, A: 255},
-	DragbarColor:    color.RGBA{R: 64, G: 64, B: 64, A: 255},
-	HoverTitleColor: color.RGBA{R: 64, G: 128, B: 128, A: 255},
-	HoverColor:      color.RGBA{R: 80, G: 80, B: 80, A: 255},
-	BGColor:         color.RGBA{R: 16, G: 16, B: 16, A: 255},
-	ActiveColor:     color.RGBA{R: 0, G: 128, B: 128, A: 255},
-
-	Movable: true, Closable: true, Resizable: true, Open: true,
-}
-
-var DefaultButton = &ItemData{
-	Text:      "Button",
-	ItemType:  ITEM_BUTTON,
-	Size:      Point{X: 128, Y: 64},
-	Position:  Point{X: 10, Y: 10},
-	FontSize:  24,
-	LineSpace: 1.2,
-
-	Fillet: 8,
-	Filled: true, Outlined: true,
-	Border:    1,
-	BorderPad: 4,
-
-	TextColor:  color.RGBA{R: 255, G: 255, B: 255, A: 255},
-	Color:      color.RGBA{R: 48, G: 48, B: 48, A: 255},
-	HoverColor: color.RGBA{R: 64, G: 128, B: 128, A: 255},
-	ClickColor: color.RGBA{R: 64, G: 64, B: 64, A: 255},
-}
-
-var DefaultText = &ItemData{
-	Text:      "Sample text:\nThe quick brown fox\njumps over the lazy dog.",
-	ItemType:  ITEM_TEXT,
-	Size:      Point{X: 128, Y: 128},
-	Position:  Point{X: 16, Y: 24 + 16},
-	FontSize:  24,
-	LineSpace: 1.2,
-	TextColor: color.RGBA{R: 255, G: 255, B: 255, A: 255},
-}
-
-func MergeData(original interface{}, updates interface{}) interface{} {
+func mergeData(original interface{}, updates interface{}) interface{} {
 	// Ensure both original and updates are pointers to structs
 	origVal := reflect.ValueOf(original)
 	updVal := reflect.ValueOf(updates)
@@ -89,22 +44,21 @@ func isZeroValue(value reflect.Value) bool {
 }
 
 func (target *WindowData) AddWindow() {
-	for _, win := range Windows {
+	for _, win := range windows {
 		if win == target {
 			log.Println("Window already exists")
 			return
 		}
 	}
-	target.CalcUIScale()
-	ActiveWindow = target
-	Windows = append(Windows, target)
+	target.calcUIScale()
+	activeWindow = target
+	windows = append(windows, target)
 }
 
-// RemoveWindow removes a *WindowData from the slice if it exists
 func (target *WindowData) RemoveWindow() {
-	for i, win := range Windows {
+	for i, win := range windows {
 		if win == target { // Compare pointers
-			Windows = append(Windows[:i], Windows[i+1:]...)
+			windows = append(windows[:i], windows[i+1:]...)
 			return
 		}
 	}
@@ -113,19 +67,19 @@ func (target *WindowData) RemoveWindow() {
 }
 
 func NewWindow(win *WindowData) *WindowData {
-	newWindow := *DefaultTheme
-	MergeData(&newWindow, win)
+	newWindow := *defaultTheme
+	mergeData(&newWindow, win)
 	return &newWindow
 }
 
 func NewButton(item *ItemData) *ItemData {
-	newItem := *DefaultButton
-	MergeData(&newItem, item)
+	newItem := *defaultButton
+	mergeData(&newItem, item)
 	return &newItem
 }
 
 func NewText(item *ItemData) *ItemData {
-	newItem := *DefaultText
-	MergeData(&newItem, item)
+	newItem := *defaultText
+	mergeData(&newItem, item)
 	return &newItem
 }
