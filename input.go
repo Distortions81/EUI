@@ -37,12 +37,22 @@ func (g *Game) Update() error {
 			continue
 		}
 
+		defer func() {
+			if !cursorChanged && cursorShape != ebiten.CursorShapeDefault {
+				cursorShape = ebiten.CursorShapeDefault
+				ebiten.SetCursorShape(cursorShape)
+			}
+		}()
+
 		if win.Resizable {
 			side := win.getWindowEdge(mposOld)
 
 			//If needed, set cursor
 			if !cursorChanged && side != EDGE_NONE {
-				c := ebiten.CursorShapeEWResize
+				c := ebiten.CursorShapeDefault
+				if side == EDGE_LEFT || side == EDGE_RIGHT {
+					c = ebiten.CursorShapeEWResize
+				}
 				if side == EDGE_TOP || side == EDGE_BOTTOM {
 					c = ebiten.CursorShapeNSResize
 				} else if side == EDGE_TOP_LEFT || side == EDGE_BOTTOM_RIGHT {
@@ -55,64 +65,64 @@ func (g *Game) Update() error {
 					ebiten.SetCursorShape(cursorShape)
 				}
 				cursorChanged = true
-			}
 
-			//Drag resize edge or corner
-			if clickDrag {
-				posCh := pointSub(mpos, mposOld)
-				sizeCh := Point{X: posCh.X / uiScale, Y: posCh.Y / uiScale}
-				if side == EDGE_TOP {
-					posCh.X = 0
-					sizeCh.X = 0
-					if !win.setSize(pointSub(win.Size, sizeCh)) {
-						win.Position = pointAdd(win.Position, posCh)
-					}
-					break
-				} else if side == EDGE_BOTTOM {
-					sizeCh.X = 0
-					win.setSize(pointAdd(win.Size, sizeCh))
-					break
-				} else if side == EDGE_LEFT {
-					posCh.Y = 0
-					sizeCh.Y = 0
-					if !win.setSize(pointSub(win.Size, sizeCh)) {
-						win.Position = pointAdd(win.Position, posCh)
-					}
-					break
-				} else if side == EDGE_RIGHT {
-					sizeCh.Y = 0
-					win.setSize(pointAdd(win.Size, sizeCh))
-					break
+				//Drag resize edge or corner
+				if clickDrag {
+					posCh := pointSub(mpos, mposOld)
+					sizeCh := Point{X: posCh.X / uiScale, Y: posCh.Y / uiScale}
+					if side == EDGE_TOP {
+						posCh.X = 0
+						sizeCh.X = 0
+						if !win.setSize(pointSub(win.Size, sizeCh)) {
+							win.Position = pointAdd(win.Position, posCh)
+						}
+						break
+					} else if side == EDGE_BOTTOM {
+						sizeCh.X = 0
+						win.setSize(pointAdd(win.Size, sizeCh))
+						break
+					} else if side == EDGE_LEFT {
+						posCh.Y = 0
+						sizeCh.Y = 0
+						if !win.setSize(pointSub(win.Size, sizeCh)) {
+							win.Position = pointAdd(win.Position, posCh)
+						}
+						break
+					} else if side == EDGE_RIGHT {
+						sizeCh.Y = 0
+						win.setSize(pointAdd(win.Size, sizeCh))
+						break
 
-					//Corner reize
-				} else if side == EDGE_TOP_LEFT {
-					if !win.setSize(pointSub(win.Size, sizeCh)) {
-						win.Position = pointAdd(win.Position, posCh)
+						//Corner reize
+					} else if side == EDGE_TOP_LEFT {
+						if !win.setSize(pointSub(win.Size, sizeCh)) {
+							win.Position = pointAdd(win.Position, posCh)
+						}
+						break
+					} else if side == EDGE_TOP_RIGHT {
+						win.Size.X += sizeCh.X
+						win.Size.Y -= sizeCh.Y
+						win.setSize(win.Size)
+						win.Position.Y += posCh.Y
+						break
+					} else if side == EDGE_BOTTOM_RIGHT {
+						win.Size.X += sizeCh.X
+						win.Size.Y += sizeCh.Y
+						win.setSize(win.Size)
+						break
+					} else if side == EDGE_BOTTOM_LEFT {
+						win.Size.Y += sizeCh.Y
+						win.Size.X -= sizeCh.X
+						win.setSize(win.Size)
+						win.Position.X += posCh.X
+						break
+					} else if side == EDGE_TOP_LEFT {
+						win.Size.Y -= sizeCh.Y
+						win.Size.X += sizeCh.X
+						win.setSize(win.Size)
+						win.Position.Y -= posCh.Y
+						break
 					}
-					break
-				} else if side == EDGE_TOP_RIGHT {
-					win.Size.X += sizeCh.X
-					win.Size.Y -= sizeCh.Y
-					win.setSize(win.Size)
-					win.Position.Y += posCh.Y
-					break
-				} else if side == EDGE_BOTTOM_RIGHT {
-					win.Size.X += sizeCh.X
-					win.Size.Y += sizeCh.Y
-					win.setSize(win.Size)
-					break
-				} else if side == EDGE_BOTTOM_LEFT {
-					win.Size.Y += sizeCh.Y
-					win.Size.X -= sizeCh.X
-					win.setSize(win.Size)
-					win.Position.X += posCh.X
-					break
-				} else if side == EDGE_TOP_LEFT {
-					win.Size.Y -= sizeCh.Y
-					win.Size.X += sizeCh.X
-					win.setSize(win.Size)
-					win.Position.Y -= posCh.Y
-					break
 				}
 			}
 		}
@@ -136,6 +146,7 @@ func (g *Game) Update() error {
 
 						if clickDrag {
 							win.Position = pointAdd(win.Position, pointSub(mpos, mposOld))
+							break
 						}
 					}
 				}
@@ -183,13 +194,6 @@ func (g *Game) Update() error {
 				win.BringForward()
 			}
 			return nil
-		}
-	}
-
-	if !cursorChanged && cursorShape != ebiten.CursorShapeDefault {
-		if cursorShape != ebiten.CursorShapeDefault {
-			cursorShape = ebiten.CursorShapeDefault
-			ebiten.SetCursorShape(cursorShape)
 		}
 	}
 

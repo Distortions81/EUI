@@ -109,6 +109,7 @@ func (win *WindowData) setSize(size Point) bool {
 	}
 	win.Size = size
 	win.calcUIScale()
+	win.BringForward()
 
 	return tooSmall
 }
