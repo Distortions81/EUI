@@ -35,12 +35,12 @@ func main() {
 	SetUIScale(1)
 
 	newWindow := makeTestWindow()
-	newWindow.AddWindow()
-
-	newWindow = makeTestWindow()
 	newWindow.Position.X += 64
 	newWindow.Position.Y += 64
-	newWindow.AddWindow()
+	newWindow.AddWindow(false)
+
+	newWindow = makeTestWindow()
+	newWindow.AddWindow(false)
 
 	go startEbiten()
 

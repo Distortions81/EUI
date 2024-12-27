@@ -43,7 +43,7 @@ func isZeroValue(value reflect.Value) bool {
 	return reflect.DeepEqual(value.Interface(), reflect.Zero(value.Type()).Interface())
 }
 
-func (target *WindowData) AddWindow() {
+func (target *WindowData) AddWindow(toBack bool) {
 	for _, win := range windows {
 		if win == target {
 			log.Println("Window already exists")
@@ -51,8 +51,13 @@ func (target *WindowData) AddWindow() {
 		}
 	}
 	target.calcUIScale()
-	activeWindow = target
-	windows = append(windows, target)
+
+	if !toBack {
+		windows = append(windows, target)
+		activeWindow = target
+	} else {
+		windows = append([]*WindowData{target}, windows...)
+	}
 }
 
 func (target *WindowData) RemoveWindow() {
@@ -89,6 +94,16 @@ func (target *WindowData) BringForward() {
 		if win == target {
 			windows = append(windows[:w], windows[w+1:]...)
 			windows = append(windows, target)
+			activeWindow = win
+		}
+	}
+}
+
+func (target *WindowData) ToBack() {
+	for w, win := range windows {
+		if win == target {
+			windows = append(windows[:w], windows[w+1:]...)
+			windows = append([]*WindowData{target}, windows...)
 			activeWindow = win
 		}
 	}
