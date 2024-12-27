@@ -83,3 +83,13 @@ func NewText(item *ItemData) *ItemData {
 	mergeData(&newItem, item)
 	return &newItem
 }
+
+func (target *WindowData) BringForward() {
+	for w, win := range windows {
+		if win == target {
+			windows = append(windows[:w], windows[w+1:]...)
+			windows = append(windows, target)
+			activeWindow = win
+		}
+	}
+}

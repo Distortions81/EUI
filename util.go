@@ -30,15 +30,17 @@ func (win *WindowData) getWinRect() Rect {
 
 func (item *ItemData) getItemRect(win *WindowData) Rect {
 	return Rect{
-		X0: win.Position.X + item.Position.X,
-		Y0: win.Position.Y + item.Position.Y,
-		X1: win.Position.X + item.Position.X + item.Size.X,
-		Y1: win.Position.Y + item.Position.Y + item.Size.Y,
+		X0: win.Position.X + (item.Position.X * uiScale),
+		Y0: win.Position.Y + (item.Position.Y * uiScale),
+		X1: win.Position.X + (item.Position.X * uiScale) + (item.Size.X * uiScale),
+		Y1: win.Position.Y + (item.Position.Y * uiScale) + (item.Size.Y * uiScale),
 	}
 }
 
 func (rect Rect) getRectangle() image.Rectangle {
-	return image.Rectangle{Min: image.Point{X: int(rect.X0), Y: int(rect.Y0)}, Max: image.Point{X: int(rect.X1), Y: int(rect.Y1)}}
+	return image.Rectangle{
+		Min: image.Point{X: int(math.Ceil(float64(rect.X0))), Y: int(math.Ceil(float64(rect.Y0)))},
+		Max: image.Point{X: int(math.Ceil(float64(rect.X1))), Y: int(math.Ceil(float64(rect.Y1)))}}
 }
 
 func (win *WindowData) getMainRect() Rect {

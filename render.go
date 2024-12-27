@@ -20,19 +20,23 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			continue
 		}
 
-		mainArea := screen.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
-		titleArea := screen.SubImage(win.getTitleRect().getRectangle()).(*ebiten.Image)
-		windowArea := screen.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
-
-		win.drawBG(mainArea)
-		win.drawContents(mainArea)
-		win.drawWinTitle(titleArea)
-		win.drawResizeTab(mainArea)
-		win.drawBorder(windowArea)
-		win.drawDebug(screen)
+		win.Draw(screen)
 	}
 
 	drawFPS(screen)
+}
+
+func (win *WindowData) Draw(screen *ebiten.Image) {
+	mainArea := screen.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
+	titleArea := screen.SubImage(win.getTitleRect().getRectangle()).(*ebiten.Image)
+	windowArea := screen.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
+
+	win.drawBG(mainArea)
+	win.drawContents(mainArea)
+	win.drawWinTitle(titleArea)
+	win.drawResizeTab(mainArea)
+	win.drawBorder(windowArea)
+	win.drawDebug(screen)
 }
 
 func (win *WindowData) drawBG(screen *ebiten.Image) {
@@ -140,7 +144,7 @@ func (win *WindowData) drawBorder(screen *ebiten.Image) {
 		if win.TitleHeight > 0 {
 			vector.StrokeRect(screen,
 				win.Position.X+1, win.Position.Y+1,
-				win.ScreenSize.X, win.TitleScreenHeight,
+				win.ScreenSize.X-1, win.TitleScreenHeight-1,
 				win.Border, FrameColor, false)
 		}
 		//Window border

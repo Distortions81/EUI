@@ -56,20 +56,19 @@ func makeTestWindow() *WindowData {
 		newButton.Text = "Okay"
 		newText.Text = "Secret code: 1234"
 		newButton.Action = func() {
-			//newWindow.Open = false
 			newWindow.RemoveWindow()
 		}
 	}
 
 	newScaleup.Action = func() {
 		if uiScale < 8 {
-			uiScale += 0.1
+			SetUIScale(uiScale + 0.1)
 		}
 	}
 
 	newScaledown.Action = func() {
 		if uiScale > 0.2 {
-			uiScale -= 0.1
+			SetUIScale(uiScale - 0.1)
 		}
 	}
 

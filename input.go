@@ -31,16 +31,13 @@ func (g *Game) Update() error {
 	//altClickHeld := inpututil.MouseButtonPressDuration(ebiten.MouseButton1)
 
 	//Check all windows
-	for _, win := range windows {
+	for i := len(windows) - 1; i >= 0; i-- {
+		win := windows[i]
 		if !win.Open {
 			continue
 		}
 
-		//Reduce UI scaling calculations
-		win.calcUIScale()
-
 		if win.Resizable {
-
 			side := win.getWindowEdge(mposOld)
 
 			//If needed, set cursor
@@ -70,52 +67,52 @@ func (g *Game) Update() error {
 					if !win.setSize(pointSub(win.Size, sizeCh)) {
 						win.Position = pointAdd(win.Position, posCh)
 					}
-					continue
+					break
 				} else if side == EDGE_BOTTOM {
 					sizeCh.X = 0
 					win.setSize(pointAdd(win.Size, sizeCh))
-					continue
+					break
 				} else if side == EDGE_LEFT {
 					posCh.Y = 0
 					sizeCh.Y = 0
 					if !win.setSize(pointSub(win.Size, sizeCh)) {
 						win.Position = pointAdd(win.Position, posCh)
 					}
-					continue
+					break
 				} else if side == EDGE_RIGHT {
 					sizeCh.Y = 0
 					win.setSize(pointAdd(win.Size, sizeCh))
-					continue
+					break
 
 					//Corner reize
 				} else if side == EDGE_TOP_LEFT {
 					if !win.setSize(pointSub(win.Size, sizeCh)) {
 						win.Position = pointAdd(win.Position, posCh)
 					}
-					continue
+					break
 				} else if side == EDGE_TOP_RIGHT {
 					win.Size.X += sizeCh.X
 					win.Size.Y -= sizeCh.Y
 					win.setSize(win.Size)
 					win.Position.Y += posCh.Y
-					continue
+					break
 				} else if side == EDGE_BOTTOM_RIGHT {
 					win.Size.X += sizeCh.X
 					win.Size.Y += sizeCh.Y
 					win.setSize(win.Size)
-					continue
+					break
 				} else if side == EDGE_BOTTOM_LEFT {
 					win.Size.Y += sizeCh.Y
 					win.Size.X -= sizeCh.X
 					win.setSize(win.Size)
 					win.Position.X += posCh.X
-					continue
+					break
 				} else if side == EDGE_TOP_LEFT {
 					win.Size.Y -= sizeCh.Y
 					win.Size.X += sizeCh.X
 					win.setSize(win.Size)
 					win.Position.Y -= posCh.Y
-					continue
+					break
 				}
 			}
 		}
@@ -149,7 +146,8 @@ func (g *Game) Update() error {
 					if win.xRect().containsPoint(mpos) {
 						win.HoverClose = true
 						if click {
-							win.Open = false
+							win.RemoveWindow()
+							break
 						}
 					}
 				}
@@ -171,11 +169,20 @@ func (g *Game) Update() error {
 							win.Contents[i].Clicked = time.Now()
 							if item.Action != nil {
 								item.Action()
+								break
 							}
 						}
 					}
 				}
 			}
+		}
+
+		//Bring window forward on click
+		if win.getWinRect().containsPoint(mpos) {
+			if click {
+				win.BringForward()
+			}
+			return nil
 		}
 	}
 
