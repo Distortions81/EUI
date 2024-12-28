@@ -99,6 +99,17 @@ func (win *windowData) dragbarRect() rect {
 func (win *windowData) setSize(size point) bool {
 
 	tooSmall := false
+	xc, yc := win.itemOverlap(size)
+	if !xc {
+		win.Size.X = size.X
+	}
+	if !yc {
+		win.Size.Y = size.Y
+	}
+	if yc && xc {
+		tooSmall = true
+	}
+
 	if size.X < minWinSizeX {
 		size.X = minWinSizeX
 		tooSmall = true
@@ -108,9 +119,8 @@ func (win *windowData) setSize(size point) bool {
 		size.Y = minWinSizeY
 		tooSmall = true
 	}
-	win.Size = size
-	win.BringForward()
 
+	win.BringForward()
 	return tooSmall
 }
 

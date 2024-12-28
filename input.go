@@ -100,27 +100,30 @@ func (g *Game) Update() error {
 						}
 						break
 					} else if side == EDGE_TOP_RIGHT {
-						win.Size.X += sizeCh.X
-						win.Size.Y -= sizeCh.Y
-						win.setSize(win.Size)
-						win.Position.Y += posCh.Y
+						tx := win.Size.X + sizeCh.X
+						ty := win.Size.Y - sizeCh.Y
+						if !win.setSize(point{X: tx, Y: ty}) {
+							win.Position.Y += posCh.Y
+						}
 						break
 					} else if side == EDGE_BOTTOM_RIGHT {
-						win.Size.X += sizeCh.X
-						win.Size.Y += sizeCh.Y
-						win.setSize(win.Size)
+						tx := win.Size.X + sizeCh.X
+						ty := win.Size.Y + sizeCh.Y
+						win.setSize(point{X: tx, Y: ty})
 						break
 					} else if side == EDGE_BOTTOM_LEFT {
-						win.Size.Y += sizeCh.Y
-						win.Size.X -= sizeCh.X
-						win.setSize(win.Size)
-						win.Position.X += posCh.X
+						tx := win.Size.Y + sizeCh.Y
+						ty := win.Size.X - sizeCh.X
+						if !win.setSize(point{X: tx, Y: ty}) {
+							win.Position.X += posCh.X
+						}
 						break
 					} else if side == EDGE_TOP_LEFT {
-						win.Size.Y -= sizeCh.Y
-						win.Size.X += sizeCh.X
-						win.setSize(win.Size)
-						win.Position.Y -= posCh.Y
+						tx := win.Size.Y - sizeCh.Y
+						ty := win.Size.X + sizeCh.X
+						if !win.setSize(point{X: tx, Y: ty}) {
+							win.Position.Y -= posCh.Y
+						}
 						break
 					}
 				}

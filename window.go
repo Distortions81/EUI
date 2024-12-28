@@ -185,3 +185,32 @@ func (win *windowData) getPosition() point {
 func (item *itemData) getPosition(win *windowData) point {
 	return item.PinTo.getItemPosition(win, item)
 }
+
+func (win windowData) itemOverlap(size point) (bool, bool) {
+
+	rectList := []rect{}
+
+	win.Size = size
+
+	for _, item := range win.Contents {
+		rectList = append(rectList, item.getItemRect(&win))
+	}
+
+	xc, yc := false, false
+	for _, ra := range rectList {
+		for _, rb := range rectList {
+			if ra == rb {
+				continue
+			}
+
+			if ra.containsPoint(point{X: rb.X0, Y: rb.Y0}) {
+				xc = true
+			}
+			if ra.containsPoint(point{X: rb.X1, Y: rb.Y1}) {
+				yc = true
+			}
+		}
+	}
+
+	return xc, yc
+}
