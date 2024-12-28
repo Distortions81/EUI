@@ -12,7 +12,7 @@ type windowData struct {
 	PinTo           pinType
 	Padding, Border float32
 
-	Open, Hovered,
+	Open, Hovered, Flow,
 	Closable, Movable, Resizable,
 	HoverClose, HoverDragbar bool
 

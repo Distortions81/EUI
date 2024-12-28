@@ -194,11 +194,19 @@ func (win *windowData) drawResizeTab(screen *ebiten.Image) {
 }
 
 func (win *windowData) drawContents(screen *ebiten.Image) {
+
 	for _, item := range win.Contents {
 		itemImage := screen.SubImage(item.getItemRect(win).getRectangle()).(*ebiten.Image)
+
 		if item.ItemType == ITEM_FLOW {
-			newWin := windowData{Size: win.Size, Position: pointSub(win.Position, point{X: 0, Y: win.TitleHeight}), Contents: item.Contents}
+			newWin := &windowData{
+				Flow:     true,
+				Size:     win.Size,
+				Position: pointSub(win.Position, point{X: 0, Y: win.TitleHeight}),
+				Contents: item.Contents,
+			}
 			newWin.drawContents(itemImage)
+			newWin.drawBorder(itemImage)
 
 		} else if item.ItemType == ITEM_BUTTON {
 			BGColor := item.Color
@@ -263,6 +271,13 @@ func (win *windowData) drawContents(screen *ebiten.Image) {
 
 			top.ColorScale.ScaleWithColor(item.TextColor)
 			text.Draw(itemImage, item.Text, face, top)
+		}
+
+		if win.Flow {
+			vector.StrokeRect(itemImage,
+				win.getPosition().X+1+(item.getPosition(win).X*uiScale),
+				win.getPosition().Y+1+(item.getPosition(win).Y*uiScale),
+				item.Size.X-1*uiScale, item.Size.Y-1*uiScale, 1, color.RGBA{R: 255, A: 255}, false)
 		}
 	}
 }

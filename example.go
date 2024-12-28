@@ -13,7 +13,7 @@ func makeTestWindow() *windowData {
 
 	newFlow := &itemData{
 		ItemType: ITEM_FLOW,
-		Size:     point{X: 128, Y: 64},
+		Size:     point{X: 128 + 16, Y: 64 + 16},
 		Position: point{X: 16, Y: 16},
 		PinTo:    PIN_BOTTOM_RIGHT,
 		Contents: []*itemData{newButton},
