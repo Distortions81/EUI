@@ -196,8 +196,11 @@ func (win *windowData) drawResizeTab(screen *ebiten.Image) {
 func (win *windowData) drawContents(screen *ebiten.Image) {
 	for _, item := range win.Contents {
 		itemImage := screen.SubImage(item.getItemRect(win).getRectangle()).(*ebiten.Image)
-		if item.ItemType == ITEM_BUTTON {
+		if item.ItemType == ITEM_FLOW {
+			newWin := windowData{Size: win.Size, Position: pointSub(win.Position, point{X: 0, Y: win.TitleHeight}), Contents: item.Contents}
+			newWin.drawContents(itemImage)
 
+		} else if item.ItemType == ITEM_BUTTON {
 			BGColor := item.Color
 			BorderColor := item.HoverColor
 			if time.Since(item.Clicked) < clickFlash {

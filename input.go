@@ -169,27 +169,7 @@ func (g *Game) Update() error {
 		}
 
 		//Window items
-		if win.getWinRect().containsPoint(mpos) {
-			win.Hovered = true
-
-			if win.getMainRect().containsPoint(mpos) {
-				for i, item := range win.Contents {
-					if item.ItemType != ITEM_BUTTON {
-						continue
-					}
-					if item.containsPoint(win, mpos) {
-						win.Contents[i].Hovered = true
-						if click {
-							win.Contents[i].Clicked = time.Now()
-							if item.Action != nil {
-								item.Action()
-								break
-							}
-						}
-					}
-				}
-			}
-		}
+		win.clickWindowItems(mpos, click)
 
 		//Bring window forward on click
 		if win.getWinRect().containsPoint(mpos) {
@@ -201,4 +181,33 @@ func (g *Game) Update() error {
 	}
 
 	return nil
+}
+
+func (win *windowData) clickWindowItems(mpos point, click bool) {
+	if win.getWinRect().containsPoint(mpos) {
+		win.Hovered = true
+
+		if win.getMainRect().containsPoint(mpos) {
+			for i, item := range win.Contents {
+				if item.ItemType == ITEM_FLOW {
+					newWin := windowData{Size: win.Size, Position: pointSub(win.Position, point{X: 0, Y: win.TitleHeight}), Contents: item.Contents}
+					newWin.clickWindowItems(mpos, click)
+					continue
+				}
+				if item.ItemType != ITEM_BUTTON {
+					continue
+				}
+				if item.containsPoint(win, mpos) {
+					win.Contents[i].Hovered = true
+					if click {
+						win.Contents[i].Clicked = time.Now()
+						if item.Action != nil {
+							item.Action()
+							break
+						}
+					}
+				}
+			}
+		}
+	}
 }

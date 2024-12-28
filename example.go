@@ -11,6 +11,13 @@ func makeTestWindow() *windowData {
 		PinTo:    PIN_BOTTOM_RIGHT,
 		FontSize: 18})
 
+	newFlow := &itemData{
+		ItemType: ITEM_FLOW,
+		Size:     point{X: 128, Y: 64},
+		Position: point{X: 16, Y: 16},
+		PinTo:    PIN_BOTTOM_RIGHT,
+		Contents: []*itemData{newButton},
+	}
 	//Scaleup button
 	newScaleup := NewButton(&itemData{
 		Text:     "Scale Up +",
@@ -44,7 +51,7 @@ func makeTestWindow() *windowData {
 			Size:        point{X: 300, Y: 300},
 			Position:    point{X: 32, Y: 32},
 			Contents: []*itemData{
-				newButton, newText, newScaleup, newScaledown},
+				newFlow, newText, newScaleup, newScaledown},
 		})
 
 	//Gen button actions

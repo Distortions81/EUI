@@ -52,7 +52,7 @@ type itemData struct {
 	ClickColor, DisabledColor, CheckedColor color.RGBA
 
 	Action   func()
-	Contents []itemData
+	Contents []*itemData
 }
 
 type roundRect struct {
