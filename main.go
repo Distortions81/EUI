@@ -35,6 +35,13 @@ func main() {
 	newWindow := makeTestWindow()
 	newWindow.AddWindow(false)
 
+	/*
+		newWindow = makeTestWindow()
+		newWindow.Position.X += 64
+		newWindow.Position.Y += 64
+		newWindow.AddWindow(false)
+	*/
+
 	go startEbiten()
 
 	<-signalHandle
