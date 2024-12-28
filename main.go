@@ -32,14 +32,7 @@ func main() {
 		mplusFaceSource = s
 	}
 
-	SetUIScale(1)
-
 	newWindow := makeTestWindow()
-	newWindow.Position.X += 64
-	newWindow.Position.Y += 64
-	newWindow.AddWindow(false)
-
-	newWindow = makeTestWindow()
 	newWindow.AddWindow(false)
 
 	go startEbiten()
@@ -54,7 +47,7 @@ func startEbiten() {
 	ebiten.SetTPS(ebiten.SyncWithFPS)
 
 	/* Set up our window */
-	ebiten.SetWindowSize(windowWidth, windowHeight)
+	ebiten.SetWindowSize(screenWidth, screenHeight)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 
 	ebiten.SetWindowTitle("EUI Prototype")
@@ -71,6 +64,6 @@ func newGame() *Game {
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
-	windowWidth, windowHeight = outsideWidth, outsideHeight
+	screenWidth, screenHeight = outsideWidth, outsideHeight
 	return outsideWidth, outsideHeight
 }

@@ -43,24 +43,27 @@ func isZeroValue(value reflect.Value) bool {
 	return reflect.DeepEqual(value.Interface(), reflect.Zero(value.Type()).Interface())
 }
 
-func (target *WindowData) AddWindow(toBack bool) {
+func (target *windowData) AddWindow(toBack bool) {
 	for _, win := range windows {
 		if win == target {
 			log.Println("Window already exists")
 			return
 		}
 	}
-	target.calcUIScale()
+
+	if target.PinTo != PIN_TOP_LEFT {
+		target.Movable = false
+	}
 
 	if !toBack {
 		windows = append(windows, target)
 		activeWindow = target
 	} else {
-		windows = append([]*WindowData{target}, windows...)
+		windows = append([]*windowData{target}, windows...)
 	}
 }
 
-func (target *WindowData) RemoveWindow() {
+func (target *windowData) RemoveWindow() {
 	for i, win := range windows {
 		if win == target { // Compare pointers
 			windows = append(windows[:i], windows[i+1:]...)
@@ -71,25 +74,25 @@ func (target *WindowData) RemoveWindow() {
 	log.Println("Window not found")
 }
 
-func NewWindow(win *WindowData) *WindowData {
+func NewWindow(win *windowData) *windowData {
 	newWindow := *defaultTheme
 	mergeData(&newWindow, win)
 	return &newWindow
 }
 
-func NewButton(item *ItemData) *ItemData {
+func NewButton(item *itemData) *itemData {
 	newItem := *defaultButton
 	mergeData(&newItem, item)
 	return &newItem
 }
 
-func NewText(item *ItemData) *ItemData {
+func NewText(item *itemData) *itemData {
 	newItem := *defaultText
 	mergeData(&newItem, item)
 	return &newItem
 }
 
-func (target *WindowData) BringForward() {
+func (target *windowData) BringForward() {
 	for w, win := range windows {
 		if win == target {
 			windows = append(windows[:w], windows[w+1:]...)
@@ -99,12 +102,86 @@ func (target *WindowData) BringForward() {
 	}
 }
 
-func (target *WindowData) ToBack() {
+func (target *windowData) ToBack() {
 	for w, win := range windows {
 		if win == target {
 			windows = append(windows[:w], windows[w+1:]...)
-			windows = append([]*WindowData{target}, windows...)
+			windows = append([]*windowData{target}, windows...)
 			activeWindow = win
 		}
 	}
+}
+
+func (pin pinType) getWinPosition(win *windowData) point {
+	switch pin {
+	case PIN_TOP_LEFT:
+		return win.Position
+	case PIN_TOP_RIGHT:
+		return point{X: float32(screenWidth) - win.Size.X, Y: 0}
+	case PIN_TOP_CENTER:
+		return point{X: float32(screenWidth/2) - win.Size.X/2, Y: 0}
+	case PIN_MID_LEFT:
+		return point{X: 0, Y: float32(screenHeight/2) - (win.Size.Y + (win.TitleHeight*uiScale)/2)}
+	case PIN_MID_CENTER:
+		return point{X: float32(screenWidth/2) - win.Size.X/2, Y: float32(screenHeight/2) - (win.Size.Y - (win.TitleHeight*uiScale)/2)}
+	case PIN_MID_RIGHT:
+		return point{X: float32(screenWidth) - win.Size.X/2, Y: float32(screenHeight/2) - (win.Size.Y - (win.TitleHeight*uiScale)/2)}
+	case PIN_BOTTOM_LEFT:
+		return point{X: float32(screenWidth) - win.Size.X, Y: float32(screenHeight) - (win.Size.Y - (win.TitleHeight * uiScale))}
+	case PIN_BOTTOM_CENTER:
+		return point{X: float32(screenWidth/2) - (win.Size.X / 2), Y: float32(screenHeight) - (win.Size.Y - (win.TitleHeight * uiScale))}
+	case PIN_BOTTOM_RIGHT:
+		return point{X: float32(screenWidth) - (win.Size.X), Y: float32(screenHeight) - (win.Size.Y - (win.TitleHeight * uiScale))}
+	default:
+		return win.Position
+	}
+}
+
+func (pin pinType) getItemPosition(win *windowData, item *itemData) point {
+	switch pin {
+	case PIN_TOP_LEFT:
+		return item.Position
+	case PIN_TOP_RIGHT:
+		return point{
+			X: item.Position.X + float32((win.Size.X)) - (item.Size.X) - item.Position.X,
+			Y: item.Position.Y}
+	case PIN_TOP_CENTER:
+		return point{
+			X: float32((win.Size.X)/2) - (item.Size.X)/2,
+			Y: item.Position.Y}
+	case PIN_MID_LEFT:
+		return point{
+			X: item.Position.X,
+			Y: float32((win.Size.Y)/2) - ((item.Size.Y) / 2)}
+	case PIN_MID_CENTER:
+		return point{
+			X: float32((win.Size.X)/2) - (item.Size.X)/2,
+			Y: float32((win.Size.Y)/2) - ((item.Size.Y) / 2)}
+	case PIN_MID_RIGHT:
+		return point{
+			X: float32((win.Size.X)) - (item.Size.X)/2 - item.Position.X,
+			Y: float32((win.Size.Y)/2) - ((item.Size.Y) / 2)}
+	case PIN_BOTTOM_LEFT:
+		return point{
+			X: item.Position.X,
+			Y: float32((win.Size.Y)-(win.TitleHeight*uiScale)) - (item.Size.Y) - item.Position.Y}
+	case PIN_BOTTOM_CENTER:
+		return point{
+			X: float32((win.Size.X)/2) - ((item.Size.X) / 2),
+			Y: float32((win.Size.Y)) - (item.Size.Y) - item.Position.Y}
+	case PIN_BOTTOM_RIGHT:
+		return point{
+			X: float32((win.Size.X)) - (item.Size.X) - item.Position.X,
+			Y: float32((win.Size.Y)-(win.TitleHeight*uiScale)) - (item.Size.Y) - item.Position.Y}
+	default:
+		return item.Position
+	}
+}
+
+func (win *windowData) getPosition() point {
+	return win.PinTo.getWinPosition(win)
+}
+
+func (item *itemData) getPosition(win *windowData) point {
+	return item.PinTo.getItemPosition(win, item)
 }

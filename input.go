@@ -10,8 +10,8 @@ import (
 const minDrag = 2
 
 var (
-	mposOld     Point
-	dragStart   Point
+	mposOld     point
+	dragStart   point
 	cursorShape ebiten.CursorShapeType
 )
 
@@ -20,7 +20,7 @@ func (g *Game) Update() error {
 	cursorChanged := false
 
 	mx, my := ebiten.CursorPosition()
-	mpos := Point{X: float32(mx), Y: float32(my)}
+	mpos := point{X: float32(mx), Y: float32(my)}
 	defer func() { mposOld = mpos }()
 
 	click := inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0)
@@ -69,7 +69,7 @@ func (g *Game) Update() error {
 				//Drag resize edge or corner
 				if clickDrag {
 					posCh := pointSub(mpos, mposOld)
-					sizeCh := Point{X: posCh.X / uiScale, Y: posCh.Y / uiScale}
+					sizeCh := point{X: posCh.X / uiScale, Y: posCh.Y / uiScale}
 					if side == EDGE_TOP {
 						posCh.X = 0
 						sizeCh.X = 0

@@ -5,40 +5,43 @@ import (
 	"time"
 )
 
-type WindowData struct {
-	Title            string
-	Position         Point
-	Size, ScreenSize Point
-	Padding, Border  float32
+type windowData struct {
+	Title           string
+	Position        point
+	Size            point
+	PinTo           pinType
+	Padding, Border float32
 
 	Open, Hovered,
 	Closable, Movable, Resizable,
 	HoverClose, HoverDragbar bool
 
-	TitleHeight, TitleScreenHeight float32
+	TitleHeight float32
 
 	BGColor, TitleBGColor, TitleColor, BorderColor,
 	SizeTabColor, DragbarColor,
 	HoverTitleColor, HoverColor, ActiveColor color.RGBA
 
-	Contents []*ItemData
+	Contents []*itemData
 }
 
-type ItemData struct {
+type itemData struct {
 	Text      string
-	Position  Point
-	Size      Point
+	Position  point
+	Size      point
+	Alignment alignType
+	PinTo     pinType
 	FontSize  float32
 	LineSpace float32 //Multiplier, 1.0 = no gap between lines
-	ItemType  ItemTypeData
+	ItemType  itemTypeData
 
 	Value float32
 
 	Hovered, Checked,
 	Disabled, Invisable bool
 	Clicked  time.Time
-	FlowType FlowType
-	Scroll   Point
+	FlowType flowType
+	Scroll   point
 
 	//Style
 	Fillet            float32
@@ -49,40 +52,57 @@ type ItemData struct {
 	ClickColor, DisabledColor, CheckedColor color.RGBA
 
 	Action   func()
-	Contents []ItemData
+	Contents []itemData
 }
 
-type RoundRect struct {
-	Size, Position Point
+type roundRect struct {
+	Size, Position point
 	Fillet, Border float32
 	Filled         bool
 	Color          color.RGBA
 }
 
-type Rect struct {
+type rect struct {
 	X0, Y0, X1, Y1 float32
 }
 
-type Point struct {
+type point struct {
 	X, Y float32
 }
 
-type FlowType int
+type flowType int
 
 const (
 	FLOW_HORIZONTAL = iota
 	FLOW_VERTICAL
 )
 
-type AlignType int
+type alignType int
 
 const (
-	ALIGN_START = iota
+	ALIGN_NONE = iota
+	ALIGN_LEFT
 	ALIGN_CENTER
-	ALIGN_END
+	ALIGN_RIGHT
 )
 
-type WindowEdge int
+type pinType int
+
+const (
+	PIN_TOP_LEFT = iota
+	PIN_TOP_CENTER
+	PIN_TOP_RIGHT
+
+	PIN_MID_LEFT
+	PIN_MID_CENTER
+	PIN_MID_RIGHT
+
+	PIN_BOTTOM_LEFT
+	PIN_BOTTOM_CENTER
+	PIN_BOTTOM_RIGHT
+)
+
+type windowEdge int
 
 const (
 	EDGE_NONE = iota
@@ -98,7 +118,7 @@ const (
 	EDGE_TOP_LEFT
 )
 
-type ItemTypeData int
+type itemTypeData int
 
 const (
 	ITEM_NONE = iota

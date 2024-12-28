@@ -2,7 +2,7 @@ package main
 
 import "image/color"
 
-var defaultTheme = &WindowData{
+var defaultTheme = &windowData{
 	TitleHeight:     24,
 	Border:          1,
 	TitleColor:      color.RGBA{R: 255, G: 255, B: 255, A: 255},
@@ -17,11 +17,11 @@ var defaultTheme = &WindowData{
 	Movable: true, Closable: true, Resizable: true, Open: true,
 }
 
-var defaultButton = &ItemData{
+var defaultButton = &itemData{
 	Text:      "Button",
 	ItemType:  ITEM_BUTTON,
-	Size:      Point{X: 128, Y: 64},
-	Position:  Point{X: 10, Y: 10},
+	Size:      point{X: 128, Y: 64},
+	Position:  point{X: 10, Y: 10},
 	FontSize:  24,
 	LineSpace: 1.2,
 
@@ -36,11 +36,11 @@ var defaultButton = &ItemData{
 	ClickColor: color.RGBA{R: 64, G: 64, B: 64, A: 255},
 }
 
-var defaultText = &ItemData{
+var defaultText = &itemData{
 	Text:      "Sample text:\nThe quick brown fox\njumps over the lazy dog.",
 	ItemType:  ITEM_TEXT,
-	Size:      Point{X: 128, Y: 128},
-	Position:  Point{X: 16, Y: 24 + 16},
+	Size:      point{X: 128, Y: 128},
+	Position:  point{X: 16, Y: 24 + 16},
 	FontSize:  24,
 	LineSpace: 1.2,
 	TextColor: color.RGBA{R: 255, G: 255, B: 255, A: 255},

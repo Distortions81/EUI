@@ -11,13 +11,13 @@ import (
 )
 
 var (
-	windowWidth  = 512
-	windowHeight = 512
+	screenWidth  = 512
+	screenHeight = 512
 
 	signalHandle    chan os.Signal
 	mplusFaceSource *text.GoTextFaceSource
-	windows         []*WindowData
-	activeWindow    *WindowData
+	windows         []*windowData
+	activeWindow    *windowData
 	uiScale         float32 = 1.0
 	clickFlash              = time.Millisecond * 200
 

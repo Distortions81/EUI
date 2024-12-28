@@ -2,52 +2,48 @@ package main
 
 import "image/color"
 
-func makeTestWindow() *WindowData {
+func makeTestWindow() *windowData {
 	//Done button
-	newButton := NewButton(&ItemData{
-		Text: "Generate",
-		Position: Point{
-			X: 300 - 128 - 16,
-			Y: 300 - 24 - 64 - 16},
-		Size:     Point{X: 128, Y: 64},
+	newButton := NewButton(&itemData{
+		Text:     "Generate",
+		Size:     point{X: 128, Y: 64},
+		Position: point{X: 16, Y: 16},
+		PinTo:    PIN_BOTTOM_RIGHT,
 		FontSize: 18})
 
 	//Scaleup button
-	newScaleup := NewButton(&ItemData{
-		Text: "Scale Up +",
-		Position: Point{
-			X: 16,
-			Y: 300 - 24 - 24 - 16},
-		Size:     Point{X: 128, Y: 24},
+	newScaleup := NewButton(&itemData{
+		Text:     "Scale Up +",
+		Size:     point{X: 128, Y: 24},
+		Position: point{X: 16, Y: 16 + 16 + 24},
+		PinTo:    PIN_BOTTOM_LEFT,
 		FontSize: 12})
 
 	//Scaledown button
-	newScaledown := NewButton(&ItemData{
-		Text: "Scale Down -",
-		Position: Point{
-			X: 16,
-			Y: 300 - 24 - 24 - 24 - 16 - 16},
-		Size:     Point{X: 128, Y: 24},
+	newScaledown := NewButton(&itemData{
+		Text:     "Scale Down -",
+		Size:     point{X: 128, Y: 24},
+		Position: point{X: 16, Y: 16},
+		PinTo:    PIN_BOTTOM_LEFT,
 		FontSize: 12})
 
 	//Text
-	newText := NewText(&ItemData{
-		ItemType: ITEM_TEXT,
-		Text:     "Click 'generate' to\ngenerate a new code.",
-		FontSize: 18,
-		Position: Point{
-			X: 16,
-			Y: 24 + 16},
-		Size:      Point{X: 256, Y: 128},
+	newText := NewText(&itemData{
+		ItemType:  ITEM_TEXT,
+		Text:      "Click 'generate' to\ngenerate a new code.",
+		FontSize:  18,
+		Size:      point{X: 256, Y: 128},
+		Position:  point{X: 16, Y: 16},
+		PinTo:     PIN_TOP_LEFT,
 		TextColor: color.RGBA{R: 255, G: 255, B: 255, A: 255}})
 
 	newWindow := NewWindow(
-		&WindowData{
+		&windowData{
 			TitleHeight: 24,
 			Title:       "Test Window",
-			Size:        Point{X: 300, Y: 300},
-			Position:    Point{X: 32, Y: 32},
-			Contents: []*ItemData{
+			Size:        point{X: 300, Y: 300},
+			Position:    point{X: 32, Y: 32},
+			Contents: []*itemData{
 				newButton, newText, newScaleup, newScaledown},
 		})
 
