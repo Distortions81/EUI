@@ -5,6 +5,7 @@ import (
 	"reflect"
 )
 
+// Merge one struct into another
 func mergeData(original interface{}, updates interface{}) interface{} {
 	// Ensure both original and updates are pointers to structs
 	origVal := reflect.ValueOf(original)
@@ -43,6 +44,7 @@ func isZeroValue(value reflect.Value) bool {
 	return reflect.DeepEqual(value.Interface(), reflect.Zero(value.Type()).Interface())
 }
 
+// Add window to window list
 func (target *windowData) AddWindow(toBack bool) {
 	for _, win := range windows {
 		if win == target {
@@ -63,6 +65,7 @@ func (target *windowData) AddWindow(toBack bool) {
 	}
 }
 
+// Remove window from window list, if found.
 func (target *windowData) RemoveWindow() {
 	for i, win := range windows {
 		if win == target { // Compare pointers
@@ -74,24 +77,28 @@ func (target *windowData) RemoveWindow() {
 	log.Println("Window not found")
 }
 
+// Create a new window from the default theme
 func NewWindow(win *windowData) *windowData {
 	newWindow := *defaultTheme
 	mergeData(&newWindow, win)
 	return &newWindow
 }
 
+// Create a new button from the default theme
 func NewButton(item *itemData) *itemData {
 	newItem := *defaultButton
 	mergeData(&newItem, item)
 	return &newItem
 }
 
+// Create a new textbox from the default theme
 func NewText(item *itemData) *itemData {
 	newItem := *defaultText
 	mergeData(&newItem, item)
 	return &newItem
 }
 
+// Bring a window to the front
 func (target *windowData) BringForward() {
 	for w, win := range windows {
 		if win == target {
@@ -102,6 +109,7 @@ func (target *windowData) BringForward() {
 	}
 }
 
+// Send a window to the back
 func (target *windowData) ToBack() {
 	for w, win := range windows {
 		if win == target {
@@ -112,6 +120,7 @@ func (target *windowData) ToBack() {
 	}
 }
 
+// Get window position, considering pinned position
 func (pin pinType) getWinPosition(win *windowData) point {
 	switch pin {
 	case PIN_TOP_LEFT:
@@ -137,6 +146,7 @@ func (pin pinType) getWinPosition(win *windowData) point {
 	}
 }
 
+// Get item position, considering its pinned position
 func (pin pinType) getItemPosition(win *windowData, item *itemData) point {
 	switch pin {
 	case PIN_TOP_LEFT:
@@ -186,6 +196,7 @@ func (item *itemData) getPosition(win *windowData) point {
 	return item.PinTo.getItemPosition(win, item)
 }
 
+// Do the window items overlap?
 func (win windowData) itemOverlap(size point) (bool, bool) {
 
 	rectList := []rect{}
