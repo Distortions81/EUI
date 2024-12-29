@@ -5,7 +5,6 @@ import (
 	"image/color"
 	"math"
 	"strings"
-	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -32,7 +31,7 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 	windowArea := screen.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
 
 	win.drawBG(mainArea)
-	win.drawContents(mainArea)
+	win.drawItems(mainArea)
 	win.drawWinTitle(titleArea)
 	win.drawResizeTab(mainArea)
 	win.drawBorder(windowArea)
@@ -193,92 +192,84 @@ func (win *windowData) drawResizeTab(screen *ebiten.Image) {
 	}
 }
 
-func (win *windowData) drawContents(screen *ebiten.Image) {
+func (win *windowData) drawItems(screen *ebiten.Image) {
+	winPos := pointAdd(win.Position, point{X: 0, Y: win.TitleHeight})
 
 	for _, item := range win.Contents {
-		itemImage := screen.SubImage(item.getItemRect(win).getRectangle()).(*ebiten.Image)
+		itemPos := pointAdd(winPos, item.getPosition(win))
 
 		if item.ItemType == ITEM_FLOW {
-			newWin := &windowData{
-				Flow:     true,
-				Size:     win.Size,
-				Position: pointSub(win.Position, point{X: 0, Y: win.TitleHeight}),
-				Contents: item.Contents,
-			}
-			newWin.drawContents(itemImage)
-			newWin.drawBorder(itemImage)
-
-		} else if item.ItemType == ITEM_BUTTON {
-			BGColor := item.Color
-			BorderColor := item.HoverColor
-			if time.Since(item.Clicked) < clickFlash {
-				BGColor = item.ClickColor
-				BorderColor = item.Color
-			} else if item.Hovered {
-				BGColor = item.HoverColor
-				BorderColor = item.Color
-				item.Hovered = false
-			}
-
-			if item.Fillet < 1 {
-				vector.DrawFilledRect(itemImage,
-					win.getPosition().X+(item.getPosition(win).X*uiScale),
-					win.getPosition().Y+(item.getPosition(win).Y*uiScale),
-					item.Size.X*uiScale, item.Size.Y*uiScale, BGColor, false)
-			} else {
-				win.drawRoundRect(itemImage, item, BGColor, BorderColor)
-			}
-
-			textSize := item.FontSize * uiScale
-			face := &text.GoTextFace{
-				Source: mplusFaceSource,
-				Size:   float64(textSize),
-			}
-			loo := text.LayoutOptions{
-				LineSpacing:    0,
-				PrimaryAlign:   text.AlignCenter,
-				SecondaryAlign: text.AlignCenter,
-			}
-			tdop := ebiten.DrawImageOptions{}
-			tdop.GeoM.Translate(
-				float64(win.getPosition().X+(item.getPosition(win).X*uiScale)+((item.Size.X*uiScale)/2)),
-				float64(win.getPosition().Y+(item.getPosition(win).Y*uiScale)+((item.Size.Y*uiScale)/2)))
-
-			top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
-
-			top.ColorScale.ScaleWithColor(item.TextColor)
-			text.Draw(itemImage, item.Text, face, top)
-
-			//Text
-		} else if item.ItemType == ITEM_TEXT {
-
-			textSize := item.FontSize * uiScale
-			face := &text.GoTextFace{
-				Source: mplusFaceSource,
-				Size:   float64(textSize),
-			}
-			loo := text.LayoutOptions{
-				LineSpacing:    float64(textSize) * 1.2,
-				PrimaryAlign:   text.AlignStart,
-				SecondaryAlign: text.AlignStart,
-			}
-			tdop := ebiten.DrawImageOptions{}
-			tdop.GeoM.Translate(
-				float64(win.getPosition().X+(item.getPosition(win).X*uiScale)),
-				float64(win.getPosition().Y+(win.TitleHeight*uiScale)+(item.getPosition(win).Y*uiScale)))
-
-			top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
-
-			top.ColorScale.ScaleWithColor(item.TextColor)
-			text.Draw(itemImage, item.Text, face, top)
+			item.drawFlows(itemPos, screen)
+		} else {
+			item.drawItem(itemPos, screen)
 		}
+	}
+}
 
-		if win.Flow {
-			vector.StrokeRect(itemImage,
-				win.getPosition().X+1+(item.getPosition(win).X*uiScale),
-				win.getPosition().Y+1+(item.getPosition(win).Y*uiScale),
-				item.Size.X-1*uiScale, item.Size.Y-1*uiScale, 1, color.RGBA{R: 255, A: 255}, false)
+func (item *itemData) drawFlows(offset point, screen *ebiten.Image) {
+	vector.DrawFilledRect(screen, offset.X, offset.Y, item.Size.X, item.Size.Y, color.White, false)
+
+	for _, subItem := range item.Contents {
+		if subItem.ItemType == ITEM_FLOW {
+			subItem.drawFlows(offset, screen)
+			continue
 		}
+		subItem.drawItem(offset, screen)
+	}
+}
+
+func (item *itemData) drawItem(offset point, screen *ebiten.Image) {
+
+	if item.ItemType == ITEM_BUTTON {
+
+		drawRoundRect(screen, &roundRect{
+			Size:     item.Size,
+			Position: offset, Fillet: item.Fillet, Filled: true, Color: item.Color})
+
+		textSize := item.FontSize * uiScale
+		face := &text.GoTextFace{
+			Source: mplusFaceSource,
+			Size:   float64(textSize),
+		}
+		loo := text.LayoutOptions{
+			LineSpacing:    0,
+			PrimaryAlign:   text.AlignCenter,
+			SecondaryAlign: text.AlignCenter,
+		}
+		tdop := ebiten.DrawImageOptions{}
+		tdop.GeoM.Translate(
+			float64(offset.X+((item.Size.X*uiScale)/2)),
+			float64(offset.Y+((item.Size.Y*uiScale)/2)))
+
+		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+
+		top.ColorScale.ScaleWithColor(item.TextColor)
+		text.Draw(screen, item.Text, face, top)
+
+		//Text
+	} else if item.ItemType == ITEM_TEXT {
+
+		textSize := item.FontSize * uiScale
+		face := &text.GoTextFace{
+			Source: mplusFaceSource,
+			Size:   float64(textSize),
+		}
+		loo := text.LayoutOptions{
+			LineSpacing:    float64(textSize) * 1.2,
+			PrimaryAlign:   text.AlignStart,
+			SecondaryAlign: text.AlignStart,
+		}
+		tdop := ebiten.DrawImageOptions{}
+		tdop.GeoM.Translate(
+			float64(offset.X+(item.Position.X*uiScale)),
+			float64(offset.Y+(item.Position.Y*uiScale)))
+
+		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+
+		top.ColorScale.ScaleWithColor(item.TextColor)
+		text.Draw(screen, item.Text, face, top)
+
+		vector.StrokeRect(screen, offset.X, offset.Y, item.Size.X, item.Size.Y, 1, color.White, false)
 	}
 }
 
@@ -296,34 +287,6 @@ func (win *windowData) drawDebug(screen *ebiten.Image) {
 		grab = win.getTitleRect()
 		vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{B: 255, G: 255, A: 255}, false)
 	}
-}
-
-// Break this up, make a generic draw function as well
-func (win *windowData) drawRoundRect(screen *ebiten.Image, item *itemData, BGcolor, BorderColor color.RGBA) {
-	drawRoundRect(screen, &roundRect{
-		Size:     pointScaleMul(item.Size),
-		Position: pointAdd(win.getPosition(), pointScaleMul(item.getPosition(win))),
-		Fillet:   item.Fillet * uiScale,
-		Color:    BGcolor,
-		Filled:   true,
-		Border:   item.Border * uiScale,
-	})
-
-	offset := point{X: item.BorderPad * uiScale, Y: item.BorderPad * uiScale}
-	drawRoundRect(screen, &roundRect{
-		Size: pointSub(
-			pointScaleMul(item.Size),
-			offset,
-		),
-		Position: pointAdd(
-			pointAdd(win.getPosition(), pointScaleMul(item.getPosition(win))),
-			pointDiv(offset, point{X: 2, Y: 2}),
-		),
-		Fillet: item.Fillet * uiScale,
-		Color:  BorderColor,
-		Filled: false,
-		Border: item.Border * uiScale,
-	})
 }
 
 func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {

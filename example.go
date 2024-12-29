@@ -7,8 +7,6 @@ func makeTestWindow() *windowData {
 	newButton := NewButton(&itemData{
 		Text:     "Generate",
 		Size:     point{X: 128, Y: 64},
-		Position: point{X: 16, Y: 16},
-		PinTo:    PIN_BOTTOM_RIGHT,
 		FontSize: 18})
 
 	newFlow := &itemData{
@@ -48,7 +46,7 @@ func makeTestWindow() *windowData {
 		&windowData{
 			TitleHeight: 24,
 			Title:       "Test Window",
-			Size:        point{X: 300, Y: 300},
+			Size:        point{X: 350, Y: 300},
 			Position:    point{X: 32, Y: 32},
 			Contents: []*itemData{
 				newFlow, newText, newScaleup, newScaledown},

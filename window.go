@@ -164,15 +164,15 @@ func (pin pinType) getItemPosition(win *windowData, item *itemData) point {
 	case PIN_BOTTOM_LEFT:
 		return point{
 			X: item.Position.X,
-			Y: float32((win.Size.Y)-(win.TitleHeight*uiScale)) - (item.Size.Y) - item.Position.Y}
+			Y: float32((win.Size.Y)-(win.TitleHeight*uiScale)*2) - (item.Size.Y) - item.Position.Y}
 	case PIN_BOTTOM_CENTER:
 		return point{
 			X: float32((win.Size.X)/2) - ((item.Size.X) / 2),
-			Y: float32((win.Size.Y)) - (item.Size.Y) - item.Position.Y}
+			Y: float32((win.Size.Y)-(win.TitleHeight*uiScale)*2) - (item.Size.Y) - item.Position.Y}
 	case PIN_BOTTOM_RIGHT:
 		return point{
 			X: float32((win.Size.X)) - (item.Size.X) - item.Position.X,
-			Y: float32((win.Size.Y)-(win.TitleHeight*uiScale)) - (item.Size.Y) - item.Position.Y}
+			Y: float32((win.Size.Y)-(win.TitleHeight*uiScale)*2) - (item.Size.Y) - item.Position.Y}
 	default:
 		return item.Position
 	}
