@@ -197,14 +197,12 @@ func (win *windowData) drawItems(screen *ebiten.Image) {
 	winImage := screen.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
 
 	for _, item := range win.Contents {
+		itemImage := winImage.SubImage(item.getItemRect(win).getRectangle()).(*ebiten.Image)
 		itemPos := pointAdd(winPos, item.getPosition(win))
 
 		if item.ItemType == ITEM_FLOW {
-			flowImage := winImage.SubImage(item.getItemRect(win).getRectangle()).(*ebiten.Image)
-			item.drawFlows(itemPos, flowImage)
+			item.drawFlows(itemPos, itemImage)
 		} else {
-			itemImage := winImage.SubImage(item.getItemRect(win).getRectangle()).(*ebiten.Image)
-
 			item.drawItem(itemPos, itemImage)
 		}
 	}
@@ -236,10 +234,14 @@ func (item *itemData) drawFlows(offset point, screen *ebiten.Image) {
 }
 
 func (item *itemData) drawItem(offset point, screen *ebiten.Image) {
+	subImg := screen.SubImage(rect{
+		X0: offset.X, X1: offset.X + item.Size.X,
+		Y0: offset.Y, Y1: offset.Y + item.Size.Y,
+	}.getRectangle()).(*ebiten.Image)
 
 	if item.ItemType == ITEM_BUTTON {
 
-		drawRoundRect(screen, &roundRect{
+		drawRoundRect(subImg, &roundRect{
 			Size:     item.Size,
 			Position: offset, Fillet: item.Fillet, Filled: true, Color: item.Color})
 
@@ -261,7 +263,7 @@ func (item *itemData) drawItem(offset point, screen *ebiten.Image) {
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 
 		top.ColorScale.ScaleWithColor(item.TextColor)
-		text.Draw(screen, item.Text, face, top)
+		text.Draw(subImg, item.Text, face, top)
 
 		//Text
 	} else if item.ItemType == ITEM_TEXT {
@@ -284,9 +286,9 @@ func (item *itemData) drawItem(offset point, screen *ebiten.Image) {
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 
 		top.ColorScale.ScaleWithColor(item.TextColor)
-		text.Draw(screen, item.Text, face, top)
+		text.Draw(subImg, item.Text, face, top)
 
-		vector.StrokeRect(screen, offset.X, offset.Y, item.Size.X, item.Size.Y, 1, color.RGBA{R: 255}, false)
+		vector.StrokeRect(subImg, offset.X, offset.Y, item.Size.X, item.Size.Y, 1, color.RGBA{R: 255}, false)
 	}
 }
 
