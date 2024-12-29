@@ -1,77 +1,40 @@
 package main
 
-import "image/color"
-
 func makeTestWindow() *windowData {
-	//Done button
-	newButton := NewButton(&itemData{
-		Text:     "Generate",
-		Size:     point{X: 128, Y: 64},
-		FontSize: 18})
 
-	newFlow := &itemData{
+	mainFlow := &itemData{
 		ItemType: ITEM_FLOW,
-		Size:     point{X: 128 + 16, Y: 64 + 16},
-		Position: point{X: 16, Y: 16},
-		PinTo:    PIN_BOTTOM_RIGHT,
-		Contents: []*itemData{newButton},
+		Size:     point{X: 300, Y: 300},
+		FlowType: FLOW_HORIZONTAL,
 	}
-	//Scaleup button
-	newScaleup := NewButton(&itemData{
-		Text:     "Scale Up +",
-		Size:     point{X: 128, Y: 24},
-		Position: point{X: 16, Y: 16 + 16 + 24},
-		PinTo:    PIN_BOTTOM_LEFT,
-		FontSize: 12})
 
-	//Scaledown button
-	newScaledown := NewButton(&itemData{
-		Text:     "Scale Down -",
-		Size:     point{X: 128, Y: 24},
-		Position: point{X: 16, Y: 16},
-		PinTo:    PIN_BOTTOM_LEFT,
-		FontSize: 12})
+	leftFlow := &itemData{
+		ItemType: ITEM_FLOW,
+		Size:     point{X: 100, Y: 300},
+		FlowType: FLOW_VERTICAL,
+	}
+	leftText := NewText(&itemData{Text: "left vflow", Size: point{X: 100, Y: 32}, FontSize: 12})
+	leftFlow.Contents = append(leftFlow.Contents, leftText)
+	mainFlow.Contents = append(mainFlow.Contents, leftFlow)
 
-	//Text
-	newText := NewText(&itemData{
-		ItemType:  ITEM_TEXT,
-		Text:      "Click 'generate' to\ngenerate a new code.",
-		FontSize:  18,
-		Size:      point{X: 256, Y: 128},
-		Position:  point{X: 16, Y: 16},
-		PinTo:     PIN_TOP_LEFT,
-		TextColor: color.RGBA{R: 255, G: 255, B: 255, A: 255}})
+	rightFlow := &itemData{
+		ItemType: ITEM_FLOW,
+		Position: point{X: 100, Y: 0},
+		Size:     point{X: 200, Y: 300},
+		FlowType: FLOW_HORIZONTAL,
+	}
+	rightText := NewText(&itemData{Text: "right vflow", Size: point{X: 100, Y: 32}, FontSize: 12})
+	rightFlow.Contents = append(rightFlow.Contents, rightText)
+	mainFlow.Contents = append(mainFlow.Contents, rightFlow)
 
 	newWindow := NewWindow(
 		&windowData{
 			TitleHeight: 24,
 			Title:       "Test Window",
-			Size:        point{X: 350, Y: 300},
+			Size:        point{X: 300, Y: 300},
 			Position:    point{X: 32, Y: 32},
-			Contents: []*itemData{
-				newFlow, newText, newScaleup, newScaledown},
+			Contents:    []*itemData{mainFlow},
 		})
-
-	//Gen button actions
-	newButton.Action = func() {
-		newButton.Text = "Okay"
-		newText.Text = "Secret code: 1234"
-		newButton.Action = func() {
-			newWindow.RemoveWindow()
-		}
-	}
-
-	newScaleup.Action = func() {
-		if uiScale < 8 {
-			SetUIScale(uiScale + 0.1)
-		}
-	}
-
-	newScaledown.Action = func() {
-		if uiScale > 0.2 {
-			SetUIScale(uiScale - 0.1)
-		}
-	}
 
 	return newWindow
 }

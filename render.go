@@ -199,6 +199,7 @@ func (win *windowData) drawItems(screen *ebiten.Image) {
 		itemPos := pointAdd(winPos, item.getPosition(win))
 
 		if item.ItemType == ITEM_FLOW {
+
 			item.drawFlows(itemPos, screen)
 		} else {
 			item.drawItem(itemPos, screen)
@@ -207,11 +208,12 @@ func (win *windowData) drawItems(screen *ebiten.Image) {
 }
 
 func (item *itemData) drawFlows(offset point, screen *ebiten.Image) {
-	vector.DrawFilledRect(screen, offset.X, offset.Y, item.Size.X, item.Size.Y, color.White, false)
+	vector.StrokeRect(screen, offset.X, offset.Y, item.Size.X, item.Size.Y, 1, color.White, false)
 
 	for _, subItem := range item.Contents {
 		if subItem.ItemType == ITEM_FLOW {
-			subItem.drawFlows(offset, screen)
+			fpos := pointAdd(offset, item.Position)
+			subItem.drawFlows(pointAdd(fpos, subItem.Position), screen)
 			continue
 		}
 		subItem.drawItem(offset, screen)
@@ -261,15 +263,15 @@ func (item *itemData) drawItem(offset point, screen *ebiten.Image) {
 		}
 		tdop := ebiten.DrawImageOptions{}
 		tdop.GeoM.Translate(
-			float64(offset.X+(item.Position.X*uiScale)),
-			float64(offset.Y+(item.Position.Y*uiScale)))
+			float64(offset.X),
+			float64(offset.Y))
 
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 
 		top.ColorScale.ScaleWithColor(item.TextColor)
 		text.Draw(screen, item.Text, face, top)
 
-		vector.StrokeRect(screen, offset.X, offset.Y, item.Size.X, item.Size.Y, 1, color.White, false)
+		vector.StrokeRect(screen, offset.X, offset.Y, item.Size.X, item.Size.Y, 1, color.RGBA{R: 255}, false)
 	}
 }
 
