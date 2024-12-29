@@ -1,6 +1,6 @@
 ## A Minimal vector-based Ebitenengine retained-mode UI library
 ### This library is no where near complete (PRE-ALPHA), and breaking changes will come very often.
-*For quicker development, the code is not composed as a library at this time*
+*For quicker development, the code is not composed as a library at this time*  
 Drawn using vectors and supports floating-point UI scaling.
 
 ![demo animation](https://github.com/user-attachments/assets/eef712c8-fa1e-4afe-826e-624c860ab842)
@@ -9,7 +9,8 @@ Drawn using vectors and supports floating-point UI scaling.
 window -> main-flow -> sub-flow  
 Each flow has a direction, horizontal or vertical.
 
-![flows screenshot](https://github.com/user-attachments/assets/b79c05ca-250a-4944-8cda-27d8ea598cc4)
+![flows-screenshot](https://github.com/user-attachments/assets/dcc79179-361d-420c-959f-c1785433bb5b)
+
 
 
 # Flow and item pinning:
