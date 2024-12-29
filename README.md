@@ -3,7 +3,8 @@ This library is no where near complete, and breaking changes will come very ofte
 
 Drawn using vectors, supports floating-point UI scaling.
 
-![screenshot](https://github.com/user-attachments/assets/76bd0605-d1a7-4e75-b8f0-11b59a7cceb4)
+![demo animation](https://github.com/user-attachments/assets/eef712c8-fa1e-4afe-826e-624c860ab842)
+
 
 
 
