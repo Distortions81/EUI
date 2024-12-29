@@ -13,7 +13,7 @@ func makeTestWindow() *windowData {
 		Size:     point{X: 100, Y: 300},
 		FlowType: FLOW_VERTICAL,
 	}
-	leftText := NewText(&itemData{Text: "left panel item 1", Size: point{X: 100, Y: 32}, FontSize: 24})
+	leftText := NewText(&itemData{Text: "left panel item 1", Size: point{X: 100, Y: 32}, FontSize: 8})
 	leftText2 := NewText(&itemData{Text: "left panel item 2", Size: point{X: 100, Y: 32}, FontSize: 8})
 	leftText3 := NewText(&itemData{Text: "left panel item 3", Size: point{X: 100, Y: 32}, FontSize: 8})
 	leftFlow.Contents = append(leftFlow.Contents, leftText)
