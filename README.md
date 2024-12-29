@@ -1,4 +1,4 @@
-# Minimal Ebitenengine UI library, under development.
+# Minimal Ebitenengine retained UI library
 This library is no where near complete, and breaking changes will come very often.
 
 (For quicker development, the code is not composed as a library at this time)
