@@ -194,14 +194,18 @@ func (win *windowData) drawResizeTab(screen *ebiten.Image) {
 
 func (win *windowData) drawItems(screen *ebiten.Image) {
 	winPos := pointAdd(win.Position, point{X: 0, Y: win.TitleHeight})
+	winImage := screen.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
 
 	for _, item := range win.Contents {
 		itemPos := pointAdd(winPos, item.getPosition(win))
 
 		if item.ItemType == ITEM_FLOW {
-			item.drawFlows(itemPos, screen)
+			flowImage := winImage.SubImage(item.getItemRect(win).getRectangle()).(*ebiten.Image)
+			item.drawFlows(itemPos, flowImage)
 		} else {
-			item.drawItem(itemPos, screen)
+			itemImage := winImage.SubImage(item.getItemRect(win).getRectangle()).(*ebiten.Image)
+
+			item.drawItem(itemPos, itemImage)
 		}
 	}
 }
@@ -239,7 +243,7 @@ func (item *itemData) drawItem(offset point, screen *ebiten.Image) {
 			Size:     item.Size,
 			Position: offset, Fillet: item.Fillet, Filled: true, Color: item.Color})
 
-		textSize := item.FontSize * uiScale
+		textSize := (item.FontSize * uiScale) + 2
 		face := &text.GoTextFace{
 			Source: mplusFaceSource,
 			Size:   float64(textSize),
@@ -262,7 +266,7 @@ func (item *itemData) drawItem(offset point, screen *ebiten.Image) {
 		//Text
 	} else if item.ItemType == ITEM_TEXT {
 
-		textSize := item.FontSize * uiScale
+		textSize := (item.FontSize * uiScale) + 2
 		face := &text.GoTextFace{
 			Source: mplusFaceSource,
 			Size:   float64(textSize),
