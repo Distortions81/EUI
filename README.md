@@ -1,6 +1,6 @@
-# Minimal vector-based Ebitenengine retained-mode UI library
-**This library is no where near complete (PRE-ALPHA), and breaking changes will come very often.**  
-(For quicker development, the code is not composed as a library at this time)  
+## A Minimal vector-based Ebitenengine retained-mode UI library
+### This library is no where near complete (PRE-ALPHA), and breaking changes will come very often.
+*For quicker development, the code is not composed as a library at this time*
 Drawn using vectors and supports floating-point UI scaling.
 
 ![demo animation](https://github.com/user-attachments/assets/eef712c8-fa1e-4afe-826e-624c860ab842)
