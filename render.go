@@ -199,7 +199,6 @@ func (win *windowData) drawItems(screen *ebiten.Image) {
 		itemPos := pointAdd(winPos, item.getPosition(win))
 
 		if item.ItemType == ITEM_FLOW {
-
 			item.drawFlows(itemPos, screen)
 		} else {
 			item.drawItem(itemPos, screen)
@@ -210,13 +209,25 @@ func (win *windowData) drawItems(screen *ebiten.Image) {
 func (item *itemData) drawFlows(offset point, screen *ebiten.Image) {
 	vector.StrokeRect(screen, offset.X, offset.Y, item.Size.X, item.Size.Y, 1, color.White, false)
 
+	var flowOffset point
+
 	for _, subItem := range item.Contents {
+
 		if subItem.ItemType == ITEM_FLOW {
-			fpos := pointAdd(offset, item.Position)
-			subItem.drawFlows(pointAdd(fpos, subItem.Position), screen)
-			continue
+			flowPos := pointAdd(offset, item.Position)
+			flowOff := pointAdd(flowPos, flowOffset)
+			itemPos := pointAdd(flowOff, subItem.Position)
+			subItem.drawFlows(itemPos, screen)
+		} else {
+			flowOff := pointAdd(offset, flowOffset)
+			subItem.drawItem(flowOff, screen)
 		}
-		subItem.drawItem(offset, screen)
+
+		if item.FlowType == FLOW_HORIZONTAL {
+			flowOffset = pointAdd(flowOffset, point{X: subItem.Size.X, Y: 0})
+		} else if item.FlowType == FLOW_VERTICAL {
+			flowOffset = pointAdd(flowOffset, point{X: 0, Y: subItem.Size.Y})
+		}
 	}
 }
 
