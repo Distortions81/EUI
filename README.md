@@ -10,6 +10,7 @@ Drawn using vectors, supports floating-point UI scaling.
 
 # Windows, and flows:
 window -> main-flow -> sub-flow
+
 Each for has a direction, horizontal or vertical.
 
 ![flows screenshot](https://github.com/user-attachments/assets/b79c05ca-250a-4944-8cda-27d8ea598cc4)
