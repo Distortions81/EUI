@@ -3,6 +3,8 @@ package main
 import (
 	"bytes"
 	"flag"
+	"fmt"
+	"image/png"
 	"log"
 	"os"
 	"os/signal"
@@ -33,18 +35,68 @@ func main() {
 	}
 
 	newWindow := makeTestWindow()
-	newWindow.AddWindow(false)
-
 	/*
 		newWindow = makeTestWindow()
 		newWindow.Position.X += 64
 		newWindow.Position.Y += 64
 		newWindow.AddWindow(false)
 	*/
+	newWindow.AddWindow(false)
+
+	err := loadIcons()
+	if err != nil {
+		fmt.Printf("Error: %v\n", err.Error())
+	}
 
 	go startEbiten()
 
 	<-signalHandle
+}
+
+func loadIcons() error {
+	for _, win := range windows {
+		err := subLoadIcons(win.Contents)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func subLoadIcons(parent []*itemData) error {
+	for _, item := range parent {
+		subLoadIcons(item.Contents)
+
+		if item.ImageName != "" {
+			image, err := loadImage(item.ImageName)
+			if err != nil {
+				return err
+			}
+			item.Image = image
+		}
+	}
+
+	return nil
+}
+
+func loadImage(name string) (*ebiten.Image, error) {
+	fileData, err := os.OpenFile("data/"+name+".png", os.O_RDONLY, 0755)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Printf("Loaded %v.png\n", name)
+
+	png, err := png.Decode(fileData)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Printf("Decoded %v.png\n", name)
+
+	image := ebiten.NewImageFromImage(png)
+	fmt.Printf("Image %v.png added to ebiten\n", name)
+
+	return image, nil
 }
 
 func startEbiten() {
@@ -62,8 +114,6 @@ func startEbiten() {
 	if err := ebiten.RunGameWithOptions(newGame(), &ebiten.RunGameOptions{}); err != nil {
 		return
 	}
-
-	signalHandle <- syscall.SIGINT
 }
 
 func newGame() *Game {

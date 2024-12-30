@@ -3,6 +3,8 @@ package main
 import (
 	"image/color"
 	"time"
+
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type windowData struct {
@@ -43,6 +45,9 @@ type itemData struct {
 	FlowType flowType
 	Scroll   point
 
+	ImageName string
+	Image     *ebiten.Image
+
 	//Style
 	Fillet            float32
 	Border, BorderPad float32
@@ -75,6 +80,9 @@ type flowType int
 const (
 	FLOW_HORIZONTAL = iota
 	FLOW_VERTICAL
+
+	FLOW_HORIZONTAL_REV
+	FLOW_VERTICAL_REV
 )
 
 type alignType int
@@ -125,4 +133,5 @@ const (
 	ITEM_TEXT
 	ITEM_BUTTON
 	ITEM_FLOW
+	ITEM_TOOLBAR
 )

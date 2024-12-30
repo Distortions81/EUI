@@ -239,11 +239,20 @@ func (item *itemData) drawItem(offset point, screen *ebiten.Image) {
 		Y0: offset.Y, Y1: offset.Y + item.Size.Y,
 	}.getRectangle()).(*ebiten.Image)
 
-	if item.ItemType == ITEM_BUTTON {
+	if item.ItemType == ITEM_TOOLBAR {
+		//
+	} else if item.ItemType == ITEM_BUTTON {
 
-		drawRoundRect(subImg, &roundRect{
-			Size:     item.Size,
-			Position: offset, Fillet: item.Fillet, Filled: true, Color: item.Color})
+		if item.Image != nil {
+			sop := &ebiten.DrawImageOptions{}
+			sop.GeoM.Scale(float64(item.Size.X)/float64(item.Image.Bounds().Dx()), float64(item.Size.Y)/float64(item.Image.Bounds().Dy()))
+			sop.GeoM.Translate(float64(offset.X), float64(offset.Y))
+			subImg.DrawImage(item.Image, sop)
+		} else {
+			drawRoundRect(subImg, &roundRect{
+				Size:     item.Size,
+				Position: offset, Fillet: item.Fillet, Filled: true, Color: item.Color})
+		}
 
 		textSize := (item.FontSize * uiScale) + 2
 		face := &text.GoTextFace{
@@ -259,9 +268,7 @@ func (item *itemData) drawItem(offset point, screen *ebiten.Image) {
 		tdop.GeoM.Translate(
 			float64(offset.X+((item.Size.X*uiScale)/2)),
 			float64(offset.Y+((item.Size.Y*uiScale)/2)))
-
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
-
 		top.ColorScale.ScaleWithColor(item.TextColor)
 		text.Draw(subImg, item.Text, face, top)
 
