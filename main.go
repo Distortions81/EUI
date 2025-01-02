@@ -34,6 +34,7 @@ func main() {
 		mplusFaceSource = s
 	}
 
+	//SetUIScale(2)
 	newWindow := makeTestWindow()
 	/*
 		newWindow = makeTestWindow()

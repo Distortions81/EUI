@@ -124,25 +124,25 @@ func (target *windowData) ToBack() {
 func (pin pinType) getWinPosition(win *windowData) point {
 	switch pin {
 	case PIN_TOP_LEFT:
-		return win.Position
+		return win.GetPos()
 	case PIN_TOP_RIGHT:
-		return point{X: float32(screenWidth) - win.Size.X, Y: 0}
+		return point{X: float32(screenWidth) - win.GetSize().X, Y: 0}
 	case PIN_TOP_CENTER:
-		return point{X: float32(screenWidth/2) - win.Size.X/2, Y: 0}
+		return point{X: float32(screenWidth/2) - win.GetSize().X/2, Y: 0}
 	case PIN_MID_LEFT:
-		return point{X: 0, Y: float32(screenHeight/2) - (win.Size.Y + (win.TitleHeight*uiScale)/2)}
+		return point{X: 0, Y: float32(screenHeight/2) - (win.GetSize().Y + (win.GetTitleSize())/2)}
 	case PIN_MID_CENTER:
-		return point{X: float32(screenWidth/2) - win.Size.X/2, Y: float32(screenHeight/2) - (win.Size.Y - (win.TitleHeight*uiScale)/2)}
+		return point{X: float32(screenWidth/2) - win.GetSize().X/2, Y: float32(screenHeight/2) - (win.GetSize().Y - (win.GetTitleSize())/2)}
 	case PIN_MID_RIGHT:
-		return point{X: float32(screenWidth) - win.Size.X/2, Y: float32(screenHeight/2) - (win.Size.Y - (win.TitleHeight*uiScale)/2)}
+		return point{X: float32(screenWidth) - win.GetSize().X/2, Y: float32(screenHeight/2) - (win.GetSize().Y - (win.GetTitleSize())/2)}
 	case PIN_BOTTOM_LEFT:
-		return point{X: float32(screenWidth) - win.Size.X, Y: float32(screenHeight) - (win.Size.Y - (win.TitleHeight * uiScale))}
+		return point{X: float32(screenWidth) - win.GetSize().X, Y: float32(screenHeight) - (win.GetSize().Y - (win.GetTitleSize()))}
 	case PIN_BOTTOM_CENTER:
-		return point{X: float32(screenWidth/2) - (win.Size.X / 2), Y: float32(screenHeight) - (win.Size.Y - (win.TitleHeight * uiScale))}
+		return point{X: float32(screenWidth/2) - (win.GetSize().X / 2), Y: float32(screenHeight) - (win.GetSize().Y - (win.GetTitleSize()))}
 	case PIN_BOTTOM_RIGHT:
-		return point{X: float32(screenWidth) - (win.Size.X), Y: float32(screenHeight) - (win.Size.Y - (win.TitleHeight * uiScale))}
+		return point{X: float32(screenWidth) - (win.GetSize().X), Y: float32(screenHeight) - (win.GetSize().Y - (win.GetTitleSize()))}
 	default:
-		return win.Position
+		return win.GetPos()
 	}
 }
 
@@ -153,47 +153,47 @@ func (pin pinType) getItemPosition(win *windowData, item *itemData) point {
 		return item.Position
 	case PIN_TOP_RIGHT:
 		return point{
-			X: item.Position.X + float32((win.Size.X)) - (item.Size.X) - item.Position.X,
+			X: item.Position.X + float32((win.GetSize().X)) - (item.Size.X) - item.Position.X,
 			Y: item.Position.Y}
 	case PIN_TOP_CENTER:
 		return point{
-			X: float32((win.Size.X)/2) - (item.Size.X)/2,
+			X: float32((win.GetSize().X)/2) - (item.Size.X)/2,
 			Y: item.Position.Y}
 	case PIN_MID_LEFT:
 		return point{
 			X: item.Position.X,
-			Y: float32((win.Size.Y)/2) - ((item.Size.Y) / 2)}
+			Y: float32((win.GetSize().Y)/2) - ((item.Size.Y) / 2)}
 	case PIN_MID_CENTER:
 		return point{
-			X: float32((win.Size.X)/2) - (item.Size.X)/2,
-			Y: float32((win.Size.Y)/2) - ((item.Size.Y) / 2)}
+			X: float32((win.GetSize().X)/2) - (item.Size.X)/2,
+			Y: float32((win.GetSize().Y)/2) - ((item.Size.Y) / 2)}
 	case PIN_MID_RIGHT:
 		return point{
-			X: float32((win.Size.X)) - (item.Size.X)/2 - item.Position.X,
-			Y: float32((win.Size.Y)/2) - ((item.Size.Y) / 2)}
+			X: float32((win.GetSize().X)) - (item.Size.X)/2 - item.Position.X,
+			Y: float32((win.GetSize().Y)/2) - ((item.Size.Y) / 2)}
 	case PIN_BOTTOM_LEFT:
 		return point{
 			X: item.Position.X,
-			Y: float32((win.Size.Y)-(win.TitleHeight*uiScale)*2) - (item.Size.Y) - item.Position.Y}
+			Y: float32((win.GetSize().Y)-(win.GetTitleSize())*2) - (item.Size.Y) - item.Position.Y}
 	case PIN_BOTTOM_CENTER:
 		return point{
-			X: float32((win.Size.X)/2) - ((item.Size.X) / 2),
-			Y: float32((win.Size.Y)-(win.TitleHeight*uiScale)*2) - (item.Size.Y) - item.Position.Y}
+			X: float32((win.GetSize().X)/2) - ((item.Size.X) / 2),
+			Y: float32((win.GetSize().Y)-(win.GetTitleSize())*2) - (item.Size.Y) - item.Position.Y}
 	case PIN_BOTTOM_RIGHT:
 		return point{
-			X: float32((win.Size.X)) - (item.Size.X) - item.Position.X,
-			Y: float32((win.Size.Y)-(win.TitleHeight*uiScale)*2) - (item.Size.Y) - item.Position.Y}
+			X: float32((win.GetSize().X)) - (item.Size.X) - item.Position.X,
+			Y: float32((win.GetSize().Y)-(win.GetTitleSize())*2) - (item.Size.Y) - item.Position.Y}
 	default:
 		return item.Position
 	}
 }
 
 func (win *windowData) getPosition() point {
-	return win.PinTo.getWinPosition(win)
+	return (win.PinTo.getWinPosition(win))
 }
 
 func (item *itemData) getPosition(win *windowData) point {
-	return item.PinTo.getItemPosition(win, item)
+	return (item.PinTo.getItemPosition(win, item))
 }
 
 // Do the window items overlap?

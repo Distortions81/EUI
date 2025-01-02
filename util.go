@@ -13,10 +13,10 @@ func (rect rect) containsPoint(b point) bool {
 }
 
 func (item *itemData) containsPoint(win *windowData, b point) bool {
-	return b.X >= win.getPosition().X+(item.getPosition(win).X*uiScale) &&
-		b.X <= win.getPosition().X+(item.getPosition(win).X*uiScale)+(item.Size.X*uiScale) &&
-		b.Y >= win.getPosition().Y+(item.getPosition(win).Y*uiScale) &&
-		b.Y <= win.getPosition().Y+(item.getPosition(win).Y*uiScale)+(item.Size.Y*uiScale)
+	return b.X >= win.getPosition().X+(item.getPosition(win).X) &&
+		b.X <= win.getPosition().X+(item.getPosition(win).X)+(item.GetSize().X) &&
+		b.Y >= win.getPosition().Y+(item.getPosition(win).Y) &&
+		b.Y <= win.getPosition().Y+(item.getPosition(win).Y)+(item.GetPos().Y)
 }
 
 func (win *windowData) getWinRect() rect {
@@ -24,17 +24,17 @@ func (win *windowData) getWinRect() rect {
 	return rect{
 		X0: winPos.X,
 		Y0: winPos.Y,
-		X1: winPos.X + (win.Size.X * uiScale),
-		Y1: winPos.Y + (win.Size.Y * uiScale) - (win.TitleHeight * uiScale),
+		X1: winPos.X + (win.GetSize().X),
+		Y1: winPos.Y + (win.GetSize().Y) - (win.GetTitleSize()),
 	}
 }
 
 func (item *itemData) getItemRect(win *windowData) rect {
 	return rect{
-		X0: win.getPosition().X + (item.getPosition(win).X * uiScale),
-		Y0: win.getPosition().Y + (item.getPosition(win).Y * uiScale),
-		X1: win.getPosition().X + (item.getPosition(win).X * uiScale) + (item.Size.X * uiScale),
-		Y1: win.getPosition().Y + (item.getPosition(win).Y * uiScale) + (item.Size.Y * uiScale),
+		X0: win.getPosition().X + (item.getPosition(win).X),
+		Y0: win.getPosition().Y + (item.getPosition(win).Y),
+		X1: win.getPosition().X + (item.getPosition(win).X) + (item.GetSize().X),
+		Y1: win.getPosition().Y + (item.getPosition(win).Y) + (item.GetSize().Y),
 	}
 }
 
@@ -47,9 +47,9 @@ func (rect rect) getRectangle() image.Rectangle {
 func (win *windowData) getMainRect() rect {
 	return rect{
 		X0: win.getPosition().X,
-		Y0: win.getPosition().Y + (win.TitleHeight * uiScale) + 1,
-		X1: win.getPosition().X + win.Size.X,
-		Y1: win.getPosition().Y + win.Size.Y - (win.TitleHeight * uiScale),
+		Y0: win.getPosition().Y + (win.GetTitleSize()) + 1,
+		X1: win.getPosition().X + win.GetSize().X,
+		Y1: win.getPosition().Y + win.GetSize().Y - (win.GetTitleSize()),
 	}
 }
 
@@ -59,8 +59,8 @@ func (win *windowData) getTitleRect() rect {
 	}
 	return rect{
 		X0: win.getPosition().X, Y0: win.getPosition().Y,
-		X1: win.getPosition().X + win.Size.X,
-		Y1: win.getPosition().Y + (win.TitleHeight * uiScale),
+		X1: win.getPosition().X + win.GetSize().X,
+		Y1: win.getPosition().Y + (win.GetTitleSize()),
 	}
 }
 
@@ -71,11 +71,11 @@ func (win *windowData) xRect() rect {
 
 	var xpad float32 = win.Border
 	return rect{
-		X0: win.getPosition().X + win.Size.X - (win.TitleHeight * uiScale) + xpad,
+		X0: win.getPosition().X + win.GetSize().X - (win.GetTitleSize()) + xpad,
 		Y0: win.getPosition().Y + xpad,
 
-		X1: win.getPosition().X + win.Size.X - xpad,
-		Y1: win.getPosition().Y + (win.TitleHeight * uiScale) - xpad,
+		X1: win.getPosition().X + win.GetSize().X - xpad,
+		Y1: win.getPosition().Y + (win.GetTitleSize()) - xpad,
 	}
 }
 
@@ -87,12 +87,12 @@ func (win *windowData) dragbarRect() rect {
 	xRect := win.xRect()
 	buttonsWidth := xRect.X1 - xRect.X0 + 3
 
-	dpad := (win.TitleHeight * uiScale) / 5
-	xStart := textSize.X + float32((win.TitleHeight*uiScale)/1.5)
-	xEnd := (win.Size.X - buttonsWidth)
+	dpad := (win.GetTitleSize()) / 5
+	xStart := textSize.X + float32((win.GetTitleSize())/1.5)
+	xEnd := (win.GetSize().X - buttonsWidth)
 	return rect{
 		X0: win.getPosition().X + xStart, Y0: win.getPosition().Y + dpad,
-		X1: win.getPosition().X + xEnd, Y1: win.getPosition().Y + (win.TitleHeight * uiScale) - dpad,
+		X1: win.getPosition().X + xEnd, Y1: win.getPosition().Y + (win.GetTitleSize()) - dpad,
 	}
 }
 
@@ -189,7 +189,7 @@ func (win *windowData) titleTextWidth() point {
 	if win.TitleHeight <= 0 {
 		return point{}
 	}
-	textSize := ((win.TitleHeight * uiScale) / 1.5)
+	textSize := ((win.GetTitleSize()) / 1.5)
 	face := &text.GoTextFace{
 		Source: mplusFaceSource,
 		Size:   float64(textSize),
@@ -222,18 +222,30 @@ func pointSub(a, b point) point {
 	return point{X: a.X - b.X, Y: a.Y - b.Y}
 }
 
-func (win *windowData) getSizeX() float32 {
-	return win.Size.X * uiScale
-}
-
-func (win *windowData) getSizeY() float32 {
-	return win.Size.Y * uiScale
-}
-
 func (win *windowData) SetTitleSize(size float32) {
 	win.TitleHeight = size / uiScale
 }
 
 func SetUIScale(scale float32) {
 	uiScale = scale
+}
+
+func (win *windowData) GetTitleSize() float32 {
+	return win.TitleHeight * uiScale
+}
+
+func (win *windowData) GetSize() point {
+	return point{X: win.Size.X * uiScale, Y: win.Size.Y * uiScale}
+}
+
+func (win *windowData) GetPos() point {
+	return point{X: win.Position.X * uiScale, Y: win.Position.Y * uiScale}
+}
+
+func (item *itemData) GetSize() point {
+	return point{X: item.Size.X * uiScale, Y: item.Size.Y * uiScale}
+}
+
+func (item *itemData) GetPos() point {
+	return point{X: item.Position.X * uiScale, Y: item.Position.Y * uiScale}
 }
