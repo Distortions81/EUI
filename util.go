@@ -125,9 +125,12 @@ func (win *windowData) setSize(size point) bool {
 }
 
 const cornerSize = 14
-const tol = 3
+const tol = 2
 
 func (win *windowData) getWindowEdge(mpos point) windowEdge {
+
+	t := tol * uiScale
+	cs := cornerSize * uiScale
 
 	if !win.Resizable {
 		return EDGE_NONE
@@ -138,32 +141,32 @@ func (win *windowData) getWindowEdge(mpos point) windowEdge {
 
 	//Expand outer window rect
 	outRect := winRect
-	outRect.X0 -= tol
-	outRect.X1 += tol
-	outRect.Y0 -= tol
-	outRect.Y1 += tol
+	outRect.X0 -= t
+	outRect.X1 += t
+	outRect.Y0 -= t
+	outRect.Y1 += t
 
 	//Contract inner window rect
 	inRect := winRect
-	inRect.X0 += tol
-	inRect.X1 -= tol
-	inRect.Y0 += tol
-	inRect.Y1 -= tol
+	inRect.X0 += t
+	inRect.X1 -= t
+	inRect.Y0 += t
+	inRect.Y1 -= t
 
 	//If within outrect, and not within inrect it is window edge
 	if outRect.containsPoint(mpos) && !inRect.containsPoint(mpos) {
-		if mpos.Y < outRect.Y0+cornerSize {
-			if mpos.X < inRect.X0+cornerSize {
+		if mpos.Y < outRect.Y0+cs {
+			if mpos.X < inRect.X0+cs {
 				return EDGE_TOP_LEFT
-			} else if mpos.X > inRect.X1-cornerSize {
+			} else if mpos.X > inRect.X1-cs {
 				return EDGE_TOP_RIGHT
 			} else {
 				return EDGE_TOP
 			}
-		} else if mpos.Y > inRect.Y1-cornerSize {
-			if mpos.X > outRect.X1-cornerSize {
+		} else if mpos.Y > inRect.Y1-cs {
+			if mpos.X > outRect.X1-cs {
 				return EDGE_BOTTOM_RIGHT
-			} else if mpos.X < outRect.X0+cornerSize {
+			} else if mpos.X < outRect.X0+cs {
 				return EDGE_BOTTOM_LEFT
 			} else {
 				return EDGE_BOTTOM

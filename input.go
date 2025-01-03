@@ -7,7 +7,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
-const minDrag = 2
+const minDrag = 0
 
 var (
 	mposOld     point
@@ -63,13 +63,13 @@ func (g *Game) Update() error {
 				if cursorShape != c {
 					cursorShape = c
 					ebiten.SetCursorShape(cursorShape)
+					cursorChanged = true
 				}
-				cursorChanged = true
 
 				//Drag resize edge or corner
 				if clickDrag {
 					posCh := pointSub(mpos, mposOld)
-					sizeCh := point{X: posCh.X / uiScale, Y: posCh.Y / uiScale}
+					sizeCh := pointScaleMul(point{X: posCh.X / uiScale, Y: posCh.Y / uiScale})
 					if side == EDGE_TOP {
 						posCh.X = 0
 						sizeCh.X = 0
