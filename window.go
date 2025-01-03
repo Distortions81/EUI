@@ -153,38 +153,38 @@ func (pin pinType) getItemPosition(win *windowData, item *itemData) point {
 		return item.Position
 	case PIN_TOP_RIGHT:
 		return point{
-			X: item.Position.X + float32((win.GetSize().X)) - (item.Size.X) - item.Position.X,
-			Y: item.Position.Y}
+			X: item.GetPos().X + float32((win.GetSize().X)) - (item.GetSize().X) - item.GetPos().X,
+			Y: item.GetPos().Y}
 	case PIN_TOP_CENTER:
 		return point{
-			X: float32((win.GetSize().X)/2) - (item.Size.X)/2,
-			Y: item.Position.Y}
+			X: float32((win.GetSize().X)/2) - (item.GetSize().X)/2,
+			Y: item.GetPos().Y}
 	case PIN_MID_LEFT:
 		return point{
-			X: item.Position.X,
-			Y: float32((win.GetSize().Y)/2) - ((item.Size.Y) / 2)}
+			X: item.GetPos().X,
+			Y: float32((win.GetSize().Y)/2) - ((item.GetSize().Y) / 2)}
 	case PIN_MID_CENTER:
 		return point{
-			X: float32((win.GetSize().X)/2) - (item.Size.X)/2,
-			Y: float32((win.GetSize().Y)/2) - ((item.Size.Y) / 2)}
+			X: float32((win.GetSize().X)/2) - (item.GetSize().X)/2,
+			Y: float32((win.GetSize().Y)/2) - ((item.GetSize().Y) / 2)}
 	case PIN_MID_RIGHT:
 		return point{
-			X: float32((win.GetSize().X)) - (item.Size.X)/2 - item.Position.X,
-			Y: float32((win.GetSize().Y)/2) - ((item.Size.Y) / 2)}
+			X: float32((win.GetSize().X)) - (item.GetSize().X)/2 - item.GetPos().X,
+			Y: float32((win.GetSize().Y)/2) - ((item.GetSize().Y) / 2)}
 	case PIN_BOTTOM_LEFT:
 		return point{
-			X: item.Position.X,
-			Y: float32((win.GetSize().Y)-(win.GetTitleSize())*2) - (item.Size.Y) - item.Position.Y}
+			X: item.GetPos().X,
+			Y: float32((win.GetSize().Y)-(win.GetTitleSize())*2) - (item.GetSize().Y) - item.GetPos().Y}
 	case PIN_BOTTOM_CENTER:
 		return point{
-			X: float32((win.GetSize().X)/2) - ((item.Size.X) / 2),
-			Y: float32((win.GetSize().Y)-(win.GetTitleSize())*2) - (item.Size.Y) - item.Position.Y}
+			X: float32((win.GetSize().X)/2) - ((item.GetSize().X) / 2),
+			Y: float32((win.GetSize().Y)-(win.GetTitleSize())*2) - (item.GetSize().Y) - item.GetPos().Y}
 	case PIN_BOTTOM_RIGHT:
 		return point{
-			X: float32((win.GetSize().X)) - (item.Size.X) - item.Position.X,
-			Y: float32((win.GetSize().Y)-(win.GetTitleSize())*2) - (item.Size.Y) - item.Position.Y}
+			X: float32((win.GetSize().X)) - (item.GetSize().X) - item.GetPos().X,
+			Y: float32((win.GetSize().Y)-(win.GetTitleSize())*2) - (item.GetSize().Y) - item.GetPos().Y}
 	default:
-		return item.Position
+		return item.GetPos()
 	}
 }
 

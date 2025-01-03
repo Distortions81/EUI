@@ -193,7 +193,7 @@ func (win *windowData) drawResizeTab(screen *ebiten.Image) {
 }
 
 func (win *windowData) drawItems(screen *ebiten.Image) {
-	winPos := pointAdd(win.GetPos(), point{X: 0, Y: win.TitleHeight})
+	winPos := pointAdd(win.GetPos(), point{X: 0, Y: win.GetTitleSize()})
 	winImage := screen.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
 
 	for _, item := range win.Contents {
@@ -209,16 +209,16 @@ func (win *windowData) drawItems(screen *ebiten.Image) {
 }
 
 func (item *itemData) drawFlows(offset point, screen *ebiten.Image) {
-	vector.StrokeRect(screen, offset.X, offset.Y, item.Size.X, item.Size.Y, 1, color.White, false)
+	vector.StrokeRect(screen, offset.X, offset.Y, item.GetSize().X, item.GetSize().Y, 1, color.White, false)
 
 	var flowOffset point
 
 	for _, subItem := range item.Contents {
 
 		if subItem.ItemType == ITEM_FLOW {
-			flowPos := pointAdd(offset, item.Position)
+			flowPos := pointAdd(offset, item.GetPos())
 			flowOff := pointAdd(flowPos, flowOffset)
-			itemPos := pointAdd(flowOff, subItem.Position)
+			itemPos := pointAdd(flowOff, subItem.GetPos())
 			subItem.drawFlows(itemPos, screen)
 		} else {
 			flowOff := pointAdd(offset, flowOffset)
@@ -226,17 +226,17 @@ func (item *itemData) drawFlows(offset point, screen *ebiten.Image) {
 		}
 
 		if item.FlowType == FLOW_HORIZONTAL {
-			flowOffset = pointAdd(flowOffset, point{X: subItem.Size.X, Y: 0})
+			flowOffset = pointAdd(flowOffset, point{X: subItem.GetSize().X, Y: 0})
 		} else if item.FlowType == FLOW_VERTICAL {
-			flowOffset = pointAdd(flowOffset, point{X: 0, Y: subItem.Size.Y})
+			flowOffset = pointAdd(flowOffset, point{X: 0, Y: subItem.GetSize().Y})
 		}
 	}
 }
 
 func (item *itemData) drawItem(offset point, screen *ebiten.Image) {
 	subImg := screen.SubImage(rect{
-		X0: offset.X, X1: offset.X + item.Size.X,
-		Y0: offset.Y, Y1: offset.Y + item.Size.Y,
+		X0: offset.X, X1: offset.X + item.GetSize().X,
+		Y0: offset.Y, Y1: offset.Y + item.GetSize().Y,
 	}.getRectangle()).(*ebiten.Image)
 
 	if item.ItemType == ITEM_TOOLBAR {
@@ -245,7 +245,7 @@ func (item *itemData) drawItem(offset point, screen *ebiten.Image) {
 
 		if item.Image != nil {
 			sop := &ebiten.DrawImageOptions{}
-			sop.GeoM.Scale(float64(item.Size.X)/float64(item.Image.Bounds().Dx()), float64(item.Size.Y)/float64(item.Image.Bounds().Dy()))
+			sop.GeoM.Scale(float64(item.GetSize().X)/float64(item.Image.Bounds().Dx()), float64(item.GetSize().Y)/float64(item.Image.Bounds().Dy()))
 			sop.GeoM.Translate(float64(offset.X), float64(offset.Y))
 			subImg.DrawImage(item.Image, sop)
 		} else {
@@ -295,7 +295,7 @@ func (item *itemData) drawItem(offset point, screen *ebiten.Image) {
 		top.ColorScale.ScaleWithColor(item.TextColor)
 		text.Draw(subImg, item.Text, face, top)
 
-		vector.StrokeRect(subImg, offset.X, offset.Y, item.Size.X, item.Size.Y, 1, color.RGBA{R: 255}, false)
+		vector.StrokeRect(subImg, offset.X, offset.Y, item.GetSize().X, item.GetSize().Y, 1, color.RGBA{R: 255}, false)
 	}
 }
 
