@@ -68,7 +68,7 @@ func (g *Game) Update() error {
 
 				//Drag resize edge or corner
 				if clickDrag {
-					posCh := pointSub(mpos, mposOld)
+					posCh := pointScaleDiv(pointSub(mpos, mposOld))
 					sizeCh := pointScaleMul(point{X: posCh.X / uiScale, Y: posCh.Y / uiScale})
 					if side == EDGE_TOP {
 						posCh.X = 0
