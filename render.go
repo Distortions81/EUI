@@ -237,7 +237,6 @@ func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.I
 func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Image) {
 
 	if parent == nil {
-		fmt.Printf("no parent... %v\n", time.Now())
 		parent = item
 	}
 	maxSize := item.GetSize()
@@ -265,7 +264,9 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 			subImg.DrawImage(item.Image, sop)
 		} else {
 			itemColor := item.Color
-			if item.Hovered {
+			if time.Since(item.Clicked) < clickFlash {
+				itemColor = item.ClickColor
+			} else if item.Hovered {
 				item.Hovered = false
 				itemColor = item.HoverColor
 			}

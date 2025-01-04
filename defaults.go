@@ -33,7 +33,7 @@ var defaultButton = &itemData{
 	TextColor:  color.RGBA{R: 255, G: 255, B: 255, A: 255},
 	Color:      color.RGBA{R: 48, G: 48, B: 48, A: 255},
 	HoverColor: color.RGBA{R: 64, G: 128, B: 128, A: 255},
-	ClickColor: color.RGBA{R: 64, G: 64, B: 64, A: 255},
+	ClickColor: color.RGBA{R: 128, G: 64, B: 64, A: 255},
 }
 
 var defaultText = &itemData{

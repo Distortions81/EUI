@@ -131,25 +131,72 @@ func (g *Game) Update() error {
 }
 
 func (win *windowData) clickWindowItems(mpos point, click bool) {
-	if win.getWinRect().containsPoint(mpos) {
-		win.Hovered = true
+	//If the mouse isn't within the window, just return
+	if !win.getMainRect().containsPoint(mpos) {
+		return
+	}
+	win.Hovered = true
+	winPos := pointAdd(win.GetPos(), point{X: 0, Y: win.GetTitleSize()})
 
-		for _, item := range win.Contents {
-			if item.ItemType == ITEM_FLOW {
-				newWin := windowData{Size: win.Size, Position: pointSub(win.Position, point{X: 0, Y: win.TitleHeight}), Contents: item.Contents}
-				newWin.clickWindowItems(mpos, click)
-				continue
-			}
-			if item.containsPoint(win, mpos) {
-				item.Hovered = true
-				if click {
-					item.Clicked = time.Now()
-					if item.Action != nil {
-						item.Action()
-						break
-					}
-				}
-			}
+	for _, item := range win.Contents {
+		itemPos := pointAdd(winPos, item.getPosition(win))
+
+		if item.ItemType == ITEM_FLOW {
+			item.clickFlows(nil, itemPos, mpos, click)
+		} else {
+			item.clickItem(nil, itemPos, mpos, click)
 		}
+	}
+}
+
+func (item *itemData) clickFlows(parent *itemData, offset, mpos point, click bool) {
+
+	var flowOffset point
+
+	for _, subItem := range item.Contents {
+
+		if subItem.ItemType == ITEM_FLOW {
+			flowPos := pointAdd(offset, item.GetPos())
+			flowOff := pointAdd(flowPos, flowOffset)
+			itemPos := pointAdd(flowOff, subItem.GetPos())
+			subItem.clickFlows(item, itemPos, mpos, click)
+		} else {
+			flowOff := pointAdd(offset, flowOffset)
+			subItem.clickItem(item, flowOff, mpos, click)
+		}
+
+		if item.FlowType == FLOW_HORIZONTAL {
+			flowOffset = pointAdd(flowOffset, point{X: subItem.GetSize().X, Y: 0})
+		} else if item.FlowType == FLOW_VERTICAL {
+			flowOffset = pointAdd(flowOffset, point{X: 0, Y: subItem.GetSize().Y})
+		}
+	}
+}
+
+func (item *itemData) clickItem(parent *itemData, offset, mpos point, click bool) {
+	if parent == nil {
+		parent = item
+	}
+	maxSize := item.GetSize()
+	if item.Size.X > parent.Size.X {
+		maxSize.X = parent.GetSize().X
+	}
+	if item.Size.Y > parent.Size.Y {
+		maxSize.Y = parent.GetSize().Y
+	}
+	itemRect := rect{
+		X0: offset.X, X1: offset.X + maxSize.X,
+		Y0: offset.Y, Y1: offset.Y + maxSize.Y,
+	}
+
+	//If the mouse isn't within the item, just return
+	if !itemRect.containsPoint(mpos) {
+		return
+	}
+
+	if click {
+		item.Clicked = time.Now()
+	} else {
+		item.Hovered = true
 	}
 }
