@@ -19,7 +19,7 @@ var (
 	windows         []*windowData
 	activeWindow    *windowData
 	uiScale         float32 = 1.0
-	clickFlash              = time.Millisecond * 200
+	clickFlash              = time.Millisecond * 100
 
 	whiteImage    = ebiten.NewImage(3, 3)
 	whiteSubImage = whiteImage.SubImage(image.Rect(1, 1, 2, 2)).(*ebiten.Image)
