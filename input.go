@@ -33,6 +33,18 @@ func (g *Game) Update() error {
 			continue
 		}
 
+		//Bring window forward on click, defer
+		if click {
+			if win != activeWindow {
+				if win.getWinRect().containsPoint(mpos) {
+					defer func(win *windowData) {
+						activeWindow = win
+						win.BringForward()
+					}(win)
+				}
+			}
+		}
+
 		part := win.getWindowPart(mposOld, click)
 
 		if part != PART_NONE {
@@ -92,8 +104,9 @@ func (g *Game) Update() error {
 					ty := win.Size.Y + sizeCh.Y
 					win.setSize(point{X: tx, Y: ty})
 				} else if part == PART_BOTTOM_LEFT {
-					tx := win.Size.Y + sizeCh.Y
-					ty := win.Size.X - sizeCh.X
+					tx := win.Size.X - sizeCh.X
+					ty := win.Size.Y + sizeCh.Y
+
 					if !win.setSize(point{X: tx, Y: ty}) {
 						win.Position.X += posCh.X
 					}
@@ -104,7 +117,6 @@ func (g *Game) Update() error {
 						win.Position.Y -= posCh.Y
 					}
 				}
-
 				break
 			}
 		}
@@ -112,16 +124,6 @@ func (g *Game) Update() error {
 		//Window items
 		win.clickWindowItems(mpos, click)
 
-		//Bring window forward on click
-		if win != activeWindow {
-			if win.getWinRect().containsPoint(mpos) {
-				if click {
-					activeWindow = win
-					win.BringForward()
-				}
-				break
-			}
-		}
 	}
 
 	if cursorShape != c {
