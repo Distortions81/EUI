@@ -44,6 +44,9 @@ func (g *Game) Update() error {
 			}
 		}()
 
+		posCh := pointScaleDiv(pointSub(mpos, mposOld))
+		sizeCh := pointScaleMul(point{X: posCh.X / uiScale, Y: posCh.Y / uiScale})
+
 		if win.Resizable {
 			side := win.getWindowEdge(mposOld)
 
@@ -63,13 +66,12 @@ func (g *Game) Update() error {
 				if cursorShape != c {
 					cursorShape = c
 					ebiten.SetCursorShape(cursorShape)
-					cursorChanged = true
 				}
+				cursorChanged = true
 
 				//Drag resize edge or corner
 				if clickDrag {
-					posCh := pointScaleDiv(pointSub(mpos, mposOld))
-					sizeCh := pointScaleMul(point{X: posCh.X / uiScale, Y: posCh.Y / uiScale})
+
 					if side == EDGE_TOP {
 						posCh.X = 0
 						sizeCh.X = 0
@@ -134,7 +136,7 @@ func (g *Game) Update() error {
 		if win.TitleHeight > 0 {
 
 			//Dragbar
-			if !cursorChanged && win.Movable {
+			if win.Movable {
 				if win.getTitleRect().containsPoint(mposOld) {
 					if win.dragbarRect().containsPoint(mposOld) {
 						win.HoverDragbar = true
@@ -144,11 +146,11 @@ func (g *Game) Update() error {
 								cursorShape = ebiten.CursorShapeMove
 								ebiten.SetCursorShape(cursorShape)
 							}
-							cursorChanged = true
 						}
+						cursorChanged = true
 
 						if clickDrag {
-							win.Position = pointAdd(win.Position, pointSub(mpos, mposOld))
+							win.Position = pointAdd(win.Position, posCh)
 							break
 						}
 					}
