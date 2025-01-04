@@ -196,6 +196,10 @@ func (item *itemData) clickItem(parent *itemData, offset, mpos point, click bool
 
 	if click {
 		item.Clicked = time.Now()
+		if item.Action != nil {
+			item.Action()
+			return
+		}
 	} else {
 		item.Hovered = true
 	}
