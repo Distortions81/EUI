@@ -201,14 +201,14 @@ func (win *windowData) drawItems(screen *ebiten.Image) {
 		itemPos := pointAdd(winPos, item.getPosition(win))
 
 		if item.ItemType == ITEM_FLOW {
-			item.drawFlows(itemPos, itemImage)
+			item.drawFlows(nil, itemPos, itemImage)
 		} else {
-			item.drawItem(itemPos, itemImage)
+			item.drawItem(nil, itemPos, itemImage)
 		}
 	}
 }
 
-func (item *itemData) drawFlows(offset point, screen *ebiten.Image) {
+func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.Image) {
 	vector.StrokeRect(screen, offset.X, offset.Y, item.GetSize().X, item.GetSize().Y, 1, color.White, false)
 
 	var flowOffset point
@@ -219,10 +219,10 @@ func (item *itemData) drawFlows(offset point, screen *ebiten.Image) {
 			flowPos := pointAdd(offset, item.GetPos())
 			flowOff := pointAdd(flowPos, flowOffset)
 			itemPos := pointAdd(flowOff, subItem.GetPos())
-			subItem.drawFlows(itemPos, screen)
+			subItem.drawFlows(item, itemPos, screen)
 		} else {
 			flowOff := pointAdd(offset, flowOffset)
-			subItem.drawItem(flowOff, screen)
+			subItem.drawItem(item, flowOff, screen)
 		}
 
 		if item.FlowType == FLOW_HORIZONTAL {
@@ -233,10 +233,22 @@ func (item *itemData) drawFlows(offset point, screen *ebiten.Image) {
 	}
 }
 
-func (item *itemData) drawItem(offset point, screen *ebiten.Image) {
+func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Image) {
+
+	if parent == nil {
+		parent = item
+	}
+	maxSize := item.GetSize()
+	if item.Size.X > parent.Size.X {
+		maxSize.X = parent.GetSize().X
+	}
+	if item.Size.Y > parent.Size.Y {
+		maxSize.Y = parent.GetSize().Y
+	}
+
 	subImg := screen.SubImage(rect{
-		X0: offset.X, X1: offset.X + item.GetSize().X,
-		Y0: offset.Y, Y1: offset.Y + item.GetSize().Y,
+		X0: offset.X, X1: offset.X + maxSize.X,
+		Y0: offset.Y, Y1: offset.Y + maxSize.Y,
 	}.getRectangle()).(*ebiten.Image)
 
 	if item.ItemType == ITEM_TOOLBAR {
@@ -245,12 +257,13 @@ func (item *itemData) drawItem(offset point, screen *ebiten.Image) {
 
 		if item.Image != nil {
 			sop := &ebiten.DrawImageOptions{}
-			sop.GeoM.Scale(float64(item.GetSize().X)/float64(item.Image.Bounds().Dx()), float64(item.GetSize().Y)/float64(item.Image.Bounds().Dy()))
+			sop.GeoM.Scale(float64(maxSize.X)/float64(item.Image.Bounds().Dx()),
+				float64(maxSize.Y)/float64(item.Image.Bounds().Dy()))
 			sop.GeoM.Translate(float64(offset.X), float64(offset.Y))
 			subImg.DrawImage(item.Image, sop)
 		} else {
 			drawRoundRect(subImg, &roundRect{
-				Size:     item.Size,
+				Size:     maxSize,
 				Position: offset, Fillet: item.Fillet, Filled: true, Color: item.Color})
 		}
 
@@ -266,8 +279,8 @@ func (item *itemData) drawItem(offset point, screen *ebiten.Image) {
 		}
 		tdop := ebiten.DrawImageOptions{}
 		tdop.GeoM.Translate(
-			float64(offset.X+((item.GetSize().X)/2)),
-			float64(offset.Y+((item.GetSize().Y)/2)))
+			float64(offset.X+((maxSize.X)/2)),
+			float64(offset.Y+((maxSize.Y)/2)))
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 		top.ColorScale.ScaleWithColor(item.TextColor)
 		text.Draw(subImg, item.Text, face, top)

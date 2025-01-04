@@ -17,7 +17,7 @@ func makeTestWindow() *windowData {
 	leftText2 := NewText(&itemData{Text: "left panel item 2", Size: point{X: 100, Y: 32}, FontSize: 8})
 	leftText3 := NewText(&itemData{Text: "left panel item 3", Size: point{X: 100, Y: 32}, FontSize: 8})
 	leftButton1 := NewButton(&itemData{Text: "test button", Size: point{X: 100, Y: 32}, FontSize: 8, ImageName: "1"})
-	leftButton2 := NewButton(nil)
+	leftButton2 := NewButton(&itemData{Text: "test", Size: point{X: 50, Y: 32}, FontSize: 8})
 	leftFlow.Contents = append(leftFlow.Contents, leftText1)
 	leftFlow.Contents = append(leftFlow.Contents, leftText2)
 	leftFlow.Contents = append(leftFlow.Contents, leftText3)
