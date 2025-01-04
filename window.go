@@ -80,21 +80,27 @@ func (target *windowData) RemoveWindow() {
 // Create a new window from the default theme
 func NewWindow(win *windowData) *windowData {
 	newWindow := *defaultTheme
-	mergeData(&newWindow, win)
+	if win != nil {
+		mergeData(&newWindow, win)
+	}
 	return &newWindow
 }
 
 // Create a new button from the default theme
 func NewButton(item *itemData) *itemData {
 	newItem := *defaultButton
-	mergeData(&newItem, item)
+	if item != nil {
+		mergeData(&newItem, item)
+	}
 	return &newItem
 }
 
 // Create a new textbox from the default theme
 func NewText(item *itemData) *itemData {
 	newItem := *defaultText
-	mergeData(&newItem, item)
+	if item != nil {
+		mergeData(&newItem, item)
+	}
 	return &newItem
 }
 

@@ -22,7 +22,7 @@ var defaultButton = &itemData{
 	ItemType:  ITEM_BUTTON,
 	Size:      point{X: 128, Y: 64},
 	Position:  point{X: 10, Y: 10},
-	FontSize:  24,
+	FontSize:  12,
 	LineSpace: 1.2,
 
 	Fillet: 8,
