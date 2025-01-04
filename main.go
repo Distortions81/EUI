@@ -114,6 +114,8 @@ func startEbiten() {
 	if err := ebiten.RunGameWithOptions(newGame(), &ebiten.RunGameOptions{}); err != nil {
 		return
 	}
+
+	signalHandle <- syscall.SIGINT
 }
 
 func newGame() *Game {
