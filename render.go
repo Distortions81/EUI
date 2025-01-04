@@ -34,7 +34,7 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 	win.drawBG(mainArea)
 	win.drawItems(mainArea)
 	win.drawWinTitle(titleArea)
-	win.drawResizeTab(mainArea)
+	//win.drawResizeTab(mainArea)
 	win.drawBorder(windowArea)
 	win.drawDebug(screen)
 }
@@ -210,7 +210,7 @@ func (win *windowData) drawItems(screen *ebiten.Image) {
 }
 
 func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.Image) {
-	vector.StrokeRect(screen, offset.X, offset.Y, item.GetSize().X, item.GetSize().Y, 1, color.RGBA{R: 64, G: 64, B: 96}, false)
+	vector.StrokeRect(screen, offset.X, offset.Y, item.GetSize().X, item.GetSize().Y, 1, color.RGBA{R: 64, G: 64, B: 128}, false)
 
 	var flowOffset point
 
@@ -317,7 +317,9 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 		text.Draw(subImg, item.Text, face, top)
 	}
 
-	vector.StrokeRect(subImg, offset.X, offset.Y, item.GetSize().X, item.GetSize().Y, 1, color.RGBA{R: 128}, false)
+	if *debugMode {
+		vector.StrokeRect(subImg, offset.X, offset.Y, item.GetSize().X, item.GetSize().Y, 1, color.RGBA{R: 128}, false)
+	}
 
 }
 
