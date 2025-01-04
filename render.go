@@ -210,7 +210,7 @@ func (win *windowData) drawItems(screen *ebiten.Image) {
 }
 
 func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.Image) {
-	vector.StrokeRect(screen, offset.X, offset.Y, item.GetSize().X, item.GetSize().Y, 1, color.White, false)
+	vector.StrokeRect(screen, offset.X, offset.Y, item.GetSize().X, item.GetSize().Y, 1, color.RGBA{R: 64, G: 64, B: 96}, false)
 
 	var flowOffset point
 
@@ -315,9 +315,10 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 
 		top.ColorScale.ScaleWithColor(item.TextColor)
 		text.Draw(subImg, item.Text, face, top)
-
-		vector.StrokeRect(subImg, offset.X, offset.Y, item.GetSize().X, item.GetSize().Y, 1, color.RGBA{R: 255}, false)
 	}
+
+	vector.StrokeRect(subImg, offset.X, offset.Y, item.GetSize().X, item.GetSize().Y, 1, color.RGBA{R: 128}, false)
+
 }
 
 func (win *windowData) drawDebug(screen *ebiten.Image) {
