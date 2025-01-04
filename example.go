@@ -44,7 +44,7 @@ func makeTestWindow() *windowData {
 			TitleHeight: 24,
 			Title:       "Test Window",
 			Size:        point{X: 300, Y: 300},
-			Position:    point{X: 32, Y: 32},
+			Position:    point{X: 8, Y: 8},
 			Contents:    []*itemData{mainFlow},
 		})
 

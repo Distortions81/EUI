@@ -39,8 +39,8 @@ func main() {
 	newWindow.AddWindow(false)
 
 	newWindow2 := makeTestWindow()
-	newWindow2.Position.X += 64
-	newWindow2.Position.Y += 64
+	newWindow2.Position.X += 192
+	newWindow2.Position.Y += 192
 	newWindow2.AddWindow(false)
 
 	err := loadIcons()

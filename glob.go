@@ -11,8 +11,8 @@ import (
 )
 
 var (
-	screenWidth  = 720
-	screenHeight = 720
+	screenWidth  = 1024
+	screenHeight = 1024
 
 	signalHandle    chan os.Signal
 	mplusFaceSource *text.GoTextFaceSource
