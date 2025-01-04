@@ -127,15 +127,30 @@ func (win *windowData) setSize(size point) bool {
 const cornerSize = 14
 const tol = 2
 
-func (win *windowData) getWindowEdge(mpos point) windowEdge {
+func (win *windowData) getWindowPart(mpos point, click bool) dragType {
+
+	//Titlebar items
+	if win.TitleHeight > 0 {
+		if win.getTitleRect().containsPoint(mpos) {
+			//Close X
+			if win.Closable {
+				if win.xRect().containsPoint(mpos) {
+					win.HoverClose = true
+					return PART_CLOSE
+				}
+			}
+			//Drag bar
+			if win.Movable {
+				if win.dragbarRect().containsPoint(mpos) {
+					win.HoverDragbar = true
+					return PART_BAR
+				}
+			}
+		}
+	}
 
 	t := tol * uiScale
 	cs := cornerSize * uiScale
-
-	if !win.Resizable {
-		return EDGE_NONE
-
-	}
 
 	winRect := win.getWinRect()
 
@@ -153,32 +168,32 @@ func (win *windowData) getWindowEdge(mpos point) windowEdge {
 	inRect.Y0 += t
 	inRect.Y1 -= t
 
-	//If within outrect, and not within inrect it is window edge
+	//If within outrect, and not within inrect it is window DRAG
 	if outRect.containsPoint(mpos) && !inRect.containsPoint(mpos) {
 		if mpos.Y < outRect.Y0+cs {
 			if mpos.X < inRect.X0+cs {
-				return EDGE_TOP_LEFT
+				return PART_TOP_LEFT
 			} else if mpos.X > inRect.X1-cs {
-				return EDGE_TOP_RIGHT
+				return PART_TOP_RIGHT
 			} else {
-				return EDGE_TOP
+				return PART_TOP
 			}
 		} else if mpos.Y > inRect.Y1-cs {
 			if mpos.X > outRect.X1-cs {
-				return EDGE_BOTTOM_RIGHT
+				return PART_BOTTOM_RIGHT
 			} else if mpos.X < outRect.X0+cs {
-				return EDGE_BOTTOM_LEFT
+				return PART_BOTTOM_LEFT
 			} else {
-				return EDGE_BOTTOM
+				return PART_BOTTOM
 			}
 		} else if mpos.X < inRect.X0 {
-			return EDGE_LEFT
+			return PART_LEFT
 		} else if mpos.X < outRect.X1 {
-			return EDGE_RIGHT
+			return PART_RIGHT
 		}
 	}
 
-	return EDGE_NONE
+	return PART_NONE
 }
 
 func withinRange(a, b float32, tol float32) bool {
