@@ -28,6 +28,7 @@ type windowData struct {
 }
 
 type itemData struct {
+	Parent    *itemData
 	Text      string
 	Position  point
 	Size      point

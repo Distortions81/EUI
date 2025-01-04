@@ -38,6 +38,11 @@ func (item *itemData) getItemRect(win *windowData) rect {
 	}
 }
 
+func (parent *itemData) addItemTo(item *itemData) {
+	item.Parent = parent
+	parent.Contents = append(parent.Contents, item)
+}
+
 func (rect rect) getRectangle() image.Rectangle {
 	return image.Rectangle{
 		Min: image.Point{X: int(math.Ceil(float64(rect.X0))), Y: int(math.Ceil(float64(rect.Y0)))},

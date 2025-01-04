@@ -198,7 +198,7 @@ func (win *windowData) getPosition() point {
 }
 
 func (item *itemData) getPosition(win *windowData) point {
-	return (item.PinTo.getItemPosition(win, item))
+	return item.PinTo.getItemPosition(win, item)
 }
 
 // Do the window items overlap?

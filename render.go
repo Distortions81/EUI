@@ -5,6 +5,7 @@ import (
 	"image/color"
 	"math"
 	"strings"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -236,6 +237,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.I
 func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Image) {
 
 	if parent == nil {
+		fmt.Printf("no parent... %v\n", time.Now())
 		parent = item
 	}
 	maxSize := item.GetSize()
@@ -262,9 +264,14 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 			sop.GeoM.Translate(float64(offset.X), float64(offset.Y))
 			subImg.DrawImage(item.Image, sop)
 		} else {
+			itemColor := item.Color
+			if item.Hovered {
+				item.Hovered = false
+				itemColor = item.HoverColor
+			}
 			drawRoundRect(subImg, &roundRect{
 				Size:     maxSize,
-				Position: offset, Fillet: item.Fillet, Filled: true, Color: item.Color})
+				Position: offset, Fillet: item.Fillet, Filled: true, Color: itemColor})
 		}
 
 		textSize := (item.FontSize * uiScale) + 2

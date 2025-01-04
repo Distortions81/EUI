@@ -18,13 +18,12 @@ func makeTestWindow() *windowData {
 	leftText3 := NewText(&itemData{Text: "left panel item 3", Size: point{X: 100, Y: 32}, FontSize: 8})
 	leftButton1 := NewButton(&itemData{Text: "test button", Size: point{X: 100, Y: 32}, FontSize: 8, ImageName: "1"})
 	leftButton2 := NewButton(&itemData{Text: "test", Size: point{X: 50, Y: 32}, FontSize: 8})
-	leftFlow.Contents = append(leftFlow.Contents, leftText1)
-	leftFlow.Contents = append(leftFlow.Contents, leftText2)
-	leftFlow.Contents = append(leftFlow.Contents, leftText3)
-	leftFlow.Contents = append(leftFlow.Contents, leftButton1)
-	leftFlow.Contents = append(leftFlow.Contents, leftButton2)
-
-	mainFlow.Contents = append(mainFlow.Contents, leftFlow)
+	leftFlow.addItemTo(leftText1)
+	leftFlow.addItemTo(leftText2)
+	leftFlow.addItemTo(leftText3)
+	leftFlow.addItemTo(leftButton1)
+	leftFlow.addItemTo(leftButton2)
+	mainFlow.addItemTo(leftFlow)
 
 	rightFlow := &itemData{
 		ItemType: ITEM_FLOW,
@@ -34,10 +33,10 @@ func makeTestWindow() *windowData {
 	rightText1 := NewText(&itemData{Text: "right panel item 1", Size: point{X: 100, Y: 32}, FontSize: 8})
 	rightText2 := NewText(&itemData{Text: "right panel item 2", Size: point{X: 100, Y: 32}, FontSize: 8})
 	rightText3 := NewText(&itemData{Text: "right panel item 3", Size: point{X: 100, Y: 32}, FontSize: 8})
-	rightFlow.Contents = append(rightFlow.Contents, rightText1)
-	rightFlow.Contents = append(rightFlow.Contents, rightText2)
-	rightFlow.Contents = append(rightFlow.Contents, rightText3)
-	mainFlow.Contents = append(mainFlow.Contents, rightFlow)
+	rightFlow.addItemTo(rightText1)
+	rightFlow.addItemTo(rightText2)
+	rightFlow.addItemTo(rightText3)
+	mainFlow.addItemTo(rightFlow)
 
 	newWindow := NewWindow(
 		&windowData{
