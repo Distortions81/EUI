@@ -36,12 +36,11 @@ func main() {
 
 	SetUIScale(2)
 	newWindow := makeTestWindow()
-	/*
-		newWindow = makeTestWindow()
-		newWindow.Position.X += 64
-		newWindow.Position.Y += 64
-		newWindow.AddWindow(false)
-	*/
+	newWindow.AddWindow(false)
+
+	newWindow = makeTestWindow()
+	newWindow.Position.X += 64
+	newWindow.Position.Y += 64
 	newWindow.AddWindow(false)
 
 	err := loadIcons()

@@ -33,18 +33,6 @@ func (g *Game) Update() error {
 			continue
 		}
 
-		//Bring window forward on click, defer
-		if click {
-			if win != activeWindow {
-				if win.getWinRect().containsPoint(mpos) {
-					defer func(win *windowData) {
-						activeWindow = win
-						win.BringForward()
-					}(win)
-				}
-			}
-		}
-
 		part := win.getWindowPart(mposOld, click)
 
 		if part != PART_NONE {
@@ -124,6 +112,13 @@ func (g *Game) Update() error {
 		//Window items
 		win.clickWindowItems(mpos, click)
 
+		//Bring window forward on click, defer
+		if win.getWinRect().containsPoint(mpos) {
+			if click && activeWindow != win {
+				win.BringForward()
+			}
+			break
+		}
 	}
 
 	if cursorShape != c {

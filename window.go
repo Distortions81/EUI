@@ -121,7 +121,6 @@ func (target *windowData) ToBack() {
 		if win == target {
 			windows = append(windows[:w], windows[w+1:]...)
 			windows = append([]*windowData{target}, windows...)
-			activeWindow = win
 		}
 	}
 }
