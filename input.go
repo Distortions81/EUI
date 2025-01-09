@@ -196,6 +196,9 @@ func (item *itemData) clickItem(parent *itemData, offset, mpos point, click bool
 
 	if click {
 		item.Clicked = time.Now()
+		if item.ItemType == ITEM_CHECKBOX {
+			item.Checked = !item.Checked
+		}
 		if item.Action != nil {
 			item.Action()
 			return

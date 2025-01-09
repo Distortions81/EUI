@@ -53,6 +53,8 @@ type itemData struct {
 	Fillet            float32
 	Border, BorderPad float32
 	Filled, Outlined  bool
+	AuxSize           point
+	AuxSpace          float32
 
 	TextColor, Color, HoverColor,
 	ClickColor, DisabledColor, CheckedColor color.RGBA
@@ -134,8 +136,8 @@ type itemTypeData int
 
 const (
 	ITEM_NONE = iota
+	ITEM_FLOW
 	ITEM_TEXT
 	ITEM_BUTTON
-	ITEM_FLOW
-	ITEM_TOOLBAR
+	ITEM_CHECKBOX
 )

@@ -45,3 +45,24 @@ var defaultText = &itemData{
 	LineSpace: 1.2,
 	TextColor: color.RGBA{R: 255, G: 255, B: 255, A: 255},
 }
+
+var defaultCheckbox = &itemData{
+	Text:      "Option 1",
+	ItemType:  ITEM_CHECKBOX,
+	Size:      point{X: 128, Y: 32},
+	AuxSize:   point{X: 16, Y: 16},
+	AuxSpace:  4,
+	Position:  point{X: 10, Y: 10},
+	FontSize:  12,
+	LineSpace: 1.2,
+
+	Fillet: 8,
+	Filled: true, Outlined: true,
+	Border:    1,
+	BorderPad: 4,
+
+	TextColor:  color.RGBA{R: 255, G: 255, B: 255, A: 255},
+	Color:      color.RGBA{R: 48, G: 48, B: 48, A: 255},
+	HoverColor: color.RGBA{R: 48, G: 96, B: 96, A: 255},
+	ClickColor: color.RGBA{R: 192, G: 64, B: 64, A: 255},
+}

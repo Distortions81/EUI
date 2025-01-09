@@ -252,8 +252,39 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 		Y0: offset.Y, Y1: offset.Y + maxSize.Y,
 	}.getRectangle()).(*ebiten.Image)
 
-	if item.ItemType == ITEM_TOOLBAR {
-		//
+	if item.ItemType == ITEM_CHECKBOX {
+
+		itemColor := item.Color
+		if item.Checked {
+			itemColor = item.ClickColor
+		} else if item.Hovered {
+			item.Hovered = false
+			itemColor = item.HoverColor
+		}
+		auxSize := pointScaleMul(item.AuxSize)
+		drawRoundRect(subImg, &roundRect{
+			Size:     auxSize,
+			Position: offset, Fillet: item.Fillet, Filled: true, Color: itemColor})
+
+		textSize := (item.FontSize * uiScale) + 2
+		face := &text.GoTextFace{
+			Source: mplusFaceSource,
+			Size:   float64(textSize),
+		}
+		loo := text.LayoutOptions{
+			LineSpacing:    1.2,
+			PrimaryAlign:   text.AlignStart,
+			SecondaryAlign: text.AlignCenter,
+		}
+		tdop := ebiten.DrawImageOptions{}
+		tdop.GeoM.Translate(
+			float64(offset.X+auxSize.X+item.AuxSpace),
+			float64(offset.Y+(auxSize.Y/2)),
+		)
+		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+		top.ColorScale.ScaleWithColor(item.TextColor)
+		text.Draw(subImg, item.Text, face, top)
+
 	} else if item.ItemType == ITEM_BUTTON {
 
 		if item.Image != nil {
