@@ -254,9 +254,13 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 
 	if item.ItemType == ITEM_CHECKBOX {
 
+		bThick := float32(1.0)
 		itemColor := item.Color
+		bColor := item.ClickColor
 		if item.Checked {
 			itemColor = item.ClickColor
+			bColor = item.Color
+			bThick = 2.0
 		} else if item.Hovered {
 			item.Hovered = false
 			itemColor = item.HoverColor
@@ -265,6 +269,28 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 		drawRoundRect(subImg, &roundRect{
 			Size:     auxSize,
 			Position: offset, Fillet: item.Fillet, Filled: true, Color: itemColor})
+		drawRoundRect(subImg, &roundRect{
+			Size:     auxSize,
+			Position: offset, Fillet: item.Fillet, Filled: false, Color: bColor, Border: bThick * uiScale})
+
+		if item.Checked {
+			xThick := 2 * uiScale
+			vector.StrokeLine(screen,
+				offset.X+item.AuxSize.X/2,
+				offset.Y+item.AuxSize.Y/2,
+
+				offset.X+item.AuxSize.X*1.5,
+				offset.Y+item.AuxSize.Y*1.5,
+				xThick, item.TextColor, true)
+
+			vector.StrokeLine(screen,
+				offset.X+item.AuxSize.X*1.5,
+				offset.Y+item.AuxSize.Y/2,
+
+				offset.X+item.AuxSize.X/2,
+				offset.Y+item.AuxSize.Y*1.5,
+				xThick, item.TextColor, true)
+		}
 
 		textSize := (item.FontSize * uiScale) + 2
 		face := &text.GoTextFace{
