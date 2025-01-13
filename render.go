@@ -155,44 +155,6 @@ func (win *windowData) drawBorder(screen *ebiten.Image) {
 	}
 }
 
-func (win *windowData) drawResizeTab(screen *ebiten.Image) {
-	//Resize tab
-	if win.Resizable {
-		var xThick float32 = 1.0
-		xColor := win.SizeTabColor
-
-		if activeWindow == win {
-			xColor = win.ActiveColor
-		}
-		var Outer, Middle, Inner float32 = 14 * uiScale, 10 * uiScale, 6 * uiScale
-
-		//Outer
-		vector.StrokeLine(screen,
-			win.getPosition().X+win.GetSize().X-1,
-			win.getPosition().Y+win.GetSize().Y-Outer-(win.GetTitleSize()),
-
-			win.getPosition().X+win.GetSize().X-Outer,
-			win.getPosition().Y+win.GetSize().Y-(win.GetTitleSize())-1,
-			xThick, xColor, true)
-		//Middle
-		vector.StrokeLine(screen,
-			win.getPosition().X+win.GetSize().X-1,
-			win.getPosition().Y+win.GetSize().Y-Middle-(win.GetTitleSize()),
-
-			win.getPosition().X+win.GetSize().X-Middle,
-			win.getPosition().Y+win.GetSize().Y-(win.GetTitleSize())-1,
-			xThick, xColor, true)
-		//Inner
-		vector.StrokeLine(screen,
-			win.getPosition().X+win.GetSize().X-1,
-			win.getPosition().Y+win.GetSize().Y-Inner-(win.GetTitleSize()),
-
-			win.getPosition().X+win.GetSize().X-Inner,
-			win.getPosition().Y+win.GetSize().Y-(win.GetTitleSize())-1,
-			xThick, xColor, true)
-	}
-}
-
 func (win *windowData) drawItems(screen *ebiten.Image) {
 	winPos := pointAdd(win.GetPos(), point{X: 0, Y: win.GetTitleSize()})
 	winImage := screen.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
@@ -223,13 +185,27 @@ func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.I
 			subItem.drawFlows(item, itemPos, screen)
 		} else {
 			flowOff := pointAdd(offset, flowOffset)
-			subItem.drawItem(item, flowOff, screen)
+
+			objOff := flowOff
+			if parent.ItemType == ITEM_FLOW {
+				if parent.FlowType == FLOW_HORIZONTAL {
+					objOff = pointAdd(objOff, point{X: subItem.GetPos().X})
+				} else if parent.FlowType == FLOW_HORIZONTAL {
+					objOff = pointAdd(objOff, point{Y: subItem.GetPos().Y})
+				}
+			}
+
+			subItem.drawItem(item, objOff, screen)
 		}
 
-		if item.FlowType == FLOW_HORIZONTAL {
-			flowOffset = pointAdd(flowOffset, point{X: subItem.GetSize().X, Y: 0})
-		} else if item.FlowType == FLOW_VERTICAL {
-			flowOffset = pointAdd(flowOffset, point{X: 0, Y: subItem.GetSize().Y})
+		if item.ItemType == ITEM_FLOW {
+			if item.FlowType == FLOW_HORIZONTAL {
+				flowOffset = pointAdd(flowOffset, point{X: subItem.GetSize().X, Y: 0})
+				flowOffset = pointAdd(flowOffset, point{X: subItem.GetPos().X})
+			} else if item.FlowType == FLOW_VERTICAL {
+				flowOffset = pointAdd(flowOffset, point{X: 0, Y: subItem.GetSize().Y})
+				flowOffset = pointAdd(flowOffset, point{Y: subItem.GetPos().Y})
+			}
 		}
 	}
 }

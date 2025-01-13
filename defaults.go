@@ -21,7 +21,7 @@ var defaultButton = &itemData{
 	Text:      "Button",
 	ItemType:  ITEM_BUTTON,
 	Size:      point{X: 128, Y: 64},
-	Position:  point{X: 10, Y: 10},
+	Position:  point{X: 4, Y: 4},
 	FontSize:  12,
 	LineSpace: 1.2,
 
@@ -40,7 +40,7 @@ var defaultText = &itemData{
 	Text:      "Sample text:\nThe quick brown fox\njumps over the lazy dog.",
 	ItemType:  ITEM_TEXT,
 	Size:      point{X: 128, Y: 128},
-	Position:  point{X: 16, Y: 24 + 16},
+	Position:  point{X: 4, Y: 4},
 	FontSize:  24,
 	LineSpace: 1.2,
 	TextColor: color.RGBA{R: 255, G: 255, B: 255, A: 255},
@@ -50,9 +50,9 @@ var defaultCheckbox = &itemData{
 	Text:      "Option 1",
 	ItemType:  ITEM_CHECKBOX,
 	Size:      point{X: 128, Y: 32},
+	Position:  point{X: 4, Y: 4},
 	AuxSize:   point{X: 16, Y: 16},
 	AuxSpace:  4,
-	Position:  point{X: 10, Y: 10},
 	FontSize:  12,
 	LineSpace: 1.2,
 
