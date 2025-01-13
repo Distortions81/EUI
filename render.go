@@ -172,7 +172,7 @@ func (win *windowData) drawItems(screen *ebiten.Image) {
 }
 
 func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.Image) {
-	vector.StrokeRect(screen, offset.X, offset.Y, item.GetSize().X, item.GetSize().Y, 1, color.RGBA{R: 64, G: 64, B: 128}, false)
+	vector.StrokeRect(screen, offset.X, offset.Y, item.GetSize().X, item.GetSize().Y, 1, color.RGBA{R: 32, G: 32, B: 32}, false)
 
 	var flowOffset point
 

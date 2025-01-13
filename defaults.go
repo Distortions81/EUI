@@ -63,6 +63,6 @@ var defaultCheckbox = &itemData{
 
 	TextColor:  color.RGBA{R: 255, G: 255, B: 255, A: 255},
 	Color:      color.RGBA{R: 48, G: 48, B: 48, A: 255},
-	HoverColor: color.RGBA{R: 48, G: 96, B: 96, A: 255},
-	ClickColor: color.RGBA{R: 192, G: 64, B: 64, A: 255},
+	HoverColor: color.RGBA{R: 96, G: 96, B: 96, A: 255},
+	ClickColor: color.RGBA{R: 0, G: 128, B: 128, A: 255},
 }
