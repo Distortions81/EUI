@@ -15,7 +15,7 @@ Each flow has a direction, horizontal or vertical.
 
 # Flow and item pinning:
 Flows and items can have pinning type set. The default is PIN_TOP_LEFT.  
-The pin changes the point of refrence for the item/flow position.
+The pin changes the point of reference for the item/flow position.
 
 Other options are:  
 PIN_TOP_LEFT  
