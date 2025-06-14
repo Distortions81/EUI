@@ -76,7 +76,7 @@ func (g *Game) Update() error {
 				} else if part == PART_RIGHT {
 					sizeCh.Y = 0
 					win.setSize(pointAdd(win.Size, sizeCh))
-					//Corner reize
+					//Corner resize
 				} else if part == PART_TOP_LEFT {
 					if !win.setSize(pointSub(win.Size, sizeCh)) {
 						win.Position = pointAdd(win.Position, posCh)

@@ -1,5 +1,5 @@
 ## A Minimal vector-based Ebitenengine retained-mode UI library
-### This library is no where near complete (PRE-ALPHA), and breaking changes will come very often.
+### This library is nowhere near complete (PRE-ALPHA), and breaking changes will come very often.
 *For quicker development, the code is not composed as a library at this time*  
 Drawn using vectors and supports floating-point UI scaling.
 
@@ -14,7 +14,7 @@ Each flow has a direction, horizontal or vertical.
 
 
 # Flow and item pinning:
-Flows and items can have pinning type set. The default is PIN_TOP_LEFT.  
+Flows and items can have pinning type set. The default is PIN_TOP_LEFT.
 The pin changes the point of reference for the item/flow position.
 
 Other options are:  
