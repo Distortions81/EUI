@@ -16,7 +16,7 @@ func (item *itemData) containsPoint(win *windowData, b point) bool {
 	return b.X >= win.getPosition().X+(item.getPosition(win).X) &&
 		b.X <= win.getPosition().X+(item.getPosition(win).X)+(item.GetSize().X) &&
 		b.Y >= win.getPosition().Y+(item.getPosition(win).Y) &&
-		b.Y <= win.getPosition().Y+(item.getPosition(win).Y)+(item.GetPos().Y)
+		b.Y <= win.getPosition().Y+(item.getPosition(win).Y)+(item.GetSize().Y)
 }
 
 func (win *windowData) getWinRect() rect {
