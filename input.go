@@ -98,12 +98,6 @@ func (g *Game) Update() error {
 					if !win.setSize(point{X: tx, Y: ty}) {
 						win.Position.X += posCh.X
 					}
-				} else if part == PART_TOP_LEFT {
-					tx := win.Size.Y - sizeCh.Y
-					ty := win.Size.X + sizeCh.X
-					if !win.setSize(point{X: tx, Y: ty}) {
-						win.Position.Y -= posCh.Y
-					}
 				}
 				break
 			}
