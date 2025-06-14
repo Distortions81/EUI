@@ -41,7 +41,7 @@ type itemData struct {
 	Value float32
 
 	Hovered, Checked,
-	Disabled, Invisable bool
+	Disabled, Invisible bool
 	Clicked  time.Time
 	FlowType flowType
 	Scroll   point
