@@ -144,13 +144,13 @@ func (pin pinType) getWinPosition(win *windowData) point {
 	case PIN_TOP_CENTER:
 		return point{X: float32(screenWidth/2) - win.GetSize().X/2, Y: 0}
 	case PIN_MID_LEFT:
-		return point{X: 0, Y: float32(screenHeight/2) - (win.GetSize().Y + (win.GetTitleSize())/2)}
+		return point{X: 0, Y: float32(screenHeight/2) - win.GetSize().Y/2}
 	case PIN_MID_CENTER:
 		return point{X: float32(screenWidth/2) - win.GetSize().X/2, Y: float32(screenHeight/2) - (win.GetSize().Y - (win.GetTitleSize())/2)}
 	case PIN_MID_RIGHT:
 		return point{X: float32(screenWidth) - win.GetSize().X/2, Y: float32(screenHeight/2) - (win.GetSize().Y - (win.GetTitleSize())/2)}
 	case PIN_BOTTOM_LEFT:
-		return point{X: float32(screenWidth) - win.GetSize().X, Y: float32(screenHeight) - (win.GetSize().Y - (win.GetTitleSize()))}
+		return point{X: 0, Y: float32(screenHeight) - (win.GetSize().Y - (win.GetTitleSize()))}
 	case PIN_BOTTOM_CENTER:
 		return point{X: float32(screenWidth/2) - (win.GetSize().X / 2), Y: float32(screenHeight) - (win.GetSize().Y - (win.GetTitleSize()))}
 	case PIN_BOTTOM_RIGHT:
