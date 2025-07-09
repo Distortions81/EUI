@@ -125,66 +125,34 @@ func (g *Game) Update() error {
 }
 
 func (win *windowData) clickWindowItems(mpos point, click bool) {
-	//If the mouse isn't within the window, just return
+	// If the mouse isn't within the window, just return
 	if !win.getMainRect().containsPoint(mpos) {
 		return
 	}
 	win.Hovered = true
-	winPos := pointAdd(win.GetPos(), point{X: 0, Y: win.GetTitleSize()})
 
 	for _, item := range win.Contents {
-		itemPos := pointAdd(winPos, item.getPosition(win))
-
 		if item.ItemType == ITEM_FLOW {
-			item.clickFlows(nil, itemPos, mpos, click)
+			item.clickFlows(mpos, click)
 		} else {
-			item.clickItem(nil, itemPos, mpos, click)
+			item.clickItem(mpos, click)
 		}
 	}
 }
 
-func (item *itemData) clickFlows(parent *itemData, offset, mpos point, click bool) {
-
-	var flowOffset point
-
+func (item *itemData) clickFlows(mpos point, click bool) {
 	for _, subItem := range item.Contents {
-
 		if subItem.ItemType == ITEM_FLOW {
-			flowPos := pointAdd(offset, item.GetPos())
-			flowOff := pointAdd(flowPos, flowOffset)
-			itemPos := pointAdd(flowOff, subItem.GetPos())
-			subItem.clickFlows(item, itemPos, mpos, click)
+			subItem.clickFlows(mpos, click)
 		} else {
-			flowOff := pointAdd(offset, flowOffset)
-			subItem.clickItem(item, flowOff, mpos, click)
-		}
-
-		if item.FlowType == FLOW_HORIZONTAL {
-			flowOffset = pointAdd(flowOffset, point{X: subItem.GetSize().X, Y: 0})
-		} else if item.FlowType == FLOW_VERTICAL {
-			flowOffset = pointAdd(flowOffset, point{X: 0, Y: subItem.GetSize().Y})
+			subItem.clickItem(mpos, click)
 		}
 	}
 }
 
-func (item *itemData) clickItem(parent *itemData, offset, mpos point, click bool) {
-	if parent == nil {
-		parent = item
-	}
-	maxSize := item.GetSize()
-	if item.Size.X > parent.Size.X {
-		maxSize.X = parent.GetSize().X
-	}
-	if item.Size.Y > parent.Size.Y {
-		maxSize.Y = parent.GetSize().Y
-	}
-	itemRect := rect{
-		X0: offset.X, X1: offset.X + maxSize.X,
-		Y0: offset.Y, Y1: offset.Y + maxSize.Y,
-	}
-
-	//If the mouse isn't within the item, just return
-	if !itemRect.containsPoint(mpos) {
+func (item *itemData) clickItem(mpos point, click bool) {
+	// If the mouse isn't within the item, just return
+	if !item.DrawRect.containsPoint(mpos) {
 		return
 	}
 
