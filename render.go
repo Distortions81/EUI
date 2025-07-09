@@ -363,7 +363,12 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 	}
 
 	if *debugMode {
-		vector.StrokeRect(subImg, offset.X, offset.Y, item.GetSize().X, item.GetSize().Y, 1, color.RGBA{R: 128}, false)
+		vector.StrokeRect(screen,
+			item.DrawRect.X0,
+			item.DrawRect.Y0,
+			item.DrawRect.X1-item.DrawRect.X0,
+			item.DrawRect.Y1-item.DrawRect.Y0,
+			1, color.RGBA{R: 128}, false)
 	}
 
 }
