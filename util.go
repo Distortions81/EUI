@@ -40,10 +40,12 @@ func (item *itemData) getItemRect(win *windowData) rect {
 
 func (parent *itemData) addItemTo(item *itemData) {
 	item.Parent = parent
+	item.Window = parent.Window
 	parent.Contents = append(parent.Contents, item)
 }
 
 func (parent *windowData) addItemTo(item *itemData) {
+	item.Window = parent
 	parent.Contents = append(parent.Contents, item)
 }
 
@@ -270,7 +272,23 @@ func (win *windowData) GetPos() point {
 }
 
 func (item *itemData) GetSize() point {
-	return point{X: item.Size.X * uiScale, Y: item.Size.Y * uiScale}
+	size := item.Size
+	if item.SizePercent.X != 0 || item.SizePercent.Y != 0 {
+		var parentSize point
+		switch {
+		case item.Parent != nil:
+			parentSize = item.Parent.GetSize()
+		case item.Window != nil:
+			parentSize = item.Window.GetSize()
+		}
+		if item.SizePercent.X != 0 {
+			size.X = parentSize.X * item.SizePercent.X / uiScale
+		}
+		if item.SizePercent.Y != 0 {
+			size.Y = parentSize.Y * item.SizePercent.Y / uiScale
+		}
+	}
+	return point{X: size.X * uiScale, Y: size.Y * uiScale}
 }
 
 func (item *itemData) GetPos() point {

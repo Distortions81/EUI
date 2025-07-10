@@ -28,15 +28,17 @@ type windowData struct {
 }
 
 type itemData struct {
-	Parent    *itemData
-	Text      string
-	Position  point
-	Size      point
-	Alignment alignType
-	PinTo     pinType
-	FontSize  float32
-	LineSpace float32 //Multiplier, 1.0 = no gap between lines
-	ItemType  itemTypeData
+	Parent      *itemData
+	Window      *windowData
+	Text        string
+	Position    point
+	Size        point
+	SizePercent point
+	Alignment   alignType
+	PinTo       pinType
+	FontSize    float32
+	LineSpace   float32 //Multiplier, 1.0 = no gap between lines
+	ItemType    itemTypeData
 
 	Value float32
 

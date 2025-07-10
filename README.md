@@ -8,6 +8,7 @@ Drawn using vectors and supports floating-point UI scaling.
 # Windows, and flows:
 window -> main-flow -> sub-flow  
 Each flow has a direction, horizontal or vertical.
+Flows can also size themselves relative to their parent by setting `SizePercent`.
 
 ![flows-screenshot](https://github.com/user-attachments/assets/dcc79179-361d-420c-959f-c1785433bb5b)
 

@@ -10,16 +10,16 @@ func makeTestWindow() *windowData {
 		})
 
 	mainFlow := &itemData{
-		ItemType: ITEM_FLOW,
-		Size:     newWindow.Size,
-		FlowType: FLOW_HORIZONTAL,
+		ItemType:    ITEM_FLOW,
+		SizePercent: point{X: 1, Y: 1},
+		FlowType:    FLOW_HORIZONTAL,
 	}
 	newWindow.addItemTo(mainFlow)
 
 	leftFlow := &itemData{
-		ItemType: ITEM_FLOW,
-		Size:     point{X: 100, Y: 300},
-		FlowType: FLOW_VERTICAL,
+		ItemType:    ITEM_FLOW,
+		SizePercent: point{X: 0.33, Y: 1},
+		FlowType:    FLOW_VERTICAL,
 	}
 	mainFlow.addItemTo(leftFlow)
 
@@ -37,9 +37,9 @@ func makeTestWindow() *windowData {
 	leftFlow.addItemTo(leftCheckbox1)
 
 	rightFlow := &itemData{
-		ItemType: ITEM_FLOW,
-		Size:     point{X: 200, Y: 300},
-		FlowType: FLOW_HORIZONTAL,
+		ItemType:    ITEM_FLOW,
+		SizePercent: point{X: 0.67, Y: 1},
+		FlowType:    FLOW_HORIZONTAL,
 	}
 	mainFlow.addItemTo(rightFlow)
 
