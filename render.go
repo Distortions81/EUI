@@ -172,6 +172,14 @@ func (win *windowData) drawItems(screen *ebiten.Image) {
 }
 
 func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.Image) {
+	// Store the drawn rectangle for input handling
+	item.DrawRect = rect{
+		X0: offset.X,
+		Y0: offset.Y,
+		X1: offset.X + item.GetSize().X,
+		Y1: offset.Y + item.GetSize().Y,
+	}
+
 	vector.StrokeRect(screen, offset.X, offset.Y, item.GetSize().X, item.GetSize().Y, 1, color.RGBA{R: 32, G: 32, B: 32}, false)
 
 	var flowOffset point
@@ -223,10 +231,14 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 		maxSize.Y = parent.GetSize().Y
 	}
 
-	subImg := screen.SubImage(rect{
-		X0: offset.X, X1: offset.X + maxSize.X,
-		Y0: offset.Y, Y1: offset.Y + maxSize.Y,
-	}.getRectangle()).(*ebiten.Image)
+	item.DrawRect = rect{
+		X0: offset.X,
+		Y0: offset.Y,
+		X1: offset.X + maxSize.X,
+		Y1: offset.Y + maxSize.Y,
+	}
+
+	subImg := screen.SubImage(item.DrawRect.getRectangle()).(*ebiten.Image)
 
 	if item.ItemType == ITEM_CHECKBOX {
 
@@ -351,7 +363,12 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 	}
 
 	if *debugMode {
-		vector.StrokeRect(subImg, offset.X, offset.Y, item.GetSize().X, item.GetSize().Y, 1, color.RGBA{R: 128}, false)
+		vector.StrokeRect(screen,
+			item.DrawRect.X0,
+			item.DrawRect.Y0,
+			item.DrawRect.X1-item.DrawRect.X0,
+			item.DrawRect.Y1-item.DrawRect.Y0,
+			1, color.RGBA{R: 128}, false)
 	}
 
 }
