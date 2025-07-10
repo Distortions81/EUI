@@ -43,6 +43,9 @@ func main() {
 	newWindow2.Position.Y += 192
 	newWindow2.AddWindow(false)
 
+	showcase := makeShowcaseWindow()
+	showcase.AddWindow(false)
+
 	err := loadIcons()
 	if err != nil {
 		fmt.Printf("Error: %v\n", err.Error())

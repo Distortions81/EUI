@@ -196,8 +196,8 @@ func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.I
 		} else {
 			flowOff := pointAdd(drawOffset, flowOffset)
 
-			objOff := flowOff
-			if parent.ItemType == ITEM_FLOW {
+                        objOff := flowOff
+                        if parent != nil && parent.ItemType == ITEM_FLOW {
 				if parent.FlowType == FLOW_HORIZONTAL {
 					objOff = pointAdd(objOff, point{X: subItem.GetPos().X})
 				} else if parent.FlowType == FLOW_VERTICAL {
