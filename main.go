@@ -69,7 +69,13 @@ func loadIcons() error {
 
 func subLoadIcons(parent []*itemData) error {
 	for _, item := range parent {
-		subLoadIcons(item.Contents)
+		if len(item.Tabs) > 0 {
+			for _, tab := range item.Tabs {
+				subLoadIcons(tab.Contents)
+			}
+		} else {
+			subLoadIcons(item.Contents)
+		}
 
 		if item.ImageName != "" {
 			image, err := loadImage(item.ImageName)

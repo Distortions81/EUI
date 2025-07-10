@@ -185,11 +185,32 @@ func (win *windowData) clickWindowItems(mpos point, click bool) {
 }
 
 func (item *itemData) clickFlows(mpos point, click bool) {
-	for _, subItem := range item.Contents {
-		if subItem.ItemType == ITEM_FLOW {
-			subItem.clickFlows(mpos, click)
-		} else {
-			subItem.clickItem(mpos, click)
+	if len(item.Tabs) > 0 {
+		if item.ActiveTab >= len(item.Tabs) {
+			item.ActiveTab = 0
+		}
+		for i, tab := range item.Tabs {
+			if tab.DrawRect.containsPoint(mpos) {
+				if click {
+					item.ActiveTab = i
+				}
+				return
+			}
+		}
+		for _, subItem := range item.Tabs[item.ActiveTab].Contents {
+			if subItem.ItemType == ITEM_FLOW {
+				subItem.clickFlows(mpos, click)
+			} else {
+				subItem.clickItem(mpos, click)
+			}
+		}
+	} else {
+		for _, subItem := range item.Contents {
+			if subItem.ItemType == ITEM_FLOW {
+				subItem.clickFlows(mpos, click)
+			} else {
+				subItem.clickItem(mpos, click)
+			}
 		}
 	}
 }
@@ -244,6 +265,11 @@ func subUncheckRadio(list []*itemData, group string, except *itemData) {
 		if it.ItemType == ITEM_RADIO && it.RadioGroup == group && it != except {
 			it.Checked = false
 		}
+		if len(it.Tabs) > 0 {
+			for _, tab := range it.Tabs {
+				subUncheckRadio(tab.Contents, group, except)
+			}
+		}
 		subUncheckRadio(it.Contents, group, except)
 	}
 }
@@ -297,7 +323,16 @@ func scrollFlow(items []*itemData, mpos point, delta point) bool {
 					}
 				}
 			}
-			if scrollFlow(it.Contents, mpos, delta) {
+			var sub []*itemData
+			if len(it.Tabs) > 0 {
+				if it.ActiveTab >= len(it.Tabs) {
+					it.ActiveTab = 0
+				}
+				sub = it.Tabs[it.ActiveTab].Contents
+			} else {
+				sub = it.Contents
+			}
+			if scrollFlow(sub, mpos, delta) {
 				return true
 			}
 		}

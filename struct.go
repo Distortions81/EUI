@@ -29,7 +29,9 @@ type windowData struct {
 }
 
 type itemData struct {
-	Parent    *itemData
+	Parent *itemData
+	// Name is used when the item is part of a tabbed flow
+	Name      string
 	Text      string
 	Position  point
 	Size      point
@@ -68,6 +70,11 @@ type itemData struct {
 
 	Action   func()
 	Contents []*itemData
+
+	// Tabs allows a flow to contain multiple tabbed flows. Only the
+	// flow referenced by ActiveTab will be drawn and receive input.
+	Tabs      []*itemData
+	ActiveTab int
 
 	// DrawRect stores the last drawn rectangle of the item in screen
 	// coordinates so input handling can use the exact same area that was
