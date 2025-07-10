@@ -32,3 +32,6 @@ PIN_MID_RIGHT
 PIN_BOTTOM_LEFT  
 PIN_BOTTOM_CENTER  
 PIN_BOTTOM_RIGHT
+
+## Rendering a screenshot on a headless system
+Run `scripts/headless_screenshot.sh` to install dependencies and launch the demo under `Xvfb`. The script sends a key press to trigger Ebitengine's built-in screenshot function. The resulting PNG is saved in the current directory with a name such as `screenshot_YYYYMMDDHHMMSS.png`.
