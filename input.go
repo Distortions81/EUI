@@ -146,6 +146,12 @@ func (g *Game) Update() error {
 
 	mposOld = mpos
 
+	for _, win := range windows {
+		if win.AutoSize {
+			win.updateAutoSize()
+		}
+	}
+
 	return nil
 }
 

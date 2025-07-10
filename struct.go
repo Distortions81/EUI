@@ -16,7 +16,8 @@ type windowData struct {
 
 	Open, Hovered, Flow,
 	Closable, Movable, Resizable,
-	HoverClose, HoverDragbar bool
+	HoverClose, HoverDragbar,
+	AutoSize bool
 
 	TitleHeight float32
 

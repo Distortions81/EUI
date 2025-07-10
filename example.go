@@ -7,6 +7,7 @@ func makeTestWindow() *windowData {
 			Title:       "Test Window",
 			Size:        point{X: 300, Y: 300},
 			Position:    point{X: 8, Y: 8},
+			AutoSize:    true,
 		})
 
 	mainFlow := &itemData{

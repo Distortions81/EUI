@@ -14,7 +14,7 @@ var defaultTheme = &windowData{
 	BGColor:         color.RGBA{R: 16, G: 16, B: 16, A: 255},
 	ActiveColor:     color.RGBA{R: 0, G: 128, B: 128, A: 255},
 
-	Movable: true, Closable: true, Resizable: true, Open: true,
+	Movable: true, Closable: true, Resizable: true, Open: true, AutoSize: false,
 }
 
 var defaultButton = &itemData{
