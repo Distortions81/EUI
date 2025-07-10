@@ -159,6 +159,10 @@ func (win *windowData) getWindowPart(mpos point, click bool) dragType {
 		}
 	}
 
+	if !win.Resizable {
+		return PART_NONE
+	}
+
 	t := tol * uiScale
 	cs := cornerSize * uiScale
 

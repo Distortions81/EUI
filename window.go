@@ -57,6 +57,11 @@ func (target *windowData) AddWindow(toBack bool) {
 		target.Movable = false
 	}
 
+	if target.AutoSize {
+		target.updateAutoSize()
+		target.AutoSize = false
+	}
+
 	if !toBack {
 		windows = append(windows, target)
 		activeWindow = target

@@ -182,17 +182,19 @@ func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.I
 
 	vector.StrokeRect(screen, offset.X, offset.Y, item.GetSize().X, item.GetSize().Y, 1, color.RGBA{R: 32, G: 32, B: 32}, false)
 
+	drawOffset := pointSub(offset, item.Scroll)
+
 	var flowOffset point
 
 	for _, subItem := range item.Contents {
 
 		if subItem.ItemType == ITEM_FLOW {
-			flowPos := pointAdd(offset, item.GetPos())
+			flowPos := pointAdd(drawOffset, item.GetPos())
 			flowOff := pointAdd(flowPos, flowOffset)
 			itemPos := pointAdd(flowOff, subItem.GetPos())
 			subItem.drawFlows(item, itemPos, screen)
 		} else {
-			flowOff := pointAdd(offset, flowOffset)
+			flowOff := pointAdd(drawOffset, flowOffset)
 
 			objOff := flowOff
 			if parent.ItemType == ITEM_FLOW {
@@ -214,6 +216,28 @@ func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.I
 				flowOffset = pointAdd(flowOffset, point{X: 0, Y: subItem.GetSize().Y})
 				flowOffset = pointAdd(flowOffset, point{Y: subItem.GetPos().Y})
 			}
+		}
+	}
+
+	if item.Scrollable {
+		req := item.contentBounds()
+		size := item.GetSize()
+		if item.FlowType == FLOW_VERTICAL && req.Y > size.Y {
+			barH := size.Y * size.Y / req.Y
+			maxScroll := req.Y - size.Y
+			pos := float32(0)
+			if maxScroll > 0 {
+				pos = (item.Scroll.Y / maxScroll) * (size.Y - barH)
+			}
+			vector.DrawFilledRect(screen, item.DrawRect.X1-4, item.DrawRect.Y0+pos, 4, barH, color.RGBA{R: 96, G: 96, B: 96, A: 192}, false)
+		} else if item.FlowType == FLOW_HORIZONTAL && req.X > size.X {
+			barW := size.X * size.X / req.X
+			maxScroll := req.X - size.X
+			pos := float32(0)
+			if maxScroll > 0 {
+				pos = (item.Scroll.X / maxScroll) * (size.X - barW)
+			}
+			vector.DrawFilledRect(screen, item.DrawRect.X0+pos, item.DrawRect.Y1-4, barW, 4, color.RGBA{R: 96, G: 96, B: 96, A: 192}, false)
 		}
 	}
 }

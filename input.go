@@ -28,6 +28,9 @@ func (g *Game) Update() error {
 	clickDrag := clickTime > 1
 	//altClick := inpututil.IsMouseButtonJustPressed(ebiten.MouseButton1)
 
+	wx, wy := ebiten.Wheel()
+	wheelDelta := point{X: float32(wx), Y: float32(wy)}
+
 	posCh := pointScaleDiv(pointSub(mpos, mposOld))
 	sizeCh := pointScaleMul(point{X: posCh.X / uiScale, Y: posCh.Y / uiScale})
 	c := ebiten.CursorShapeDefault
@@ -46,14 +49,16 @@ func (g *Game) Update() error {
 			if c == ebiten.CursorShapeDefault {
 				if part == PART_BAR {
 					c = ebiten.CursorShapeMove
-				} else if part == PART_LEFT || part == PART_RIGHT {
-					c = ebiten.CursorShapeEWResize
-				} else if part == PART_TOP || part == PART_BOTTOM {
-					c = ebiten.CursorShapeNSResize
-				} else if part == PART_TOP_LEFT || part == PART_BOTTOM_RIGHT {
-					c = ebiten.CursorShapeNWSEResize
-				} else if part == PART_TOP_RIGHT || part == PART_BOTTOM_LEFT {
-					c = ebiten.CursorShapeNESWResize
+				} else if win.Resizable {
+					if part == PART_LEFT || part == PART_RIGHT {
+						c = ebiten.CursorShapeEWResize
+					} else if part == PART_TOP || part == PART_BOTTOM {
+						c = ebiten.CursorShapeNSResize
+					} else if part == PART_TOP_LEFT || part == PART_BOTTOM_RIGHT {
+						c = ebiten.CursorShapeNWSEResize
+					} else if part == PART_TOP_RIGHT || part == PART_BOTTOM_LEFT {
+						c = ebiten.CursorShapeNESWResize
+					}
 				}
 			}
 
@@ -64,40 +69,40 @@ func (g *Game) Update() error {
 			} else if clickDrag {
 				if part == PART_BAR {
 					win.Position = pointAdd(win.Position, posCh)
-				} else if part == PART_TOP {
+				} else if win.Resizable && part == PART_TOP {
 					posCh.X = 0
 					sizeCh.X = 0
 					if !win.setSize(pointSub(win.Size, sizeCh)) {
 						win.Position = pointAdd(win.Position, posCh)
 					}
-				} else if part == PART_BOTTOM {
+				} else if win.Resizable && part == PART_BOTTOM {
 					sizeCh.X = 0
 					win.setSize(pointAdd(win.Size, sizeCh))
-				} else if part == PART_LEFT {
+				} else if win.Resizable && part == PART_LEFT {
 					posCh.Y = 0
 					sizeCh.Y = 0
 					if !win.setSize(pointSub(win.Size, sizeCh)) {
 						win.Position = pointAdd(win.Position, posCh)
 					}
-				} else if part == PART_RIGHT {
+				} else if win.Resizable && part == PART_RIGHT {
 					sizeCh.Y = 0
 					win.setSize(pointAdd(win.Size, sizeCh))
 					//Corner resize
-				} else if part == PART_TOP_LEFT {
+				} else if win.Resizable && part == PART_TOP_LEFT {
 					if !win.setSize(pointSub(win.Size, sizeCh)) {
 						win.Position = pointAdd(win.Position, posCh)
 					}
-				} else if part == PART_TOP_RIGHT {
+				} else if win.Resizable && part == PART_TOP_RIGHT {
 					tx := win.Size.X + sizeCh.X
 					ty := win.Size.Y - sizeCh.Y
 					if !win.setSize(point{X: tx, Y: ty}) {
 						win.Position.Y += posCh.Y
 					}
-				} else if part == PART_BOTTOM_RIGHT {
+				} else if win.Resizable && part == PART_BOTTOM_RIGHT {
 					tx := win.Size.X + sizeCh.X
 					ty := win.Size.Y + sizeCh.Y
 					win.setSize(point{X: tx, Y: ty})
-				} else if part == PART_BOTTOM_LEFT {
+				} else if win.Resizable && part == PART_BOTTOM_LEFT {
 					tx := win.Size.X - sizeCh.X
 					ty := win.Size.Y + sizeCh.Y
 
@@ -146,9 +151,17 @@ func (g *Game) Update() error {
 
 	mposOld = mpos
 
-	for _, win := range windows {
-		if win.AutoSize {
-			win.updateAutoSize()
+	if wheelDelta.X != 0 || wheelDelta.Y != 0 {
+		for i := len(windows) - 1; i >= 0; i-- {
+			win := windows[i]
+			if !win.Open {
+				continue
+			}
+			if win.getMainRect().containsPoint(mpos) {
+				if scrollFlow(win.Contents, mpos, wheelDelta) {
+					break
+				}
+			}
 		}
 	}
 
@@ -252,4 +265,42 @@ func (item *itemData) setSliderValue(mpos point) {
 	if item.IntOnly {
 		item.Value = float32(int(item.Value + 0.5))
 	}
+}
+
+func scrollFlow(items []*itemData, mpos point, delta point) bool {
+	for _, it := range items {
+		if it.ItemType == ITEM_FLOW {
+			if it.DrawRect.containsPoint(mpos) {
+				req := it.contentBounds()
+				size := it.GetSize()
+				if it.Scrollable {
+					if it.FlowType == FLOW_VERTICAL && req.Y > size.Y {
+						it.Scroll.Y -= delta.Y * 16
+						if it.Scroll.Y < 0 {
+							it.Scroll.Y = 0
+						}
+						max := req.Y - size.Y
+						if it.Scroll.Y > max {
+							it.Scroll.Y = max
+						}
+						return true
+					} else if it.FlowType == FLOW_HORIZONTAL && req.X > size.X {
+						it.Scroll.X -= delta.X * 16
+						if it.Scroll.X < 0 {
+							it.Scroll.X = 0
+						}
+						max := req.X - size.X
+						if it.Scroll.X > max {
+							it.Scroll.X = max
+						}
+						return true
+					}
+				}
+			}
+			if scrollFlow(it.Contents, mpos, delta) {
+				return true
+			}
+		}
+	}
+	return false
 }
