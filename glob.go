@@ -18,6 +18,7 @@ var (
 	mplusFaceSource *text.GoTextFaceSource
 	windows         []*windowData
 	activeWindow    *windowData
+	focusedItem     *itemData
 	uiScale         float32 = 1.0
 	clickFlash              = time.Millisecond * 100
 

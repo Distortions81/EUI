@@ -18,6 +18,12 @@ func (g *Game) Update() error {
 	mpos := point{X: float32(mx), Y: float32(my)}
 
 	click := inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0)
+	if click {
+		if focusedItem != nil {
+			focusedItem.Focused = false
+		}
+		focusedItem = nil
+	}
 	clickTime := inpututil.MouseButtonPressDuration(ebiten.MouseButton0)
 	clickDrag := clickTime > 1
 	//altClick := inpututil.IsMouseButtonJustPressed(ebiten.MouseButton1)
@@ -119,6 +125,25 @@ func (g *Game) Update() error {
 		ebiten.SetCursorShape(c)
 		cursorShape = c
 	}
+
+	if focusedItem != nil {
+		for _, r := range ebiten.AppendInputChars(nil) {
+			if r >= 32 && r != 127 && r != '\r' && r != '\n' {
+				focusedItem.Text += string(r)
+			}
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyBackspace) {
+			runes := []rune(focusedItem.Text)
+			if len(runes) > 0 {
+				focusedItem.Text = string(runes[:len(runes)-1])
+			}
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+			focusedItem.Focused = false
+			focusedItem = nil
+		}
+	}
+
 	mposOld = mpos
 
 	return nil
@@ -160,6 +185,9 @@ func (item *itemData) clickItem(mpos point, click bool) {
 		item.Clicked = time.Now()
 		if item.ItemType == ITEM_CHECKBOX {
 			item.Checked = !item.Checked
+		} else if item.ItemType == ITEM_INPUT {
+			focusedItem = item
+			item.Focused = true
 		}
 		if item.Action != nil {
 			item.Action()

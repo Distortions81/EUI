@@ -40,7 +40,7 @@ type itemData struct {
 
 	Value float32
 
-	Hovered, Checked,
+	Hovered, Checked, Focused,
 	Disabled, Invisible bool
 	Clicked  time.Time
 	FlowType flowType
@@ -145,4 +145,5 @@ const (
 	ITEM_TEXT
 	ITEM_BUTTON
 	ITEM_CHECKBOX
+	ITEM_INPUT
 )
