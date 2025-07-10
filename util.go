@@ -276,3 +276,85 @@ func (item *itemData) GetSize() point {
 func (item *itemData) GetPos() point {
 	return point{X: item.Position.X * uiScale, Y: item.Position.Y * uiScale}
 }
+
+func unionRect(a, b rect) rect {
+	if b.X0 < a.X0 {
+		a.X0 = b.X0
+	}
+	if b.Y0 < a.Y0 {
+		a.Y0 = b.Y0
+	}
+	if b.X1 > a.X1 {
+		a.X1 = b.X1
+	}
+	if b.Y1 > a.Y1 {
+		a.Y1 = b.Y1
+	}
+	return a
+}
+
+func (item *itemData) bounds(offset point) rect {
+	r := rect{
+		X0: offset.X,
+		Y0: offset.Y,
+		X1: offset.X + item.GetSize().X,
+		Y1: offset.Y + item.GetSize().Y,
+	}
+	if item.ItemType == ITEM_FLOW {
+		var flowOffset point
+		for _, sub := range item.Contents {
+			var off point
+			if item.FlowType == FLOW_HORIZONTAL {
+				off = pointAdd(offset, point{X: flowOffset.X + sub.GetPos().X, Y: sub.GetPos().Y})
+			} else if item.FlowType == FLOW_VERTICAL {
+				off = pointAdd(offset, point{X: sub.GetPos().X, Y: flowOffset.Y + sub.GetPos().Y})
+			} else {
+				off = pointAdd(offset, pointAdd(flowOffset, sub.GetPos()))
+			}
+			sr := sub.bounds(off)
+			r = unionRect(r, sr)
+			if item.FlowType == FLOW_HORIZONTAL {
+				flowOffset.X += sub.GetSize().X + sub.GetPos().X
+			} else if item.FlowType == FLOW_VERTICAL {
+				flowOffset.Y += sub.GetSize().Y + sub.GetPos().Y
+			}
+		}
+	} else {
+		for _, sub := range item.Contents {
+			off := pointAdd(offset, sub.GetPos())
+			r = unionRect(r, sub.bounds(off))
+		}
+	}
+	return r
+}
+
+func (win *windowData) contentBounds() point {
+	if len(win.Contents) == 0 {
+		return point{}
+	}
+	base := point{X: 0, Y: win.GetTitleSize()}
+	b := win.Contents[0].bounds(pointAdd(base, win.Contents[0].GetPos()))
+	for _, item := range win.Contents[1:] {
+		r := item.bounds(pointAdd(base, item.GetPos()))
+		b = unionRect(b, r)
+	}
+	return point{X: b.X1 - base.X, Y: b.Y1 - base.Y}
+}
+
+func (win *windowData) updateAutoSize() {
+	req := win.contentBounds()
+	size := win.GetSize()
+	if req.X > size.X {
+		size.X = req.X
+	}
+	if req.Y+win.GetTitleSize() > size.Y {
+		size.Y = req.Y + win.GetTitleSize()
+	}
+	if size.X > float32(screenWidth) {
+		size.X = float32(screenWidth)
+	}
+	if size.Y > float32(screenHeight) {
+		size.Y = float32(screenHeight)
+	}
+	win.Size = point{X: size.X / uiScale, Y: size.Y / uiScale}
+}
