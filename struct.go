@@ -39,7 +39,11 @@ type itemData struct {
 	LineSpace float32 //Multiplier, 1.0 = no gap between lines
 	ItemType  itemTypeData
 
-	Value float32
+	Value      float32
+	MinValue   float32
+	MaxValue   float32
+	IntOnly    bool
+	RadioGroup string
 
 	Hovered, Checked, Focused,
 	Disabled, Invisible bool
@@ -146,5 +150,7 @@ const (
 	ITEM_TEXT
 	ITEM_BUTTON
 	ITEM_CHECKBOX
+	ITEM_RADIO
 	ITEM_INPUT
+	ITEM_SLIDER
 )

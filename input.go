@@ -191,6 +191,12 @@ func (item *itemData) clickItem(mpos point, click bool) {
 		item.Clicked = time.Now()
 		if item.ItemType == ITEM_CHECKBOX {
 			item.Checked = !item.Checked
+		} else if item.ItemType == ITEM_RADIO {
+			item.Checked = true
+			// uncheck others in group
+			if item.RadioGroup != "" {
+				uncheckRadioGroup(item.Parent, item.RadioGroup, item)
+			}
 		} else if item.ItemType == ITEM_INPUT {
 			focusedItem = item
 			item.Focused = true
@@ -201,5 +207,49 @@ func (item *itemData) clickItem(mpos point, click bool) {
 		}
 	} else {
 		item.Hovered = true
+		if item.ItemType == ITEM_SLIDER && ebiten.IsMouseButtonPressed(ebiten.MouseButton0) {
+			item.setSliderValue(mpos)
+			if item.Action != nil {
+				item.Action()
+			}
+		}
+	}
+}
+
+func uncheckRadioGroup(parent *itemData, group string, except *itemData) {
+	if parent == nil {
+		for _, win := range windows {
+			subUncheckRadio(win.Contents, group, except)
+		}
+	} else {
+		subUncheckRadio(parent.Contents, group, except)
+	}
+}
+
+func subUncheckRadio(list []*itemData, group string, except *itemData) {
+	for _, it := range list {
+		if it.ItemType == ITEM_RADIO && it.RadioGroup == group && it != except {
+			it.Checked = false
+		}
+		subUncheckRadio(it.Contents, group, except)
+	}
+}
+
+func (item *itemData) setSliderValue(mpos point) {
+	width := item.DrawRect.X1 - item.DrawRect.X0 - item.AuxSize.X - item.AuxSpace*2
+	if width <= 0 {
+		return
+	}
+	val := (mpos.X - item.DrawRect.X0)
+	if val < 0 {
+		val = 0
+	}
+	if val > width {
+		val = width
+	}
+	ratio := val / width
+	item.Value = item.MinValue + ratio*(item.MaxValue-item.MinValue)
+	if item.IntOnly {
+		item.Value = float32(int(item.Value + 0.5))
 	}
 }

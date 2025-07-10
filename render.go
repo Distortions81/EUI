@@ -299,6 +299,65 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 		top.ColorScale.ScaleWithColor(item.TextColor)
 		text.Draw(subImg, item.Text, face, top)
 
+	} else if item.ItemType == ITEM_RADIO {
+
+		bThick := float32(1.0)
+		itemColor := item.Color
+		bColor := item.ClickColor
+		if item.Checked {
+			itemColor = item.ClickColor
+			bColor = item.Color
+			bThick = 2.0
+		} else if item.Hovered {
+			item.Hovered = false
+			itemColor = item.HoverColor
+		}
+		auxSize := pointScaleMul(item.AuxSize)
+		drawRoundRect(subImg, &roundRect{
+			Size:     auxSize,
+			Position: offset,
+			Fillet:   auxSize.X / 2,
+			Filled:   true,
+			Color:    itemColor,
+		})
+		drawRoundRect(subImg, &roundRect{
+			Size:     auxSize,
+			Position: offset,
+			Fillet:   auxSize.X / 2,
+			Filled:   false,
+			Color:    bColor,
+			Border:   bThick * uiScale,
+		})
+		if item.Checked {
+			inner := auxSize.X / 2.5
+			drawRoundRect(subImg, &roundRect{
+				Size:     point{X: inner, Y: inner},
+				Position: point{X: offset.X + (auxSize.X-inner)/2, Y: offset.Y + (auxSize.Y-inner)/2},
+				Fillet:   inner / 2,
+				Filled:   true,
+				Color:    item.TextColor,
+			})
+		}
+
+		textSize := (item.FontSize * uiScale) + 2
+		face := &text.GoTextFace{
+			Source: mplusFaceSource,
+			Size:   float64(textSize),
+		}
+		loo := text.LayoutOptions{
+			LineSpacing:    1.2,
+			PrimaryAlign:   text.AlignStart,
+			SecondaryAlign: text.AlignCenter,
+		}
+		tdop := ebiten.DrawImageOptions{}
+		tdop.GeoM.Translate(
+			float64(offset.X+auxSize.X+item.AuxSpace),
+			float64(offset.Y+(auxSize.Y/2)),
+		)
+		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+		top.ColorScale.ScaleWithColor(item.TextColor)
+		text.Draw(subImg, item.Text, face, top)
+
 	} else if item.ItemType == ITEM_BUTTON {
 
 		if item.Image != nil {
@@ -384,6 +443,65 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 				cx, offset.Y+maxSize.Y-2,
 				1, item.TextColor, false)
 		}
+
+	} else if item.ItemType == ITEM_SLIDER {
+
+		itemColor := item.Color
+		if item.Hovered {
+			item.Hovered = false
+			itemColor = item.HoverColor
+		}
+
+		trackY := offset.Y + maxSize.Y/2
+		vector.StrokeLine(subImg,
+			offset.X,
+			trackY,
+			offset.X+maxSize.X-item.AuxSize.X-item.AuxSpace*2,
+			trackY,
+			2*uiScale, itemColor, true)
+
+		ratio := 0.0
+		if item.MaxValue > item.MinValue {
+			ratio = float64((item.Value - item.MinValue) / (item.MaxValue - item.MinValue))
+		}
+		if ratio < 0 {
+			ratio = 0
+		} else if ratio > 1 {
+			ratio = 1
+		}
+		knobX := offset.X + float32(ratio)*(maxSize.X-item.AuxSize.X-item.AuxSpace*2)
+		drawRoundRect(subImg, &roundRect{
+			Size:     pointScaleMul(item.AuxSize),
+			Position: point{X: knobX, Y: offset.Y + (maxSize.Y-item.AuxSize.Y)/2},
+			Fillet:   item.Fillet,
+			Filled:   true,
+			Color:    item.ClickColor,
+		})
+
+		// value text
+		valueText := fmt.Sprintf("%.2f", item.Value)
+		if item.IntOnly {
+			valueText = fmt.Sprintf("%d", int(item.Value))
+		}
+
+		textSize := (item.FontSize * uiScale) + 2
+		face := &text.GoTextFace{
+			Source: mplusFaceSource,
+			Size:   float64(textSize),
+		}
+		loo := text.LayoutOptions{
+			LineSpacing:    1.2,
+			PrimaryAlign:   text.AlignStart,
+			SecondaryAlign: text.AlignCenter,
+		}
+		tdop := ebiten.DrawImageOptions{}
+		tdop.GeoM.Translate(
+			float64(offset.X+maxSize.X-item.AuxSpace),
+			float64(offset.Y+(maxSize.Y/2)),
+		)
+		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+		top.ColorScale.ScaleWithColor(item.TextColor)
+		text.Draw(subImg, valueText, face, top)
 
 	} else if item.ItemType == ITEM_TEXT {
 
