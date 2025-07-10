@@ -104,6 +104,15 @@ func NewCheckbox(item *itemData) *itemData {
 	return &newItem
 }
 
+// Create a new input box from the default theme
+func NewInput(item *itemData) *itemData {
+	newItem := *defaultInput
+	if item != nil {
+		mergeData(&newItem, item)
+	}
+	return &newItem
+}
+
 // Create a new textbox from the default theme
 func NewText(item *itemData) *itemData {
 	newItem := *defaultText

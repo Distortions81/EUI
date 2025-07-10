@@ -339,6 +339,52 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 		text.Draw(subImg, item.Text, face, top)
 
 		//Text
+	} else if item.ItemType == ITEM_INPUT {
+
+		itemColor := item.Color
+		if item.Focused {
+			itemColor = item.ClickColor
+		} else if item.Hovered {
+			item.Hovered = false
+			itemColor = item.HoverColor
+		}
+
+		drawRoundRect(subImg, &roundRect{
+			Size:     maxSize,
+			Position: offset,
+			Fillet:   item.Fillet,
+			Filled:   true,
+			Color:    itemColor,
+		})
+
+		textSize := (item.FontSize * uiScale) + 2
+		face := &text.GoTextFace{
+			Source: mplusFaceSource,
+			Size:   float64(textSize),
+		}
+		loo := text.LayoutOptions{
+			LineSpacing:    0,
+			PrimaryAlign:   text.AlignStart,
+			SecondaryAlign: text.AlignCenter,
+		}
+		tdop := ebiten.DrawImageOptions{}
+		tdop.GeoM.Translate(
+			float64(offset.X+item.BorderPad),
+			float64(offset.Y+((maxSize.Y)/2)),
+		)
+		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+		top.ColorScale.ScaleWithColor(item.TextColor)
+		text.Draw(subImg, item.Text, face, top)
+
+		if item.Focused {
+			width, _ := text.Measure(item.Text, face, 0)
+			cx := offset.X + item.BorderPad + float32(width)
+			vector.StrokeLine(subImg,
+				cx, offset.Y+2,
+				cx, offset.Y+maxSize.Y-2,
+				1, item.TextColor, false)
+		}
+
 	} else if item.ItemType == ITEM_TEXT {
 
 		textSize := (item.FontSize * uiScale) + 2

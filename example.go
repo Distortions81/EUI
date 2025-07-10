@@ -29,12 +29,14 @@ func makeTestWindow() *windowData {
 	leftButton1 := NewButton(&itemData{Text: "sprite button", Size: point{X: 64, Y: 64}, FontSize: 8, ImageName: "1"})
 	leftButton2 := NewButton(&itemData{Text: "text button", Size: point{X: 64, Y: 24}, FontSize: 8})
 	leftCheckbox1 := NewCheckbox(&itemData{Text: "Option 1", Size: point{X: 100, Y: 32}, FontSize: 8})
+	leftInput1 := NewInput(&itemData{Size: point{X: 96, Y: 20}, FontSize: 8})
 	leftFlow.addItemTo(leftText1)
 	leftFlow.addItemTo(leftText2)
 	leftFlow.addItemTo(leftText3)
 	leftFlow.addItemTo(leftButton1)
 	leftFlow.addItemTo(leftButton2)
 	leftFlow.addItemTo(leftCheckbox1)
+	leftFlow.addItemTo(leftInput1)
 
 	rightFlow := &itemData{
 		ItemType: ITEM_FLOW,
