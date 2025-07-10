@@ -307,7 +307,16 @@ func (item *itemData) bounds(offset point) rect {
 	}
 	if item.ItemType == ITEM_FLOW {
 		var flowOffset point
-		for _, sub := range item.Contents {
+		var subItems []*itemData
+		if len(item.Tabs) > 0 {
+			if item.ActiveTab >= len(item.Tabs) {
+				item.ActiveTab = 0
+			}
+			subItems = item.Tabs[item.ActiveTab].Contents
+		} else {
+			subItems = item.Contents
+		}
+		for _, sub := range subItems {
 			var off point
 			if item.FlowType == FLOW_HORIZONTAL {
 				off = pointAdd(offset, point{X: flowOffset.X + sub.GetPos().X, Y: sub.GetPos().Y})
@@ -366,12 +375,19 @@ func (win *windowData) updateAutoSize() {
 }
 
 func (item *itemData) contentBounds() point {
-	if len(item.Contents) == 0 {
+	list := item.Contents
+	if len(item.Tabs) > 0 {
+		if item.ActiveTab >= len(item.Tabs) {
+			item.ActiveTab = 0
+		}
+		list = item.Tabs[item.ActiveTab].Contents
+	}
+	if len(list) == 0 {
 		return point{}
 	}
 	base := point{}
-	b := item.Contents[0].bounds(pointAdd(base, item.Contents[0].GetPos()))
-	for _, sub := range item.Contents[1:] {
+	b := list[0].bounds(pointAdd(base, list[0].GetPos()))
+	for _, sub := range list[1:] {
 		r := sub.bounds(pointAdd(base, sub.GetPos()))
 		b = unionRect(b, r)
 	}
@@ -401,7 +417,16 @@ func (item *itemData) resizeFlow(parentSize point) {
 		available = item.GetSize()
 	}
 
-	for _, sub := range item.Contents {
+	var list []*itemData
+	if len(item.Tabs) > 0 {
+		if item.ActiveTab >= len(item.Tabs) {
+			item.ActiveTab = 0
+		}
+		list = item.Tabs[item.ActiveTab].Contents
+	} else {
+		list = item.Contents
+	}
+	for _, sub := range list {
 		sub.resizeFlow(available)
 	}
 }

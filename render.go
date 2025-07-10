@@ -182,11 +182,44 @@ func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.I
 
 	vector.StrokeRect(screen, offset.X, offset.Y, item.GetSize().X, item.GetSize().Y, 1, color.RGBA{R: 32, G: 32, B: 32}, false)
 
+	var activeContents []*itemData
 	drawOffset := pointSub(offset, item.Scroll)
+
+	if len(item.Tabs) > 0 {
+		if item.ActiveTab >= len(item.Tabs) {
+			item.ActiveTab = 0
+		}
+
+		tabHeight := item.FontSize*uiScale + 4
+		if tabHeight <= 4 {
+			tabHeight = 16 * uiScale
+		}
+		x := offset.X
+		for i, tab := range item.Tabs {
+			face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(tabHeight - 4)}
+			tw, _ := text.Measure(tab.Name, face, 0)
+			w := float32(tw) + 8
+			col := item.Color
+			if i == item.ActiveTab {
+				col = item.ClickColor
+			}
+			vector.DrawFilledRect(screen, x, offset.Y, w, tabHeight, col, false)
+			loo := text.LayoutOptions{PrimaryAlign: text.AlignCenter, SecondaryAlign: text.AlignCenter}
+			dop := ebiten.DrawImageOptions{}
+			dop.GeoM.Translate(float64(x+w/2), float64(offset.Y+tabHeight/2))
+			text.Draw(screen, tab.Name, face, &text.DrawOptions{DrawImageOptions: dop, LayoutOptions: loo})
+			tab.DrawRect = rect{X0: x, Y0: offset.Y, X1: x + w, Y1: offset.Y + tabHeight}
+			x += w
+		}
+		drawOffset = pointAdd(drawOffset, point{Y: tabHeight})
+		activeContents = item.Tabs[item.ActiveTab].Contents
+	} else {
+		activeContents = item.Contents
+	}
 
 	var flowOffset point
 
-	for _, subItem := range item.Contents {
+	for _, subItem := range activeContents {
 
 		if subItem.ItemType == ITEM_FLOW {
 			flowPos := pointAdd(drawOffset, item.GetPos())
@@ -196,8 +229,8 @@ func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.I
 		} else {
 			flowOff := pointAdd(drawOffset, flowOffset)
 
-                        objOff := flowOff
-                        if parent != nil && parent.ItemType == ITEM_FLOW {
+			objOff := flowOff
+			if parent != nil && parent.ItemType == ITEM_FLOW {
 				if parent.FlowType == FLOW_HORIZONTAL {
 					objOff = pointAdd(objOff, point{X: subItem.GetPos().X})
 				} else if parent.FlowType == FLOW_VERTICAL {

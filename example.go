@@ -47,20 +47,24 @@ func makeTestWindow() *windowData {
 	leftFlow.addItemTo(leftSlider1)
 	leftFlow.addItemTo(leftInput1)
 
-	rightFlow := &itemData{
-		ItemType:   ITEM_FLOW,
-		Size:       point{X: 200, Y: 300},
-		FlowType:   FLOW_HORIZONTAL,
-		Scrollable: true,
+	tabFlow := &itemData{
+		ItemType: ITEM_FLOW,
+		Size:     point{X: 200, Y: 300},
+		FlowType: FLOW_VERTICAL,
+		Tabs: []*itemData{
+			{Name: "Tab 1", ItemType: ITEM_FLOW, FlowType: FLOW_VERTICAL},
+			{Name: "Tab 2", ItemType: ITEM_FLOW, FlowType: FLOW_VERTICAL},
+		},
 	}
-	mainFlow.addItemTo(rightFlow)
+	mainFlow.addItemTo(tabFlow)
 
-	rightText1 := NewText(&itemData{Text: "right panel item 1", Size: point{X: 100, Y: 32}, FontSize: 8})
-	rightText2 := NewText(&itemData{Text: "right panel item 2", Size: point{X: 100, Y: 32}, FontSize: 8})
-	rightText3 := NewText(&itemData{Text: "right panel item 3", Size: point{X: 100, Y: 32}, FontSize: 8})
-	rightFlow.addItemTo(rightText1)
-	rightFlow.addItemTo(rightText2)
-	rightFlow.addItemTo(rightText3)
+	rightText1 := NewText(&itemData{Text: "Tab 1 content", Size: point{X: 100, Y: 32}, FontSize: 8})
+	rightText2 := NewText(&itemData{Text: "Tab 1 more", Size: point{X: 100, Y: 32}, FontSize: 8})
+	tabFlow.Tabs[0].addItemTo(rightText1)
+	tabFlow.Tabs[0].addItemTo(rightText2)
+
+	rightText3 := NewText(&itemData{Text: "Tab 2 content", Size: point{X: 100, Y: 32}, FontSize: 8})
+	tabFlow.Tabs[1].addItemTo(rightText3)
 
 	return newWindow
 }
