@@ -51,6 +51,8 @@ type itemData struct {
 	FlowType flowType
 	Scroll   point
 
+	Fixed, Scrollable bool
+
 	ImageName string
 	Image     *ebiten.Image
 

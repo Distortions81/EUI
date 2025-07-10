@@ -130,6 +130,7 @@ func (win *windowData) setSize(size point) bool {
 	}
 
 	win.BringForward()
+	win.resizeFlows()
 	return tooSmall
 }
 
@@ -357,4 +358,52 @@ func (win *windowData) updateAutoSize() {
 		size.Y = float32(screenHeight)
 	}
 	win.Size = point{X: size.X / uiScale, Y: size.Y / uiScale}
+	win.resizeFlows()
+}
+
+func (item *itemData) contentBounds() point {
+	if len(item.Contents) == 0 {
+		return point{}
+	}
+	base := point{}
+	b := item.Contents[0].bounds(pointAdd(base, item.Contents[0].GetPos()))
+	for _, sub := range item.Contents[1:] {
+		r := sub.bounds(pointAdd(base, sub.GetPos()))
+		b = unionRect(b, r)
+	}
+	return point{X: b.X1 - base.X, Y: b.Y1 - base.Y}
+}
+
+func (item *itemData) resizeFlow(parentSize point) {
+	available := parentSize
+
+	if item.ItemType == ITEM_FLOW {
+		size := available
+		if item.Fixed {
+			size = item.GetSize()
+		}
+		if !item.Scrollable {
+			req := item.contentBounds()
+			if req.X > size.X {
+				size.X = req.X
+			}
+			if req.Y > size.Y {
+				size.Y = req.Y
+			}
+		}
+		item.Size = point{X: size.X / uiScale, Y: size.Y / uiScale}
+		available = item.GetSize()
+	} else {
+		available = item.GetSize()
+	}
+
+	for _, sub := range item.Contents {
+		sub.resizeFlow(available)
+	}
+}
+
+func (win *windowData) resizeFlows() {
+	for _, item := range win.Contents {
+		item.resizeFlow(win.GetSize())
+	}
 }

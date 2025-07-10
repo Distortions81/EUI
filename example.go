@@ -14,6 +14,7 @@ func makeTestWindow() *windowData {
 		ItemType: ITEM_FLOW,
 		Size:     newWindow.Size,
 		FlowType: FLOW_HORIZONTAL,
+		Fixed:    false,
 	}
 	newWindow.addItemTo(mainFlow)
 
@@ -21,6 +22,7 @@ func makeTestWindow() *windowData {
 		ItemType: ITEM_FLOW,
 		Size:     point{X: 100, Y: 300},
 		FlowType: FLOW_VERTICAL,
+		Fixed:    true,
 	}
 	mainFlow.addItemTo(leftFlow)
 
@@ -46,9 +48,10 @@ func makeTestWindow() *windowData {
 	leftFlow.addItemTo(leftInput1)
 
 	rightFlow := &itemData{
-		ItemType: ITEM_FLOW,
-		Size:     point{X: 200, Y: 300},
-		FlowType: FLOW_HORIZONTAL,
+		ItemType:   ITEM_FLOW,
+		Size:       point{X: 200, Y: 300},
+		FlowType:   FLOW_HORIZONTAL,
+		Scrollable: true,
 	}
 	mainFlow.addItemTo(rightFlow)
 
