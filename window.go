@@ -104,6 +104,15 @@ func NewCheckbox(item *itemData) *itemData {
 	return &newItem
 }
 
+// Create a new radio button from the default theme
+func NewRadio(item *itemData) *itemData {
+	newItem := *defaultRadio
+	if item != nil {
+		mergeData(&newItem, item)
+	}
+	return &newItem
+}
+
 // Create a new input box from the default theme
 func NewInput(item *itemData) *itemData {
 	newItem := *defaultInput

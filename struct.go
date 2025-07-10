@@ -45,12 +45,19 @@ type itemData struct {
 
 	Dragging bool
 	UseHSV   bool
+	Value      float32
+	MinValue   float32
+	MaxValue   float32
+	IntOnly    bool
+	RadioGroup string
 
 	Hovered, Checked, Focused,
 	Disabled, Invisible bool
 	Clicked  time.Time
 	FlowType flowType
 	Scroll   point
+
+	Fixed, Scrollable bool
 
 	ImageName string
 	Image     *ebiten.Image
@@ -151,6 +158,7 @@ const (
 	ITEM_TEXT
 	ITEM_BUTTON
 	ITEM_CHECKBOX
+	ITEM_RADIO
 	ITEM_INPUT
 	ITEM_SLIDER
 	ITEM_COLORSEL
