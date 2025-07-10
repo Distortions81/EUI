@@ -84,3 +84,35 @@ var defaultInput = &itemData{
 	HoverColor: color.RGBA{R: 96, G: 96, B: 96, A: 255},
 	ClickColor: color.RGBA{R: 0, G: 128, B: 128, A: 255},
 }
+
+var defaultSlider = &itemData{
+	ItemType:  ITEM_SLIDER,
+	Size:      point{X: 128, Y: 16},
+	Position:  point{X: 4, Y: 4},
+	Fillet:    4,
+	Filled:    true,
+	Outlined:  true,
+	Border:    1,
+	BorderPad: 2,
+
+	TextColor:  color.RGBA{255, 255, 255, 255},
+	Color:      color.RGBA{64, 64, 64, 255},
+	HoverColor: color.RGBA{96, 96, 96, 255},
+	ClickColor: color.RGBA{0, 128, 128, 255},
+}
+
+var defaultColorSelector = &itemData{
+	ItemType:  ITEM_COLORSEL,
+	Size:      point{X: 128, Y: 80},
+	Position:  point{X: 4, Y: 4},
+	Fillet:    4,
+	Filled:    true,
+	Outlined:  true,
+	Border:    1,
+	BorderPad: 2,
+
+	TextColor:  color.RGBA{255, 255, 255, 255},
+	Color:      color.RGBA{0, 0, 0, 255},
+	HoverColor: color.RGBA{96, 96, 96, 255},
+	ClickColor: color.RGBA{0, 128, 128, 255},
+}

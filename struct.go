@@ -39,7 +39,12 @@ type itemData struct {
 	LineSpace float32 //Multiplier, 1.0 = no gap between lines
 	ItemType  itemTypeData
 
-	Value float32
+	Value  float32
+	Value2 float32
+	Value3 float32
+
+	Dragging bool
+	UseHSV   bool
 
 	Hovered, Checked, Focused,
 	Disabled, Invisible bool
@@ -147,4 +152,6 @@ const (
 	ITEM_BUTTON
 	ITEM_CHECKBOX
 	ITEM_INPUT
+	ITEM_SLIDER
+	ITEM_COLORSEL
 )

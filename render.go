@@ -385,6 +385,68 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 				1, item.TextColor, false)
 		}
 
+	} else if item.ItemType == ITEM_SLIDER {
+
+		trackH := maxSize.Y / 3
+		ty := offset.Y + (maxSize.Y-trackH)/2
+		drawRoundRect(subImg, &roundRect{
+			Size:     point{X: maxSize.X, Y: trackH},
+			Position: point{X: offset.X, Y: ty},
+			Fillet:   item.Fillet,
+			Filled:   true,
+			Color:    item.Color,
+		})
+		knobX := offset.X + item.Value*(maxSize.X-trackH)
+		drawRoundRect(subImg, &roundRect{
+			Size:     point{X: trackH, Y: trackH},
+			Position: point{X: knobX, Y: ty},
+			Fillet:   item.Fillet,
+			Filled:   true,
+			Color:    item.ClickColor,
+		})
+
+	} else if item.ItemType == ITEM_COLORSEL {
+
+		step := maxSize.Y / 4
+
+		drawSlider := func(val float32, y float32) {
+			trackH := step / 3
+			ty := y + (step-trackH)/2
+			drawRoundRect(subImg, &roundRect{
+				Size:     point{X: maxSize.X, Y: trackH},
+				Position: point{X: offset.X, Y: ty},
+				Fillet:   item.Fillet,
+				Filled:   true,
+				Color:    item.Color,
+			})
+			knobX := offset.X + val*(maxSize.X-trackH)
+			drawRoundRect(subImg, &roundRect{
+				Size:     point{X: trackH, Y: trackH},
+				Position: point{X: knobX, Y: ty},
+				Fillet:   item.Fillet,
+				Filled:   true,
+				Color:    item.ClickColor,
+			})
+		}
+
+		drawSlider(item.Value, offset.Y)
+		drawSlider(item.Value2, offset.Y+step)
+		drawSlider(item.Value3, offset.Y+2*step)
+
+		if item.UseHSV {
+			item.Color = hsvToRGB(item.Value, item.Value2, item.Value3)
+		} else {
+			item.Color = color.RGBA{uint8(item.Value * 255), uint8(item.Value2 * 255), uint8(item.Value3 * 255), 255}
+		}
+
+		drawRoundRect(subImg, &roundRect{
+			Size:     point{X: maxSize.X, Y: step - 2},
+			Position: point{X: offset.X, Y: offset.Y + 3*step},
+			Fillet:   item.Fillet,
+			Filled:   true,
+			Color:    item.Color,
+		})
+
 	} else if item.ItemType == ITEM_TEXT {
 
 		textSize := (item.FontSize * uiScale) + 2

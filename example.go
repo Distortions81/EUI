@@ -52,6 +52,8 @@ func makeTestWindow() *windowData {
 	rightFlow.addItemTo(rightText1)
 	rightFlow.addItemTo(rightText2)
 	rightFlow.addItemTo(rightText3)
+	colorSel := NewColorSelector(nil)
+	rightFlow.addItemTo(colorSel)
 
 	return newWindow
 }

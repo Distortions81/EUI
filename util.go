@@ -2,10 +2,37 @@ package main
 
 import (
 	"image"
+	"image/color"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
+
+func hsvToRGB(h, s, v float32) color.RGBA {
+	var r, g, b float32
+	i := int(h * 6)
+	f := h*6 - float32(i)
+	p := v * (1 - s)
+	q := v * (1 - f*s)
+	t := v * (1 - (1-f)*s)
+
+	switch i % 6 {
+	case 0:
+		r, g, b = v, t, p
+	case 1:
+		r, g, b = q, v, p
+	case 2:
+		r, g, b = p, v, t
+	case 3:
+		r, g, b = p, q, v
+	case 4:
+		r, g, b = t, p, v
+	case 5:
+		r, g, b = v, p, q
+	}
+
+	return color.RGBA{uint8(r * 255), uint8(g * 255), uint8(b * 255), 255}
+}
 
 func (rect rect) containsPoint(b point) bool {
 	return b.X >= rect.X0 && b.Y >= rect.Y0 &&

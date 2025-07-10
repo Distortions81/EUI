@@ -184,7 +184,45 @@ func (item *itemData) clickFlows(mpos point, click bool) {
 func (item *itemData) clickItem(mpos point, click bool) {
 	// If the mouse isn't within the item, just return
 	if !item.DrawRect.containsPoint(mpos) {
+		if item.ItemType == ITEM_SLIDER || item.ItemType == ITEM_COLORSEL {
+			item.Dragging = false
+		}
 		return
+	}
+
+	pressed := ebiten.IsMouseButtonPressed(ebiten.MouseButton0)
+
+	if item.ItemType == ITEM_SLIDER && pressed {
+		rel := (mpos.X - item.DrawRect.X0) / (item.DrawRect.X1 - item.DrawRect.X0)
+		if rel < 0 {
+			rel = 0
+		}
+		if rel > 1 {
+			rel = 1
+		}
+		item.Value = rel
+		item.Dragging = true
+	} else if item.ItemType == ITEM_COLORSEL && pressed {
+		step := (item.DrawRect.Y1 - item.DrawRect.Y0) / 4
+		idx := int((mpos.Y - item.DrawRect.Y0) / step)
+		rel := (mpos.X - item.DrawRect.X0) / (item.DrawRect.X1 - item.DrawRect.X0)
+		if rel < 0 {
+			rel = 0
+		}
+		if rel > 1 {
+			rel = 1
+		}
+		switch idx {
+		case 0:
+			item.Value = rel
+		case 1:
+			item.Value2 = rel
+		case 2:
+			item.Value3 = rel
+		}
+		item.Dragging = true
+	} else if item.ItemType == ITEM_COLORSEL && inpututil.IsMouseButtonJustPressed(ebiten.MouseButton1) {
+		item.UseHSV = !item.UseHSV
 	}
 
 	if click {

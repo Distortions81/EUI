@@ -113,6 +113,24 @@ func NewInput(item *itemData) *itemData {
 	return &newItem
 }
 
+// Create a new slider from the default theme
+func NewSlider(item *itemData) *itemData {
+	newItem := *defaultSlider
+	if item != nil {
+		mergeData(&newItem, item)
+	}
+	return &newItem
+}
+
+// Create a new color selector from the default theme
+func NewColorSelector(item *itemData) *itemData {
+	newItem := *defaultColorSelector
+	if item != nil {
+		mergeData(&newItem, item)
+	}
+	return &newItem
+}
+
 // Create a new textbox from the default theme
 func NewText(item *itemData) *itemData {
 	newItem := *defaultText
