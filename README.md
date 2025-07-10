@@ -11,6 +11,9 @@ Each flow has a direction, horizontal or vertical.
 
 ![flows-screenshot](https://github.com/user-attachments/assets/dcc79179-361d-420c-959f-c1785433bb5b)
 
+An additional showcase window demonstrating all widget types can be found in
+`showcase.go`.
+
 
 
 # Flow and item pinning:
