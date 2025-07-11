@@ -1,23 +1,8 @@
 package main
 
 import (
-	"image"
-	"math"
-
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
-
-func (rect rect) containsPoint(b point) bool {
-	return b.X >= rect.X0 && b.Y >= rect.Y0 &&
-		b.X <= rect.X1 && b.Y <= rect.Y1
-}
-
-func (item *itemData) containsPoint(win *windowData, b point) bool {
-	return b.X >= win.getPosition().X+(item.getPosition(win).X) &&
-		b.X <= win.getPosition().X+(item.getPosition(win).X)+(item.GetSize().X) &&
-		b.Y >= win.getPosition().Y+(item.getPosition(win).Y) &&
-		b.Y <= win.getPosition().Y+(item.getPosition(win).Y)+(item.GetSize().Y)
-}
 
 func (win *windowData) getWinRect() rect {
 	winPos := win.getPosition()
@@ -45,12 +30,6 @@ func (parent *itemData) addItemTo(item *itemData) {
 
 func (parent *windowData) addItemTo(item *itemData) {
 	parent.Contents = append(parent.Contents, item)
-}
-
-func (rect rect) getRectangle() image.Rectangle {
-	return image.Rectangle{
-		Min: image.Point{X: int(math.Ceil(float64(rect.X0))), Y: int(math.Ceil(float64(rect.Y0)))},
-		Max: image.Point{X: int(math.Ceil(float64(rect.X1))), Y: int(math.Ceil(float64(rect.Y1)))}}
 }
 
 func (win *windowData) getMainRect() rect {
@@ -210,13 +189,6 @@ func (win *windowData) getWindowPart(mpos point, click bool) dragType {
 	return PART_NONE
 }
 
-func withinRange(a, b float32, tol float32) bool {
-	if math.Abs(float64(a-b)) <= float64(tol) {
-		return true
-	}
-	return false
-}
-
 func (win *windowData) titleTextWidth() point {
 	if win.TitleHeight <= 0 {
 		return point{}
@@ -228,30 +200,6 @@ func (win *windowData) titleTextWidth() point {
 	}
 	textWidth, textHeight := text.Measure(win.Title, face, 0)
 	return point{X: float32(textWidth), Y: float32(textHeight)}
-}
-
-func pointAdd(a, b point) point {
-	return point{X: a.X + b.X, Y: a.Y + b.Y}
-}
-
-func pointMul(a, b point) point {
-	return point{X: a.X * b.X, Y: a.Y * b.Y}
-}
-
-func pointScaleMul(a point) point {
-	return point{X: a.X * uiScale, Y: a.Y * uiScale}
-}
-
-func pointScaleDiv(a point) point {
-	return point{X: a.X / uiScale, Y: a.Y / uiScale}
-}
-
-func pointDiv(a, b point) point {
-	return point{X: a.X / b.X, Y: a.Y / b.Y}
-}
-
-func pointSub(a, b point) point {
-	return point{X: a.X - b.X, Y: a.Y - b.Y}
 }
 
 func (win *windowData) SetTitleSize(size float32) {
@@ -280,22 +228,6 @@ func (item *itemData) GetSize() point {
 
 func (item *itemData) GetPos() point {
 	return point{X: item.Position.X * uiScale, Y: item.Position.Y * uiScale}
-}
-
-func unionRect(a, b rect) rect {
-	if b.X0 < a.X0 {
-		a.X0 = b.X0
-	}
-	if b.Y0 < a.Y0 {
-		a.Y0 = b.Y0
-	}
-	if b.X1 > a.X1 {
-		a.X1 = b.X1
-	}
-	if b.Y1 > a.Y1 {
-		a.Y1 = b.Y1
-	}
-	return a
 }
 
 func (item *itemData) bounds(offset point) rect {
