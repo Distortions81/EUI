@@ -5,7 +5,7 @@ func makeShowcaseWindow() *windowData {
 	win := NewWindow(&windowData{
 		Title:    "Showcase",
 		Size:     point{X: 400, Y: 420},
-		Position: point{X: 420, Y: 8},
+		Position: point{X: 8, Y: 8},
 		AutoSize: true,
 	})
 
@@ -42,6 +42,20 @@ func makeShowcaseWindow() *windowData {
 	hFlow.addItemTo(NewButton(&itemData{Text: "Two", Size: point{X: 60, Y: 24}, FontSize: 8}))
 	hFlow.addItemTo(NewButton(&itemData{Text: "Three", Size: point{X: 60, Y: 24}, FontSize: 8}))
 	hFlow.addItemTo(NewButton(&itemData{Text: "Four", Size: point{X: 60, Y: 24}, FontSize: 8}))
+
+	tabFlow := &itemData{
+		ItemType: ITEM_FLOW,
+		FlowType: FLOW_VERTICAL,
+		Size:     point{X: 380, Y: 120},
+		FontSize: 8,
+		Tabs: []*itemData{
+			{Name: "Tab 1", ItemType: ITEM_FLOW, FlowType: FLOW_VERTICAL},
+			{Name: "Tab 2", ItemType: ITEM_FLOW, FlowType: FLOW_VERTICAL},
+		},
+	}
+	mainFlow.addItemTo(tabFlow)
+	tabFlow.Tabs[0].addItemTo(NewText(&itemData{Text: "Tab 1 content", Size: point{X: 100, Y: 32}, FontSize: 8}))
+	tabFlow.Tabs[1].addItemTo(NewText(&itemData{Text: "Tab 2 content", Size: point{X: 100, Y: 32}, FontSize: 8}))
 
 	return win
 }
