@@ -16,7 +16,8 @@ type windowData struct {
 
 	Open, Hovered, Flow,
 	Closable, Movable, Resizable,
-	HoverClose, HoverDragbar bool
+	HoverClose, HoverDragbar,
+	AutoSize bool
 
 	TitleHeight float32
 
@@ -28,7 +29,9 @@ type windowData struct {
 }
 
 type itemData struct {
-	Parent    *itemData
+	Parent *itemData
+	// Name is used when the item is part of a tabbed flow
+	Name      string
 	Text      string
 	Position  point
 	Size      point
@@ -38,13 +41,19 @@ type itemData struct {
 	LineSpace float32 //Multiplier, 1.0 = no gap between lines
 	ItemType  itemTypeData
 
-	Value float32
+	Value      float32
+	MinValue   float32
+	MaxValue   float32
+	IntOnly    bool
+	RadioGroup string
 
-	Hovered, Checked,
+	Hovered, Checked, Focused,
 	Disabled, Invisible bool
 	Clicked  time.Time
 	FlowType flowType
 	Scroll   point
+
+	Fixed, Scrollable bool
 
 	ImageName string
 	Image     *ebiten.Image
@@ -61,6 +70,16 @@ type itemData struct {
 
 	Action   func()
 	Contents []*itemData
+
+	// Tabs allows a flow to contain multiple tabbed flows. Only the
+	// flow referenced by ActiveTab will be drawn and receive input.
+	Tabs      []*itemData
+	ActiveTab int
+
+	// DrawRect stores the last drawn rectangle of the item in screen
+	// coordinates so input handling can use the exact same area that was
+	// rendered.
+	DrawRect rect
 }
 
 type roundRect struct {
@@ -140,4 +159,7 @@ const (
 	ITEM_TEXT
 	ITEM_BUTTON
 	ITEM_CHECKBOX
+	ITEM_RADIO
+	ITEM_INPUT
+	ITEM_SLIDER
 )

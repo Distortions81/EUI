@@ -172,22 +172,65 @@ func (win *windowData) drawItems(screen *ebiten.Image) {
 }
 
 func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.Image) {
+	// Store the drawn rectangle for input handling
+	item.DrawRect = rect{
+		X0: offset.X,
+		Y0: offset.Y,
+		X1: offset.X + item.GetSize().X,
+		Y1: offset.Y + item.GetSize().Y,
+	}
+
 	vector.StrokeRect(screen, offset.X, offset.Y, item.GetSize().X, item.GetSize().Y, 1, color.RGBA{R: 32, G: 32, B: 32}, false)
+
+	var activeContents []*itemData
+	drawOffset := pointSub(offset, item.Scroll)
+
+	if len(item.Tabs) > 0 {
+		if item.ActiveTab >= len(item.Tabs) {
+			item.ActiveTab = 0
+		}
+
+		tabHeight := item.FontSize*uiScale + 4
+		if tabHeight <= 4 {
+			tabHeight = 16 * uiScale
+		}
+		x := offset.X
+		for i, tab := range item.Tabs {
+			face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(tabHeight - 4)}
+			tw, _ := text.Measure(tab.Name, face, 0)
+			w := float32(tw) + 8
+			col := item.Color
+			if i == item.ActiveTab {
+				col = item.ClickColor
+			}
+			vector.DrawFilledRect(screen, x, offset.Y, w, tabHeight, col, false)
+			loo := text.LayoutOptions{PrimaryAlign: text.AlignCenter, SecondaryAlign: text.AlignCenter}
+			dop := ebiten.DrawImageOptions{}
+			dop.GeoM.Translate(float64(x+w/2), float64(offset.Y+tabHeight/2))
+			text.Draw(screen, tab.Name, face, &text.DrawOptions{DrawImageOptions: dop, LayoutOptions: loo})
+			tab.DrawRect = rect{X0: x, Y0: offset.Y, X1: x + w, Y1: offset.Y + tabHeight}
+			x += w
+		}
+		drawOffset = pointAdd(drawOffset, point{Y: tabHeight})
+		activeContents = item.Tabs[item.ActiveTab].Contents
+	} else {
+		activeContents = item.Contents
+	}
 
 	var flowOffset point
 
-	for _, subItem := range item.Contents {
+	for _, subItem := range activeContents {
 
 		if subItem.ItemType == ITEM_FLOW {
-			flowPos := pointAdd(offset, item.GetPos())
+			flowPos := pointAdd(drawOffset, item.GetPos())
 			flowOff := pointAdd(flowPos, flowOffset)
 			itemPos := pointAdd(flowOff, subItem.GetPos())
 			subItem.drawFlows(item, itemPos, screen)
 		} else {
-			flowOff := pointAdd(offset, flowOffset)
+			flowOff := pointAdd(drawOffset, flowOffset)
 
 			objOff := flowOff
-			if parent.ItemType == ITEM_FLOW {
+			if parent != nil && parent.ItemType == ITEM_FLOW {
 				if parent.FlowType == FLOW_HORIZONTAL {
 					objOff = pointAdd(objOff, point{X: subItem.GetPos().X})
 				} else if parent.FlowType == FLOW_VERTICAL {
@@ -208,6 +251,28 @@ func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.I
 			}
 		}
 	}
+
+	if item.Scrollable {
+		req := item.contentBounds()
+		size := item.GetSize()
+		if item.FlowType == FLOW_VERTICAL && req.Y > size.Y {
+			barH := size.Y * size.Y / req.Y
+			maxScroll := req.Y - size.Y
+			pos := float32(0)
+			if maxScroll > 0 {
+				pos = (item.Scroll.Y / maxScroll) * (size.Y - barH)
+			}
+			vector.DrawFilledRect(screen, item.DrawRect.X1-4, item.DrawRect.Y0+pos, 4, barH, color.RGBA{R: 96, G: 96, B: 96, A: 192}, false)
+		} else if item.FlowType == FLOW_HORIZONTAL && req.X > size.X {
+			barW := size.X * size.X / req.X
+			maxScroll := req.X - size.X
+			pos := float32(0)
+			if maxScroll > 0 {
+				pos = (item.Scroll.X / maxScroll) * (size.X - barW)
+			}
+			vector.DrawFilledRect(screen, item.DrawRect.X0+pos, item.DrawRect.Y1-4, barW, 4, color.RGBA{R: 96, G: 96, B: 96, A: 192}, false)
+		}
+	}
 }
 
 func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Image) {
@@ -223,10 +288,14 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 		maxSize.Y = parent.GetSize().Y
 	}
 
-	subImg := screen.SubImage(rect{
-		X0: offset.X, X1: offset.X + maxSize.X,
-		Y0: offset.Y, Y1: offset.Y + maxSize.Y,
-	}.getRectangle()).(*ebiten.Image)
+	item.DrawRect = rect{
+		X0: offset.X,
+		Y0: offset.Y,
+		X1: offset.X + maxSize.X,
+		Y1: offset.Y + maxSize.Y,
+	}
+
+	subImg := screen.SubImage(item.DrawRect.getRectangle()).(*ebiten.Image)
 
 	if item.ItemType == ITEM_CHECKBOX {
 
@@ -266,6 +335,65 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 				offset.X+item.AuxSize.X/2,
 				offset.Y+item.AuxSize.Y*1.5,
 				xThick, item.TextColor, true)
+		}
+
+		textSize := (item.FontSize * uiScale) + 2
+		face := &text.GoTextFace{
+			Source: mplusFaceSource,
+			Size:   float64(textSize),
+		}
+		loo := text.LayoutOptions{
+			LineSpacing:    1.2,
+			PrimaryAlign:   text.AlignStart,
+			SecondaryAlign: text.AlignCenter,
+		}
+		tdop := ebiten.DrawImageOptions{}
+		tdop.GeoM.Translate(
+			float64(offset.X+auxSize.X+item.AuxSpace),
+			float64(offset.Y+(auxSize.Y/2)),
+		)
+		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+		top.ColorScale.ScaleWithColor(item.TextColor)
+		text.Draw(subImg, item.Text, face, top)
+
+	} else if item.ItemType == ITEM_RADIO {
+
+		bThick := float32(1.0)
+		itemColor := item.Color
+		bColor := item.ClickColor
+		if item.Checked {
+			itemColor = item.ClickColor
+			bColor = item.Color
+			bThick = 2.0
+		} else if item.Hovered {
+			item.Hovered = false
+			itemColor = item.HoverColor
+		}
+		auxSize := pointScaleMul(item.AuxSize)
+		drawRoundRect(subImg, &roundRect{
+			Size:     auxSize,
+			Position: offset,
+			Fillet:   auxSize.X / 2,
+			Filled:   true,
+			Color:    itemColor,
+		})
+		drawRoundRect(subImg, &roundRect{
+			Size:     auxSize,
+			Position: offset,
+			Fillet:   auxSize.X / 2,
+			Filled:   false,
+			Color:    bColor,
+			Border:   bThick * uiScale,
+		})
+		if item.Checked {
+			inner := auxSize.X / 2.5
+			drawRoundRect(subImg, &roundRect{
+				Size:     point{X: inner, Y: inner},
+				Position: point{X: offset.X + (auxSize.X-inner)/2, Y: offset.Y + (auxSize.Y-inner)/2},
+				Fillet:   inner / 2,
+				Filled:   true,
+				Color:    item.TextColor,
+			})
 		}
 
 		textSize := (item.FontSize * uiScale) + 2
@@ -327,6 +455,111 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 		text.Draw(subImg, item.Text, face, top)
 
 		//Text
+	} else if item.ItemType == ITEM_INPUT {
+
+		itemColor := item.Color
+		if item.Focused {
+			itemColor = item.ClickColor
+		} else if item.Hovered {
+			item.Hovered = false
+			itemColor = item.HoverColor
+		}
+
+		drawRoundRect(subImg, &roundRect{
+			Size:     maxSize,
+			Position: offset,
+			Fillet:   item.Fillet,
+			Filled:   true,
+			Color:    itemColor,
+		})
+
+		textSize := (item.FontSize * uiScale) + 2
+		face := &text.GoTextFace{
+			Source: mplusFaceSource,
+			Size:   float64(textSize),
+		}
+		loo := text.LayoutOptions{
+			LineSpacing:    0,
+			PrimaryAlign:   text.AlignStart,
+			SecondaryAlign: text.AlignCenter,
+		}
+		tdop := ebiten.DrawImageOptions{}
+		tdop.GeoM.Translate(
+			float64(offset.X+item.BorderPad),
+			float64(offset.Y+((maxSize.Y)/2)),
+		)
+		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+		top.ColorScale.ScaleWithColor(item.TextColor)
+		text.Draw(subImg, item.Text, face, top)
+
+		if item.Focused {
+			width, _ := text.Measure(item.Text, face, 0)
+			cx := offset.X + item.BorderPad + float32(width)
+			vector.StrokeLine(subImg,
+				cx, offset.Y+2,
+				cx, offset.Y+maxSize.Y-2,
+				1, item.TextColor, false)
+		}
+
+	} else if item.ItemType == ITEM_SLIDER {
+
+		itemColor := item.Color
+		if item.Hovered {
+			item.Hovered = false
+			itemColor = item.HoverColor
+		}
+
+		trackY := offset.Y + maxSize.Y/2
+		vector.StrokeLine(subImg,
+			offset.X,
+			trackY,
+			offset.X+maxSize.X-item.AuxSize.X-item.AuxSpace*2,
+			trackY,
+			2*uiScale, itemColor, true)
+
+		ratio := 0.0
+		if item.MaxValue > item.MinValue {
+			ratio = float64((item.Value - item.MinValue) / (item.MaxValue - item.MinValue))
+		}
+		if ratio < 0 {
+			ratio = 0
+		} else if ratio > 1 {
+			ratio = 1
+		}
+		knobX := offset.X + float32(ratio)*(maxSize.X-item.AuxSize.X-item.AuxSpace*2)
+		drawRoundRect(subImg, &roundRect{
+			Size:     pointScaleMul(item.AuxSize),
+			Position: point{X: knobX, Y: offset.Y + (maxSize.Y-item.AuxSize.Y)/2},
+			Fillet:   item.Fillet,
+			Filled:   true,
+			Color:    item.ClickColor,
+		})
+
+		// value text
+		valueText := fmt.Sprintf("%.2f", item.Value)
+		if item.IntOnly {
+			valueText = fmt.Sprintf("%d", int(item.Value))
+		}
+
+		textSize := (item.FontSize * uiScale) + 2
+		face := &text.GoTextFace{
+			Source: mplusFaceSource,
+			Size:   float64(textSize),
+		}
+		loo := text.LayoutOptions{
+			LineSpacing:    1.2,
+			PrimaryAlign:   text.AlignStart,
+			SecondaryAlign: text.AlignCenter,
+		}
+		tdop := ebiten.DrawImageOptions{}
+		tdop.GeoM.Translate(
+			float64(offset.X+maxSize.X-item.AuxSpace),
+			float64(offset.Y+(maxSize.Y/2)),
+		)
+		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+		top.ColorScale.ScaleWithColor(item.TextColor)
+		text.Draw(subImg, valueText, face, top)
+
 	} else if item.ItemType == ITEM_TEXT {
 
 		textSize := (item.FontSize * uiScale) + 2
@@ -351,7 +584,12 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 	}
 
 	if *debugMode {
-		vector.StrokeRect(subImg, offset.X, offset.Y, item.GetSize().X, item.GetSize().Y, 1, color.RGBA{R: 128}, false)
+		vector.StrokeRect(screen,
+			item.DrawRect.X0,
+			item.DrawRect.Y0,
+			item.DrawRect.X1-item.DrawRect.X0,
+			item.DrawRect.Y1-item.DrawRect.Y0,
+			1, color.RGBA{R: 128}, false)
 	}
 
 }

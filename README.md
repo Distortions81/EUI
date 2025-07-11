@@ -11,6 +11,9 @@ Each flow has a direction, horizontal or vertical.
 
 ![flows-screenshot](https://github.com/user-attachments/assets/dcc79179-361d-420c-959f-c1785433bb5b)
 
+An additional showcase window demonstrating all widget types can be found in
+`showcase.go`.
+
 
 
 # Flow and item pinning:
@@ -29,3 +32,6 @@ PIN_MID_RIGHT
 PIN_BOTTOM_LEFT  
 PIN_BOTTOM_CENTER  
 PIN_BOTTOM_RIGHT
+
+## Rendering a screenshot on a headless system
+Run `scripts/headless_screenshot.sh` to install dependencies and launch the demo under `Xvfb`. The script sends a key press to trigger Ebitengine's built-in screenshot function. The resulting PNG is saved in the current directory with a name such as `screenshot_YYYYMMDDHHMMSS.png`.

@@ -14,7 +14,7 @@ var defaultTheme = &windowData{
 	BGColor:         color.RGBA{R: 16, G: 16, B: 16, A: 255},
 	ActiveColor:     color.RGBA{R: 0, G: 128, B: 128, A: 255},
 
-	Movable: true, Closable: true, Resizable: true, Open: true,
+	Movable: true, Closable: true, Resizable: true, Open: true, AutoSize: false,
 }
 
 var defaultButton = &itemData{
@@ -60,6 +60,69 @@ var defaultCheckbox = &itemData{
 	Filled: true, Outlined: true,
 	Border:    1,
 	BorderPad: 4,
+
+	TextColor:  color.RGBA{R: 255, G: 255, B: 255, A: 255},
+	Color:      color.RGBA{R: 48, G: 48, B: 48, A: 255},
+	HoverColor: color.RGBA{R: 96, G: 96, B: 96, A: 255},
+	ClickColor: color.RGBA{R: 0, G: 128, B: 128, A: 255},
+}
+
+var defaultInput = &itemData{
+	ItemType:  ITEM_INPUT,
+	Size:      point{X: 128, Y: 24},
+	Position:  point{X: 4, Y: 4},
+	FontSize:  12,
+	LineSpace: 1.2,
+
+	Fillet: 4,
+	Filled: true, Outlined: true,
+	Border:    1,
+	BorderPad: 2,
+
+	TextColor:  color.RGBA{R: 255, G: 255, B: 255, A: 255},
+	Color:      color.RGBA{R: 48, G: 48, B: 48, A: 255},
+	HoverColor: color.RGBA{R: 96, G: 96, B: 96, A: 255},
+	ClickColor: color.RGBA{R: 0, G: 128, B: 128, A: 255},
+}
+
+var defaultRadio = &itemData{
+	Text:      "Radio",
+	ItemType:  ITEM_RADIO,
+	Size:      point{X: 128, Y: 32},
+	Position:  point{X: 4, Y: 4},
+	AuxSize:   point{X: 16, Y: 16},
+	AuxSpace:  4,
+	FontSize:  12,
+	LineSpace: 1.2,
+
+	Fillet: 8,
+	Filled: true, Outlined: true,
+	Border:    1,
+	BorderPad: 4,
+
+	TextColor:  color.RGBA{R: 255, G: 255, B: 255, A: 255},
+	Color:      color.RGBA{R: 48, G: 48, B: 48, A: 255},
+	HoverColor: color.RGBA{R: 96, G: 96, B: 96, A: 255},
+	ClickColor: color.RGBA{R: 0, G: 128, B: 128, A: 255},
+}
+
+var defaultSlider = &itemData{
+	ItemType: ITEM_SLIDER,
+	Size:     point{X: 128, Y: 24},
+	Position: point{X: 4, Y: 4},
+	AuxSize:  point{X: 8, Y: 16},
+	AuxSpace: 4,
+	FontSize: 12,
+
+	MinValue: 0,
+	MaxValue: 100,
+	Value:    0,
+	IntOnly:  false,
+
+	Fillet: 4,
+	Filled: true, Outlined: true,
+	Border:    1,
+	BorderPad: 2,
 
 	TextColor:  color.RGBA{R: 255, G: 255, B: 255, A: 255},
 	Color:      color.RGBA{R: 48, G: 48, B: 48, A: 255},

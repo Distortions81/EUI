@@ -1,23 +1,8 @@
 package main
 
 import (
-	"image"
-	"math"
-
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
-
-func (rect rect) containsPoint(b point) bool {
-	return b.X >= rect.X0 && b.Y >= rect.Y0 &&
-		b.X <= rect.X1 && b.Y <= rect.Y1
-}
-
-func (item *itemData) containsPoint(win *windowData, b point) bool {
-	return b.X >= win.getPosition().X+(item.getPosition(win).X) &&
-		b.X <= win.getPosition().X+(item.getPosition(win).X)+(item.GetSize().X) &&
-		b.Y >= win.getPosition().Y+(item.getPosition(win).Y) &&
-		b.Y <= win.getPosition().Y+(item.getPosition(win).Y)+(item.GetSize().Y)
-}
 
 func (win *windowData) getWinRect() rect {
 	winPos := win.getPosition()
@@ -45,12 +30,6 @@ func (parent *itemData) addItemTo(item *itemData) {
 
 func (parent *windowData) addItemTo(item *itemData) {
 	parent.Contents = append(parent.Contents, item)
-}
-
-func (rect rect) getRectangle() image.Rectangle {
-	return image.Rectangle{
-		Min: image.Point{X: int(math.Ceil(float64(rect.X0))), Y: int(math.Ceil(float64(rect.Y0)))},
-		Max: image.Point{X: int(math.Ceil(float64(rect.X1))), Y: int(math.Ceil(float64(rect.Y1)))}}
 }
 
 func (win *windowData) getMainRect() rect {
@@ -130,6 +109,7 @@ func (win *windowData) setSize(size point) bool {
 	}
 
 	win.BringForward()
+	win.resizeFlows()
 	return tooSmall
 }
 
@@ -156,6 +136,10 @@ func (win *windowData) getWindowPart(mpos point, click bool) dragType {
 				}
 			}
 		}
+	}
+
+	if !win.Resizable {
+		return PART_NONE
 	}
 
 	t := tol * uiScale
@@ -205,13 +189,6 @@ func (win *windowData) getWindowPart(mpos point, click bool) dragType {
 	return PART_NONE
 }
 
-func withinRange(a, b float32, tol float32) bool {
-	if math.Abs(float64(a-b)) <= float64(tol) {
-		return true
-	}
-	return false
-}
-
 func (win *windowData) titleTextWidth() point {
 	if win.TitleHeight <= 0 {
 		return point{}
@@ -223,30 +200,6 @@ func (win *windowData) titleTextWidth() point {
 	}
 	textWidth, textHeight := text.Measure(win.Title, face, 0)
 	return point{X: float32(textWidth), Y: float32(textHeight)}
-}
-
-func pointAdd(a, b point) point {
-	return point{X: a.X + b.X, Y: a.Y + b.Y}
-}
-
-func pointMul(a, b point) point {
-	return point{X: a.X * b.X, Y: a.Y * b.Y}
-}
-
-func pointScaleMul(a point) point {
-	return point{X: a.X * uiScale, Y: a.Y * uiScale}
-}
-
-func pointScaleDiv(a point) point {
-	return point{X: a.X / uiScale, Y: a.Y / uiScale}
-}
-
-func pointDiv(a, b point) point {
-	return point{X: a.X / b.X, Y: a.Y / b.Y}
-}
-
-func pointSub(a, b point) point {
-	return point{X: a.X - b.X, Y: a.Y - b.Y}
 }
 
 func (win *windowData) SetTitleSize(size float32) {
@@ -275,4 +228,143 @@ func (item *itemData) GetSize() point {
 
 func (item *itemData) GetPos() point {
 	return point{X: item.Position.X * uiScale, Y: item.Position.Y * uiScale}
+}
+
+func (item *itemData) bounds(offset point) rect {
+	r := rect{
+		X0: offset.X,
+		Y0: offset.Y,
+		X1: offset.X + item.GetSize().X,
+		Y1: offset.Y + item.GetSize().Y,
+	}
+	if item.ItemType == ITEM_FLOW {
+		var flowOffset point
+		var subItems []*itemData
+		if len(item.Tabs) > 0 {
+			if item.ActiveTab >= len(item.Tabs) {
+				item.ActiveTab = 0
+			}
+			subItems = item.Tabs[item.ActiveTab].Contents
+		} else {
+			subItems = item.Contents
+		}
+		for _, sub := range subItems {
+			var off point
+			if item.FlowType == FLOW_HORIZONTAL {
+				off = pointAdd(offset, point{X: flowOffset.X + sub.GetPos().X, Y: sub.GetPos().Y})
+			} else if item.FlowType == FLOW_VERTICAL {
+				off = pointAdd(offset, point{X: sub.GetPos().X, Y: flowOffset.Y + sub.GetPos().Y})
+			} else {
+				off = pointAdd(offset, pointAdd(flowOffset, sub.GetPos()))
+			}
+			sr := sub.bounds(off)
+			r = unionRect(r, sr)
+			if item.FlowType == FLOW_HORIZONTAL {
+				flowOffset.X += sub.GetSize().X + sub.GetPos().X
+			} else if item.FlowType == FLOW_VERTICAL {
+				flowOffset.Y += sub.GetSize().Y + sub.GetPos().Y
+			}
+		}
+	} else {
+		for _, sub := range item.Contents {
+			off := pointAdd(offset, sub.GetPos())
+			r = unionRect(r, sub.bounds(off))
+		}
+	}
+	return r
+}
+
+func (win *windowData) contentBounds() point {
+	if len(win.Contents) == 0 {
+		return point{}
+	}
+	base := point{X: 0, Y: win.GetTitleSize()}
+	b := win.Contents[0].bounds(pointAdd(base, win.Contents[0].GetPos()))
+	for _, item := range win.Contents[1:] {
+		r := item.bounds(pointAdd(base, item.GetPos()))
+		b = unionRect(b, r)
+	}
+	return point{X: b.X1 - base.X, Y: b.Y1 - base.Y}
+}
+
+func (win *windowData) updateAutoSize() {
+	req := win.contentBounds()
+	size := win.GetSize()
+	if req.X > size.X {
+		size.X = req.X
+	}
+	if req.Y+win.GetTitleSize() > size.Y {
+		size.Y = req.Y + win.GetTitleSize()
+	}
+	if size.X > float32(screenWidth) {
+		size.X = float32(screenWidth)
+	}
+	if size.Y > float32(screenHeight) {
+		size.Y = float32(screenHeight)
+	}
+	win.Size = point{X: size.X / uiScale, Y: size.Y / uiScale}
+	win.resizeFlows()
+}
+
+func (item *itemData) contentBounds() point {
+	list := item.Contents
+	if len(item.Tabs) > 0 {
+		if item.ActiveTab >= len(item.Tabs) {
+			item.ActiveTab = 0
+		}
+		list = item.Tabs[item.ActiveTab].Contents
+	}
+	if len(list) == 0 {
+		return point{}
+	}
+	base := point{}
+	b := list[0].bounds(pointAdd(base, list[0].GetPos()))
+	for _, sub := range list[1:] {
+		r := sub.bounds(pointAdd(base, sub.GetPos()))
+		b = unionRect(b, r)
+	}
+	return point{X: b.X1 - base.X, Y: b.Y1 - base.Y}
+}
+
+func (item *itemData) resizeFlow(parentSize point) {
+	available := parentSize
+
+	if item.ItemType == ITEM_FLOW {
+		size := available
+		if item.Fixed {
+			size = item.GetSize()
+		}
+		if !item.Scrollable {
+			req := item.contentBounds()
+			if req.X > size.X {
+				size.X = req.X
+			}
+			if req.Y > size.Y {
+				size.Y = req.Y
+			}
+		}
+		item.Size = point{X: size.X / uiScale, Y: size.Y / uiScale}
+		available = item.GetSize()
+	} else {
+		available = item.GetSize()
+	}
+
+	var list []*itemData
+	if len(item.Tabs) > 0 {
+		if item.ActiveTab >= len(item.Tabs) {
+			item.ActiveTab = 0
+		}
+		list = item.Tabs[item.ActiveTab].Contents
+	} else {
+		list = item.Contents
+	}
+	for _, sub := range list {
+		sub.resizeFlow(available)
+	}
+}
+
+func (win *windowData) resizeFlows() {
+	for _, item := range win.Contents {
+		item.resizeFlow(win.GetSize())
+	}
 }

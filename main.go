@@ -43,6 +43,9 @@ func main() {
 	newWindow2.Position.Y += 192
 	newWindow2.AddWindow(false)
 
+	showcase := makeShowcaseWindow()
+	showcase.AddWindow(false)
+
 	err := loadIcons()
 	if err != nil {
 		fmt.Printf("Error: %v\n", err.Error())
@@ -66,7 +69,13 @@ func loadIcons() error {
 
 func subLoadIcons(parent []*itemData) error {
 	for _, item := range parent {
-		subLoadIcons(item.Contents)
+		if len(item.Tabs) > 0 {
+			for _, tab := range item.Tabs {
+				subLoadIcons(tab.Contents)
+			}
+		} else {
+			subLoadIcons(item.Contents)
+		}
 
 		if item.ImageName != "" {
 			image, err := loadImage(item.ImageName)
