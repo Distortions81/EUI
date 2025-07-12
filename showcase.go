@@ -40,21 +40,27 @@ func makeShowcaseWindow() *windowData {
 	input := NewInput(&itemData{Size: point{X: 180, Y: 24}, FontSize: 8})
 	mainFlow.addItemTo(input)
 
-	hFlow := &itemData{ItemType: ITEM_FLOW, FlowType: FLOW_HORIZONTAL, Size: point{X: 380, Y: 40}, Scrollable: true}
+	hFlow := &itemData{
+		ItemType:   ITEM_FLOW,
+		FlowType:   FLOW_HORIZONTAL,
+		Size:       point{X: 380, Y: 40},
+		Fixed:      true,
+		Scrollable: true,
+	}
 	mainFlow.addItemTo(hFlow)
 	hFlow.addItemTo(NewButton(&itemData{Text: "One", Size: point{X: 60, Y: 24}, FontSize: 8}))
 	hFlow.addItemTo(NewButton(&itemData{Text: "Two", Size: point{X: 60, Y: 24}, FontSize: 8}))
 	hFlow.addItemTo(NewButton(&itemData{Text: "Three", Size: point{X: 60, Y: 24}, FontSize: 8}))
 	hFlow.addItemTo(NewButton(&itemData{Text: "Four", Size: point{X: 60, Y: 24}, FontSize: 8}))
 
-       tabFlow := &itemData{
-               ItemType:   ITEM_FLOW,
-               FlowType:   FLOW_VERTICAL,
-               Size:       point{X: 380, Y: 120},
-               Fixed:      true,
-               Color:      ColorDarkGray,
-               ClickColor: ColorDarkTeal,
-               FontSize:   8,
+	tabFlow := &itemData{
+		ItemType:   ITEM_FLOW,
+		FlowType:   FLOW_VERTICAL,
+		Size:       point{X: 380, Y: 120},
+		Fixed:      true,
+		Color:      ColorDarkGray,
+		ClickColor: ColorDarkTeal,
+		FontSize:   8,
 		Tabs: []*itemData{
 			{Name: "Tab 1", ItemType: ITEM_FLOW, FlowType: FLOW_VERTICAL},
 			{Name: "Tab 2", ItemType: ITEM_FLOW, FlowType: FLOW_VERTICAL},
