@@ -15,6 +15,10 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version-file: go.mod
+      - name: Install X keyboard packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y x11-xkb-utils xkb-data
       - name: Run screenshot script
         run: |
           chmod +x scripts/headless_screenshot.sh

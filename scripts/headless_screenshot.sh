@@ -9,7 +9,9 @@ sudo apt-get install -y xvfb xdotool
 go mod download
 
 # Start virtual frame buffer
-Xvfb :99 -screen 0 1024x768x24 &
+# xkbcomp may return non-zero for unknown keysyms; redirect output so it
+# doesn't cause the script to fail.
+Xvfb :99 -screen 0 1024x768x24 >/tmp/xvfb.log 2>&1 &
 XVFB_PID=$!
 sleep 2
 
