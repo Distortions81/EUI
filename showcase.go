@@ -48,10 +48,12 @@ func makeShowcaseWindow() *windowData {
 	hFlow.addItemTo(NewButton(&itemData{Text: "Four", Size: point{X: 60, Y: 24}, FontSize: 8}))
 
 	tabFlow := &itemData{
-		ItemType: ITEM_FLOW,
-		FlowType: FLOW_VERTICAL,
-		Size:     point{X: 380, Y: 120},
-		FontSize: 8,
+		ItemType:   ITEM_FLOW,
+		FlowType:   FLOW_VERTICAL,
+		Size:       point{X: 380, Y: 120},
+		Color:      ColorDarkGray,
+		ClickColor: ColorDarkTeal,
+		FontSize:   8,
 		Tabs: []*itemData{
 			{Name: "Tab 1", ItemType: ITEM_FLOW, FlowType: FLOW_VERTICAL},
 			{Name: "Tab 2", ItemType: ITEM_FLOW, FlowType: FLOW_VERTICAL},

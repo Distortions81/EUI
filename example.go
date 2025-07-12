@@ -48,9 +48,11 @@ func makeTestWindow() *windowData {
 	leftFlow.addItemTo(leftInput1)
 
 	tabFlow := &itemData{
-		ItemType: ITEM_FLOW,
-		Size:     point{X: 200, Y: 300},
-		FlowType: FLOW_VERTICAL,
+		ItemType:   ITEM_FLOW,
+		Size:       point{X: 200, Y: 300},
+		FlowType:   FLOW_VERTICAL,
+		Color:      ColorDarkGray,
+		ClickColor: ColorDarkTeal,
 		Tabs: []*itemData{
 			{Name: "Tab 1", ItemType: ITEM_FLOW, FlowType: FLOW_VERTICAL},
 			{Name: "Tab 2", ItemType: ITEM_FLOW, FlowType: FLOW_VERTICAL},
