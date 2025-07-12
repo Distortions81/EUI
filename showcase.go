@@ -21,6 +21,8 @@ func makeShowcaseWindow() *windowData {
 
 	btnImage := NewButton(&itemData{Text: "Sprite Button", ImageName: "1", Size: point{X: 100, Y: 64}, FontSize: 8})
 	mainFlow.addItemTo(btnImage)
+	btnText := NewButton(&itemData{Text: "Text Button", Size: point{X: 100, Y: 24}, FontSize: 8})
+	mainFlow.addItemTo(btnText)
 
 	chk := NewCheckbox(&itemData{Text: "Enable option", Size: point{X: 140, Y: 32}, FontSize: 8})
 	mainFlow.addItemTo(chk)
@@ -32,6 +34,8 @@ func makeShowcaseWindow() *windowData {
 
 	slider := NewSlider(&itemData{Size: point{X: 180, Y: 24}, MinValue: 0, MaxValue: 100, IntOnly: false, FontSize: 8})
 	mainFlow.addItemTo(slider)
+	intSlider := NewSlider(&itemData{Size: point{X: 180, Y: 24}, MinValue: 0, MaxValue: 10, IntOnly: true, FontSize: 8})
+	mainFlow.addItemTo(intSlider)
 
 	input := NewInput(&itemData{Size: point{X: 180, Y: 24}, FontSize: 8})
 	mainFlow.addItemTo(input)
