@@ -13,8 +13,11 @@ Xvfb :99 -screen 0 1024x768x24 &
 XVFB_PID=$!
 sleep 2
 
+# Use the virtual display for all subsequent commands
+export DISPLAY=:99
+
 # Run the demo with a screenshot key
-DISPLAY=:99 EBITENGINE_SCREENSHOT_KEY=q go run . &
+EBITENGINE_SCREENSHOT_KEY=q go run . &
 APP_PID=$!
 
 # Give the window time to initialize
