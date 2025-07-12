@@ -290,6 +290,7 @@ func (item *itemData) setSliderValue(mpos point) {
 	item.Value = item.MinValue + ratio*(item.MaxValue-item.MinValue)
 	if item.IntOnly {
 		item.Value = float32(int(item.Value + 0.5))
+		ratio = (item.Value - item.MinValue) / (item.MaxValue - item.MinValue)
 	}
 }
 

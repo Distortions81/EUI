@@ -552,8 +552,9 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 			SecondaryAlign: text.AlignCenter,
 		}
 		tdop := ebiten.DrawImageOptions{}
+		tw, _ := text.Measure(valueText, face, 0)
 		tdop.GeoM.Translate(
-			float64(offset.X+maxSize.X-item.AuxSpace),
+			float64(offset.X+maxSize.X-item.AuxSpace-float32(tw)),
 			float64(offset.Y+(maxSize.Y/2)),
 		)
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
