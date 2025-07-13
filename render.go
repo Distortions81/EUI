@@ -76,7 +76,7 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image) {
 
 			top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 
-			top.ColorScale.ScaleWithColor(win.TitleColor)
+			top.ColorScale.ScaleWithColor(win.TitleTextColor)
 			buf := strings.ReplaceAll(win.Title, "\n", "") //Remove newline
 			buf = strings.ReplaceAll(buf, "\r", "")        //Remove return
 			text.Draw(screen, buf, face, top)
@@ -89,6 +89,12 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image) {
 		if win.Closable {
 			var xpad float32 = (win.GetTitleSize()) / 4.0
 			color := win.TitleColor
+			// fill background for close area if configured
+			if win.CloseBGColor.A > 0 {
+				r := win.xRect()
+				closeArea := screen.SubImage(r.getRectangle()).(*ebiten.Image)
+				closeArea.Fill(win.CloseBGColor)
+			}
 			xThick := 3 * uiScale
 			if win.HoverClose {
 				color = win.HoverTitleColor
@@ -113,7 +119,7 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image) {
 		}
 
 		//Dragbar
-		if win.Movable {
+		if win.Movable && win.ShowDragbar {
 			var xThick float32 = 1
 			xColor := win.DragbarColor
 			if win.HoverDragbar {
@@ -121,7 +127,11 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image) {
 				win.HoverDragbar = false
 			}
 			dpad := (win.GetTitleSize()) / 5
-			for x := textWidth + float64((win.GetTitleSize())/1.5); x < float64(win.GetSize().X-buttonsWidth); x = x + float64(uiScale*5.0) {
+			spacing := win.DragbarSpacing
+			if spacing <= 0 {
+				spacing = 5
+			}
+			for x := textWidth + float64((win.GetTitleSize())/1.5); x < float64(win.GetSize().X-buttonsWidth); x = x + float64(uiScale*spacing) {
 				vector.StrokeLine(screen,
 					win.getPosition().X+float32(x), win.getPosition().Y+dpad,
 					win.getPosition().X+float32(x), win.getPosition().Y+(win.GetTitleSize())-dpad,
