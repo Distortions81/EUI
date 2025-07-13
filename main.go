@@ -25,6 +25,11 @@ func main() {
 	signalHandle = make(chan os.Signal, 1)
 	signal.Notify(signalHandle, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 
+	// load default theme
+	if err := LoadTheme("DefaultDark"); err != nil {
+		log.Printf("LoadTheme error: %v", err)
+	}
+
 	//Load default font
 	if mplusFaceSource == nil {
 		s, err := text.NewGoTextFaceSource(bytes.NewReader(fonts.MPlus1pRegular_ttf))

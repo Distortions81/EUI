@@ -5,6 +5,7 @@ import "image/color"
 var defaultTheme = &windowData{
 	TitleHeight:     24,
 	Border:          1,
+	Outlined:        true,
 	TitleColor:      color.RGBA{R: 255, G: 255, B: 255, A: 255},
 	BorderColor:     color.RGBA{R: 64, G: 64, B: 64, A: 255},
 	SizeTabColor:    color.RGBA{R: 48, G: 48, B: 48, A: 255},

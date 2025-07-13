@@ -35,3 +35,6 @@ PIN_BOTTOM_RIGHT
 
 ## Rendering a screenshot on a headless system
 Run `scripts/headless_screenshot.sh` to install dependencies and launch the demo under `Xvfb`. The script sends a key press to trigger Ebitengine's built-in screenshot function. The resulting PNG is saved in the current directory with a name such as `screenshot_YYYYMMDDHHMMSS.png`.
+
+## Themes
+Theme settings are defined as JSON files inside the `themes` directory. The file `DefaultDark.json` reflects the built-in style and is loaded at startup. Theme files contain widget colors, margins and other styling values which can be modified or replaced to create custom appearances.

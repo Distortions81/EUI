@@ -13,6 +13,7 @@ type windowData struct {
 	Size            point
 	PinTo           pinType
 	Padding, Border float32
+	Outlined        bool
 
 	Open, Hovered, Flow,
 	Closable, Movable, Resizable,

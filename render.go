@@ -133,7 +133,7 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image) {
 
 func (win *windowData) drawBorder(screen *ebiten.Image) {
 	//Draw borders
-	if win.Border > 0 {
+	if win.Outlined && win.Border > 0 {
 		FrameColor := win.BorderColor
 		if activeWindow == win {
 			FrameColor = win.ActiveColor
@@ -582,6 +582,17 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 
 		top.ColorScale.ScaleWithColor(item.TextColor)
 		text.Draw(subImg, item.Text, face, top)
+	}
+
+	if item.Outlined && item.Border > 0 && item.ItemType != ITEM_CHECKBOX && item.ItemType != ITEM_RADIO {
+		drawRoundRect(subImg, &roundRect{
+			Size:     maxSize,
+			Position: offset,
+			Fillet:   item.Fillet,
+			Filled:   false,
+			Color:    item.Color,
+			Border:   item.Border * uiScale,
+		})
 	}
 
 	if *debugMode {
