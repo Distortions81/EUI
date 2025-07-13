@@ -44,6 +44,11 @@ func main() {
 	showcase := makeShowcaseWindow()
 	showcase.AddWindow(false)
 
+	themeSel := makeThemeSelector()
+	if themeSel != nil {
+		themeSel.AddWindow(false)
+	}
+
 	err := loadIcons()
 	if err != nil {
 		fmt.Printf("Error: %v\n", err.Error())

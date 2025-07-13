@@ -158,6 +158,9 @@ func (g *Game) Update() error {
 				continue
 			}
 			if win.getMainRect().containsPoint(mpos) {
+				if scrollDropdown(win.Contents, mpos, wheelDelta) {
+					break
+				}
 				if scrollFlow(win.Contents, mpos, wheelDelta) {
 					break
 				}
@@ -234,6 +237,31 @@ func (item *itemData) clickItem(mpos point, click bool) {
 		} else if item.ItemType == ITEM_INPUT {
 			focusedItem = item
 			item.Focused = true
+		} else if item.ItemType == ITEM_DROPDOWN {
+			if item.Open {
+				optionH := item.GetSize().Y
+				visible := item.MaxVisible
+				if visible <= 0 {
+					visible = 5
+				}
+				startY := item.DrawRect.Y1
+				openHeight := optionH * float32(visible)
+				r := rect{X0: item.DrawRect.X0, Y0: startY, X1: item.DrawRect.X1, Y1: startY + openHeight}
+				if r.containsPoint(mpos) {
+					idx := int((mpos.Y - startY + item.Scroll.Y) / optionH)
+					if idx >= 0 && idx < len(item.Options) {
+						item.Selected = idx
+						item.Open = false
+						if item.OnSelect != nil {
+							item.OnSelect(idx)
+						}
+					}
+				} else {
+					item.Open = false
+				}
+			} else {
+				item.Open = true
+			}
 		}
 		if item.Action != nil {
 			item.Action()
@@ -241,6 +269,34 @@ func (item *itemData) clickItem(mpos point, click bool) {
 		}
 	} else {
 		item.Hovered = true
+		if item.ItemType == ITEM_DROPDOWN && item.Open {
+			optionH := item.GetSize().Y
+			visible := item.MaxVisible
+			if visible <= 0 {
+				visible = 5
+			}
+			startY := item.DrawRect.Y1
+			openHeight := optionH * float32(visible)
+			r := rect{X0: item.DrawRect.X0, Y0: startY, X1: item.DrawRect.X1, Y1: startY + openHeight}
+			if r.containsPoint(mpos) {
+				idx := int((mpos.Y - startY + item.Scroll.Y) / optionH)
+				if idx >= 0 && idx < len(item.Options) {
+					if idx != item.HoverIndex {
+						item.HoverIndex = idx
+						if item.OnHover != nil {
+							item.OnHover(idx)
+						}
+					}
+				}
+			} else {
+				if item.HoverIndex != -1 {
+					item.HoverIndex = -1
+					if item.OnHover != nil {
+						item.OnHover(item.Selected)
+					}
+				}
+			}
+		}
 		if item.ItemType == ITEM_SLIDER && ebiten.IsMouseButtonPressed(ebiten.MouseButton0) {
 			item.setSliderValue(mpos)
 			if item.Action != nil {
@@ -335,6 +391,44 @@ func scrollFlow(items []*itemData, mpos point, delta point) bool {
 			if scrollFlow(sub, mpos, delta) {
 				return true
 			}
+		}
+	}
+	return false
+}
+
+func scrollDropdown(items []*itemData, mpos point, delta point) bool {
+	for _, it := range items {
+		if it.ItemType == ITEM_DROPDOWN && it.Open {
+			optionH := it.GetSize().Y
+			visible := it.MaxVisible
+			if visible <= 0 {
+				visible = 5
+			}
+			startY := it.DrawRect.Y1
+			openH := optionH * float32(visible)
+			r := rect{X0: it.DrawRect.X0, Y0: startY, X1: it.DrawRect.X1, Y1: startY + openH}
+			if r.containsPoint(mpos) {
+				maxScroll := optionH*float32(len(it.Options)) - openH
+				it.Scroll.Y -= delta.Y * optionH
+				if it.Scroll.Y < 0 {
+					it.Scroll.Y = 0
+				}
+				if it.Scroll.Y > maxScroll {
+					it.Scroll.Y = maxScroll
+				}
+				return true
+			}
+		}
+		if len(it.Tabs) > 0 {
+			if it.ActiveTab >= len(it.Tabs) {
+				it.ActiveTab = 0
+			}
+			if scrollDropdown(it.Tabs[it.ActiveTab].Contents, mpos, delta) {
+				return true
+			}
+		}
+		if scrollDropdown(it.Contents, mpos, delta) {
+			return true
 		}
 	}
 	return false

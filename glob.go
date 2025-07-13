@@ -22,7 +22,8 @@ var (
 	activeWindow    *windowData
 	focusedItem     *itemData
 	uiScale         float32 = 1.0
-	clickFlash              = time.Millisecond * 100
+	currentTheme    string
+	clickFlash      = time.Millisecond * 100
 
 	whiteImage    = ebiten.NewImage(3, 3)
 	whiteSubImage = whiteImage.SubImage(image.Rect(1, 1, 2, 2)).(*ebiten.Image)

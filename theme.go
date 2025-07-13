@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"sort"
+	"strings"
 )
 
 // Theme groups the default style data for all widgets.
@@ -15,6 +17,7 @@ type Theme struct {
 	Radio    itemData   `json:"Radio"`
 	Input    itemData   `json:"Input"`
 	Slider   itemData   `json:"Slider"`
+	Dropdown itemData   `json:"Dropdown"`
 }
 
 // LoadTheme reads a theme JSON file from the themes directory
@@ -36,5 +39,24 @@ func LoadTheme(name string) error {
 	mergeData(defaultRadio, &t.Radio)
 	mergeData(defaultInput, &t.Input)
 	mergeData(defaultSlider, &t.Slider)
+	mergeData(defaultDropdown, &t.Dropdown)
 	return nil
+}
+
+// listThemes returns the available theme names from the themes directory
+func listThemes() ([]string, error) {
+	entries, err := os.ReadDir("themes")
+	if err != nil {
+		return nil, err
+	}
+	names := []string{}
+	for _, e := range entries {
+		if e.IsDir() {
+			continue
+		}
+		name := strings.TrimSuffix(e.Name(), filepath.Ext(e.Name()))
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	return names, nil
 }

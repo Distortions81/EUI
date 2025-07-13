@@ -135,3 +135,21 @@ var defaultSlider = &itemData{
 	HoverColor: color.RGBA{R: 96, G: 96, B: 96, A: 255},
 	ClickColor: color.RGBA{R: 0, G: 128, B: 128, A: 255},
 }
+
+var defaultDropdown = &itemData{
+	ItemType: ITEM_DROPDOWN,
+	Size:     point{X: 128, Y: 24},
+	Position: point{X: 4, Y: 4},
+	FontSize: 12,
+
+	Fillet: 4,
+	Filled: true, Outlined: true,
+	Border:    1,
+	BorderPad: 2,
+
+	TextColor:  color.RGBA{R: 255, G: 255, B: 255, A: 255},
+	Color:      color.RGBA{R: 48, G: 48, B: 48, A: 255},
+	HoverColor: color.RGBA{R: 96, G: 96, B: 96, A: 255},
+	ClickColor: color.RGBA{R: 0, G: 128, B: 128, A: 255},
+	MaxVisible: 5,
+}

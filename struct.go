@@ -60,6 +60,16 @@ type itemData struct {
 	FlowType flowType
 	Scroll   point
 
+	// Dropdown specific
+	Options    []string
+	Selected   int
+	Open       bool
+	MaxVisible int
+	HoverIndex int
+
+	OnSelect func(int)
+	OnHover  func(int)
+
 	Fixed, Scrollable bool
 
 	ImageName string
@@ -169,4 +179,5 @@ const (
 	ITEM_RADIO
 	ITEM_INPUT
 	ITEM_SLIDER
+	ITEM_DROPDOWN
 )
