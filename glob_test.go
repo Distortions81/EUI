@@ -3,9 +3,10 @@
 package main
 
 import (
-	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"os"
 	"time"
+
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
 var (
