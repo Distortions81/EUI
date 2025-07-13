@@ -190,20 +190,23 @@ func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.I
 			item.ActiveTab = 0
 		}
 
-		tabHeight := item.FontSize*uiScale + 4
-		if tabHeight <= 4 {
-			tabHeight = 16 * uiScale
+		tabHeight := float32(defaultTabHeight) * uiScale
+		if th := item.FontSize*uiScale + 4; th > tabHeight {
+			tabHeight = th
 		}
 		x := offset.X
 		for i, tab := range item.Tabs {
 			face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(tabHeight - 4)}
 			tw, _ := text.Measure(tab.Name, face, 0)
 			w := float32(tw) + 8
+			if w < float32(defaultTabWidth)*uiScale {
+				w = float32(defaultTabWidth) * uiScale
+			}
 			col := item.Color
 			if i == item.ActiveTab {
 				col = item.ClickColor
 			}
-			vector.DrawFilledRect(screen, x, offset.Y, w, tabHeight, col, false)
+			drawTabShape(screen, point{X: x, Y: offset.Y}, point{X: w, Y: tabHeight}, col)
 			loo := text.LayoutOptions{PrimaryAlign: text.AlignCenter, SecondaryAlign: text.AlignCenter}
 			dop := ebiten.DrawImageOptions{}
 			dop.GeoM.Translate(float64(x+w/2), float64(offset.Y+tabHeight/2))
@@ -663,6 +666,42 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 		vertices[i].ColorG = float32(rrect.Color.G) / 255
 		vertices[i].ColorB = float32(rrect.Color.B) / 255
 		vertices[i].ColorA = float32(rrect.Color.A) / 255
+	}
+
+	op := &ebiten.DrawTrianglesOptions{}
+	op.FillRule = ebiten.FillRuleNonZero
+	op.AntiAlias = true
+	screen.DrawTriangles(vertices, indices, whiteSubImage, op)
+}
+
+func drawTabShape(screen *ebiten.Image, pos point, size point, col color.RGBA) {
+	var (
+		path     vector.Path
+		vertices []ebiten.Vertex
+		indices  []uint16
+	)
+
+	slope := size.Y / 3
+	fillet := size.Y / 5
+
+	path.MoveTo(pos.X, pos.Y+size.Y)
+	path.LineTo(pos.X+slope, pos.Y+fillet)
+	path.QuadTo(pos.X+slope, pos.Y, pos.X+slope+fillet, pos.Y)
+	path.LineTo(pos.X+size.X-slope-fillet, pos.Y)
+	path.QuadTo(pos.X+size.X-slope, pos.Y, pos.X+size.X-slope, pos.Y+fillet)
+	path.LineTo(pos.X+size.X, pos.Y+size.Y)
+	path.Close()
+
+	vertices, indices = path.AppendVerticesAndIndicesForFilling(vertices[:0], indices[:0])
+	for i := range vertices {
+		vertices[i].DstX = vertices[i].DstX + 0.5
+		vertices[i].DstY = vertices[i].DstY + 0.5
+		vertices[i].SrcX = 1
+		vertices[i].SrcY = 1
+		vertices[i].ColorR = float32(col.R) / 255
+		vertices[i].ColorG = float32(col.G) / 255
+		vertices[i].ColorB = float32(col.B) / 255
+		vertices[i].ColorA = float32(col.A) / 255
 	}
 
 	op := &ebiten.DrawTrianglesOptions{}

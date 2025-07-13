@@ -35,6 +35,9 @@ func init() {
 const (
 	minWinSizeX = 192
 	minWinSizeY = 64
+
+	defaultTabWidth  = 256
+	defaultTabHeight = 48
 )
 
 type Game struct {
