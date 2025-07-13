@@ -78,7 +78,7 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image) {
 
 			top.ColorScale.ScaleWithColor(win.TitleColor)
 			buf := strings.ReplaceAll(win.Title, "\n", "") //Remove newline
-			buf = strings.ReplaceAll(win.Title, "\r", "")  //Remove return
+			buf = strings.ReplaceAll(buf, "\r", "")        //Remove return
 			text.Draw(screen, buf, face, top)
 		} else {
 			textWidth = 0
@@ -196,7 +196,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.I
 		}
 		x := offset.X
 		for i, tab := range item.Tabs {
-			face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(tabHeight - 4)}
+			face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(tabHeight - 22)}
 			tw, _ := text.Measure(tab.Name, face, 0)
 			w := float32(tw) + 8
 			if w < float32(defaultTabWidth)*uiScale {

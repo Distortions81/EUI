@@ -36,8 +36,8 @@ const (
 	minWinSizeX = 192
 	minWinSizeY = 64
 
-	defaultTabWidth  = 256
-	defaultTabHeight = 48
+	defaultTabWidth  = 128
+	defaultTabHeight = 24
 )
 
 type Game struct {
