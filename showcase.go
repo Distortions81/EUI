@@ -40,6 +40,11 @@ func makeShowcaseWindow() *windowData {
 	input := NewInput(&itemData{Size: point{X: 180, Y: 24}, FontSize: 8})
 	mainFlow.addItemTo(input)
 
+	dropdown := NewDropdown(&itemData{Size: point{X: 180, Y: 24}, FontSize: 8})
+	dropdown.Options = []string{"First", "Second", "Third", "Fourth"}
+	dropdown.HoverIndex = -1
+	mainFlow.addItemTo(dropdown)
+
 	hFlow := &itemData{
 		ItemType:   ITEM_FLOW,
 		FlowType:   FLOW_HORIZONTAL,
