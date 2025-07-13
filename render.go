@@ -574,6 +574,61 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 		top.ColorScale.ScaleWithColor(item.TextColor)
 		text.Draw(subImg, valueText, face, top)
 
+	} else if item.ItemType == ITEM_DROPDOWN {
+
+		itemColor := item.Color
+		if item.Open {
+			itemColor = item.ClickColor
+		} else if item.Hovered {
+			item.Hovered = false
+			itemColor = item.HoverColor
+		}
+
+		drawRoundRect(subImg, &roundRect{
+			Size:     maxSize,
+			Position: offset,
+			Fillet:   item.Fillet,
+			Filled:   true,
+			Color:    itemColor,
+		})
+
+		textSize := (item.FontSize * uiScale) + 2
+		face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
+		loo := text.LayoutOptions{PrimaryAlign: text.AlignStart, SecondaryAlign: text.AlignCenter}
+		tdop := ebiten.DrawImageOptions{}
+		tdop.GeoM.Translate(float64(offset.X+item.BorderPad), float64(offset.Y+maxSize.Y/2))
+		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+		top.ColorScale.ScaleWithColor(item.TextColor)
+		label := item.Text
+		if item.Selected >= 0 && item.Selected < len(item.Options) {
+			label = item.Options[item.Selected]
+		}
+		text.Draw(subImg, label, face, top)
+
+		if item.Open {
+			optionH := maxSize.Y
+			visible := item.MaxVisible
+			if visible <= 0 {
+				visible = 5
+			}
+			startY := offset.Y + maxSize.Y
+			first := int(item.Scroll.Y / optionH)
+			offY := startY - (item.Scroll.Y - float32(first)*optionH)
+			for i := first; i < first+visible && i < len(item.Options); i++ {
+				y := offY + float32(i-first)*optionH
+				col := item.Color
+				if i == item.Selected {
+					col = item.ClickColor
+				} else if i == item.HoverIndex {
+					col = item.HoverColor
+				}
+				drawRoundRect(screen, &roundRect{Size: maxSize, Position: point{X: offset.X, Y: y}, Fillet: item.Fillet, Filled: true, Color: col})
+				td := ebiten.DrawImageOptions{}
+				td.GeoM.Translate(float64(offset.X+item.BorderPad), float64(y+optionH/2))
+				text.Draw(screen, item.Options[i], face, &text.DrawOptions{DrawImageOptions: td, LayoutOptions: loo})
+			}
+		}
+
 	} else if item.ItemType == ITEM_TEXT {
 
 		textSize := (item.FontSize * uiScale) + 2

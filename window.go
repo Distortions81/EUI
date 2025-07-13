@@ -136,6 +136,15 @@ func NewSlider(item *itemData) *itemData {
 	return &newItem
 }
 
+// Create a new dropdown from the default theme
+func NewDropdown(item *itemData) *itemData {
+	newItem := *defaultDropdown
+	if item != nil {
+		mergeData(&newItem, item)
+	}
+	return &newItem
+}
+
 // Create a new textbox from the default theme
 func NewText(item *itemData) *itemData {
 	newItem := *defaultText
