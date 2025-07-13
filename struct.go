@@ -22,8 +22,14 @@ type windowData struct {
 
 	TitleHeight float32
 
-	BGColor, TitleBGColor, TitleColor, BorderColor,
-	SizeTabColor, DragbarColor,
+	// Visual customization
+	BGColor, TitleBGColor, TitleColor, TitleTextColor, BorderColor,
+	SizeTabColor, DragbarColor, CloseBGColor color.RGBA
+
+	// Dragbar behavior
+	DragbarSpacing float32
+	ShowDragbar    bool
+
 	HoverTitleColor, HoverColor, ActiveColor color.RGBA
 
 	Contents []*itemData
