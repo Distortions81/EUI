@@ -1,14 +1,15 @@
 package main
 
 func makeTestWindow() *windowData {
-	newWindow := NewWindow(
-		&windowData{
-			TitleHeight: 24,
-			Title:       "Test Window",
-			Size:        point{X: 300, Y: 300},
-			Position:    point{X: 8, Y: 8},
-			AutoSize:    true,
-		})
+       newWindow := NewWindow(
+               &windowData{
+                       TitleHeight: 24,
+                       Title:       "Test Window",
+                       Size:        point{X: 300, Y: 300},
+                       Position:    point{X: 8, Y: 8},
+                       AutoSize:    true,
+                       Open:        true,
+               })
 
 	mainFlow := &itemData{
 		ItemType: ITEM_FLOW,
