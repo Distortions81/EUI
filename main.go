@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	_ "embed"
 	"flag"
 	"fmt"
 	"image/png"
@@ -10,12 +11,14 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/hajimehoshi/ebiten/examples/resources/fonts"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
 var debugMode *bool
+
+//go:embed data/fonts/NotoSans-Regular.ttf
+var notoTTF []byte
 
 func main() {
 
@@ -32,7 +35,7 @@ func main() {
 
 	//Load default font
 	if mplusFaceSource == nil {
-		s, err := text.NewGoTextFaceSource(bytes.NewReader(fonts.MPlus1pRegular_ttf))
+		s, err := text.NewGoTextFaceSource(bytes.NewReader(notoTTF))
 		if err != nil {
 			log.Fatal(err)
 		}

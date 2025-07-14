@@ -33,7 +33,6 @@ func (parent *windowData) addItemTo(item *itemData) {
 }
 
 func (win *windowData) getMainRect() rect {
-	pad := win.Padding + win.BorderPad
 	return rect{
 		X0: win.getPosition().X,
 		Y0: win.getPosition().Y + win.GetTitleSize(),

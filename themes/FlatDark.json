@@ -2,7 +2,7 @@
   "Window": {
     "Border": 0,
     "Outlined": false,
-    "Padding": 4,
+    "Padding": 8,
     "BGColor": {
       "R": 32,
       "G": 32,
@@ -40,9 +40,9 @@
       "A": 255
     },
     "HoverTitleColor": {
-      "R": 0,
-      "G": 160,
-      "B": 160,
+      "R": 255,
+      "G": 255,
+      "B": 255,
       "A": 255
     },
     "HoverColor": {
@@ -65,7 +65,7 @@
     }
   },
   "Button": {
-    "Fillet": 8,
+    "Fillet": 10,
     "Border": 0,
     "BorderPad": 4,
     "Filled": true,
@@ -110,7 +110,7 @@
   "Text": {
     "Fillet": 0,
     "Border": 0,
-    "BorderPad": 0,
+    "BorderPad": 4,
     "Filled": false,
     "Outlined": false,
     "TextColor": {
@@ -175,9 +175,9 @@
       "A": 255
     },
     "ClickColor": {
-      "R": 0,
-      "G": 160,
-      "B": 160,
+      "R": 64,
+      "G": 64,
+      "B": 64,
       "A": 255
     },
     "DisabledColor": {
@@ -218,9 +218,9 @@
       "A": 255
     },
     "ClickColor": {
-      "R": 0,
-      "G": 160,
-      "B": 160,
+      "R": 64,
+      "G": 64,
+      "B": 64,
       "A": 255
     },
     "DisabledColor": {
@@ -304,9 +304,9 @@
       "A": 255
     },
     "ClickColor": {
-      "R": 0,
-      "G": 160,
-      "B": 160,
+      "R": 192,
+      "G": 192,
+      "B": 192,
       "A": 255
     },
     "DisabledColor": {
@@ -367,9 +367,9 @@
     "MaxVisible": 5
   },
   "Tab": {
-    "Fillet": 4,
+    "Fillet": 8,
     "Border": 0,
-    "BorderPad": 2,
+    "BorderPad": 8,
     "Filled": true,
     "Outlined": false,
     "TextColor": {
@@ -391,9 +391,9 @@
       "A": 255
     },
     "ClickColor": {
-      "R": 0,
-      "G": 160,
-      "B": 160,
+      "R": 64,
+      "G": 64,
+      "B": 64,
       "A": 255
     }
   }
