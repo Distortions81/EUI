@@ -29,18 +29,29 @@ func LoadTheme(name string) error {
 		return err
 	}
 	var t Theme
-	if err := json.Unmarshal(data, &t); err != nil {
-		return err
-	}
-	*defaultTheme = t.Window
-	*defaultButton = t.Button
-	*defaultText = t.Text
-	*defaultCheckbox = t.Checkbox
-	*defaultRadio = t.Radio
-	*defaultInput = t.Input
-	*defaultSlider = t.Slider
-	*defaultDropdown = t.Dropdown
-	return nil
+       if err := json.Unmarshal(data, &t); err != nil {
+               return err
+       }
+
+       // Reset to the built-in defaults before applying overrides
+       *defaultTheme = baseWindow
+       *defaultButton = baseButton
+       *defaultText = baseText
+       *defaultCheckbox = baseCheckbox
+       *defaultRadio = baseRadio
+       *defaultInput = baseInput
+       *defaultSlider = baseSlider
+       *defaultDropdown = baseDropdown
+
+       mergeData(defaultTheme, &t.Window)
+       mergeData(defaultButton, &t.Button)
+       mergeData(defaultText, &t.Text)
+       mergeData(defaultCheckbox, &t.Checkbox)
+       mergeData(defaultRadio, &t.Radio)
+       mergeData(defaultInput, &t.Input)
+       mergeData(defaultSlider, &t.Slider)
+       mergeData(defaultDropdown, &t.Dropdown)
+       return nil
 }
 
 // listThemes returns the available theme names from the themes directory
