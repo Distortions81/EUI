@@ -805,7 +805,7 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 	screen.DrawTriangles(vertices, indices, whiteSubImage, op)
 }
 
-func drawTabShape(screen *ebiten.Image, pos point, size point, col color.RGBA) {
+func drawTabShape(screen *ebiten.Image, pos point, size point, col Color) {
 	var (
 		path     vector.Path
 		vertices []ebiten.Vertex
@@ -841,7 +841,7 @@ func drawTabShape(screen *ebiten.Image, pos point, size point, col color.RGBA) {
 	screen.DrawTriangles(vertices, indices, whiteSubImage, op)
 }
 
-func drawTriangle(screen *ebiten.Image, pos point, size float32, col color.RGBA) {
+func drawTriangle(screen *ebiten.Image, pos point, size float32, col Color) {
 	var (
 		path     vector.Path
 		vertices []ebiten.Vertex
