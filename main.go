@@ -26,7 +26,7 @@ func main() {
 	signal.Notify(signalHandle, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 
 	// load default theme
-	if err := LoadTheme("DefaultDark"); err != nil {
+	if err := LoadTheme("FlatDark"); err != nil {
 		log.Printf("LoadTheme error: %v", err)
 	}
 
