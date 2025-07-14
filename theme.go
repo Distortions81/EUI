@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -14,12 +15,12 @@ import (
 var embeddedThemes embed.FS
 
 func init() {
-        data, err := embeddedThemes.ReadFile(filepath.Join("themes", "FlatDark.json"))
-        if err == nil {
-                _ = json.Unmarshal(data, baseTheme)
-        }
-        currentTheme = baseTheme
-        currentThemeName = "FlatDark"
+	data, err := embeddedThemes.ReadFile(filepath.Join("themes", "FlatDark.json"))
+	if err == nil {
+		_ = json.Unmarshal(data, baseTheme)
+	}
+	currentTheme = baseTheme
+	currentThemeName = "FlatDark"
 }
 
 // Theme bundles all style information for windows and widgets.
@@ -35,6 +36,13 @@ type Theme struct {
 	Tab      itemData
 }
 
+type themeFile struct {
+	Comment           string            `json:"Comment"`
+	Colors            map[string]string `json:"Colors"`
+	RecommendedLayout string            `json:"RecommendedLayout"`
+	Theme
+}
+
 // LoadTheme reads a theme JSON file from the themes directory and
 // sets it as the current theme without modifying existing windows.
 func LoadTheme(name string) error {
@@ -46,14 +54,32 @@ func LoadTheme(name string) error {
 			return err
 		}
 	}
+
+	// Reset named colors
+	namedColors = map[string]Color{}
+
 	// Start with the compiled in defaults
 	th := *baseTheme
+
+	var tf themeFile
+	if err := json.Unmarshal(data, &tf); err != nil {
+		return err
+	}
+	for n, v := range tf.Colors {
+		var c Color
+		if err := c.UnmarshalJSON([]byte(strconv.Quote(v))); err == nil {
+			namedColors[strings.ToLower(n)] = c
+		}
+	}
 	if err := json.Unmarshal(data, &th); err != nil {
 		return err
 	}
 	currentTheme = &th
 	currentThemeName = name
 	applyThemeToAll()
+	if tf.RecommendedLayout != "" {
+		_ = LoadLayout(tf.RecommendedLayout)
+	}
 	return nil
 }
 
