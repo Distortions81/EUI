@@ -228,10 +228,11 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 		if th := item.FontSize*uiScale + 4; th > tabHeight {
 			tabHeight = th
 		}
+		textSize := (item.FontSize * uiScale) + 2
 		x := offset.X
 		spacing := float32(4) * uiScale
 		for i, tab := range item.Tabs {
-			face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(tabHeight - 22)}
+			face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
 			tw, _ := text.Measure(tab.Name, face, 0)
 			w := float32(tw) + 8
 			if w < float32(defaultTabWidth)*uiScale {
@@ -241,7 +242,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 			if i == item.ActiveTab {
 				col = item.ClickColor
 			}
-			drawTabShape(subImg, point{X: x, Y: offset.Y}, point{X: w, Y: tabHeight}, col)
+			drawTabShape(subImg, point{X: x, Y: offset.Y}, point{X: w, Y: tabHeight}, col, item.Fillet*uiScale, item.BorderPad*uiScale)
 			loo := text.LayoutOptions{PrimaryAlign: text.AlignCenter, SecondaryAlign: text.AlignCenter}
 			dop := ebiten.DrawImageOptions{}
 			dop.GeoM.Translate(float64(x+w/2), float64(offset.Y+tabHeight/2))
@@ -815,15 +816,19 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 	screen.DrawTriangles(vertices, indices, whiteSubImage, op)
 }
 
-func drawTabShape(screen *ebiten.Image, pos point, size point, col Color) {
+func drawTabShape(screen *ebiten.Image, pos point, size point, col Color, fillet float32, slope float32) {
 	var (
 		path     vector.Path
 		vertices []ebiten.Vertex
 		indices  []uint16
 	)
 
-	slope := size.Y / 4
-	fillet := size.Y / 8
+	if slope <= 0 {
+		slope = size.Y / 4
+	}
+	if fillet <= 0 {
+		fillet = size.Y / 8
+	}
 
 	path.MoveTo(pos.X, pos.Y+size.Y)
 	path.LineTo(pos.X+slope, pos.Y+fillet)
