@@ -95,16 +95,23 @@ func (target *windowData) RemoveWindow() {
 
 // Create a new window from the default theme
 func NewWindow(win *windowData) *windowData {
-	newWindow := *defaultTheme
+	if currentTheme == nil {
+		currentTheme = baseTheme
+	}
+	newWindow := currentTheme.Window
 	if win != nil {
 		mergeData(&newWindow, win)
 	}
+	newWindow.Theme = currentTheme
 	return &newWindow
 }
 
 // Create a new button from the default theme
 func NewButton(item *itemData) *itemData {
-	newItem := *defaultButton
+	if currentTheme == nil {
+		currentTheme = baseTheme
+	}
+	newItem := currentTheme.Button
 	if item != nil {
 		mergeData(&newItem, item)
 	}
@@ -113,7 +120,10 @@ func NewButton(item *itemData) *itemData {
 
 // Create a new button from the default theme
 func NewCheckbox(item *itemData) *itemData {
-	newItem := *defaultCheckbox
+	if currentTheme == nil {
+		currentTheme = baseTheme
+	}
+	newItem := currentTheme.Checkbox
 	if item != nil {
 		mergeData(&newItem, item)
 	}
@@ -122,7 +132,10 @@ func NewCheckbox(item *itemData) *itemData {
 
 // Create a new radio button from the default theme
 func NewRadio(item *itemData) *itemData {
-	newItem := *defaultRadio
+	if currentTheme == nil {
+		currentTheme = baseTheme
+	}
+	newItem := currentTheme.Radio
 	if item != nil {
 		mergeData(&newItem, item)
 	}
@@ -131,7 +144,10 @@ func NewRadio(item *itemData) *itemData {
 
 // Create a new input box from the default theme
 func NewInput(item *itemData) *itemData {
-	newItem := *defaultInput
+	if currentTheme == nil {
+		currentTheme = baseTheme
+	}
+	newItem := currentTheme.Input
 	if item != nil {
 		mergeData(&newItem, item)
 	}
@@ -140,7 +156,10 @@ func NewInput(item *itemData) *itemData {
 
 // Create a new slider from the default theme
 func NewSlider(item *itemData) *itemData {
-	newItem := *defaultSlider
+	if currentTheme == nil {
+		currentTheme = baseTheme
+	}
+	newItem := currentTheme.Slider
 	if item != nil {
 		mergeData(&newItem, item)
 	}
@@ -149,7 +168,10 @@ func NewSlider(item *itemData) *itemData {
 
 // Create a new dropdown from the default theme
 func NewDropdown(item *itemData) *itemData {
-	newItem := *defaultDropdown
+	if currentTheme == nil {
+		currentTheme = baseTheme
+	}
+	newItem := currentTheme.Dropdown
 	if item != nil {
 		mergeData(&newItem, item)
 	}
@@ -158,7 +180,10 @@ func NewDropdown(item *itemData) *itemData {
 
 // Create a new textbox from the default theme
 func NewText(item *itemData) *itemData {
-	newItem := *defaultText
+	if currentTheme == nil {
+		currentTheme = baseTheme
+	}
+	newItem := currentTheme.Text
 	if item != nil {
 		mergeData(&newItem, item)
 	}
