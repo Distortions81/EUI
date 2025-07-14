@@ -81,8 +81,8 @@ var defaultInput = &itemData{
 	LineSpace: 1.2,
 
 	Fillet: 4,
-	Filled: true, Outlined: true,
-	Border:    1,
+	Filled: true, Outlined: false,
+	Border:    0,
 	BorderPad: 2,
 
 	TextColor:  color.RGBA{R: 255, G: 255, B: 255, A: 255},
@@ -126,8 +126,8 @@ var defaultSlider = &itemData{
 	IntOnly:  false,
 
 	Fillet: 4,
-	Filled: true, Outlined: true,
-	Border:    1,
+	Filled: true, Outlined: false,
+	Border:    0,
 	BorderPad: 2,
 
 	TextColor:  color.RGBA{R: 255, G: 255, B: 255, A: 255},

@@ -1,8 +1,8 @@
 {
   "Window": {
     "TitleHeight": 24,
-    "Border": 1,
-    "Outlined": true,
+    "Border": 0,
+    "Outlined": false,
     "Title": "",
     "Position": {
       "X": 0,
@@ -115,10 +115,10 @@
     "ImageName": "",
     "Image": null,
     "Fillet": 8,
-    "Border": 1,
+    "Border": 0,
     "BorderPad": 4,
     "Filled": true,
-    "Outlined": true,
+    "Outlined": false,
     "AuxSize": {
       "X": 0,
       "Y": 0
@@ -297,10 +297,10 @@
     "ImageName": "",
     "Image": null,
     "Fillet": 8,
-    "Border": 1,
+    "Border": 0,
     "BorderPad": 4,
     "Filled": true,
-    "Outlined": true,
+    "Outlined": false,
     "AuxSize": {
       "X": 16,
       "Y": 16
@@ -388,10 +388,10 @@
     "ImageName": "",
     "Image": null,
     "Fillet": 8,
-    "Border": 1,
+    "Border": 0,
     "BorderPad": 4,
     "Filled": true,
-    "Outlined": true,
+    "Outlined": false,
     "AuxSize": {
       "X": 16,
       "Y": 16
@@ -479,10 +479,10 @@
     "ImageName": "",
     "Image": null,
     "Fillet": 4,
-    "Border": 1,
+    "Border": 0,
     "BorderPad": 2,
     "Filled": true,
-    "Outlined": true,
+    "Outlined": false,
     "AuxSize": {
       "X": 0,
       "Y": 0
@@ -570,10 +570,10 @@
     "ImageName": "",
     "Image": null,
     "Fillet": 4,
-    "Border": 1,
+    "Border": 0,
     "BorderPad": 2,
     "Filled": true,
-    "Outlined": true,
+    "Outlined": false,
     "AuxSize": {
       "X": 8,
       "Y": 16

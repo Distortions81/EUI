@@ -19,7 +19,7 @@ func makeThemeSelector() *windowData {
 		Closable:  false,
 		// Give the dropdown room to fully render by accounting for the
 		// title bar height and the control's size.
-		Size:     point{X: 192, Y: 64},
+		Size:     point{X: 192, Y: 160},
 		Position: point{X: 4, Y: 4},
 	})
 	dd := NewDropdown(&itemData{Size: point{X: 150, Y: 24}, FontSize: 8})
