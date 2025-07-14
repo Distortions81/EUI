@@ -3,11 +3,14 @@ package main
 // makeShowcaseWindow creates a window demonstrating most widget types.
 func makeShowcaseWindow() *windowData {
        win := NewWindow(&windowData{
-               Title:    "Showcase",
-               Size:     point{X: 400, Y: 420},
-               Position: point{X: 8, Y: 8},
-               AutoSize: true,
-               Open:     true,
+               Title:     "Showcase",
+               Size:      point{X: 400, Y: 420},
+               Position:  point{X: 8, Y: 8},
+               AutoSize:  true,
+               Open:      true,
+               Movable:   true,
+               Resizable: true,
+               Closable:  true,
        })
 
 	mainFlow := &itemData{
