@@ -73,6 +73,10 @@ func (target *windowData) AddWindow(toBack bool) {
 		target.AutoSize = false
 	}
 
+	if currentTheme != nil {
+		applyThemeToWindow(target)
+	}
+
 	if !toBack {
 		windows = append(windows, target)
 		activeWindow = target
