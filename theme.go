@@ -51,6 +51,11 @@ func LoadTheme(name string) error {
        mergeData(defaultInput, &t.Input)
        mergeData(defaultSlider, &t.Slider)
        mergeData(defaultDropdown, &t.Dropdown)
+
+       // Apply new defaults to all existing windows and items so that
+       // the currently displayed UI reflects the loaded theme.
+       ApplyTheme()
+
        return nil
 }
 
@@ -68,6 +73,52 @@ func listThemes() ([]string, error) {
 		name := strings.TrimSuffix(e.Name(), filepath.Ext(e.Name()))
 		names = append(names, name)
 	}
-	sort.Strings(names)
-	return names, nil
+       sort.Strings(names)
+       return names, nil
+}
+
+// ApplyTheme updates all existing windows and items using the
+// currently loaded default styles. This is used after loading a
+// new theme so that the on-screen UI immediately reflects the
+// new colors and margins without recreating the windows.
+func ApplyTheme() {
+       for _, win := range windows {
+               applyThemeToWindow(win)
+       }
+}
+
+func applyThemeToWindow(win *windowData) {
+       // Merge the window with the defaultTheme values
+       mergeData(win, defaultTheme)
+       for _, item := range win.Contents {
+               applyThemeToItem(item)
+       }
+}
+
+func applyThemeToItem(it *itemData) {
+       switch it.ItemType {
+       case ITEM_BUTTON:
+               mergeData(it, defaultButton)
+       case ITEM_TEXT:
+               mergeData(it, defaultText)
+       case ITEM_CHECKBOX:
+               mergeData(it, defaultCheckbox)
+       case ITEM_RADIO:
+               mergeData(it, defaultRadio)
+       case ITEM_INPUT:
+               mergeData(it, defaultInput)
+       case ITEM_SLIDER:
+               mergeData(it, defaultSlider)
+       case ITEM_DROPDOWN:
+               mergeData(it, defaultDropdown)
+       }
+
+       for _, child := range it.Contents {
+               applyThemeToItem(child)
+       }
+       for _, tab := range it.Tabs {
+               for _, sub := range tab.Contents {
+                       applyThemeToItem(sub)
+               }
+       }
 }
