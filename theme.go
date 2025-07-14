@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 	"encoding/json"
+	"image/color"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -103,11 +104,43 @@ func copyWindowStyle(dst, src *windowData) {
 	dst.ActiveColor = src.ActiveColor
 }
 
+func ensureVisibleBackground(win *windowData) {
+	if win.Outlined {
+		return
+	}
+	if win.BGColor.A == 0 {
+		win.BGColor = color.RGBA{R: 32, G: 32, B: 32, A: 255}
+	}
+	if win.TitleBGColor.A == 0 {
+		bg := win.BGColor
+		adjust := func(c uint8) uint8 {
+			if c > 200 {
+				if c > 32 {
+					return c - 32
+				}
+				return c
+			}
+			v := c + 32
+			if v > 255 {
+				v = 255
+			}
+			return v
+		}
+		win.TitleBGColor = color.RGBA{
+			R: adjust(bg.R),
+			G: adjust(bg.G),
+			B: adjust(bg.B),
+			A: bg.A,
+		}
+	}
+}
+
 func applyThemeToWindow(win *windowData) {
 	if win == nil || currentTheme == nil {
 		return
 	}
 	copyWindowStyle(win, &currentTheme.Window)
+	ensureVisibleBackground(win)
 	win.Theme = currentTheme
 	for _, item := range win.Contents {
 		applyThemeToItem(item)

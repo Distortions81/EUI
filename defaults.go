@@ -8,7 +8,7 @@ var defaultTheme = &windowData{
 	Outlined:        true,
 	Fillet:          4,
 	Padding:         0,
-	Margin:          0,
+	Margin:          4,
 	BorderPad:       0,
 	TitleColor:      color.RGBA{R: 255, G: 255, B: 255, A: 255},
 	TitleTextColor:  color.RGBA{R: 255, G: 255, B: 255, A: 255},
@@ -36,7 +36,7 @@ var defaultButton = &itemData{
 	LineSpace: 1.2,
 
 	Padding: 0,
-	Margin:  0,
+	Margin:  4,
 
 	Fillet: 8,
 	Filled: true, Outlined: true,
@@ -57,7 +57,7 @@ var defaultText = &itemData{
 	FontSize:  24,
 	LineSpace: 1.2,
 	Padding:   0,
-	Margin:    0,
+	Margin:    4,
 	TextColor: color.RGBA{R: 255, G: 255, B: 255, A: 255},
 }
 
@@ -71,7 +71,7 @@ var defaultCheckbox = &itemData{
 	FontSize:  12,
 	LineSpace: 1.2,
 	Padding:   0,
-	Margin:    0,
+	Margin:    4,
 
 	Fillet: 8,
 	Filled: true, Outlined: true,
@@ -91,7 +91,7 @@ var defaultInput = &itemData{
 	FontSize:  12,
 	LineSpace: 1.2,
 	Padding:   0,
-	Margin:    0,
+	Margin:    4,
 
 	Fillet: 4,
 	Filled: true, Outlined: false,
@@ -114,7 +114,7 @@ var defaultRadio = &itemData{
 	FontSize:  12,
 	LineSpace: 1.2,
 	Padding:   0,
-	Margin:    0,
+	Margin:    4,
 
 	Fillet: 8,
 	Filled: true, Outlined: true,
@@ -135,7 +135,7 @@ var defaultSlider = &itemData{
 	AuxSpace: 4,
 	FontSize: 12,
 	Padding:  0,
-	Margin:   0,
+	Margin:   4,
 
 	MinValue: 0,
 	MaxValue: 100,
@@ -159,7 +159,7 @@ var defaultDropdown = &itemData{
 	Position: point{X: 4, Y: 4},
 	FontSize: 12,
 	Padding:  0,
-	Margin:   0,
+	Margin:   4,
 
 	Fillet: 4,
 	Filled: true, Outlined: true,
