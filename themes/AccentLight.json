@@ -1,68 +1,33 @@
 {
+  "Comment": "Colors use #RRGGBBAA or h,s,v",
+  "Colors": {
+    "c1": "#eff0f1ff",
+    "c2": "#dee0e2ff",
+    "c3": "#232629ff",
+    "c4": "#e3e5e7ff",
+    "c5": "#ffffffff",
+    "c6": "#505050ff",
+    "c7": "#3daee9ff",
+    "c8": "#404040ff",
+    "c9": "#606060ff",
+    "c10": "#00000000",
+    "c11": "#c0c0c0ff"
+  },
+  "RecommendedLayout": "Default",
   "Window": {
     "Border": 0,
     "Outlined": false,
     "Padding": 8,
-    "BGColor": {
-      "R": 239,
-      "G": 240,
-      "B": 241,
-      "A": 255
-    },
-    "TitleBGColor": {
-      "R": 222,
-      "G": 224,
-      "B": 226,
-      "A": 255
-    },
-    "TitleColor": {
-      "R": 35,
-      "G": 38,
-      "B": 41,
-      "A": 255
-    },
-    "BorderColor": {
-      "R": 222,
-      "G": 224,
-      "B": 226,
-      "A": 255
-    },
-    "SizeTabColor": {
-      "R": 227,
-      "G": 229,
-      "B": 231,
-      "A": 255
-    },
-    "DragbarColor": {
-      "R": 222,
-      "G": 224,
-      "B": 226,
-      "A": 255
-    },
-    "HoverTitleColor": {
-      "R": 255,
-      "G": 255,
-      "B": 255,
-      "A": 255
-    },
-    "HoverColor": {
-      "R": 80,
-      "G": 80,
-      "B": 80,
-      "A": 255
-    },
-    "ActiveColor": {
-      "R": 61,
-      "G": 174,
-      "B": 233,
-      "A": 255
-    },
-    "TitleTextColor": {
-      "R": 35,
-      "G": 38,
-      "B": 41,
-      "A": 255
-    }
+    "BGColor": "c1",
+    "TitleBGColor": "c2",
+    "TitleColor": "c3",
+    "BorderColor": "c2",
+    "SizeTabColor": "c4",
+    "DragbarColor": "c2",
+    "HoverTitleColor": "c5",
+    "HoverColor": "c6",
+    "ActiveColor": "c7",
+    "TitleTextColor": "c3"
   },
   "Button": {
     "Fillet": 10,
@@ -70,42 +35,12 @@
     "BorderPad": 4,
     "Filled": true,
     "Outlined": false,
-    "TextColor": {
-      "R": 255,
-      "G": 255,
-      "B": 255,
-      "A": 255
-    },
-    "Color": {
-      "R": 64,
-      "G": 64,
-      "B": 64,
-      "A": 255
-    },
-    "HoverColor": {
-      "R": 96,
-      "G": 96,
-      "B": 96,
-      "A": 255
-    },
-    "ClickColor": {
-      "R": 61,
-      "G": 174,
-      "B": 233,
-      "A": 255
-    },
-    "DisabledColor": {
-      "R": 0,
-      "G": 0,
-      "B": 0,
-      "A": 0
-    },
-    "CheckedColor": {
-      "R": 0,
-      "G": 0,
-      "B": 0,
-      "A": 0
-    }
+    "TextColor": "c5",
+    "Color": "c8",
+    "HoverColor": "c9",
+    "ClickColor": "c7",
+    "DisabledColor": "c10",
+    "CheckedColor": "c10"
   },
   "Text": {
     "Fillet": 0,
@@ -113,42 +48,12 @@
     "BorderPad": 4,
     "Filled": false,
     "Outlined": false,
-    "TextColor": {
-      "R": 255,
-      "G": 255,
-      "B": 255,
-      "A": 255
-    },
-    "Color": {
-      "R": 0,
-      "G": 0,
-      "B": 0,
-      "A": 0
-    },
-    "HoverColor": {
-      "R": 0,
-      "G": 0,
-      "B": 0,
-      "A": 0
-    },
-    "ClickColor": {
-      "R": 0,
-      "G": 0,
-      "B": 0,
-      "A": 0
-    },
-    "DisabledColor": {
-      "R": 0,
-      "G": 0,
-      "B": 0,
-      "A": 0
-    },
-    "CheckedColor": {
-      "R": 0,
-      "G": 0,
-      "B": 0,
-      "A": 0
-    }
+    "TextColor": "c5",
+    "Color": "c10",
+    "HoverColor": "c10",
+    "ClickColor": "c10",
+    "DisabledColor": "c10",
+    "CheckedColor": "c10"
   },
   "Checkbox": {
     "Fillet": 8,
@@ -156,42 +61,12 @@
     "BorderPad": 4,
     "Filled": true,
     "Outlined": false,
-    "TextColor": {
-      "R": 255,
-      "G": 255,
-      "B": 255,
-      "A": 255
-    },
-    "Color": {
-      "R": 64,
-      "G": 64,
-      "B": 64,
-      "A": 255
-    },
-    "HoverColor": {
-      "R": 96,
-      "G": 96,
-      "B": 96,
-      "A": 255
-    },
-    "ClickColor": {
-      "R": 64,
-      "G": 64,
-      "B": 64,
-      "A": 255
-    },
-    "DisabledColor": {
-      "R": 0,
-      "G": 0,
-      "B": 0,
-      "A": 0
-    },
-    "CheckedColor": {
-      "R": 0,
-      "G": 0,
-      "B": 0,
-      "A": 0
-    }
+    "TextColor": "c5",
+    "Color": "c8",
+    "HoverColor": "c9",
+    "ClickColor": "c8",
+    "DisabledColor": "c10",
+    "CheckedColor": "c10"
   },
   "Radio": {
     "Fillet": 8,
@@ -199,42 +74,12 @@
     "BorderPad": 4,
     "Filled": true,
     "Outlined": false,
-    "TextColor": {
-      "R": 255,
-      "G": 255,
-      "B": 255,
-      "A": 255
-    },
-    "Color": {
-      "R": 64,
-      "G": 64,
-      "B": 64,
-      "A": 255
-    },
-    "HoverColor": {
-      "R": 96,
-      "G": 96,
-      "B": 96,
-      "A": 255
-    },
-    "ClickColor": {
-      "R": 64,
-      "G": 64,
-      "B": 64,
-      "A": 255
-    },
-    "DisabledColor": {
-      "R": 0,
-      "G": 0,
-      "B": 0,
-      "A": 0
-    },
-    "CheckedColor": {
-      "R": 0,
-      "G": 0,
-      "B": 0,
-      "A": 0
-    }
+    "TextColor": "c5",
+    "Color": "c8",
+    "HoverColor": "c9",
+    "ClickColor": "c8",
+    "DisabledColor": "c10",
+    "CheckedColor": "c10"
   },
   "Input": {
     "Fillet": 4,
@@ -242,42 +87,12 @@
     "BorderPad": 2,
     "Filled": true,
     "Outlined": false,
-    "TextColor": {
-      "R": 255,
-      "G": 255,
-      "B": 255,
-      "A": 255
-    },
-    "Color": {
-      "R": 64,
-      "G": 64,
-      "B": 64,
-      "A": 255
-    },
-    "HoverColor": {
-      "R": 96,
-      "G": 96,
-      "B": 96,
-      "A": 255
-    },
-    "ClickColor": {
-      "R": 61,
-      "G": 174,
-      "B": 233,
-      "A": 255
-    },
-    "DisabledColor": {
-      "R": 0,
-      "G": 0,
-      "B": 0,
-      "A": 0
-    },
-    "CheckedColor": {
-      "R": 0,
-      "G": 0,
-      "B": 0,
-      "A": 0
-    }
+    "TextColor": "c5",
+    "Color": "c8",
+    "HoverColor": "c9",
+    "ClickColor": "c7",
+    "DisabledColor": "c10",
+    "CheckedColor": "c10"
   },
   "Slider": {
     "Fillet": 4,
@@ -285,42 +100,12 @@
     "BorderPad": 2,
     "Filled": true,
     "Outlined": false,
-    "TextColor": {
-      "R": 255,
-      "G": 255,
-      "B": 255,
-      "A": 255
-    },
-    "Color": {
-      "R": 64,
-      "G": 64,
-      "B": 64,
-      "A": 255
-    },
-    "HoverColor": {
-      "R": 96,
-      "G": 96,
-      "B": 96,
-      "A": 255
-    },
-    "ClickColor": {
-      "R": 192,
-      "G": 192,
-      "B": 192,
-      "A": 255
-    },
-    "DisabledColor": {
-      "R": 0,
-      "G": 0,
-      "B": 0,
-      "A": 0
-    },
-    "CheckedColor": {
-      "R": 0,
-      "G": 0,
-      "B": 0,
-      "A": 0
-    }
+    "TextColor": "c5",
+    "Color": "c8",
+    "HoverColor": "c9",
+    "ClickColor": "c11",
+    "DisabledColor": "c10",
+    "CheckedColor": "c10"
   },
   "Dropdown": {
     "Fillet": 4,
@@ -328,42 +113,12 @@
     "BorderPad": 2,
     "Filled": true,
     "Outlined": false,
-    "TextColor": {
-      "R": 255,
-      "G": 255,
-      "B": 255,
-      "A": 255
-    },
-    "Color": {
-      "R": 64,
-      "G": 64,
-      "B": 64,
-      "A": 255
-    },
-    "HoverColor": {
-      "R": 96,
-      "G": 96,
-      "B": 96,
-      "A": 255
-    },
-    "ClickColor": {
-      "R": 61,
-      "G": 174,
-      "B": 233,
-      "A": 255
-    },
-    "DisabledColor": {
-      "R": 0,
-      "G": 0,
-      "B": 0,
-      "A": 0
-    },
-    "CheckedColor": {
-      "R": 0,
-      "G": 0,
-      "B": 0,
-      "A": 0
-    },
+    "TextColor": "c5",
+    "Color": "c8",
+    "HoverColor": "c9",
+    "ClickColor": "c7",
+    "DisabledColor": "c10",
+    "CheckedColor": "c10",
     "MaxVisible": 5
   },
   "Tab": {
@@ -372,29 +127,9 @@
     "BorderPad": 8,
     "Filled": true,
     "Outlined": false,
-    "TextColor": {
-      "R": 255,
-      "G": 255,
-      "B": 255,
-      "A": 255
-    },
-    "Color": {
-      "R": 64,
-      "G": 64,
-      "B": 64,
-      "A": 255
-    },
-    "HoverColor": {
-      "R": 96,
-      "G": 96,
-      "B": 96,
-      "A": 255
-    },
-    "ClickColor": {
-      "R": 64,
-      "G": 64,
-      "B": 64,
-      "A": 255
-    }
+    "TextColor": "c5",
+    "Color": "c8",
+    "HoverColor": "c9",
+    "ClickColor": "c8"
   }
 }

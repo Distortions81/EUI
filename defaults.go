@@ -57,7 +57,7 @@ var defaultText = &itemData{
 	FontSize:  24,
 	LineSpace: 1.2,
 	Padding:   0,
-	Margin:    4,
+	Margin:    2,
 	TextColor: Color(color.RGBA{R: 255, G: 255, B: 255, A: 255}),
 }
 
@@ -71,7 +71,7 @@ var defaultCheckbox = &itemData{
 	FontSize:  12,
 	LineSpace: 1.2,
 	Padding:   0,
-	Margin:    4,
+	Margin:    2,
 
 	Fillet: 8,
 	Filled: true, Outlined: false,
@@ -91,7 +91,7 @@ var defaultInput = &itemData{
 	FontSize:  12,
 	LineSpace: 1.2,
 	Padding:   0,
-	Margin:    4,
+	Margin:    2,
 
 	Fillet: 4,
 	Filled: true, Outlined: false,
@@ -114,7 +114,7 @@ var defaultRadio = &itemData{
 	FontSize:  12,
 	LineSpace: 1.2,
 	Padding:   0,
-	Margin:    4,
+	Margin:    2,
 
 	Fillet: 8,
 	Filled: true, Outlined: false,
