@@ -243,7 +243,9 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 			loo := text.LayoutOptions{PrimaryAlign: text.AlignCenter, SecondaryAlign: text.AlignCenter}
 			dop := ebiten.DrawImageOptions{}
 			dop.GeoM.Translate(float64(x+w/2), float64(offset.Y+tabHeight/2))
-			text.Draw(subImg, tab.Name, face, &text.DrawOptions{DrawImageOptions: dop, LayoutOptions: loo})
+			dto := &text.DrawOptions{DrawImageOptions: dop, LayoutOptions: loo}
+			dto.ColorScale.ScaleWithColor(item.TextColor)
+			text.Draw(subImg, tab.Name, face, dto)
 			tab.DrawRect = rect{X0: x, Y0: offset.Y, X1: x + w, Y1: offset.Y + tabHeight}
 			x += w
 		}
@@ -725,7 +727,9 @@ func drawDropdownOptions(item *itemData, offset point, clip rect, screen *ebiten
 		drawRoundRect(subImg, &roundRect{Size: maxSize, Position: point{X: offset.X, Y: y}, Fillet: item.Fillet, Filled: true, Color: col})
 		td := ebiten.DrawImageOptions{}
 		td.GeoM.Translate(float64(offset.X+item.BorderPad+item.Padding), float64(y+optionH/2))
-		text.Draw(subImg, item.Options[i], face, &text.DrawOptions{DrawImageOptions: td, LayoutOptions: loo})
+		tdo := &text.DrawOptions{DrawImageOptions: td, LayoutOptions: loo}
+		tdo.ColorScale.ScaleWithColor(item.TextColor)
+		text.Draw(subImg, item.Options[i], face, tdo)
 	}
 }
 
