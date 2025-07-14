@@ -177,7 +177,7 @@ func (win *windowData) drawBorder(screen *ebiten.Image) {
 }
 
 func (win *windowData) drawItems(screen *ebiten.Image) {
-        winPos := pointAdd(win.GetPos(), point{X: 0, Y: win.GetTitleSize()})
+        winPos := pointAdd(win.getPosition(), point{X: 0, Y: win.GetTitleSize()})
 
         for _, item := range win.Contents {
                 itemPos := pointAdd(winPos, item.getPosition(win))
