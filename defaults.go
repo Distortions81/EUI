@@ -153,3 +153,16 @@ var defaultDropdown = &itemData{
 	ClickColor: color.RGBA{R: 0, G: 128, B: 128, A: 255},
 	MaxVisible: 5,
 }
+
+// base copies preserve the initial defaults so that LoadTheme can reset
+// to these values before applying theme overrides.
+var (
+    baseWindow   = *defaultTheme
+    baseButton   = *defaultButton
+    baseText     = *defaultText
+    baseCheckbox = *defaultCheckbox
+    baseRadio    = *defaultRadio
+    baseInput    = *defaultInput
+    baseSlider   = *defaultSlider
+    baseDropdown = *defaultDropdown
+)
