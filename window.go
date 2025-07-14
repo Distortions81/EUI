@@ -244,11 +244,15 @@ func (pin pinType) getItemPosition(win *windowData, item *itemData) point {
 }
 
 func (win *windowData) getPosition() point {
-	return (win.PinTo.getWinPosition(win))
+       pos := win.PinTo.getWinPosition(win)
+       pos = pointAdd(pos, point{X: win.Margin * uiScale, Y: win.Margin * uiScale})
+       return pos
 }
 
 func (item *itemData) getPosition(win *windowData) point {
-	return item.PinTo.getItemPosition(win, item)
+       pos := item.PinTo.getItemPosition(win, item)
+       pos = pointAdd(pos, point{X: item.Margin * uiScale, Y: item.Margin * uiScale})
+       return pos
 }
 
 // Do the window items overlap?
