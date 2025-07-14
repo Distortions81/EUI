@@ -126,8 +126,6 @@ func copyItemStyle(dst, src *itemData) {
 	dst.Outlined = src.Outlined
 	dst.AuxSize = src.AuxSize
 	dst.AuxSpace = src.AuxSpace
-	dst.FontSize = src.FontSize
-	dst.LineSpace = src.LineSpace
 	dst.TextColor = src.TextColor
 	dst.Color = src.Color
 	dst.HoverColor = src.HoverColor
