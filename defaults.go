@@ -7,7 +7,7 @@ var defaultTheme = &windowData{
 	Border:          0,
 	Outlined:        false,
 	Fillet:          4,
-	Padding:         0,
+	Padding:         4,
 	Margin:          4,
 	BorderPad:       0,
 	TitleColor:      Color(color.RGBA{R: 255, G: 255, B: 255, A: 255}),
