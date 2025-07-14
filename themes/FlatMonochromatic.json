@@ -166,5 +166,30 @@
       "B": 0,
       "A": 0
     }
+  },
+  "Dropdown": {
+    "Fillet": 4,
+    "Border": 0,
+    "BorderPad": 2,
+    "Filled": true,
+    "Outlined": false,
+    "TextColor": { "HSV": [210, 0.3, 0.9, 1] },
+    "Color": { "HSV": [210, 0.4, 0.65, 1] },
+    "HoverColor": { "HSV": [210, 0.3, 0.75, 1] },
+    "ClickColor": { "HSV": [210, 0.7, 0.6, 1] },
+    "DisabledColor": { "R": 0, "G": 0, "B": 0, "A": 0 },
+    "CheckedColor": { "R": 0, "G": 0, "B": 0, "A": 0 },
+    "MaxVisible": 5
+  },
+  "Tab": {
+    "Fillet": 4,
+    "Border": 0,
+    "BorderPad": 2,
+    "Filled": true,
+    "Outlined": false,
+    "TextColor": { "HSV": [210, 0.3, 0.9, 1] },
+    "Color": { "HSV": [210, 0.4, 0.7, 1] },
+    "HoverColor": { "HSV": [210, 0.3, 0.75, 1] },
+    "ClickColor": { "HSV": [210, 0.7, 0.6, 1] }
   }
 }
