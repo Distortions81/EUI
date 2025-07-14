@@ -35,6 +35,7 @@ func LoadTheme(name string) error {
 	}
 	currentTheme = &th
 	currentThemeName = name
+	applyThemeToAll()
 	return nil
 }
 
@@ -54,4 +55,61 @@ func listThemes() ([]string, error) {
 	}
 	sort.Strings(names)
 	return names, nil
+}
+
+// applyThemeToAll updates all existing windows to use the current theme.
+func applyThemeToAll() {
+	if currentTheme == nil {
+		return
+	}
+	for _, win := range windows {
+		applyThemeToWindow(win)
+	}
+}
+
+// applyThemeToWindow merges the current theme's window settings into the given
+// window and recursively updates contained items.
+func applyThemeToWindow(win *windowData) {
+	if win == nil || currentTheme == nil {
+		return
+	}
+	mergeData(win, &currentTheme.Window)
+	win.Theme = currentTheme
+	for _, item := range win.Contents {
+		applyThemeToItem(item)
+	}
+}
+
+// applyThemeToItem merges style data from the current theme based on item type
+// and recursively processes child items.
+func applyThemeToItem(it *itemData) {
+	if it == nil || currentTheme == nil {
+		return
+	}
+	var src *itemData
+	switch it.ItemType {
+	case ITEM_BUTTON:
+		src = &currentTheme.Button
+	case ITEM_TEXT:
+		src = &currentTheme.Text
+	case ITEM_CHECKBOX:
+		src = &currentTheme.Checkbox
+	case ITEM_RADIO:
+		src = &currentTheme.Radio
+	case ITEM_INPUT:
+		src = &currentTheme.Input
+	case ITEM_SLIDER:
+		src = &currentTheme.Slider
+	case ITEM_DROPDOWN:
+		src = &currentTheme.Dropdown
+	}
+	if src != nil {
+		mergeData(it, src)
+	}
+	for _, child := range it.Contents {
+		applyThemeToItem(child)
+	}
+	for _, tab := range it.Tabs {
+		applyThemeToItem(tab)
+	}
 }
