@@ -2,16 +2,16 @@ package main
 
 // makeShowcaseWindow creates a window demonstrating most widget types.
 func makeShowcaseWindow() *windowData {
-       win := NewWindow(&windowData{
-               Title:     "Showcase",
-               Size:      point{X: 400, Y: 420},
-               Position:  point{X: 8, Y: 8},
-               AutoSize:  true,
-               Open:      true,
-               Movable:   true,
-               Resizable: true,
-               Closable:  true,
-       })
+	win := NewWindow(&windowData{
+		Title:     "Showcase",
+		Size:      point{X: 400, Y: 420},
+		Position:  point{X: 8, Y: 8},
+		AutoSize:  true,
+		Open:      true,
+		Movable:   true,
+		Resizable: true,
+		Closable:  true,
+	})
 
 	mainFlow := &itemData{
 		ItemType: ITEM_FLOW,
@@ -41,7 +41,7 @@ func makeShowcaseWindow() *windowData {
 	intSlider := NewSlider(&itemData{Size: point{X: 180, Y: 24}, MinValue: 0, MaxValue: 10, IntOnly: true, FontSize: 8})
 	mainFlow.addItemTo(intSlider)
 
-	input := NewInput(&itemData{Size: point{X: 180, Y: 24}, FontSize: 8})
+	input := NewInput(&itemData{Text: "Text Field", Size: point{X: 180, Y: 24}, FontSize: 8})
 	mainFlow.addItemTo(input)
 
 	dropdown := NewDropdown(&itemData{Size: point{X: 180, Y: 24}, FontSize: 8})

@@ -56,7 +56,8 @@
       "G": 160,
       "B": 160,
       "A": 255
-    }
+    },
+    "ShowDragbar": true
   },
   "Button": {
     "Fillet": 8,
