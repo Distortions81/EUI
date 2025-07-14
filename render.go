@@ -52,8 +52,19 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 }
 
 func (win *windowData) drawBG(screen *ebiten.Image) {
-	windowArea := screen.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
-	windowArea.Fill(win.BGColor)
+       r := rect{
+               X0: win.getPosition().X + win.BorderPad,
+               Y0: win.getPosition().Y + win.BorderPad,
+               X1: win.getPosition().X + win.GetSize().X - win.BorderPad,
+               Y1: win.getPosition().Y + win.GetSize().Y - win.BorderPad,
+       }
+       drawRoundRect(screen, &roundRect{
+               Size:     point{X: r.X1 - r.X0, Y: r.Y1 - r.Y0},
+               Position: point{X: r.X0, Y: r.Y0},
+               Fillet:   win.Fillet,
+               Filled:   true,
+               Color:    win.BGColor,
+       })
 }
 
 func (win *windowData) drawWinTitle(screen *ebiten.Image) {
@@ -154,27 +165,24 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image) {
 }
 
 func (win *windowData) drawBorder(screen *ebiten.Image) {
-	//Draw borders
-	if win.Outlined && win.Border > 0 {
-		FrameColor := win.BorderColor
-		if activeWindow == win {
-			FrameColor = win.ActiveColor
-		} else if win.Hovered {
-			FrameColor = win.HoverColor
-			win.Hovered = false
-		}
-		if win.TitleHeight > 0 {
-			vector.StrokeRect(screen,
-				win.getPosition().X+1, win.getPosition().Y+1,
-				win.GetSize().X-1, (win.GetTitleSize())-1,
-				win.Border, FrameColor, false)
-		}
-		//Window border
-		vector.StrokeRect(screen,
-			win.getPosition().X+1, win.getPosition().Y+1,
-			win.GetSize().X-1, win.GetSize().Y-(win.GetTitleSize())-1,
-			win.Border, FrameColor, false)
-	}
+        //Draw borders
+        if win.Outlined && win.Border > 0 {
+               FrameColor := win.BorderColor
+               if activeWindow == win {
+                       FrameColor = win.ActiveColor
+               } else if win.Hovered {
+                       FrameColor = win.HoverColor
+                       win.Hovered = false
+               }
+               drawRoundRect(screen, &roundRect{
+                       Size:     win.GetSize(),
+                       Position: win.getPosition(),
+                       Fillet:   win.Fillet,
+                       Filled:   false,
+                       Border:   win.Border,
+                       Color:    FrameColor,
+               })
+        }
 }
 
 func (win *windowData) drawItems(screen *ebiten.Image) {
@@ -522,17 +530,17 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			SecondaryAlign: text.AlignCenter,
 		}
 		tdop := ebiten.DrawImageOptions{}
-		tdop.GeoM.Translate(
-			float64(offset.X+item.BorderPad),
-			float64(offset.Y+((maxSize.Y)/2)),
-		)
+               tdop.GeoM.Translate(
+                       float64(offset.X+item.BorderPad+item.Padding),
+                       float64(offset.Y+((maxSize.Y)/2)),
+               )
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 		top.ColorScale.ScaleWithColor(item.TextColor)
 		text.Draw(subImg, item.Text, face, top)
 
 		if item.Focused {
 			width, _ := text.Measure(item.Text, face, 0)
-			cx := offset.X + item.BorderPad + float32(width)
+                       cx := offset.X + item.BorderPad + item.Padding + float32(width)
 			vector.StrokeLine(subImg,
 				cx, offset.Y+2,
 				cx, offset.Y+maxSize.Y-2,
@@ -621,7 +629,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
 		loo := text.LayoutOptions{PrimaryAlign: text.AlignStart, SecondaryAlign: text.AlignCenter}
 		tdop := ebiten.DrawImageOptions{}
-		tdop.GeoM.Translate(float64(offset.X+item.BorderPad), float64(offset.Y+maxSize.Y/2))
+               tdop.GeoM.Translate(float64(offset.X+item.BorderPad+item.Padding), float64(offset.Y+maxSize.Y/2))
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 		top.ColorScale.ScaleWithColor(item.TextColor)
 		label := item.Text
@@ -631,11 +639,11 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		text.Draw(subImg, label, face, top)
 
 		arrow := maxSize.Y * 0.4
-		drawTriangle(subImg,
-			point{X: offset.X + maxSize.X - arrow - item.BorderPad,
-				Y: offset.Y + (maxSize.Y-arrow)/2},
-			arrow,
-			item.TextColor)
+               drawTriangle(subImg,
+                       point{X: offset.X + maxSize.X - arrow - item.BorderPad - item.Padding,
+                               Y: offset.Y + (maxSize.Y-arrow)/2},
+                       arrow,
+                       item.TextColor)
 
 		if item.Open {
 			pendingDropdowns = append(pendingDropdowns, dropdownRender{item: item, offset: offset, clip: clip})
@@ -714,8 +722,8 @@ func drawDropdownOptions(item *itemData, offset point, clip rect, screen *ebiten
 			col = item.HoverColor
 		}
 		drawRoundRect(subImg, &roundRect{Size: maxSize, Position: point{X: offset.X, Y: y}, Fillet: item.Fillet, Filled: true, Color: col})
-		td := ebiten.DrawImageOptions{}
-		td.GeoM.Translate(float64(offset.X+item.BorderPad), float64(y+optionH/2))
+               td := ebiten.DrawImageOptions{}
+               td.GeoM.Translate(float64(offset.X+item.BorderPad+item.Padding), float64(y+optionH/2))
 		text.Draw(subImg, item.Options[i], face, &text.DrawOptions{DrawImageOptions: td, LayoutOptions: loo})
 	}
 }

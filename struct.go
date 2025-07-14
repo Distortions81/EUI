@@ -8,12 +8,17 @@ import (
 )
 
 type windowData struct {
-	Title           string
-	Position        point
-	Size            point
-	PinTo           pinType
-	Padding, Border float32
-	Outlined        bool
+       Title    string
+       Position point
+       Size     point
+       PinTo    pinType
+
+       Padding   float32
+       Margin    float32
+       Border    float32
+       BorderPad float32
+       Fillet    float32
+       Outlined  bool
 
 	Open, Hovered, Flow,
 	Closable, Movable, Resizable,
@@ -76,8 +81,10 @@ type itemData struct {
 	Image     *ebiten.Image
 
 	//Style
-	Fillet            float32
-	Border, BorderPad float32
+       Padding, Margin float32
+
+       Fillet            float32
+       Border, BorderPad float32
 	Filled, Outlined  bool
 	AuxSize           point
 	AuxSpace          float32
