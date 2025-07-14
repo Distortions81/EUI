@@ -28,10 +28,13 @@ func main() {
 	signalHandle = make(chan os.Signal, 1)
 	signal.Notify(signalHandle, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 
-	// load default theme
-	if err := LoadTheme("FlatDark"); err != nil {
-		log.Printf("LoadTheme error: %v", err)
-	}
+        // load default themes
+        if err := LoadTheme("FlatDark"); err != nil {
+                log.Printf("LoadTheme error: %v", err)
+        }
+        if err := LoadLayout("Flat"); err != nil {
+                log.Printf("LoadLayout error: %v", err)
+        }
 
 	//Load default font
 	if mplusFaceSource == nil {

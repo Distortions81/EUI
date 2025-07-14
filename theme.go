@@ -13,6 +13,15 @@ import (
 //go:embed themes/*.json
 var embeddedThemes embed.FS
 
+func init() {
+        data, err := embeddedThemes.ReadFile(filepath.Join("themes", "FlatDark.json"))
+        if err == nil {
+                _ = json.Unmarshal(data, baseTheme)
+        }
+        currentTheme = baseTheme
+        currentThemeName = "FlatDark"
+}
+
 // Theme bundles all style information for windows and widgets.
 type Theme struct {
 	Window   windowData

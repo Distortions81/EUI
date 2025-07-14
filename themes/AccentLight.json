@@ -1,0 +1,400 @@
+{
+  "Window": {
+    "Border": 0,
+    "Outlined": false,
+    "Padding": 8,
+    "BGColor": {
+      "R": 239,
+      "G": 240,
+      "B": 241,
+      "A": 255
+    },
+    "TitleBGColor": {
+      "R": 222,
+      "G": 224,
+      "B": 226,
+      "A": 255
+    },
+    "TitleColor": {
+      "R": 35,
+      "G": 38,
+      "B": 41,
+      "A": 255
+    },
+    "BorderColor": {
+      "R": 222,
+      "G": 224,
+      "B": 226,
+      "A": 255
+    },
+    "SizeTabColor": {
+      "R": 227,
+      "G": 229,
+      "B": 231,
+      "A": 255
+    },
+    "DragbarColor": {
+      "R": 222,
+      "G": 224,
+      "B": 226,
+      "A": 255
+    },
+    "HoverTitleColor": {
+      "R": 255,
+      "G": 255,
+      "B": 255,
+      "A": 255
+    },
+    "HoverColor": {
+      "R": 80,
+      "G": 80,
+      "B": 80,
+      "A": 255
+    },
+    "ActiveColor": {
+      "R": 61,
+      "G": 174,
+      "B": 233,
+      "A": 255
+    },
+    "TitleTextColor": {
+      "R": 35,
+      "G": 38,
+      "B": 41,
+      "A": 255
+    }
+  },
+  "Button": {
+    "Fillet": 10,
+    "Border": 0,
+    "BorderPad": 4,
+    "Filled": true,
+    "Outlined": false,
+    "TextColor": {
+      "R": 255,
+      "G": 255,
+      "B": 255,
+      "A": 255
+    },
+    "Color": {
+      "R": 64,
+      "G": 64,
+      "B": 64,
+      "A": 255
+    },
+    "HoverColor": {
+      "R": 96,
+      "G": 96,
+      "B": 96,
+      "A": 255
+    },
+    "ClickColor": {
+      "R": 61,
+      "G": 174,
+      "B": 233,
+      "A": 255
+    },
+    "DisabledColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    },
+    "CheckedColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    }
+  },
+  "Text": {
+    "Fillet": 0,
+    "Border": 0,
+    "BorderPad": 4,
+    "Filled": false,
+    "Outlined": false,
+    "TextColor": {
+      "R": 255,
+      "G": 255,
+      "B": 255,
+      "A": 255
+    },
+    "Color": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    },
+    "HoverColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    },
+    "ClickColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    },
+    "DisabledColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    },
+    "CheckedColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    }
+  },
+  "Checkbox": {
+    "Fillet": 8,
+    "Border": 0,
+    "BorderPad": 4,
+    "Filled": true,
+    "Outlined": false,
+    "TextColor": {
+      "R": 255,
+      "G": 255,
+      "B": 255,
+      "A": 255
+    },
+    "Color": {
+      "R": 64,
+      "G": 64,
+      "B": 64,
+      "A": 255
+    },
+    "HoverColor": {
+      "R": 96,
+      "G": 96,
+      "B": 96,
+      "A": 255
+    },
+    "ClickColor": {
+      "R": 64,
+      "G": 64,
+      "B": 64,
+      "A": 255
+    },
+    "DisabledColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    },
+    "CheckedColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    }
+  },
+  "Radio": {
+    "Fillet": 8,
+    "Border": 0,
+    "BorderPad": 4,
+    "Filled": true,
+    "Outlined": false,
+    "TextColor": {
+      "R": 255,
+      "G": 255,
+      "B": 255,
+      "A": 255
+    },
+    "Color": {
+      "R": 64,
+      "G": 64,
+      "B": 64,
+      "A": 255
+    },
+    "HoverColor": {
+      "R": 96,
+      "G": 96,
+      "B": 96,
+      "A": 255
+    },
+    "ClickColor": {
+      "R": 64,
+      "G": 64,
+      "B": 64,
+      "A": 255
+    },
+    "DisabledColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    },
+    "CheckedColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    }
+  },
+  "Input": {
+    "Fillet": 4,
+    "Border": 0,
+    "BorderPad": 2,
+    "Filled": true,
+    "Outlined": false,
+    "TextColor": {
+      "R": 255,
+      "G": 255,
+      "B": 255,
+      "A": 255
+    },
+    "Color": {
+      "R": 64,
+      "G": 64,
+      "B": 64,
+      "A": 255
+    },
+    "HoverColor": {
+      "R": 96,
+      "G": 96,
+      "B": 96,
+      "A": 255
+    },
+    "ClickColor": {
+      "R": 61,
+      "G": 174,
+      "B": 233,
+      "A": 255
+    },
+    "DisabledColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    },
+    "CheckedColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    }
+  },
+  "Slider": {
+    "Fillet": 4,
+    "Border": 0,
+    "BorderPad": 2,
+    "Filled": true,
+    "Outlined": false,
+    "TextColor": {
+      "R": 255,
+      "G": 255,
+      "B": 255,
+      "A": 255
+    },
+    "Color": {
+      "R": 64,
+      "G": 64,
+      "B": 64,
+      "A": 255
+    },
+    "HoverColor": {
+      "R": 96,
+      "G": 96,
+      "B": 96,
+      "A": 255
+    },
+    "ClickColor": {
+      "R": 192,
+      "G": 192,
+      "B": 192,
+      "A": 255
+    },
+    "DisabledColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    },
+    "CheckedColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    }
+  },
+  "Dropdown": {
+    "Fillet": 4,
+    "Border": 0,
+    "BorderPad": 2,
+    "Filled": true,
+    "Outlined": false,
+    "TextColor": {
+      "R": 255,
+      "G": 255,
+      "B": 255,
+      "A": 255
+    },
+    "Color": {
+      "R": 64,
+      "G": 64,
+      "B": 64,
+      "A": 255
+    },
+    "HoverColor": {
+      "R": 96,
+      "G": 96,
+      "B": 96,
+      "A": 255
+    },
+    "ClickColor": {
+      "R": 61,
+      "G": 174,
+      "B": 233,
+      "A": 255
+    },
+    "DisabledColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    },
+    "CheckedColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    },
+    "MaxVisible": 5
+  },
+  "Tab": {
+    "Fillet": 8,
+    "Border": 0,
+    "BorderPad": 8,
+    "Filled": true,
+    "Outlined": false,
+    "TextColor": {
+      "R": 255,
+      "G": 255,
+      "B": 255,
+      "A": 255
+    },
+    "Color": {
+      "R": 64,
+      "G": 64,
+      "B": 64,
+      "A": 255
+    },
+    "HoverColor": {
+      "R": 96,
+      "G": 96,
+      "B": 96,
+      "A": 255
+    },
+    "ClickColor": {
+      "R": 64,
+      "G": 64,
+      "B": 64,
+      "A": 255
+    }
+  }
+}

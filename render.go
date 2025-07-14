@@ -238,10 +238,13 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 			if w < float32(defaultTabWidth)*uiScale {
 				w = float32(defaultTabWidth) * uiScale
 			}
-			col := item.Color
-			if i == item.ActiveTab {
-				col = item.ClickColor
-			}
+                        col := item.Color
+                        if i == item.ActiveTab {
+                                col = item.ClickColor
+                        } else if tab.Hovered {
+                                col = item.HoverColor
+                        }
+                        tab.Hovered = false
 			drawTabShape(subImg, point{X: x, Y: offset.Y}, point{X: w, Y: tabHeight}, col, item.Fillet*uiScale, item.BorderPad*uiScale)
 			loo := text.LayoutOptions{PrimaryAlign: text.AlignCenter, SecondaryAlign: text.AlignCenter}
 			dop := ebiten.DrawImageOptions{}
@@ -535,17 +538,17 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			SecondaryAlign: text.AlignCenter,
 		}
 		tdop := ebiten.DrawImageOptions{}
-		tdop.GeoM.Translate(
-			float64(offset.X+item.BorderPad+item.Padding),
-			float64(offset.Y+((maxSize.Y)/2)),
-		)
+                tdop.GeoM.Translate(
+                        float64(offset.X+item.BorderPad+item.Padding+currentLayout.TextPadding),
+                        float64(offset.Y+((maxSize.Y)/2)),
+                )
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 		top.ColorScale.ScaleWithColor(item.TextColor)
 		text.Draw(subImg, item.Text, face, top)
 
 		if item.Focused {
-			width, _ := text.Measure(item.Text, face, 0)
-			cx := offset.X + item.BorderPad + item.Padding + float32(width)
+                        width, _ := text.Measure(item.Text, face, 0)
+                        cx := offset.X + item.BorderPad + item.Padding + currentLayout.TextPadding + float32(width)
 			vector.StrokeLine(subImg,
 				cx, offset.Y+2,
 				cx, offset.Y+maxSize.Y-2,
@@ -563,17 +566,16 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		// Prepare value text and measure the largest value label so the
 		// slider track remains consistent length
 		valueText := fmt.Sprintf("%.2f", item.Value)
-		maxLabel := fmt.Sprintf("%.2f", item.MaxValue)
-		if item.IntOnly {
-			valueText = fmt.Sprintf("%d", int(item.Value))
-			maxLabel = fmt.Sprintf("%d", int(item.MaxValue))
-		}
+                maxLabel := fmt.Sprintf("%.2f", item.MaxValue)
+                if item.IntOnly {
+                        valueText = fmt.Sprintf("%d", int(item.Value))
+                }
 
 		textSize := (item.FontSize * uiScale) + 2
 		face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
 		maxW, _ := text.Measure(maxLabel, face, 0)
 
-		gap := item.AuxSpace * 3
+                gap := currentLayout.SliderValueGap
 		trackWidth := maxSize.X - item.AuxSize.X - gap - float32(maxW)
 		if trackWidth < 0 {
 			trackWidth = 0
@@ -647,12 +649,12 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		}
 		text.Draw(subImg, label, face, top)
 
-		arrow := maxSize.Y * 0.4
-		drawTriangle(subImg,
-			point{X: offset.X + maxSize.X - arrow - item.BorderPad - item.Padding,
-				Y: offset.Y + (maxSize.Y-arrow)/2},
-			arrow,
-			item.TextColor)
+                arrow := maxSize.Y * 0.4
+                drawTriangle(subImg,
+                        point{X: offset.X + maxSize.X - arrow - item.BorderPad - item.Padding - currentLayout.DropdownArrowPad,
+                                Y: offset.Y + (maxSize.Y-arrow)/2},
+                        arrow,
+                        item.TextColor)
 
 		if item.Open {
 			screenClip := rect{X0: 0, Y0: 0, X1: float32(screenWidth), Y1: float32(screenHeight)}
@@ -722,21 +724,27 @@ func drawDropdownOptions(item *itemData, offset point, clip rect, screen *ebiten
 	if visibleRect.X1 <= visibleRect.X0 || visibleRect.Y1 <= visibleRect.Y0 {
 		return
 	}
-	subImg := screen.SubImage(visibleRect.getRectangle()).(*ebiten.Image)
-	for i := first; i < first+visible && i < len(item.Options); i++ {
-		y := offY + float32(i-first)*optionH
-		col := item.Color
-		if i == item.Selected {
-			col = item.ClickColor
-		} else if i == item.HoverIndex {
-			col = item.HoverColor
-		}
-		drawRoundRect(subImg, &roundRect{Size: maxSize, Position: point{X: offset.X, Y: y}, Fillet: item.Fillet, Filled: true, Color: col})
-		td := ebiten.DrawImageOptions{}
-		td.GeoM.Translate(float64(offset.X+item.BorderPad+item.Padding), float64(y+optionH/2))
-		tdo := &text.DrawOptions{DrawImageOptions: td, LayoutOptions: loo}
-		tdo.ColorScale.ScaleWithColor(item.TextColor)
-		text.Draw(subImg, item.Options[i], face, tdo)
+        subImg := screen.SubImage(visibleRect.getRectangle()).(*ebiten.Image)
+        vector.DrawFilledRect(subImg,
+                visibleRect.X0,
+                visibleRect.Y0,
+                visibleRect.X1-visibleRect.X0,
+                visibleRect.Y1-visibleRect.Y0,
+                item.Color, false)
+        for i := first; i < first+visible && i < len(item.Options); i++ {
+                y := offY + float32(i-first)*optionH
+                if i == item.Selected || i == item.HoverIndex {
+                        col := item.ClickColor
+                        if i == item.HoverIndex && i != item.Selected {
+                                col = item.HoverColor
+                        }
+                        drawRoundRect(subImg, &roundRect{Size: maxSize, Position: point{X: offset.X, Y: y}, Fillet: item.Fillet, Filled: true, Color: col})
+                }
+                td := ebiten.DrawImageOptions{}
+                td.GeoM.Translate(float64(offset.X+item.BorderPad+item.Padding), float64(y+optionH/2))
+                tdo := &text.DrawOptions{DrawImageOptions: td, LayoutOptions: loo}
+                tdo.ColorScale.ScaleWithColor(item.TextColor)
+                text.Draw(subImg, item.Options[i], face, tdo)
 	}
 }
 
@@ -830,13 +838,15 @@ func drawTabShape(screen *ebiten.Image, pos point, size point, col Color, fillet
 		fillet = size.Y / 8
 	}
 
-	path.MoveTo(pos.X, pos.Y+size.Y)
-	path.LineTo(pos.X+slope, pos.Y+fillet)
-	path.QuadTo(pos.X+slope, pos.Y, pos.X+slope+fillet, pos.Y)
-	path.LineTo(pos.X+size.X-slope-fillet, pos.Y)
-	path.QuadTo(pos.X+size.X-slope, pos.Y, pos.X+size.X-slope, pos.Y+fillet)
-	path.LineTo(pos.X+size.X, pos.Y+size.Y)
-	path.Close()
+        path.MoveTo(pos.X, pos.Y+size.Y)
+        path.LineTo(pos.X+slope, pos.Y+size.Y)
+        path.LineTo(pos.X+slope, pos.Y+fillet)
+        path.QuadTo(pos.X+slope, pos.Y, pos.X+slope+fillet, pos.Y)
+        path.LineTo(pos.X+size.X-slope-fillet, pos.Y)
+        path.QuadTo(pos.X+size.X-slope, pos.Y, pos.X+size.X-slope, pos.Y+fillet)
+        path.LineTo(pos.X+size.X-slope, pos.Y+size.Y)
+        path.LineTo(pos.X, pos.Y+size.Y)
+        path.Close()
 
 	vertices, indices = path.AppendVerticesAndIndicesForFilling(vertices[:0], indices[:0])
 	for i := range vertices {

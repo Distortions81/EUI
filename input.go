@@ -208,14 +208,16 @@ func (item *itemData) clickFlows(mpos point, click bool) {
 		if item.ActiveTab >= len(item.Tabs) {
 			item.ActiveTab = 0
 		}
-		for i, tab := range item.Tabs {
-			if tab.DrawRect.containsPoint(mpos) {
-				if click {
-					item.ActiveTab = i
-				}
-				return
-			}
-		}
+                for i, tab := range item.Tabs {
+                        tab.Hovered = false
+                        if tab.DrawRect.containsPoint(mpos) {
+                                tab.Hovered = true
+                                if click {
+                                        item.ActiveTab = i
+                                }
+                                return
+                        }
+                }
 		for _, subItem := range item.Tabs[item.ActiveTab].Contents {
 			if subItem.ItemType == ITEM_FLOW {
 				subItem.clickFlows(mpos, click)
@@ -361,15 +363,12 @@ func subUncheckRadio(list []*itemData, group string, except *itemData) {
 func (item *itemData) setSliderValue(mpos point) {
 	// Determine the width of the slider track accounting for the
 	// displayed value text to the right of the knob.
-	valueText := fmt.Sprintf("%.2f", item.Value)
-	if item.IntOnly {
-		valueText = fmt.Sprintf("%d", int(item.Value))
-	}
-	textSize := (item.FontSize * uiScale) + 2
-	face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
-	tw, _ := text.Measure(valueText, face, 0)
+        maxLabel := fmt.Sprintf("%.2f", item.MaxValue)
+        textSize := (item.FontSize * uiScale) + 2
+        face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
+        maxW, _ := text.Measure(maxLabel, face, 0)
 
-	width := item.DrawRect.X1 - item.DrawRect.X0 - item.AuxSize.X - item.AuxSpace*3 - float32(tw)
+        width := item.DrawRect.X1 - item.DrawRect.X0 - item.AuxSize.X - currentLayout.SliderValueGap - float32(maxW)
 	if width <= 0 {
 		return
 	}
