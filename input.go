@@ -157,7 +157,7 @@ func (g *Game) Update() error {
 			if !win.Open {
 				continue
 			}
-			if win.getMainRect().containsPoint(mpos) {
+			if win.getMainRect().containsPoint(mpos) || dropdownOpenContains(win.Contents, mpos) {
 				if scrollDropdown(win.Contents, mpos, wheelDelta) {
 					break
 				}
@@ -172,8 +172,8 @@ func (g *Game) Update() error {
 }
 
 func (win *windowData) clickWindowItems(mpos point, click bool) {
-	// If the mouse isn't within the window, just return
-	if !win.getMainRect().containsPoint(mpos) {
+	// If the mouse isn't within the window or any open dropdown, just return
+	if !win.getMainRect().containsPoint(mpos) && !dropdownOpenContains(win.Contents, mpos) {
 		return
 	}
 	win.Hovered = true
@@ -219,22 +219,22 @@ func (item *itemData) clickFlows(mpos point, click bool) {
 }
 
 func (item *itemData) clickItem(mpos point, click bool) {
-        // For dropdowns check the expanded option area as well
-        if !item.DrawRect.containsPoint(mpos) {
-                if !(item.ItemType == ITEM_DROPDOWN && item.Open && func() bool {
-                        optionH := item.GetSize().Y
-                        visible := item.MaxVisible
-                        if visible <= 0 {
-                                visible = 5
-                        }
-                        startY := item.DrawRect.Y1
-                        openHeight := optionH * float32(visible)
-                        r := rect{X0: item.DrawRect.X0, Y0: startY, X1: item.DrawRect.X1, Y1: startY + openHeight}
-                        return r.containsPoint(mpos)
-                }()) {
-                        return
-                }
-        }
+	// For dropdowns check the expanded option area as well
+	if !item.DrawRect.containsPoint(mpos) {
+		if !(item.ItemType == ITEM_DROPDOWN && item.Open && func() bool {
+			optionH := item.GetSize().Y
+			visible := item.MaxVisible
+			if visible <= 0 {
+				visible = 5
+			}
+			startY := item.DrawRect.Y1
+			openHeight := optionH * float32(visible)
+			r := rect{X0: item.DrawRect.X0, Y0: startY, X1: item.DrawRect.X1, Y1: startY + openHeight}
+			return r.containsPoint(mpos)
+		}()) {
+			return
+		}
+	}
 
 	if click {
 		item.Clicked = time.Now()
@@ -440,6 +440,35 @@ func scrollDropdown(items []*itemData, mpos point, delta point) bool {
 			}
 		}
 		if scrollDropdown(it.Contents, mpos, delta) {
+			return true
+		}
+	}
+	return false
+}
+func dropdownOpenContains(items []*itemData, mpos point) bool {
+	for _, it := range items {
+		if it.ItemType == ITEM_DROPDOWN && it.Open {
+			optionH := it.GetSize().Y
+			visible := it.MaxVisible
+			if visible <= 0 {
+				visible = 5
+			}
+			startY := it.DrawRect.Y1
+			openH := optionH * float32(visible)
+			r := rect{X0: it.DrawRect.X0, Y0: startY, X1: it.DrawRect.X1, Y1: startY + openH}
+			if r.containsPoint(mpos) {
+				return true
+			}
+		}
+		if len(it.Tabs) > 0 {
+			if it.ActiveTab >= len(it.Tabs) {
+				it.ActiveTab = 0
+			}
+			if dropdownOpenContains(it.Tabs[it.ActiveTab].Contents, mpos) {
+				return true
+			}
+		}
+		if dropdownOpenContains(it.Contents, mpos) {
 			return true
 		}
 	}
