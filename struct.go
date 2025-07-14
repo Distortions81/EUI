@@ -7,6 +7,15 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+type Color color.RGBA
+
+func (c Color) RGBA() (r, g, b, a uint32) {
+	cc := color.RGBA(c)
+	return cc.RGBA()
+}
+
+func (c Color) ToRGBA() color.RGBA { return color.RGBA(c) }
+
 type windowData struct {
 	Title    string
 	Position point
@@ -29,13 +38,13 @@ type windowData struct {
 
 	// Visual customization
 	BGColor, TitleBGColor, TitleColor, TitleTextColor, BorderColor,
-	SizeTabColor, DragbarColor, CloseBGColor color.RGBA
+	SizeTabColor, DragbarColor, CloseBGColor Color
 
 	// Dragbar behavior
 	DragbarSpacing float32
 	ShowDragbar    bool
 
-	HoverTitleColor, HoverColor, ActiveColor color.RGBA
+	HoverTitleColor, HoverColor, ActiveColor Color
 
 	Contents []*itemData
 
@@ -92,7 +101,7 @@ type itemData struct {
 	AuxSpace          float32
 
 	TextColor, Color, HoverColor,
-	ClickColor, DisabledColor, CheckedColor color.RGBA
+	ClickColor, DisabledColor, CheckedColor Color
 
 	Action   func()
 	Contents []*itemData
@@ -112,7 +121,7 @@ type roundRect struct {
 	Size, Position point
 	Fillet, Border float32
 	Filled         bool
-	Color          color.RGBA
+	Color          Color
 }
 
 type rect struct {

@@ -1,7 +1,7 @@
 {
   "Window": {
-    "Border": 0,
-    "Outlined": false,
+    "Border": 1,
+    "Outlined": true,
     "Padding": 0,
     "BGColor": {
       "R": 32,

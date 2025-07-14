@@ -565,7 +565,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
 		tw, _ := text.Measure(valueText, face, 0)
 
-		trackWidth := maxSize.X - item.AuxSize.X - item.AuxSpace*3 - float32(tw)
+		trackWidth := maxSize.X - item.AuxSize.X - item.AuxSpace*4 - float32(tw)
 		if trackWidth < 0 {
 			trackWidth = 0
 		}
@@ -600,7 +600,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		loo := text.LayoutOptions{LineSpacing: 1.2, PrimaryAlign: text.AlignStart, SecondaryAlign: text.AlignCenter}
 		tdop := ebiten.DrawImageOptions{}
 		tdop.GeoM.Translate(
-			float64(offset.X+trackWidth+item.AuxSpace),
+			float64(offset.X+trackWidth+item.AuxSpace*2),
 			float64(offset.Y+(maxSize.Y/2)),
 		)
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
@@ -646,7 +646,8 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			item.TextColor)
 
 		if item.Open {
-			pendingDropdowns = append(pendingDropdowns, dropdownRender{item: item, offset: offset, clip: clip})
+			screenClip := rect{X0: 0, Y0: 0, X1: float32(screenWidth), Y1: float32(screenHeight)}
+			pendingDropdowns = append(pendingDropdowns, dropdownRender{item: item, offset: offset, clip: screenClip})
 		}
 
 	} else if item.ItemType == ITEM_TEXT {
@@ -804,7 +805,7 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 	screen.DrawTriangles(vertices, indices, whiteSubImage, op)
 }
 
-func drawTabShape(screen *ebiten.Image, pos point, size point, col color.RGBA) {
+func drawTabShape(screen *ebiten.Image, pos point, size point, col Color) {
 	var (
 		path     vector.Path
 		vertices []ebiten.Vertex
@@ -840,7 +841,7 @@ func drawTabShape(screen *ebiten.Image, pos point, size point, col color.RGBA) {
 	screen.DrawTriangles(vertices, indices, whiteSubImage, op)
 }
 
-func drawTriangle(screen *ebiten.Image, pos point, size float32, col color.RGBA) {
+func drawTriangle(screen *ebiten.Image, pos point, size float32, col Color) {
 	var (
 		path     vector.Path
 		vertices []ebiten.Vertex
