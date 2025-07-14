@@ -16,6 +16,7 @@ import (
 type dropdownRender struct {
 	item   *itemData
 	offset point
+	clip   rect
 }
 
 var pendingDropdowns []dropdownRender
@@ -33,7 +34,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 
 	for _, dr := range pendingDropdowns {
-		drawDropdownOptions(dr.item, dr.offset, screen)
+		drawDropdownOptions(dr.item, dr.offset, dr.clip, screen)
 	}
 
 	drawFPS(screen)
@@ -178,26 +179,33 @@ func (win *windowData) drawBorder(screen *ebiten.Image) {
 
 func (win *windowData) drawItems(screen *ebiten.Image) {
 	winPos := pointAdd(win.getPosition(), point{X: 0, Y: win.GetTitleSize()})
+	clip := win.getMainRect()
 
 	for _, item := range win.Contents {
 		itemPos := pointAdd(winPos, item.getPosition(win))
 
 		if item.ItemType == ITEM_FLOW {
-			item.drawFlows(nil, itemPos, screen)
+			item.drawFlows(nil, itemPos, clip, screen)
 		} else {
-			item.drawItem(nil, itemPos, screen)
+			item.drawItem(nil, itemPos, clip, screen)
 		}
 	}
 }
 
-func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.Image) {
+func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, screen *ebiten.Image) {
 	// Store the drawn rectangle for input handling
-	item.DrawRect = rect{
+	itemRect := rect{
 		X0: offset.X,
 		Y0: offset.Y,
 		X1: offset.X + item.GetSize().X,
 		Y1: offset.Y + item.GetSize().Y,
 	}
+	item.DrawRect = intersectRect(itemRect, clip)
+
+	if item.DrawRect.X1 <= item.DrawRect.X0 || item.DrawRect.Y1 <= item.DrawRect.Y0 {
+		return
+	}
+	subImg := screen.SubImage(item.DrawRect.getRectangle()).(*ebiten.Image)
 
 	var activeContents []*itemData
 	drawOffset := pointSub(offset, item.Scroll)
@@ -223,16 +231,16 @@ func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.I
 			if i == item.ActiveTab {
 				col = item.ClickColor
 			}
-			drawTabShape(screen, point{X: x, Y: offset.Y}, point{X: w, Y: tabHeight}, col)
+			drawTabShape(subImg, point{X: x, Y: offset.Y}, point{X: w, Y: tabHeight}, col)
 			loo := text.LayoutOptions{PrimaryAlign: text.AlignCenter, SecondaryAlign: text.AlignCenter}
 			dop := ebiten.DrawImageOptions{}
 			dop.GeoM.Translate(float64(x+w/2), float64(offset.Y+tabHeight/2))
-			text.Draw(screen, tab.Name, face, &text.DrawOptions{DrawImageOptions: dop, LayoutOptions: loo})
+			text.Draw(subImg, tab.Name, face, &text.DrawOptions{DrawImageOptions: dop, LayoutOptions: loo})
 			tab.DrawRect = rect{X0: x, Y0: offset.Y, X1: x + w, Y1: offset.Y + tabHeight}
 			x += w
 		}
 		drawOffset = pointAdd(drawOffset, point{Y: tabHeight})
-		vector.StrokeRect(screen,
+		vector.StrokeRect(subImg,
 			offset.X,
 			offset.Y+tabHeight,
 			item.GetSize().X,
@@ -253,7 +261,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.I
 			flowPos := pointAdd(drawOffset, item.GetPos())
 			flowOff := pointAdd(flowPos, flowOffset)
 			itemPos := pointAdd(flowOff, subItem.GetPos())
-			subItem.drawFlows(item, itemPos, screen)
+			subItem.drawFlows(item, itemPos, item.DrawRect, screen)
 		} else {
 			flowOff := pointAdd(drawOffset, flowOffset)
 
@@ -266,7 +274,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.I
 				}
 			}
 
-			subItem.drawItem(item, objOff, screen)
+			subItem.drawItem(item, objOff, item.DrawRect, screen)
 		}
 
 		if item.ItemType == ITEM_FLOW {
@@ -290,7 +298,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.I
 			if maxScroll > 0 {
 				pos = (item.Scroll.Y / maxScroll) * (size.Y - barH)
 			}
-			vector.DrawFilledRect(screen, item.DrawRect.X1-4, item.DrawRect.Y0+pos, 4, barH, color.RGBA{R: 96, G: 96, B: 96, A: 192}, false)
+			vector.DrawFilledRect(subImg, item.DrawRect.X1-4, item.DrawRect.Y0+pos, 4, barH, color.RGBA{R: 96, G: 96, B: 96, A: 192}, false)
 		} else if item.FlowType == FLOW_HORIZONTAL && req.X > size.X {
 			barW := size.X * size.X / req.X
 			maxScroll := req.X - size.X
@@ -298,12 +306,12 @@ func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.I
 			if maxScroll > 0 {
 				pos = (item.Scroll.X / maxScroll) * (size.X - barW)
 			}
-			vector.DrawFilledRect(screen, item.DrawRect.X0+pos, item.DrawRect.Y1-4, barW, 4, color.RGBA{R: 96, G: 96, B: 96, A: 192}, false)
+			vector.DrawFilledRect(subImg, item.DrawRect.X0+pos, item.DrawRect.Y1-4, barW, 4, color.RGBA{R: 96, G: 96, B: 96, A: 192}, false)
 		}
 	}
 }
 
-func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Image) {
+func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen *ebiten.Image) {
 
 	if parent == nil {
 		parent = item
@@ -316,13 +324,16 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 		maxSize.Y = parent.GetSize().Y
 	}
 
-	item.DrawRect = rect{
+	itemRect := rect{
 		X0: offset.X,
 		Y0: offset.Y,
 		X1: offset.X + maxSize.X,
 		Y1: offset.Y + maxSize.Y,
 	}
-
+	item.DrawRect = intersectRect(itemRect, clip)
+	if item.DrawRect.X1 <= item.DrawRect.X0 || item.DrawRect.Y1 <= item.DrawRect.Y0 {
+		return
+	}
 	subImg := screen.SubImage(item.DrawRect.getRectangle()).(*ebiten.Image)
 
 	if item.ItemType == ITEM_CHECKBOX {
@@ -349,14 +360,14 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 		if item.Checked {
 			xThick := 2 * uiScale
 			margin := auxSize.X * 0.25
-			vector.StrokeLine(screen,
+			vector.StrokeLine(subImg,
 				offset.X+margin,
 				offset.Y+margin,
 				offset.X+auxSize.X-margin,
 				offset.Y+auxSize.Y-margin,
 				xThick, item.TextColor, true)
 
-			vector.StrokeLine(screen,
+			vector.StrokeLine(subImg,
 				offset.X+auxSize.X-margin,
 				offset.Y+margin,
 				offset.X+margin,
@@ -627,7 +638,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 			item.TextColor)
 
 		if item.Open {
-			pendingDropdowns = append(pendingDropdowns, dropdownRender{item: item, offset: offset})
+			pendingDropdowns = append(pendingDropdowns, dropdownRender{item: item, offset: offset, clip: clip})
 		}
 
 	} else if item.ItemType == ITEM_TEXT {
@@ -665,7 +676,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 	}
 
 	if *debugMode {
-		vector.StrokeRect(screen,
+		vector.StrokeRect(subImg,
 			item.DrawRect.X0,
 			item.DrawRect.Y0,
 			item.DrawRect.X1-item.DrawRect.X0,
@@ -675,7 +686,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 
 }
 
-func drawDropdownOptions(item *itemData, offset point, screen *ebiten.Image) {
+func drawDropdownOptions(item *itemData, offset point, clip rect, screen *ebiten.Image) {
 	maxSize := item.GetSize()
 	optionH := maxSize.Y
 	visible := item.MaxVisible
@@ -688,6 +699,12 @@ func drawDropdownOptions(item *itemData, offset point, screen *ebiten.Image) {
 	textSize := (item.FontSize * uiScale) + 2
 	face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
 	loo := text.LayoutOptions{PrimaryAlign: text.AlignStart, SecondaryAlign: text.AlignCenter}
+	drawRect := rect{X0: offset.X, Y0: startY, X1: offset.X + maxSize.X, Y1: startY + optionH*float32(visible)}
+	visibleRect := intersectRect(drawRect, clip)
+	if visibleRect.X1 <= visibleRect.X0 || visibleRect.Y1 <= visibleRect.Y0 {
+		return
+	}
+	subImg := screen.SubImage(visibleRect.getRectangle()).(*ebiten.Image)
 	for i := first; i < first+visible && i < len(item.Options); i++ {
 		y := offY + float32(i-first)*optionH
 		col := item.Color
@@ -696,10 +713,10 @@ func drawDropdownOptions(item *itemData, offset point, screen *ebiten.Image) {
 		} else if i == item.HoverIndex {
 			col = item.HoverColor
 		}
-		drawRoundRect(screen, &roundRect{Size: maxSize, Position: point{X: offset.X, Y: y}, Fillet: item.Fillet, Filled: true, Color: col})
+		drawRoundRect(subImg, &roundRect{Size: maxSize, Position: point{X: offset.X, Y: y}, Fillet: item.Fillet, Filled: true, Color: col})
 		td := ebiten.DrawImageOptions{}
 		td.GeoM.Translate(float64(offset.X+item.BorderPad), float64(y+optionH/2))
-		text.Draw(screen, item.Options[i], face, &text.DrawOptions{DrawImageOptions: td, LayoutOptions: loo})
+		text.Draw(subImg, item.Options[i], face, &text.DrawOptions{DrawImageOptions: td, LayoutOptions: loo})
 	}
 }
 

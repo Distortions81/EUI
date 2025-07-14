@@ -55,3 +55,27 @@ func unionRect(a, b rect) rect {
 	}
 	return a
 }
+
+// intersectRect returns the overlapping area of a and b.
+// If there is no overlap, an empty rectangle is returned.
+func intersectRect(a, b rect) rect {
+	if a.X0 < b.X0 {
+		a.X0 = b.X0
+	}
+	if a.Y0 < b.Y0 {
+		a.Y0 = b.Y0
+	}
+	if a.X1 > b.X1 {
+		a.X1 = b.X1
+	}
+	if a.Y1 > b.Y1 {
+		a.Y1 = b.Y1
+	}
+	if a.X1 < a.X0 {
+		a.X1 = a.X0
+	}
+	if a.Y1 < a.Y0 {
+		a.Y1 = a.Y0
+	}
+	return a
+}
