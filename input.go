@@ -42,7 +42,7 @@ func (g *Game) Update() error {
 			continue
 		}
 
-		part := win.getWindowPart(mposOld, click)
+		part := win.getWindowPart(mpos, click)
 
 		if part != PART_NONE {
 

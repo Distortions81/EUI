@@ -1,299 +1,332 @@
 {
   "Window": {
-    "TitleHeight": 24,
     "Border": 1,
     "Outlined": true,
-    "Title": "",
-    "Position": {"X":0,"Y":0},
-    "Size": {"X":0,"Y":0},
-    "PinTo": 0,
     "Padding": 0,
-    "BGColor": {"R":16,"G":16,"B":16,"A":255},
-    "TitleBGColor": {"R":0,"G":0,"B":0,"A":0},
-    "TitleTextColor": {"R":255,"G":255,"B":255,"A":255},
-    "TitleColor": {"R":255,"G":255,"B":255,"A":255},
-    "CloseBGColor": {"R":0,"G":0,"B":0,"A":0},
-    "DragbarSpacing": 5,
+    "BGColor": {
+      "R": 16,
+      "G": 16,
+      "B": 16,
+      "A": 255
+    },
+    "TitleBGColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    },
+    "TitleTextColor": {
+      "R": 255,
+      "G": 255,
+      "B": 255,
+      "A": 255
+    },
+    "TitleColor": {
+      "R": 255,
+      "G": 255,
+      "B": 255,
+      "A": 255
+    },
+    "CloseBGColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    },
     "ShowDragbar": true,
-    "BorderColor": {"R":64,"G":64,"B":64,"A":255},
-    "SizeTabColor": {"R":48,"G":48,"B":48,"A":255},
-    "DragbarColor": {"R":64,"G":64,"B":64,"A":255},
-    "HoverTitleColor": {"R":64,"G":128,"B":128,"A":255},
-    "HoverColor": {"R":80,"G":80,"B":80,"A":255},
-    "ActiveColor": {"R":0,"G":128,"B":128,"A":255},
-    "Open": true,
-    "Hovered": false,
-    "Flow": false,
-    "Closable": true,
-    "Movable": true,
-    "Resizable": true,
-    "HoverClose": false,
-    "HoverDragbar": false,
-    "AutoSize": false,
-    "Contents": null
+    "BorderColor": {
+      "R": 64,
+      "G": 64,
+      "B": 64,
+      "A": 255
+    },
+    "SizeTabColor": {
+      "R": 48,
+      "G": 48,
+      "B": 48,
+      "A": 255
+    },
+    "DragbarColor": {
+      "R": 64,
+      "G": 64,
+      "B": 64,
+      "A": 255
+    },
+    "HoverTitleColor": {
+      "R": 64,
+      "G": 128,
+      "B": 128,
+      "A": 255
+    },
+    "HoverColor": {
+      "R": 80,
+      "G": 80,
+      "B": 80,
+      "A": 255
+    },
+    "ActiveColor": {
+      "R": 0,
+      "G": 128,
+      "B": 128,
+      "A": 255
+    }
   },
   "Button": {
-    "Text": "Button",
-    "ItemType": 3,
-    "Position": {"X":4,"Y":4},
-    "Size": {"X":128,"Y":64},
-    "Alignment": 0,
-    "PinTo": 0,
-    "FontSize": 12,
-    "LineSpace": 1.2,
-    "Value": 0,
-    "MinValue": 0,
-    "MaxValue": 0,
-    "IntOnly": false,
-    "RadioGroup": "",
-    "Hovered": false,
-    "Checked": false,
-    "Focused": false,
-    "Disabled": false,
-    "Invisible": false,
-    "Clicked": "0001-01-01T00:00:00Z",
-    "FlowType": 0,
-    "Scroll": {"X":0,"Y":0},
-    "Fixed": false,
-    "Scrollable": false,
-    "ImageName": "",
-    "Image": null,
     "Fillet": 8,
     "Border": 1,
     "BorderPad": 4,
     "Filled": true,
     "Outlined": true,
-    "AuxSize": {"X":0,"Y":0},
-    "AuxSpace": 0,
-    "TextColor": {"R":255,"G":255,"B":255,"A":255},
-    "Color": {"R":48,"G":48,"B":48,"A":255},
-    "HoverColor": {"R":48,"G":96,"B":96,"A":255},
-    "ClickColor": {"R":192,"G":64,"B":64,"A":255},
-    "DisabledColor": {"R":0,"G":0,"B":0,"A":0},
-    "CheckedColor": {"R":0,"G":0,"B":0,"A":0},
-    "Contents": null,
-    "Tabs": null,
-    "ActiveTab": 0,
-    "DrawRect": {"X0":0,"Y0":0,"X1":0,"Y1":0}
+    "TextColor": {
+      "R": 255,
+      "G": 255,
+      "B": 255,
+      "A": 255
+    },
+    "Color": {
+      "R": 48,
+      "G": 48,
+      "B": 48,
+      "A": 255
+    },
+    "HoverColor": {
+      "R": 48,
+      "G": 96,
+      "B": 96,
+      "A": 255
+    },
+    "ClickColor": {
+      "R": 192,
+      "G": 64,
+      "B": 64,
+      "A": 255
+    },
+    "DisabledColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    },
+    "CheckedColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    }
   },
   "Text": {
-    "Text": "Sample text:\nThe quick brown fox\njumps over the lazy dog.",
-    "ItemType": 2,
-    "Position": {"X":4,"Y":4},
-    "Size": {"X":128,"Y":128},
-    "Alignment": 0,
-    "PinTo": 0,
-    "FontSize": 24,
-    "LineSpace": 1.2,
-    "Value": 0,
-    "MinValue": 0,
-    "MaxValue": 0,
-    "IntOnly": false,
-    "RadioGroup": "",
-    "Hovered": false,
-    "Checked": false,
-    "Focused": false,
-    "Disabled": false,
-    "Invisible": false,
-    "Clicked": "0001-01-01T00:00:00Z",
-    "FlowType": 0,
-    "Scroll": {"X":0,"Y":0},
-    "Fixed": false,
-    "Scrollable": false,
-    "ImageName": "",
-    "Image": null,
     "Fillet": 0,
     "Border": 0,
     "BorderPad": 0,
     "Filled": false,
     "Outlined": false,
-    "AuxSize": {"X":0,"Y":0},
-    "AuxSpace": 0,
-    "TextColor": {"R":255,"G":255,"B":255,"A":255},
-    "Color": {"R":0,"G":0,"B":0,"A":0},
-    "HoverColor": {"R":0,"G":0,"B":0,"A":0},
-    "ClickColor": {"R":0,"G":0,"B":0,"A":0},
-    "DisabledColor": {"R":0,"G":0,"B":0,"A":0},
-    "CheckedColor": {"R":0,"G":0,"B":0,"A":0},
-    "Contents": null,
-    "Tabs": null,
-    "ActiveTab": 0,
-    "DrawRect": {"X0":0,"Y0":0,"X1":0,"Y1":0}
+    "TextColor": {
+      "R": 255,
+      "G": 255,
+      "B": 255,
+      "A": 255
+    },
+    "Color": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    },
+    "HoverColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    },
+    "ClickColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    },
+    "DisabledColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    },
+    "CheckedColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    }
   },
   "Checkbox": {
-    "Text": "Option 1",
-    "ItemType": 4,
-    "Position": {"X":4,"Y":4},
-    "Size": {"X":128,"Y":32},
-    "Alignment": 0,
-    "PinTo": 0,
-    "FontSize": 12,
-    "LineSpace": 1.2,
-    "Value": 0,
-    "MinValue": 0,
-    "MaxValue": 0,
-    "IntOnly": false,
-    "RadioGroup": "",
-    "Hovered": false,
-    "Checked": false,
-    "Focused": false,
-    "Disabled": false,
-    "Invisible": false,
-    "Clicked": "0001-01-01T00:00:00Z",
-    "FlowType": 0,
-    "Scroll": {"X":0,"Y":0},
-    "Fixed": false,
-    "Scrollable": false,
-    "ImageName": "",
-    "Image": null,
     "Fillet": 8,
     "Border": 1,
     "BorderPad": 4,
     "Filled": true,
     "Outlined": true,
-    "AuxSize": {"X":16,"Y":16},
-    "AuxSpace": 4,
-    "TextColor": {"R":255,"G":255,"B":255,"A":255},
-    "Color": {"R":48,"G":48,"B":48,"A":255},
-    "HoverColor": {"R":96,"G":96,"B":96,"A":255},
-    "ClickColor": {"R":0,"G":128,"B":128,"A":255},
-    "DisabledColor": {"R":0,"G":0,"B":0,"A":0},
-    "CheckedColor": {"R":0,"G":0,"B":0,"A":0},
-    "Contents": null,
-    "Tabs": null,
-    "ActiveTab": 0,
-    "DrawRect": {"X0":0,"Y0":0,"X1":0,"Y1":0}
+    "TextColor": {
+      "R": 255,
+      "G": 255,
+      "B": 255,
+      "A": 255
+    },
+    "Color": {
+      "R": 48,
+      "G": 48,
+      "B": 48,
+      "A": 255
+    },
+    "HoverColor": {
+      "R": 96,
+      "G": 96,
+      "B": 96,
+      "A": 255
+    },
+    "ClickColor": {
+      "R": 0,
+      "G": 128,
+      "B": 128,
+      "A": 255
+    },
+    "DisabledColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    },
+    "CheckedColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    }
   },
   "Radio": {
-    "Text": "Radio",
-    "ItemType": 5,
-    "Position": {"X":4,"Y":4},
-    "Size": {"X":128,"Y":32},
-    "Alignment": 0,
-    "PinTo": 0,
-    "FontSize": 12,
-    "LineSpace": 1.2,
-    "Value": 0,
-    "MinValue": 0,
-    "MaxValue": 0,
-    "IntOnly": false,
-    "RadioGroup": "",
-    "Hovered": false,
-    "Checked": false,
-    "Focused": false,
-    "Disabled": false,
-    "Invisible": false,
-    "Clicked": "0001-01-01T00:00:00Z",
-    "FlowType": 0,
-    "Scroll": {"X":0,"Y":0},
-    "Fixed": false,
-    "Scrollable": false,
-    "ImageName": "",
-    "Image": null,
     "Fillet": 8,
     "Border": 1,
     "BorderPad": 4,
     "Filled": true,
     "Outlined": true,
-    "AuxSize": {"X":16,"Y":16},
-    "AuxSpace": 4,
-    "TextColor": {"R":255,"G":255,"B":255,"A":255},
-    "Color": {"R":48,"G":48,"B":48,"A":255},
-    "HoverColor": {"R":96,"G":96,"B":96,"A":255},
-    "ClickColor": {"R":0,"G":128,"B":128,"A":255},
-    "DisabledColor": {"R":0,"G":0,"B":0,"A":0},
-    "CheckedColor": {"R":0,"G":0,"B":0,"A":0},
-    "Contents": null,
-    "Tabs": null,
-    "ActiveTab": 0,
-    "DrawRect": {"X0":0,"Y0":0,"X1":0,"Y1":0}
+    "TextColor": {
+      "R": 255,
+      "G": 255,
+      "B": 255,
+      "A": 255
+    },
+    "Color": {
+      "R": 48,
+      "G": 48,
+      "B": 48,
+      "A": 255
+    },
+    "HoverColor": {
+      "R": 96,
+      "G": 96,
+      "B": 96,
+      "A": 255
+    },
+    "ClickColor": {
+      "R": 0,
+      "G": 128,
+      "B": 128,
+      "A": 255
+    },
+    "DisabledColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    },
+    "CheckedColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    }
   },
   "Input": {
-    "Text": "",
-    "ItemType": 6,
-    "Position": {"X":4,"Y":4},
-    "Size": {"X":128,"Y":24},
-    "Alignment": 0,
-    "PinTo": 0,
-    "FontSize": 12,
-    "LineSpace": 1.2,
-    "Value": 0,
-    "MinValue": 0,
-    "MaxValue": 0,
-    "IntOnly": false,
-    "RadioGroup": "",
-    "Hovered": false,
-    "Checked": false,
-    "Focused": false,
-    "Disabled": false,
-    "Invisible": false,
-    "Clicked": "0001-01-01T00:00:00Z",
-    "FlowType": 0,
-    "Scroll": {"X":0,"Y":0},
-    "Fixed": false,
-    "Scrollable": false,
-    "ImageName": "",
-    "Image": null,
     "Fillet": 4,
     "Border": 0,
     "BorderPad": 2,
     "Filled": true,
     "Outlined": false,
-    "AuxSize": {"X":0,"Y":0},
-    "AuxSpace": 0,
-    "TextColor": {"R":255,"G":255,"B":255,"A":255},
-    "Color": {"R":48,"G":48,"B":48,"A":255},
-    "HoverColor": {"R":96,"G":96,"B":96,"A":255},
-    "ClickColor": {"R":0,"G":128,"B":128,"A":255},
-    "DisabledColor": {"R":0,"G":0,"B":0,"A":0},
-    "CheckedColor": {"R":0,"G":0,"B":0,"A":0},
-    "Contents": null,
-    "Tabs": null,
-    "ActiveTab": 0,
-    "DrawRect": {"X0":0,"Y0":0,"X1":0,"Y1":0}
+    "TextColor": {
+      "R": 255,
+      "G": 255,
+      "B": 255,
+      "A": 255
+    },
+    "Color": {
+      "R": 48,
+      "G": 48,
+      "B": 48,
+      "A": 255
+    },
+    "HoverColor": {
+      "R": 96,
+      "G": 96,
+      "B": 96,
+      "A": 255
+    },
+    "ClickColor": {
+      "R": 0,
+      "G": 128,
+      "B": 128,
+      "A": 255
+    },
+    "DisabledColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    },
+    "CheckedColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    }
   },
   "Slider": {
-    "Text": "",
-    "ItemType": 7,
-    "Position": {"X":4,"Y":4},
-    "Size": {"X":128,"Y":24},
-    "Alignment": 0,
-    "PinTo": 0,
-    "FontSize": 12,
-    "LineSpace": 0,
-    "Value": 0,
-    "MinValue": 0,
-    "MaxValue": 100,
-    "IntOnly": false,
-    "RadioGroup": "",
-    "Hovered": false,
-    "Checked": false,
-    "Focused": false,
-    "Disabled": false,
-    "Invisible": false,
-    "Clicked": "0001-01-01T00:00:00Z",
-    "FlowType": 0,
-    "Scroll": {"X":0,"Y":0},
-    "Fixed": false,
-    "Scrollable": false,
-    "ImageName": "",
-    "Image": null,
     "Fillet": 4,
     "Border": 1,
     "BorderPad": 2,
     "Filled": true,
     "Outlined": true,
-    "AuxSize": {"X":8,"Y":16},
-    "AuxSpace": 4,
-    "TextColor": {"R":255,"G":255,"B":255,"A":255},
-    "Color": {"R":48,"G":48,"B":48,"A":255},
-    "HoverColor": {"R":96,"G":96,"B":96,"A":255},
-    "ClickColor": {"R":0,"G":128,"B":128,"A":255},
-    "DisabledColor": {"R":0,"G":0,"B":0,"A":0},
-    "CheckedColor": {"R":0,"G":0,"B":0,"A":0},
-    "Contents": null,
-    "Tabs": null,
-    "ActiveTab": 0,
-    "DrawRect": {"X0":0,"Y0":0,"X1":0,"Y1":0}
+    "TextColor": {
+      "R": 255,
+      "G": 255,
+      "B": 255,
+      "A": 255
+    },
+    "Color": {
+      "R": 48,
+      "G": 48,
+      "B": 48,
+      "A": 255
+    },
+    "HoverColor": {
+      "R": 96,
+      "G": 96,
+      "B": 96,
+      "A": 255
+    },
+    "ClickColor": {
+      "R": 0,
+      "G": 128,
+      "B": 128,
+      "A": 255
+    },
+    "DisabledColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    },
+    "CheckedColor": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0
+    }
   }
 }

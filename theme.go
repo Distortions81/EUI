@@ -4,20 +4,32 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"reflect"
 	"sort"
 	"strings"
 )
 
-// Theme groups the default style data for all widgets.
-type Theme struct {
-	Window   windowData `json:"Window"`
-	Button   itemData   `json:"Button"`
-	Text     itemData   `json:"Text"`
-	Checkbox itemData   `json:"Checkbox"`
-	Radio    itemData   `json:"Radio"`
-	Input    itemData   `json:"Input"`
-	Slider   itemData   `json:"Slider"`
-	Dropdown itemData   `json:"Dropdown"`
+// applyJSON merges the JSON object data into the given struct by
+// only updating fields present in the JSON. This prevents missing
+// values from overwriting existing settings.
+func applyJSON(target interface{}, data json.RawMessage) error {
+	var obj map[string]json.RawMessage
+	if err := json.Unmarshal(data, &obj); err != nil {
+		return err
+	}
+	v := reflect.ValueOf(target).Elem()
+	for name, raw := range obj {
+		f := v.FieldByName(name)
+		if !f.IsValid() || !f.CanSet() {
+			continue
+		}
+		valPtr := reflect.New(f.Type())
+		if err := json.Unmarshal(raw, valPtr.Interface()); err != nil {
+			return err
+		}
+		f.Set(valPtr.Elem())
+	}
+	return nil
 }
 
 // LoadTheme reads a theme JSON file from the themes directory
@@ -28,8 +40,8 @@ func LoadTheme(name string) error {
 	if err != nil {
 		return err
 	}
-	var t Theme
-	if err := json.Unmarshal(data, &t); err != nil {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
 		return err
 	}
 
@@ -43,14 +55,46 @@ func LoadTheme(name string) error {
 	*defaultSlider = baseSlider
 	*defaultDropdown = baseDropdown
 
-	mergeData(defaultTheme, &t.Window)
-	mergeData(defaultButton, &t.Button)
-	mergeData(defaultText, &t.Text)
-	mergeData(defaultCheckbox, &t.Checkbox)
-	mergeData(defaultRadio, &t.Radio)
-	mergeData(defaultInput, &t.Input)
-	mergeData(defaultSlider, &t.Slider)
-	mergeData(defaultDropdown, &t.Dropdown)
+	if v, ok := raw["Window"]; ok {
+		if err := applyJSON(defaultTheme, v); err != nil {
+			return err
+		}
+	}
+	if v, ok := raw["Button"]; ok {
+		if err := applyJSON(defaultButton, v); err != nil {
+			return err
+		}
+	}
+	if v, ok := raw["Text"]; ok {
+		if err := applyJSON(defaultText, v); err != nil {
+			return err
+		}
+	}
+	if v, ok := raw["Checkbox"]; ok {
+		if err := applyJSON(defaultCheckbox, v); err != nil {
+			return err
+		}
+	}
+	if v, ok := raw["Radio"]; ok {
+		if err := applyJSON(defaultRadio, v); err != nil {
+			return err
+		}
+	}
+	if v, ok := raw["Input"]; ok {
+		if err := applyJSON(defaultInput, v); err != nil {
+			return err
+		}
+	}
+	if v, ok := raw["Slider"]; ok {
+		if err := applyJSON(defaultSlider, v); err != nil {
+			return err
+		}
+	}
+	if v, ok := raw["Dropdown"]; ok {
+		if err := applyJSON(defaultDropdown, v); err != nil {
+			return err
+		}
+	}
 
 	// Apply new defaults to all existing windows and items so that
 	// the currently displayed UI reflects the loaded theme.
