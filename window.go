@@ -30,8 +30,19 @@ func mergeData(original interface{}, updates interface{}) interface{} {
 		origField := origVal.Field(i)
 		updField := updVal.Field(i)
 
+		if !origField.CanSet() {
+			continue
+		}
+
+		// Booleans need to be copied even when false so themes can
+		// explicitly disable features like outlines or drag bars.
+		if updField.Kind() == reflect.Bool {
+			origField.Set(updField)
+			continue
+		}
+
 		// Check if the update field has a non-zero value
-		if !isZeroValue(updField) && origField.CanSet() {
+		if !isZeroValue(updField) {
 			// Set the original field to the update field's value
 			origField.Set(updField)
 		}
@@ -244,15 +255,15 @@ func (pin pinType) getItemPosition(win *windowData, item *itemData) point {
 }
 
 func (win *windowData) getPosition() point {
-       pos := win.PinTo.getWinPosition(win)
-       pos = pointAdd(pos, point{X: win.Margin * uiScale, Y: win.Margin * uiScale})
-       return pos
+	pos := win.PinTo.getWinPosition(win)
+	pos = pointAdd(pos, point{X: win.Margin * uiScale, Y: win.Margin * uiScale})
+	return pos
 }
 
 func (item *itemData) getPosition(win *windowData) point {
-       pos := item.PinTo.getItemPosition(win, item)
-       pos = pointAdd(pos, point{X: item.Margin * uiScale, Y: item.Margin * uiScale})
-       return pos
+	pos := item.PinTo.getItemPosition(win, item)
+	pos = pointAdd(pos, point{X: item.Margin * uiScale, Y: item.Margin * uiScale})
+	return pos
 }
 
 // Do the window items overlap?
