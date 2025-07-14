@@ -32,14 +32,14 @@ func LoadTheme(name string) error {
 	if err := json.Unmarshal(data, &t); err != nil {
 		return err
 	}
-	mergeData(defaultTheme, &t.Window)
-	mergeData(defaultButton, &t.Button)
-	mergeData(defaultText, &t.Text)
-	mergeData(defaultCheckbox, &t.Checkbox)
-	mergeData(defaultRadio, &t.Radio)
-	mergeData(defaultInput, &t.Input)
-	mergeData(defaultSlider, &t.Slider)
-	mergeData(defaultDropdown, &t.Dropdown)
+	*defaultTheme = t.Window
+	*defaultButton = t.Button
+	*defaultText = t.Text
+	*defaultCheckbox = t.Checkbox
+	*defaultRadio = t.Radio
+	*defaultInput = t.Input
+	*defaultSlider = t.Slider
+	*defaultDropdown = t.Dropdown
 	return nil
 }
 
