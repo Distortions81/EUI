@@ -1,15 +1,20 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
 var (
 	mposOld     point
 	cursorShape ebiten.CursorShapeType
+
+	dragPart dragType
+	dragWin  *windowData
 )
 
 func (g *Game) Update() error {
@@ -26,6 +31,11 @@ func (g *Game) Update() error {
 	}
 	clickTime := inpututil.MouseButtonPressDuration(ebiten.MouseButton0)
 	clickDrag := clickTime > 1
+
+	if !ebiten.IsMouseButtonPressed(ebiten.MouseButton0) {
+		dragPart = PART_NONE
+		dragWin = nil
+	}
 	//altClick := inpututil.IsMouseButtonJustPressed(ebiten.MouseButton1)
 
 	wx, wy := ebiten.Wheel()
@@ -42,70 +52,76 @@ func (g *Game) Update() error {
 			continue
 		}
 
-		part := win.getWindowPart(mpos, click)
+		var part dragType
+		if dragPart != PART_NONE && dragWin == win {
+			part = dragPart
+		} else {
+			part = win.getWindowPart(mpos, click)
+		}
 
 		if part != PART_NONE {
 
-			if c == ebiten.CursorShapeDefault {
-				if part == PART_BAR {
+			if dragPart == PART_NONE && c == ebiten.CursorShapeDefault {
+				switch part {
+				case PART_BAR:
 					c = ebiten.CursorShapeMove
-				} else if win.Resizable {
-					if part == PART_LEFT || part == PART_RIGHT {
-						c = ebiten.CursorShapeEWResize
-					} else if part == PART_TOP || part == PART_BOTTOM {
-						c = ebiten.CursorShapeNSResize
-					} else if part == PART_TOP_LEFT || part == PART_BOTTOM_RIGHT {
-						c = ebiten.CursorShapeNWSEResize
-					} else if part == PART_TOP_RIGHT || part == PART_BOTTOM_LEFT {
-						c = ebiten.CursorShapeNESWResize
-					}
+				case PART_LEFT, PART_RIGHT:
+					c = ebiten.CursorShapeEWResize
+				case PART_TOP, PART_BOTTOM:
+					c = ebiten.CursorShapeNSResize
+				case PART_TOP_LEFT, PART_BOTTOM_RIGHT:
+					c = ebiten.CursorShapeNWSEResize
+				case PART_TOP_RIGHT, PART_BOTTOM_LEFT:
+					c = ebiten.CursorShapeNESWResize
 				}
 			}
 
-			if click {
+			if click && dragPart == PART_NONE {
 				if part == PART_CLOSE {
 					win.RemoveWindow()
+					continue
 				}
-			} else if clickDrag {
-				if part == PART_BAR {
+				dragPart = part
+				dragWin = win
+			} else if clickDrag && dragPart != PART_NONE && dragWin == win {
+				switch dragPart {
+				case PART_BAR:
 					win.Position = pointAdd(win.Position, posCh)
-				} else if win.Resizable && part == PART_TOP {
+				case PART_TOP:
 					posCh.X = 0
 					sizeCh.X = 0
 					if !win.setSize(pointSub(win.Size, sizeCh)) {
 						win.Position = pointAdd(win.Position, posCh)
 					}
-				} else if win.Resizable && part == PART_BOTTOM {
+				case PART_BOTTOM:
 					sizeCh.X = 0
 					win.setSize(pointAdd(win.Size, sizeCh))
-				} else if win.Resizable && part == PART_LEFT {
+				case PART_LEFT:
 					posCh.Y = 0
 					sizeCh.Y = 0
 					if !win.setSize(pointSub(win.Size, sizeCh)) {
 						win.Position = pointAdd(win.Position, posCh)
 					}
-				} else if win.Resizable && part == PART_RIGHT {
+				case PART_RIGHT:
 					sizeCh.Y = 0
 					win.setSize(pointAdd(win.Size, sizeCh))
-					//Corner resize
-				} else if win.Resizable && part == PART_TOP_LEFT {
+				case PART_TOP_LEFT:
 					if !win.setSize(pointSub(win.Size, sizeCh)) {
 						win.Position = pointAdd(win.Position, posCh)
 					}
-				} else if win.Resizable && part == PART_TOP_RIGHT {
+				case PART_TOP_RIGHT:
 					tx := win.Size.X + sizeCh.X
 					ty := win.Size.Y - sizeCh.Y
 					if !win.setSize(point{X: tx, Y: ty}) {
 						win.Position.Y += posCh.Y
 					}
-				} else if win.Resizable && part == PART_BOTTOM_RIGHT {
+				case PART_BOTTOM_RIGHT:
 					tx := win.Size.X + sizeCh.X
 					ty := win.Size.Y + sizeCh.Y
 					win.setSize(point{X: tx, Y: ty})
-				} else if win.Resizable && part == PART_BOTTOM_LEFT {
+				case PART_BOTTOM_LEFT:
 					tx := win.Size.X - sizeCh.X
 					ty := win.Size.Y + sizeCh.Y
-
 					if !win.setSize(point{X: tx, Y: ty}) {
 						win.Position.X += posCh.X
 					}
@@ -343,7 +359,17 @@ func subUncheckRadio(list []*itemData, group string, except *itemData) {
 }
 
 func (item *itemData) setSliderValue(mpos point) {
-	width := item.DrawRect.X1 - item.DrawRect.X0 - item.AuxSize.X - item.AuxSpace*2
+	// Determine the width of the slider track accounting for the
+	// displayed value text to the right of the knob.
+	valueText := fmt.Sprintf("%.2f", item.Value)
+	if item.IntOnly {
+		valueText = fmt.Sprintf("%d", int(item.Value))
+	}
+	textSize := (item.FontSize * uiScale) + 2
+	face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
+	tw, _ := text.Measure(valueText, face, 0)
+
+	width := item.DrawRect.X1 - item.DrawRect.X0 - item.AuxSize.X - item.AuxSpace*3 - float32(tw)
 	if width <= 0 {
 		return
 	}

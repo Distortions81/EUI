@@ -9,8 +9,8 @@ func (win *windowData) getWinRect() rect {
 	return rect{
 		X0: winPos.X,
 		Y0: winPos.Y,
-		X1: winPos.X + (win.GetSize().X),
-		Y1: winPos.Y + (win.GetSize().Y) - (win.GetTitleSize()),
+		X1: winPos.X + win.GetSize().X,
+		Y1: winPos.Y + win.GetSize().Y,
 	}
 }
 
