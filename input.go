@@ -219,10 +219,22 @@ func (item *itemData) clickFlows(mpos point, click bool) {
 }
 
 func (item *itemData) clickItem(mpos point, click bool) {
-	// If the mouse isn't within the item, just return
-	if !item.DrawRect.containsPoint(mpos) {
-		return
-	}
+        // For dropdowns check the expanded option area as well
+        if !item.DrawRect.containsPoint(mpos) {
+                if !(item.ItemType == ITEM_DROPDOWN && item.Open && func() bool {
+                        optionH := item.GetSize().Y
+                        visible := item.MaxVisible
+                        if visible <= 0 {
+                                visible = 5
+                        }
+                        startY := item.DrawRect.Y1
+                        openHeight := optionH * float32(visible)
+                        r := rect{X0: item.DrawRect.X0, Y0: startY, X1: item.DrawRect.X1, Y1: startY + openHeight}
+                        return r.containsPoint(mpos)
+                }()) {
+                        return
+                }
+        }
 
 	if click {
 		item.Clicked = time.Now()
