@@ -3,13 +3,13 @@ package main
 import "image/color"
 
 var defaultTheme = &windowData{
-       TitleHeight:     24,
-       Border:          1,
-       Outlined:        true,
-       Fillet:          4,
-       Padding:         0,
-       Margin:          0,
-       BorderPad:       0,
+	TitleHeight:     24,
+	Border:          1,
+	Outlined:        true,
+	Fillet:          4,
+	Padding:         0,
+	Margin:          0,
+	BorderPad:       0,
 	TitleColor:      color.RGBA{R: 255, G: 255, B: 255, A: 255},
 	TitleTextColor:  color.RGBA{R: 255, G: 255, B: 255, A: 255},
 	TitleBGColor:    color.RGBA{R: 0, G: 0, B: 0, A: 0},
@@ -28,18 +28,18 @@ var defaultTheme = &windowData{
 }
 
 var defaultButton = &itemData{
-        Text:      "Button",
-        ItemType:  ITEM_BUTTON,
-        Size:      point{X: 128, Y: 64},
-        Position:  point{X: 4, Y: 4},
-        FontSize:  12,
-        LineSpace: 1.2,
+	Text:      "Button",
+	ItemType:  ITEM_BUTTON,
+	Size:      point{X: 128, Y: 64},
+	Position:  point{X: 4, Y: 4},
+	FontSize:  12,
+	LineSpace: 1.2,
 
-       Padding: 0,
-       Margin:  0,
+	Padding: 0,
+	Margin:  0,
 
-        Fillet: 8,
-        Filled: true, Outlined: true,
+	Fillet: 8,
+	Filled: true, Outlined: true,
 	Border:    1,
 	BorderPad: 4,
 
@@ -54,10 +54,10 @@ var defaultText = &itemData{
 	ItemType:  ITEM_TEXT,
 	Size:      point{X: 128, Y: 128},
 	Position:  point{X: 4, Y: 4},
-       FontSize:  24,
-       LineSpace: 1.2,
-       Padding:   0,
-       Margin:    0,
+	FontSize:  24,
+	LineSpace: 1.2,
+	Padding:   0,
+	Margin:    0,
 	TextColor: color.RGBA{R: 255, G: 255, B: 255, A: 255},
 }
 
@@ -67,11 +67,11 @@ var defaultCheckbox = &itemData{
 	Size:      point{X: 128, Y: 32},
 	Position:  point{X: 4, Y: 4},
 	AuxSize:   point{X: 16, Y: 16},
-       AuxSpace:  4,
-       FontSize:  12,
-       LineSpace: 1.2,
-       Padding:   0,
-       Margin:    0,
+	AuxSpace:  4,
+	FontSize:  12,
+	LineSpace: 1.2,
+	Padding:   0,
+	Margin:    0,
 
 	Fillet: 8,
 	Filled: true, Outlined: true,
@@ -88,10 +88,10 @@ var defaultInput = &itemData{
 	ItemType:  ITEM_INPUT,
 	Size:      point{X: 128, Y: 24},
 	Position:  point{X: 4, Y: 4},
-       FontSize:  12,
-       LineSpace: 1.2,
-       Padding:   0,
-       Margin:    0,
+	FontSize:  12,
+	LineSpace: 1.2,
+	Padding:   0,
+	Margin:    0,
 
 	Fillet: 4,
 	Filled: true, Outlined: false,
@@ -110,11 +110,11 @@ var defaultRadio = &itemData{
 	Size:      point{X: 128, Y: 32},
 	Position:  point{X: 4, Y: 4},
 	AuxSize:   point{X: 16, Y: 16},
-       AuxSpace:  4,
-       FontSize:  12,
-       LineSpace: 1.2,
-       Padding:   0,
-       Margin:    0,
+	AuxSpace:  4,
+	FontSize:  12,
+	LineSpace: 1.2,
+	Padding:   0,
+	Margin:    0,
 
 	Fillet: 8,
 	Filled: true, Outlined: true,
@@ -132,10 +132,10 @@ var defaultSlider = &itemData{
 	Size:     point{X: 128, Y: 24},
 	Position: point{X: 4, Y: 4},
 	AuxSize:  point{X: 8, Y: 16},
-       AuxSpace: 4,
-       FontSize: 12,
-       Padding:  0,
-       Margin:   0,
+	AuxSpace: 4,
+	FontSize: 12,
+	Padding:  0,
+	Margin:   0,
 
 	MinValue: 0,
 	MaxValue: 100,
@@ -157,9 +157,9 @@ var defaultDropdown = &itemData{
 	ItemType: ITEM_DROPDOWN,
 	Size:     point{X: 128, Y: 24},
 	Position: point{X: 4, Y: 4},
-       FontSize: 12,
-       Padding:  0,
-       Margin:   0,
+	FontSize: 12,
+	Padding:  0,
+	Margin:   0,
 
 	Fillet: 4,
 	Filled: true, Outlined: true,
@@ -176,12 +176,22 @@ var defaultDropdown = &itemData{
 // base copies preserve the initial defaults so that LoadTheme can reset
 // to these values before applying theme overrides.
 var (
-    baseWindow   = *defaultTheme
-    baseButton   = *defaultButton
-    baseText     = *defaultText
-    baseCheckbox = *defaultCheckbox
-    baseRadio    = *defaultRadio
-    baseInput    = *defaultInput
-    baseSlider   = *defaultSlider
-    baseDropdown = *defaultDropdown
+	baseWindow   = *defaultTheme
+	baseButton   = *defaultButton
+	baseText     = *defaultText
+	baseCheckbox = *defaultCheckbox
+	baseRadio    = *defaultRadio
+	baseInput    = *defaultInput
+	baseSlider   = *defaultSlider
+	baseDropdown = *defaultDropdown
+	baseTheme    = &Theme{
+		Window:   baseWindow,
+		Button:   baseButton,
+		Text:     baseText,
+		Checkbox: baseCheckbox,
+		Radio:    baseRadio,
+		Input:    baseInput,
+		Slider:   baseSlider,
+		Dropdown: baseDropdown,
+	}
 )

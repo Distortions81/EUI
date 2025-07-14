@@ -16,14 +16,15 @@ var (
 	screenWidth  = 1024
 	screenHeight = 1024
 
-	signalHandle    chan os.Signal
-	mplusFaceSource *text.GoTextFaceSource
-	windows         []*windowData
-	activeWindow    *windowData
-	focusedItem     *itemData
-	uiScale         float32 = 1.0
-	currentTheme    string
-	clickFlash      = time.Millisecond * 100
+	signalHandle     chan os.Signal
+	mplusFaceSource  *text.GoTextFaceSource
+	windows          []*windowData
+	activeWindow     *windowData
+	focusedItem      *itemData
+	uiScale          float32 = 1.0
+	currentTheme     *Theme
+	currentThemeName string
+	clickFlash       = time.Millisecond * 100
 
 	whiteImage    = ebiten.NewImage(3, 3)
 	whiteSubImage = whiteImage.SubImage(image.Rect(1, 1, 2, 2)).(*ebiten.Image)
