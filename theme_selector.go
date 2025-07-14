@@ -13,14 +13,13 @@ func makeThemeSelector() *windowData {
 	}
 	win := NewWindow(&windowData{
 		Title:     "Themes",
-		PinTo:     PIN_TOP_RIGHT,
-		Movable:   false,
-		Resizable: false,
-		Closable:  false,
+		Movable:   true,
+		Resizable: true,
+		Closable:  true,
 		// Give the dropdown room to fully render by accounting for the
 		// title bar height and the control's size.
 		Size:     point{X: 192, Y: 160},
-		Position: point{X: 4, Y: 4},
+		Position: point{X: float32(screenWidth) - 200, Y: 4},
 		Open:     true,
 	})
 	dd := NewDropdown(&itemData{Size: point{X: 150, Y: 24}, FontSize: 8})
