@@ -23,7 +23,6 @@ type Theme struct {
 	Input    itemData
 	Slider   itemData
 	Dropdown itemData
-	Tab      itemData
 }
 
 // LoadTheme reads a theme JSON file from the themes directory and
@@ -144,10 +143,6 @@ func applyThemeToItem(it *itemData) {
 	}
 	var src *itemData
 	switch it.ItemType {
-	case ITEM_FLOW:
-		if len(it.Tabs) > 0 {
-			src = &currentTheme.Tab
-		}
 	case ITEM_BUTTON:
 		src = &currentTheme.Button
 	case ITEM_TEXT:

@@ -35,9 +35,9 @@ func (parent *windowData) addItemTo(item *itemData) {
 func (win *windowData) getMainRect() rect {
 	return rect{
 		X0: win.getPosition().X,
-		Y0: win.getPosition().Y + win.GetTitleSize(),
+		Y0: win.getPosition().Y + (win.GetTitleSize()) + 1,
 		X1: win.getPosition().X + win.GetSize().X,
-		Y1: win.getPosition().Y + win.GetSize().Y,
+		Y1: win.getPosition().Y + win.GetSize().Y - (win.GetTitleSize()),
 	}
 }
 
