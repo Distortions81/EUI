@@ -28,7 +28,7 @@ var defaultTheme = &windowData{
 }
 
 var defaultButton = &itemData{
-	Text:      "Button",
+	Text:      "",
 	ItemType:  ITEM_BUTTON,
 	Size:      point{X: 128, Y: 64},
 	Position:  point{X: 4, Y: 4},
@@ -50,7 +50,7 @@ var defaultButton = &itemData{
 }
 
 var defaultText = &itemData{
-	Text:      "Sample text:\nThe quick brown fox\njumps over the lazy dog.",
+	Text:      "",
 	ItemType:  ITEM_TEXT,
 	Size:      point{X: 128, Y: 128},
 	Position:  point{X: 4, Y: 4},
@@ -62,7 +62,7 @@ var defaultText = &itemData{
 }
 
 var defaultCheckbox = &itemData{
-	Text:      "Option 1",
+	Text:      "",
 	ItemType:  ITEM_CHECKBOX,
 	Size:      point{X: 128, Y: 32},
 	Position:  point{X: 4, Y: 4},
@@ -105,7 +105,7 @@ var defaultInput = &itemData{
 }
 
 var defaultRadio = &itemData{
-	Text:      "Radio",
+	Text:      "",
 	ItemType:  ITEM_RADIO,
 	Size:      point{X: 128, Y: 32},
 	Position:  point{X: 4, Y: 4},

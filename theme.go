@@ -80,11 +80,34 @@ func applyThemeToAll() {
 
 // applyThemeToWindow merges the current theme's window settings into the given
 // window and recursively updates contained items.
+func copyWindowStyle(dst, src *windowData) {
+	dst.Padding = src.Padding
+	dst.Margin = src.Margin
+	dst.Border = src.Border
+	dst.BorderPad = src.BorderPad
+	dst.Fillet = src.Fillet
+	dst.Outlined = src.Outlined
+	dst.TitleHeight = src.TitleHeight
+	dst.BGColor = src.BGColor
+	dst.TitleBGColor = src.TitleBGColor
+	dst.TitleColor = src.TitleColor
+	dst.TitleTextColor = src.TitleTextColor
+	dst.BorderColor = src.BorderColor
+	dst.SizeTabColor = src.SizeTabColor
+	dst.DragbarColor = src.DragbarColor
+	dst.CloseBGColor = src.CloseBGColor
+	dst.DragbarSpacing = src.DragbarSpacing
+	dst.ShowDragbar = src.ShowDragbar
+	dst.HoverTitleColor = src.HoverTitleColor
+	dst.HoverColor = src.HoverColor
+	dst.ActiveColor = src.ActiveColor
+}
+
 func applyThemeToWindow(win *windowData) {
 	if win == nil || currentTheme == nil {
 		return
 	}
-	mergeData(win, &currentTheme.Window)
+	copyWindowStyle(win, &currentTheme.Window)
 	win.Theme = currentTheme
 	for _, item := range win.Contents {
 		applyThemeToItem(item)
@@ -93,6 +116,29 @@ func applyThemeToWindow(win *windowData) {
 
 // applyThemeToItem merges style data from the current theme based on item type
 // and recursively processes child items.
+func copyItemStyle(dst, src *itemData) {
+	dst.Padding = src.Padding
+	dst.Margin = src.Margin
+	dst.Fillet = src.Fillet
+	dst.Border = src.Border
+	dst.BorderPad = src.BorderPad
+	dst.Filled = src.Filled
+	dst.Outlined = src.Outlined
+	dst.AuxSize = src.AuxSize
+	dst.AuxSpace = src.AuxSpace
+	dst.FontSize = src.FontSize
+	dst.LineSpace = src.LineSpace
+	dst.TextColor = src.TextColor
+	dst.Color = src.Color
+	dst.HoverColor = src.HoverColor
+	dst.ClickColor = src.ClickColor
+	dst.DisabledColor = src.DisabledColor
+	dst.CheckedColor = src.CheckedColor
+	if src.MaxVisible != 0 {
+		dst.MaxVisible = src.MaxVisible
+	}
+}
+
 func applyThemeToItem(it *itemData) {
 	if it == nil || currentTheme == nil {
 		return
@@ -115,7 +161,7 @@ func applyThemeToItem(it *itemData) {
 		src = &currentTheme.Dropdown
 	}
 	if src != nil {
-		mergeData(it, src)
+		copyItemStyle(it, src)
 	}
 	for _, child := range it.Contents {
 		applyThemeToItem(child)
