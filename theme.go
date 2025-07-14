@@ -1,12 +1,17 @@
 package main
 
 import (
+	"embed"
 	"encoding/json"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
 )
+
+//go:embed themes/*.json
+var embeddedThemes embed.FS
 
 // Theme bundles all style information for windows and widgets.
 type Theme struct {
@@ -23,10 +28,13 @@ type Theme struct {
 // LoadTheme reads a theme JSON file from the themes directory and
 // sets it as the current theme without modifying existing windows.
 func LoadTheme(name string) error {
-	file := filepath.Join("themes", name+".json")
-	data, err := os.ReadFile(file)
+	data, err := embeddedThemes.ReadFile(filepath.Join("themes", name+".json"))
 	if err != nil {
-		return err
+		file := filepath.Join("themes", name+".json")
+		data, err = os.ReadFile(file)
+		if err != nil {
+			return err
+		}
 	}
 	// Start with the compiled in defaults
 	th := *baseTheme
@@ -41,9 +49,12 @@ func LoadTheme(name string) error {
 
 // listThemes returns the available theme names from the themes directory
 func listThemes() ([]string, error) {
-	entries, err := os.ReadDir("themes")
+	entries, err := fs.ReadDir(embeddedThemes, "themes")
 	if err != nil {
-		return nil, err
+		entries, err = os.ReadDir("themes")
+		if err != nil {
+			return nil, err
+		}
 	}
 	names := []string{}
 	for _, e := range entries {
