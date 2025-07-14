@@ -10,12 +10,18 @@
       "A": 255
     },
     "TitleBGColor": {
+      "R": 224,
+      "G": 224,
+      "B": 224,
+      "A": 255
+    },
+    "TitleColor": {
       "R": 0,
       "G": 0,
       "B": 0,
-      "A": 0
+      "A": 255
     },
-    "TitleColor": {
+    "TitleTextColor": {
       "R": 0,
       "G": 0,
       "B": 0,
@@ -34,9 +40,9 @@
       "A": 255
     },
     "DragbarColor": {
-      "R": 192,
-      "G": 192,
-      "B": 192,
+      "R": 64,
+      "G": 64,
+      "B": 64,
       "A": 255
     },
     "HoverTitleColor": {
@@ -56,7 +62,8 @@
       "G": 128,
       "B": 192,
       "A": 255
-    }
+    },
+    "ShowDragbar": true
   },
   "Button": {
     "Fillet": 8,

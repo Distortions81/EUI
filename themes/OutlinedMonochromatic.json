@@ -3,12 +3,54 @@
     "Border": 1,
     "Outlined": true,
     "Padding": 0,
-    "BGColor": { "HSV": [210, 0.4, 0.6, 1] },
-    "TitleBGColor": { "HSV": [210, 0.5, 0.3, 1] },
-    "TitleColor": { "HSV": [210, 0.3, 0.9, 1] },
-    "BorderColor": { "HSV": [210, 0.5, 0.35, 1] },
-    "SizeTabColor": { "HSV": [210, 0.4, 0.65, 1] },
-    "DragbarColor": { "HSV": [210, 0.5, 0.35, 1] },
+    "BGColor": {
+      "HSV": [
+        210,
+        0.4,
+        0.6,
+        1
+      ]
+    },
+    "TitleBGColor": {
+      "HSV": [
+        210,
+        0.5,
+        0.3,
+        1
+      ]
+    },
+    "TitleColor": {
+      "HSV": [
+        210,
+        0.3,
+        0.9,
+        1
+      ]
+    },
+    "BorderColor": {
+      "HSV": [
+        210,
+        0.5,
+        0.35,
+        1
+      ]
+    },
+    "SizeTabColor": {
+      "HSV": [
+        210,
+        0.4,
+        0.65,
+        1
+      ]
+    },
+    "DragbarColor": {
+      "HSV": [
+        210,
+        0.5,
+        0.35,
+        1
+      ]
+    },
     "HoverTitleColor": {
       "R": 60,
       "G": 60,
@@ -26,7 +68,8 @@
       "G": 80,
       "B": 80,
       "A": 255
-    }
+    },
+    "ShowDragbar": true
   },
   "Button": {
     "Fillet": 8,
@@ -34,10 +77,38 @@
     "BorderPad": 4,
     "Filled": true,
     "Outlined": false,
-    "TextColor": { "HSV": [210, 0.3, 0.9, 1] },
-    "Color": { "HSV": [210, 0.4, 0.65, 1] },
-    "HoverColor": { "HSV": [210, 0.3, 0.75, 1] },
-    "ClickColor": { "HSV": [210, 0.7, 0.6, 1] },
+    "TextColor": {
+      "HSV": [
+        210,
+        0.3,
+        0.9,
+        1
+      ]
+    },
+    "Color": {
+      "HSV": [
+        210,
+        0.4,
+        0.65,
+        1
+      ]
+    },
+    "HoverColor": {
+      "HSV": [
+        210,
+        0.3,
+        0.75,
+        1
+      ]
+    },
+    "ClickColor": {
+      "HSV": [
+        210,
+        0.7,
+        0.6,
+        1
+      ]
+    },
     "DisabledColor": {
       "R": 0,
       "G": 0,
@@ -57,7 +128,14 @@
     "BorderPad": 0,
     "Filled": false,
     "Outlined": false,
-    "TextColor": { "HSV": [210, 0.3, 0.9, 1] },
+    "TextColor": {
+      "HSV": [
+        210,
+        0.3,
+        0.9,
+        1
+      ]
+    },
     "Color": {
       "R": 0,
       "G": 0,
@@ -95,10 +173,38 @@
     "BorderPad": 4,
     "Filled": true,
     "Outlined": false,
-    "TextColor": { "HSV": [210, 0.3, 0.9, 1] },
-    "Color": { "HSV": [210, 0.4, 0.65, 1] },
-    "HoverColor": { "HSV": [210, 0.3, 0.75, 1] },
-    "ClickColor": { "HSV": [210, 0.7, 0.6, 1] },
+    "TextColor": {
+      "HSV": [
+        210,
+        0.3,
+        0.9,
+        1
+      ]
+    },
+    "Color": {
+      "HSV": [
+        210,
+        0.4,
+        0.65,
+        1
+      ]
+    },
+    "HoverColor": {
+      "HSV": [
+        210,
+        0.3,
+        0.75,
+        1
+      ]
+    },
+    "ClickColor": {
+      "HSV": [
+        210,
+        0.7,
+        0.6,
+        1
+      ]
+    },
     "DisabledColor": {
       "R": 0,
       "G": 0,
@@ -118,10 +224,38 @@
     "BorderPad": 4,
     "Filled": true,
     "Outlined": false,
-    "TextColor": { "HSV": [210, 0.3, 0.9, 1] },
-    "Color": { "HSV": [210, 0.4, 0.65, 1] },
-    "HoverColor": { "HSV": [210, 0.3, 0.75, 1] },
-    "ClickColor": { "HSV": [210, 0.7, 0.6, 1] },
+    "TextColor": {
+      "HSV": [
+        210,
+        0.3,
+        0.9,
+        1
+      ]
+    },
+    "Color": {
+      "HSV": [
+        210,
+        0.4,
+        0.65,
+        1
+      ]
+    },
+    "HoverColor": {
+      "HSV": [
+        210,
+        0.3,
+        0.75,
+        1
+      ]
+    },
+    "ClickColor": {
+      "HSV": [
+        210,
+        0.7,
+        0.6,
+        1
+      ]
+    },
     "DisabledColor": {
       "R": 0,
       "G": 0,
@@ -141,10 +275,38 @@
     "BorderPad": 2,
     "Filled": true,
     "Outlined": false,
-    "TextColor": { "HSV": [210, 0.3, 0.9, 1] },
-    "Color": { "HSV": [210, 0.4, 0.65, 1] },
-    "HoverColor": { "HSV": [210, 0.3, 0.75, 1] },
-    "ClickColor": { "HSV": [210, 0.7, 0.6, 1] },
+    "TextColor": {
+      "HSV": [
+        210,
+        0.3,
+        0.9,
+        1
+      ]
+    },
+    "Color": {
+      "HSV": [
+        210,
+        0.4,
+        0.65,
+        1
+      ]
+    },
+    "HoverColor": {
+      "HSV": [
+        210,
+        0.3,
+        0.75,
+        1
+      ]
+    },
+    "ClickColor": {
+      "HSV": [
+        210,
+        0.7,
+        0.6,
+        1
+      ]
+    },
     "DisabledColor": {
       "R": 0,
       "G": 0,
@@ -164,10 +326,38 @@
     "BorderPad": 2,
     "Filled": true,
     "Outlined": false,
-    "TextColor": { "HSV": [210, 0.3, 0.9, 1] },
-    "Color": { "HSV": [210, 0.4, 0.65, 1] },
-    "HoverColor": { "HSV": [210, 0.3, 0.75, 1] },
-    "ClickColor": { "HSV": [210, 0.7, 0.6, 1] },
+    "TextColor": {
+      "HSV": [
+        210,
+        0.3,
+        0.9,
+        1
+      ]
+    },
+    "Color": {
+      "HSV": [
+        210,
+        0.4,
+        0.65,
+        1
+      ]
+    },
+    "HoverColor": {
+      "HSV": [
+        210,
+        0.3,
+        0.75,
+        1
+      ]
+    },
+    "ClickColor": {
+      "HSV": [
+        210,
+        0.7,
+        0.6,
+        1
+      ]
+    },
     "DisabledColor": {
       "R": 0,
       "G": 0,
