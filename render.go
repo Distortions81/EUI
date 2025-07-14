@@ -10,44 +10,44 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
-        "github.com/hajimehoshi/ebiten/v2/vector"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
 type dropdownRender struct {
-        item   *itemData
-        offset point
+	item   *itemData
+	offset point
 }
 
 var pendingDropdowns []dropdownRender
 
 func (g *Game) Draw(screen *ebiten.Image) {
 
-        pendingDropdowns = pendingDropdowns[:0]
+	pendingDropdowns = pendingDropdowns[:0]
 
-        for _, win := range windows {
-                if !win.Open {
-                        continue
-                }
+	for _, win := range windows {
+		if !win.Open {
+			continue
+		}
 
-                win.Draw(screen)
-        }
+		win.Draw(screen)
+	}
 
-        for _, dr := range pendingDropdowns {
-                drawDropdownOptions(dr.item, dr.offset, screen)
-        }
+	for _, dr := range pendingDropdowns {
+		drawDropdownOptions(dr.item, dr.offset, screen)
+	}
 
-        drawFPS(screen)
+	drawFPS(screen)
 }
 
 func (win *windowData) Draw(screen *ebiten.Image) {
-        win.drawBG(screen)
-        win.drawItems(screen)
-        titleArea := screen.SubImage(win.getTitleRect().getRectangle()).(*ebiten.Image)
-        win.drawWinTitle(titleArea)
-        windowArea := screen.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
-        //win.drawResizeTab(windowArea)
-        win.drawBorder(windowArea)
-        win.drawDebug(screen)
+	win.drawBG(screen)
+	win.drawItems(screen)
+	titleArea := screen.SubImage(win.getTitleRect().getRectangle()).(*ebiten.Image)
+	win.drawWinTitle(titleArea)
+	windowArea := screen.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
+	//win.drawResizeTab(windowArea)
+	win.drawBorder(windowArea)
+	win.drawDebug(screen)
 }
 
 func (win *windowData) drawBG(screen *ebiten.Image) {
@@ -177,17 +177,17 @@ func (win *windowData) drawBorder(screen *ebiten.Image) {
 }
 
 func (win *windowData) drawItems(screen *ebiten.Image) {
-        winPos := pointAdd(win.getPosition(), point{X: 0, Y: win.GetTitleSize()})
+	winPos := pointAdd(win.getPosition(), point{X: 0, Y: win.GetTitleSize()})
 
-        for _, item := range win.Contents {
-                itemPos := pointAdd(winPos, item.getPosition(win))
+	for _, item := range win.Contents {
+		itemPos := pointAdd(winPos, item.getPosition(win))
 
-                if item.ItemType == ITEM_FLOW {
-                        item.drawFlows(nil, itemPos, screen)
-                } else {
-                        item.drawItem(nil, itemPos, screen)
-                }
-        }
+		if item.ItemType == ITEM_FLOW {
+			item.drawFlows(nil, itemPos, screen)
+		} else {
+			item.drawItem(nil, itemPos, screen)
+		}
+	}
 }
 
 func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.Image) {
@@ -198,8 +198,6 @@ func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.I
 		X1: offset.X + item.GetSize().X,
 		Y1: offset.Y + item.GetSize().Y,
 	}
-
-	vector.StrokeRect(screen, offset.X, offset.Y, item.GetSize().X, item.GetSize().Y, 1, color.RGBA{R: 32, G: 32, B: 32}, false)
 
 	var activeContents []*itemData
 	drawOffset := pointSub(offset, item.Scroll)
@@ -234,6 +232,14 @@ func (item *itemData) drawFlows(parent *itemData, offset point, screen *ebiten.I
 			x += w
 		}
 		drawOffset = pointAdd(drawOffset, point{Y: tabHeight})
+		vector.StrokeRect(screen,
+			offset.X,
+			offset.Y+tabHeight,
+			item.GetSize().X,
+			item.GetSize().Y-tabHeight,
+			1,
+			item.Color,
+			false)
 		activeContents = item.Tabs[item.ActiveTab].Contents
 	} else {
 		activeContents = item.Contents
@@ -342,20 +348,19 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 
 		if item.Checked {
 			xThick := 2 * uiScale
+			margin := auxSize.X * 0.25
 			vector.StrokeLine(screen,
-				offset.X+item.AuxSize.X/2,
-				offset.Y+item.AuxSize.Y/2,
-
-				offset.X+item.AuxSize.X*1.5,
-				offset.Y+item.AuxSize.Y*1.5,
+				offset.X+margin,
+				offset.Y+margin,
+				offset.X+auxSize.X-margin,
+				offset.Y+auxSize.Y-margin,
 				xThick, item.TextColor, true)
 
 			vector.StrokeLine(screen,
-				offset.X+item.AuxSize.X*1.5,
-				offset.Y+item.AuxSize.Y/2,
-
-				offset.X+item.AuxSize.X/2,
-				offset.Y+item.AuxSize.Y*1.5,
+				offset.X+auxSize.X-margin,
+				offset.Y+margin,
+				offset.X+margin,
+				offset.Y+auxSize.Y-margin,
 				xThick, item.TextColor, true)
 		}
 
@@ -583,7 +588,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 		top.ColorScale.ScaleWithColor(item.TextColor)
 		text.Draw(subImg, valueText, face, top)
 
-        } else if item.ItemType == ITEM_DROPDOWN {
+	} else if item.ItemType == ITEM_DROPDOWN {
 
 		itemColor := item.Color
 		if item.Open {
@@ -612,11 +617,18 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 		if item.Selected >= 0 && item.Selected < len(item.Options) {
 			label = item.Options[item.Selected]
 		}
-                text.Draw(subImg, label, face, top)
+		text.Draw(subImg, label, face, top)
 
-                if item.Open {
-                        pendingDropdowns = append(pendingDropdowns, dropdownRender{item: item, offset: offset})
-                }
+		arrow := maxSize.Y * 0.4
+		drawTriangle(subImg,
+			point{X: offset.X + maxSize.X - arrow - item.BorderPad,
+				Y: offset.Y + (maxSize.Y-arrow)/2},
+			arrow,
+			item.TextColor)
+
+		if item.Open {
+			pendingDropdowns = append(pendingDropdowns, dropdownRender{item: item, offset: offset})
+		}
 
 	} else if item.ItemType == ITEM_TEXT {
 
@@ -664,31 +676,31 @@ func (item *itemData) drawItem(parent *itemData, offset point, screen *ebiten.Im
 }
 
 func drawDropdownOptions(item *itemData, offset point, screen *ebiten.Image) {
-        maxSize := item.GetSize()
-        optionH := maxSize.Y
-        visible := item.MaxVisible
-        if visible <= 0 {
-                visible = 5
-        }
-        startY := offset.Y + maxSize.Y
-        first := int(item.Scroll.Y / optionH)
-        offY := startY - (item.Scroll.Y - float32(first)*optionH)
-        textSize := (item.FontSize * uiScale) + 2
-        face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
-        loo := text.LayoutOptions{PrimaryAlign: text.AlignStart, SecondaryAlign: text.AlignCenter}
-        for i := first; i < first+visible && i < len(item.Options); i++ {
-                y := offY + float32(i-first)*optionH
-                col := item.Color
-                if i == item.Selected {
-                        col = item.ClickColor
-                } else if i == item.HoverIndex {
-                        col = item.HoverColor
-                }
-                drawRoundRect(screen, &roundRect{Size: maxSize, Position: point{X: offset.X, Y: y}, Fillet: item.Fillet, Filled: true, Color: col})
-                td := ebiten.DrawImageOptions{}
-                td.GeoM.Translate(float64(offset.X+item.BorderPad), float64(y+optionH/2))
-                text.Draw(screen, item.Options[i], face, &text.DrawOptions{DrawImageOptions: td, LayoutOptions: loo})
-        }
+	maxSize := item.GetSize()
+	optionH := maxSize.Y
+	visible := item.MaxVisible
+	if visible <= 0 {
+		visible = 5
+	}
+	startY := offset.Y + maxSize.Y
+	first := int(item.Scroll.Y / optionH)
+	offY := startY - (item.Scroll.Y - float32(first)*optionH)
+	textSize := (item.FontSize * uiScale) + 2
+	face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
+	loo := text.LayoutOptions{PrimaryAlign: text.AlignStart, SecondaryAlign: text.AlignCenter}
+	for i := first; i < first+visible && i < len(item.Options); i++ {
+		y := offY + float32(i-first)*optionH
+		col := item.Color
+		if i == item.Selected {
+			col = item.ClickColor
+		} else if i == item.HoverIndex {
+			col = item.HoverColor
+		}
+		drawRoundRect(screen, &roundRect{Size: maxSize, Position: point{X: offset.X, Y: y}, Fillet: item.Fillet, Filled: true, Color: col})
+		td := ebiten.DrawImageOptions{}
+		td.GeoM.Translate(float64(offset.X+item.BorderPad), float64(y+optionH/2))
+		text.Draw(screen, item.Options[i], face, &text.DrawOptions{DrawImageOptions: td, LayoutOptions: loo})
+	}
 }
 
 func (win *windowData) drawDebug(screen *ebiten.Image) {
@@ -800,6 +812,34 @@ func drawTabShape(screen *ebiten.Image, pos point, size point, col color.RGBA) {
 	op := &ebiten.DrawTrianglesOptions{}
 	op.FillRule = ebiten.FillRuleNonZero
 	op.AntiAlias = true
+	screen.DrawTriangles(vertices, indices, whiteSubImage, op)
+}
+
+func drawTriangle(screen *ebiten.Image, pos point, size float32, col color.RGBA) {
+	var (
+		path     vector.Path
+		vertices []ebiten.Vertex
+		indices  []uint16
+	)
+
+	path.MoveTo(pos.X, pos.Y)
+	path.LineTo(pos.X+size, pos.Y)
+	path.LineTo(pos.X+size/2, pos.Y+size)
+	path.Close()
+
+	vertices, indices = path.AppendVerticesAndIndicesForFilling(vertices[:0], indices[:0])
+	for i := range vertices {
+		vertices[i].DstX += 0.5
+		vertices[i].DstY += 0.5
+		vertices[i].SrcX = 1
+		vertices[i].SrcY = 1
+		vertices[i].ColorR = float32(col.R) / 255
+		vertices[i].ColorG = float32(col.G) / 255
+		vertices[i].ColorB = float32(col.B) / 255
+		vertices[i].ColorA = float32(col.A) / 255
+	}
+
+	op := &ebiten.DrawTrianglesOptions{FillRule: ebiten.FillRuleNonZero, AntiAlias: true}
 	screen.DrawTriangles(vertices, indices, whiteSubImage, op)
 }
 
