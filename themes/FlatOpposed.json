@@ -2,7 +2,7 @@
   "Window": {
     "Border": 0,
     "Outlined": false,
-    "Padding": 0,
+    "Padding": 4,
     "BGColor": {
       "R": 20,
       "G": 20,

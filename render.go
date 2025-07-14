@@ -186,7 +186,8 @@ func (win *windowData) drawBorder(screen *ebiten.Image) {
 }
 
 func (win *windowData) drawItems(screen *ebiten.Image) {
-	winPos := pointAdd(win.getPosition(), point{X: 0, Y: win.GetTitleSize()})
+	pad := win.Padding + win.BorderPad
+	winPos := pointAdd(win.getPosition(), point{X: pad, Y: win.GetTitleSize() + pad})
 	clip := win.getMainRect()
 
 	for _, item := range win.Contents {
@@ -228,6 +229,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 			tabHeight = th
 		}
 		x := offset.X
+		spacing := float32(4) * uiScale
 		for i, tab := range item.Tabs {
 			face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(tabHeight - 22)}
 			tw, _ := text.Measure(tab.Name, face, 0)
@@ -247,7 +249,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 			dto.ColorScale.ScaleWithColor(item.TextColor)
 			text.Draw(subImg, tab.Name, face, dto)
 			tab.DrawRect = rect{X0: x, Y0: offset.Y, X1: x + w, Y1: offset.Y + tabHeight}
-			x += w
+			x += w + spacing
 		}
 		drawOffset = pointAdd(drawOffset, point{Y: tabHeight})
 		vector.StrokeRect(subImg,
@@ -557,17 +559,21 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			itemColor = item.HoverColor
 		}
 
-		// Prepare value text so the slider track can account for its width
+		// Prepare value text and measure the largest value label so the
+		// slider track remains consistent length
 		valueText := fmt.Sprintf("%.2f", item.Value)
+		maxLabel := fmt.Sprintf("%.2f", item.MaxValue)
 		if item.IntOnly {
 			valueText = fmt.Sprintf("%d", int(item.Value))
+			maxLabel = fmt.Sprintf("%d", int(item.MaxValue))
 		}
 
 		textSize := (item.FontSize * uiScale) + 2
 		face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
-		tw, _ := text.Measure(valueText, face, 0)
+		maxW, _ := text.Measure(maxLabel, face, 0)
 
-		trackWidth := maxSize.X - item.AuxSize.X - item.AuxSpace*4 - float32(tw)
+		gap := item.AuxSpace * 3
+		trackWidth := maxSize.X - item.AuxSize.X - gap - float32(maxW)
 		if trackWidth < 0 {
 			trackWidth = 0
 		}
@@ -602,7 +608,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		loo := text.LayoutOptions{LineSpacing: 1.2, PrimaryAlign: text.AlignStart, SecondaryAlign: text.AlignCenter}
 		tdop := ebiten.DrawImageOptions{}
 		tdop.GeoM.Translate(
-			float64(offset.X+trackWidth+item.AuxSpace*2),
+			float64(offset.X+trackWidth+gap),
 			float64(offset.Y+(maxSize.Y/2)),
 		)
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
@@ -816,8 +822,8 @@ func drawTabShape(screen *ebiten.Image, pos point, size point, col Color) {
 		indices  []uint16
 	)
 
-	slope := size.Y / 3
-	fillet := size.Y / 5
+	slope := size.Y / 4
+	fillet := size.Y / 8
 
 	path.MoveTo(pos.X, pos.Y+size.Y)
 	path.LineTo(pos.X+slope, pos.Y+fillet)

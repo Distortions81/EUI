@@ -2,7 +2,7 @@
   "Window": {
     "Border": 1,
     "Outlined": true,
-    "Padding": 0,
+    "Padding": 4,
     "BGColor": {
       "HSV": [
         210,
