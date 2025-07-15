@@ -392,13 +392,16 @@ func (win *windowData) contentBounds() point {
 
 func (win *windowData) updateAutoSize() {
 	req := win.contentBounds()
+	pad := win.Padding + win.BorderPad
+
 	size := win.GetSize()
-	if req.X > size.X {
-		size.X = req.X
+	needX := req.X + 2*pad
+	if needX > size.X {
+		size.X = needX
 	}
 
 	// Always include the titlebar height in the calculated size
-	size.Y = req.Y + win.GetTitleSize()
+	size.Y = req.Y + win.GetTitleSize() + 2*pad
 	if size.X > float32(screenWidth) {
 		size.X = float32(screenWidth)
 	}
