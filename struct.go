@@ -60,6 +60,7 @@ type itemData struct {
 	// Name is used when the item is part of a tabbed flow
 	Name      string
 	Text      string
+	Label     string
 	Position  point
 	Size      point
 	Alignment alignType

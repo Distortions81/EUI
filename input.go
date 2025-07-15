@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"image/color"
 	"math"
 	"time"
 
@@ -476,9 +475,13 @@ func (item *itemData) setSliderValue(mpos point) {
 }
 
 func (item *itemData) colorAt(mpos point) (Color, bool) {
-	size := item.GetSize()
+	size := point{X: item.Size.X * uiScale, Y: item.Size.Y * uiScale}
+	offsetY := float32(0)
+	if item.Label != "" {
+		offsetY = (item.FontSize*uiScale + 2) + currentLayout.TextPadding
+	}
 	cx := item.DrawRect.X0 + size.X/2
-	cy := item.DrawRect.Y0 + size.Y/2
+	cy := item.DrawRect.Y0 + offsetY + size.Y/2
 	dx := float64(mpos.X - cx)
 	dy := float64(mpos.Y - cy)
 	r := float64(size.X) / 2
@@ -486,19 +489,17 @@ func (item *itemData) colorAt(mpos point) (Color, bool) {
 	if dist > r {
 		return Color{}, false
 	}
-	mid := r * 0.5
 	ang := math.Atan2(dy, dx) * 180 / math.Pi
 	if ang < 0 {
 		ang += 360
 	}
-	var col color.RGBA
-	if dist <= mid {
-		v := dist / mid
-		col = hsvaToRGBA(ang, 1, v, 1)
-	} else {
-		t := (dist - mid) / (r - mid)
-		col = hsvaToRGBA(ang, 1-t, 1, 1)
+	v := dist / r
+	if v < 0 {
+		v = 0
+	} else if v > 1 {
+		v = 1
 	}
+	col := hsvaToRGBA(ang, 1, v, 1)
 	return Color(col), true
 }
 

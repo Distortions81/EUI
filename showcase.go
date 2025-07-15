@@ -36,15 +36,15 @@ func makeShowcaseWindow() *windowData {
 	mainFlow.addItemTo(radioA)
 	mainFlow.addItemTo(radioB)
 
-	slider := NewSlider(&itemData{Size: point{X: 180, Y: 24}, MinValue: 0, MaxValue: 100, IntOnly: false, FontSize: 8})
+	slider := NewSlider(&itemData{Label: "Float Slider", Size: point{X: 180, Y: 24}, MinValue: 0, MaxValue: 100, IntOnly: false, FontSize: 8})
 	mainFlow.addItemTo(slider)
-	intSlider := NewSlider(&itemData{Size: point{X: 180, Y: 24}, MinValue: 0, MaxValue: 10, IntOnly: true, FontSize: 8})
+	intSlider := NewSlider(&itemData{Label: "Int Slider", Size: point{X: 180, Y: 24}, MinValue: 0, MaxValue: 10, IntOnly: true, FontSize: 8})
 	mainFlow.addItemTo(intSlider)
 
-	input := NewInput(&itemData{Text: "Text Field", Size: point{X: 180, Y: 24}, FontSize: 8})
+	input := NewInput(&itemData{Label: "Text Field", Text: "", Size: point{X: 180, Y: 24}, FontSize: 8})
 	mainFlow.addItemTo(input)
 
-	dropdown := NewDropdown(&itemData{Size: point{X: 180, Y: 24}, FontSize: 8})
+	dropdown := NewDropdown(&itemData{Label: "Select Option", Size: point{X: 180, Y: 24}, FontSize: 8})
 	dropdown.Options = []string{"First", "Second", "Third", "Fourth"}
 	dropdown.HoverIndex = -1
 	mainFlow.addItemTo(dropdown)
