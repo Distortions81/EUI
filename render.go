@@ -666,8 +666,8 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 
 	} else if item.ItemType == ITEM_COLORWHEEL {
 
-		if item.Image == nil || item.Image.Bounds().Dx() != int(maxSize.X*uiScale) {
-			item.Image = ColorWheelImage(int(maxSize.X * uiScale))
+		if item.Image == nil || item.Image.Bounds().Dx() != int(maxSize.X) {
+			item.Image = ColorWheelImage(int(maxSize.X))
 		}
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(float64(offset.X), float64(offset.Y))
