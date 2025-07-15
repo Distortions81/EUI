@@ -4,6 +4,7 @@ import (
 	"embed"
 	"encoding/json"
 	"fmt"
+	"image/color"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -108,6 +109,10 @@ func LoadTheme(name string) error {
 	currentThemeName = name
 	applyLayoutToTheme(currentTheme)
 	applyThemeToAll()
+	if ac, ok := namedColors["accent"]; ok {
+		accentHue, accentSaturation, accentValue, accentAlpha = rgbaToHSVA(color.RGBA(ac))
+	}
+	applyAccentColor()
 	if tf.RecommendedLayout != "" {
 		_ = LoadLayout(tf.RecommendedLayout)
 	}
@@ -138,18 +143,33 @@ func listThemes() ([]string, error) {
 // SetAccentColor updates the accent color in the current theme and applies it
 // to all windows and widgets.
 func SetAccentColor(c Color) {
-	namedColors["accent"] = c
+	accentHue, _, accentValue, accentAlpha = rgbaToHSVA(color.RGBA(c))
+	applyAccentColor()
+}
+
+// SetAccentSaturation updates the saturation component of the accent color and
+// reapplies it to the current theme.
+func SetAccentSaturation(s float64) {
+	accentSaturation = clamp(s, 0, 1)
+	applyAccentColor()
+}
+
+// applyAccentColor composes the accent color from the stored HSV values and
+// updates all widgets.
+func applyAccentColor() {
+	col := Color(hsvaToRGBA(accentHue, accentSaturation, accentValue, accentAlpha))
+	namedColors["accent"] = col
 	if currentTheme == nil {
 		return
 	}
-	currentTheme.Window.ActiveColor = c
-	currentTheme.Button.ClickColor = c
-	currentTheme.Checkbox.ClickColor = c
-	currentTheme.Radio.ClickColor = c
-	currentTheme.Input.ClickColor = c
-	currentTheme.Slider.ClickColor = c
-	currentTheme.Dropdown.ClickColor = c
-	currentTheme.Tab.ClickColor = c
+	currentTheme.Window.ActiveColor = col
+	currentTheme.Button.ClickColor = col
+	currentTheme.Checkbox.ClickColor = col
+	currentTheme.Radio.ClickColor = col
+	currentTheme.Input.ClickColor = col
+	currentTheme.Slider.ClickColor = col
+	currentTheme.Dropdown.ClickColor = col
+	currentTheme.Tab.ClickColor = col
 	applyThemeToAll()
 }
 
