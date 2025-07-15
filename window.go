@@ -63,6 +63,12 @@ func (target *windowData) AddWindow(toBack bool) {
 			return
 		}
 	}
+	for _, win := range closedWindows {
+		if win == target {
+			log.Println("Window already exists")
+			return
+		}
+	}
 
 	if target.PinTo != PIN_TOP_LEFT {
 		target.Movable = false
@@ -73,19 +79,36 @@ func (target *windowData) AddWindow(toBack bool) {
 		target.AutoSize = false
 	}
 
-	if !toBack {
-		windows = append(windows, target)
-		activeWindow = target
+	if target.Open {
+		if !toBack {
+			windows = append(windows, target)
+			activeWindow = target
+		} else {
+			windows = append([]*windowData{target}, windows...)
+		}
 	} else {
-		windows = append([]*windowData{target}, windows...)
+		closedWindows = append(closedWindows, target)
 	}
 }
 
 // Remove window from window list, if found.
 func (target *windowData) RemoveWindow() {
+
 	for i, win := range windows {
 		if win == target { // Compare pointers
 			windows = append(windows[:i], windows[i+1:]...)
+			if activeWindow == target {
+				activeWindow = nil
+				if len(windows) > 0 {
+					activeWindow = windows[len(windows)-1]
+				}
+			}
+			return
+		}
+	}
+	for i, win := range closedWindows {
+		if win == target {
+			closedWindows = append(closedWindows[:i], closedWindows[i+1:]...)
 			return
 		}
 	}
@@ -207,6 +230,40 @@ func (target *windowData) ToBack() {
 		if win == target {
 			windows = append(windows[:w], windows[w+1:]...)
 			windows = append([]*windowData{target}, windows...)
+		}
+	}
+}
+
+// SetOpen moves the window between open and closed lists.
+func (target *windowData) SetOpen(open bool) {
+	if target.Open == open {
+		return
+	}
+	if open {
+		// remove from closed list
+		for i, win := range closedWindows {
+			if win == target {
+				closedWindows = append(closedWindows[:i], closedWindows[i+1:]...)
+				break
+			}
+		}
+		target.Open = true
+		windows = append(windows, target)
+		activeWindow = target
+	} else {
+		for i, win := range windows {
+			if win == target {
+				windows = append(windows[:i], windows[i+1:]...)
+				break
+			}
+		}
+		target.Open = false
+		closedWindows = append(closedWindows, target)
+		if activeWindow == target {
+			activeWindow = nil
+			if len(windows) > 0 {
+				activeWindow = windows[len(windows)-1]
+			}
 		}
 	}
 }
