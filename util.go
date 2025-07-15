@@ -441,6 +441,27 @@ func (item *itemData) resizeFlow(parentSize point) {
 	for _, sub := range list {
 		sub.resizeFlow(available)
 	}
+
+	if item.ItemType == ITEM_FLOW {
+		req := item.contentBounds()
+		size := item.GetSize()
+		if req.Y <= size.Y {
+			item.Scroll.Y = 0
+		} else {
+			max := req.Y - size.Y
+			if item.Scroll.Y > max {
+				item.Scroll.Y = max
+			}
+		}
+		if req.X <= size.X {
+			item.Scroll.X = 0
+		} else {
+			max := req.X - size.X
+			if item.Scroll.X > max {
+				item.Scroll.X = max
+			}
+		}
+	}
 }
 
 func (win *windowData) resizeFlows() {
