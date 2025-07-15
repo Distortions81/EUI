@@ -224,7 +224,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 			item.ActiveTab = 0
 		}
 
-		tabHeight := float32(defaultTabHeight) * uiScale
+		tabHeight := float32(DefaultTabHeight) * uiScale
 		if th := item.FontSize*uiScale + 4; th > tabHeight {
 			tabHeight = th
 		}
@@ -235,8 +235,8 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 			face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
 			tw, _ := text.Measure(tab.Name, face, 0)
 			w := float32(tw) + 8
-			if w < float32(defaultTabWidth)*uiScale {
-				w = float32(defaultTabWidth) * uiScale
+			if w < float32(DefaultTabWidth)*uiScale {
+				w = float32(DefaultTabWidth) * uiScale
 			}
 			col := item.Color
 			if i == item.ActiveTab {
