@@ -420,11 +420,43 @@ func (item *itemData) contentBounds() point {
 	if len(list) == 0 {
 		return point{}
 	}
+
 	base := point{}
-	b := list[0].bounds(pointAdd(base, list[0].GetPos()))
-	for _, sub := range list[1:] {
-		r := sub.bounds(pointAdd(base, sub.GetPos()))
-		b = unionRect(b, r)
+	first := true
+	var b rect
+	var flowOffset point
+
+	for _, sub := range list {
+		off := pointAdd(base, sub.GetPos())
+		if item.ItemType == ITEM_FLOW {
+			if item.FlowType == FLOW_HORIZONTAL {
+				off = pointAdd(base, point{X: flowOffset.X + sub.GetPos().X, Y: sub.GetPos().Y})
+			} else if item.FlowType == FLOW_VERTICAL {
+				off = pointAdd(base, point{X: sub.GetPos().X, Y: flowOffset.Y + sub.GetPos().Y})
+			} else {
+				off = pointAdd(base, pointAdd(flowOffset, sub.GetPos()))
+			}
+		}
+
+		r := sub.bounds(off)
+		if first {
+			b = r
+			first = false
+		} else {
+			b = unionRect(b, r)
+		}
+
+		if item.ItemType == ITEM_FLOW {
+			if item.FlowType == FLOW_HORIZONTAL {
+				flowOffset.X += sub.GetSize().X + sub.GetPos().X
+			} else if item.FlowType == FLOW_VERTICAL {
+				flowOffset.Y += sub.GetSize().Y + sub.GetPos().Y
+			}
+		}
+	}
+
+	if first {
+		return point{}
 	}
 	return point{X: b.X1 - base.X, Y: b.Y1 - base.Y}
 }
