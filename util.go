@@ -358,11 +358,34 @@ func (win *windowData) contentBounds() point {
 	if len(win.Contents) == 0 {
 		return point{}
 	}
+
 	base := point{X: 0, Y: win.GetTitleSize()}
-	b := win.Contents[0].bounds(pointAdd(base, win.Contents[0].GetPos()))
-	for _, item := range win.Contents[1:] {
-		r := item.bounds(pointAdd(base, item.GetPos()))
-		b = unionRect(b, r)
+	first := true
+	var b rect
+
+	for _, item := range win.Contents {
+		var r rect
+		if item.ItemType == ITEM_FLOW {
+			cb := item.contentBounds()
+			r = rect{
+				X0: base.X + item.GetPos().X,
+				Y0: base.Y + item.GetPos().Y,
+				X1: base.X + item.GetPos().X + cb.X,
+				Y1: base.Y + item.GetPos().Y + cb.Y,
+			}
+		} else {
+			r = item.bounds(pointAdd(base, item.GetPos()))
+		}
+		if first {
+			b = r
+			first = false
+		} else {
+			b = unionRect(b, r)
+		}
+	}
+
+	if first {
+		return point{}
 	}
 	return point{X: b.X1 - base.X, Y: b.Y1 - base.Y}
 }
