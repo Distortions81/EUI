@@ -1,0 +1,38 @@
+{
+  "SliderValueGap": 16,
+  "DropdownArrowPad": 2,
+  "TextPadding": 2,
+  "Fillet": {
+    "Window": 0,
+    "Button": 0,
+    "Text": 0,
+    "Checkbox": 0,
+    "Radio": 0,
+    "Input": 0,
+    "Slider": 0,
+    "Dropdown": 0,
+    "Tab": 0
+  },
+  "Border": {
+    "Window": 1,
+    "Button": 1,
+    "Text": 0,
+    "Checkbox": 0,
+    "Radio": 0,
+    "Input": 0,
+    "Slider": 0,
+    "Dropdown": 0,
+    "Tab": 0
+  },
+  "BorderPad": {
+    "Window": 0,
+    "Button": 2,
+    "Text": 2,
+    "Checkbox": 2,
+    "Radio": 2,
+    "Input": 2,
+    "Slider": 2,
+    "Dropdown": 2,
+    "Tab": 2
+  }
+}
