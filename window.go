@@ -77,14 +77,20 @@ func (target *windowData) AddWindow(toBack bool) {
 		applyThemeToWindow(target)
 	}
 
-	if !toBack {
-		windows = append(windows, target)
-		if target.PinTo == PIN_TOP_LEFT {
-			activeWindow = target
-		}
-	} else {
-		windows = append([]*windowData{target}, windows...)
-	}
+        // Closed windows shouldn't steal focus, so add them to the back by
+        // default and don't update the active window.
+        if !target.Open {
+                toBack = true
+        }
+
+        if !toBack {
+                windows = append(windows, target)
+                if target.PinTo == PIN_TOP_LEFT {
+                        activeWindow = target
+                }
+        } else {
+                windows = append([]*windowData{target}, windows...)
+        }
 }
 
 // Remove window from window list, if found.
