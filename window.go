@@ -214,19 +214,13 @@ func NewText(item *itemData) *itemData {
 	return &newItem
 }
 
-// MarkOpen sets the window as open and brings it forward.
-func (target *windowData) MarkOpen() {
-	target.Open = true
-	target.BringForward()
-}
-
 // Bring a window to the front
 func (target *windowData) BringForward() {
 	for w, win := range windows {
 		if win == target {
 			windows = append(windows[:w], windows[w+1:]...)
 			windows = append(windows, target)
-			activeWindow = win
+			activeWindow = target
 		}
 	}
 }
@@ -237,6 +231,12 @@ func (target *windowData) ToBack() {
 		if win == target {
 			windows = append(windows[:w], windows[w+1:]...)
 			windows = append([]*windowData{target}, windows...)
+		}
+	}
+	if activeWindow == target {
+		numWindows := len(windows)
+		if numWindows > 0 {
+			activeWindow = windows[numWindows-1]
 		}
 	}
 }

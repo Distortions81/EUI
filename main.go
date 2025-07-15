@@ -70,7 +70,13 @@ func main() {
 	toggleBtn := NewButton(&itemData{Text: "Themes", Size: point{X: 80, Y: 24}, FontSize: 8})
 	toggleBtn.Action = func() {
 		if themeSel != nil {
-			themeSel.Open = !themeSel.Open
+			if !themeSel.Open {
+				themeSel.Open = true
+				themeSel.BringForward()
+			} else {
+				themeSel.Open = false
+				themeSel.ToBack()
+			}
 		}
 	}
 	overlay.addItemTo(toggleBtn)
