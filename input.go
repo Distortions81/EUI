@@ -148,6 +148,12 @@ func (g *Game) Update() error {
 		}
 	}
 
+	for i := len(overlays) - 1; i >= 0; i-- {
+		if clickOverlay(overlays[i], mpos, click) {
+			break
+		}
+	}
+
 	if cursorShape != c {
 		ebiten.SetCursorShape(c)
 		cursorShape = c
@@ -188,6 +194,17 @@ func (g *Game) Update() error {
 				}
 			}
 		}
+		for i := len(overlays) - 1; i >= 0; i-- {
+			ov := overlays[i]
+			if ov.DrawRect.containsPoint(mpos) || dropdownOpenContains([]*itemData{ov}, mpos) {
+				if scrollDropdown([]*itemData{ov}, mpos, wheelDelta) {
+					break
+				}
+				if scrollFlow([]*itemData{ov}, mpos, wheelDelta) {
+					break
+				}
+			}
+		}
 	}
 
 	return nil
@@ -214,6 +231,22 @@ func (win *windowData) clickWindowItems(mpos point, click bool) {
 			return
 		}
 	}
+}
+
+func clickOverlay(root *itemData, mpos point, click bool) bool {
+	if root == nil {
+		return false
+	}
+	if !root.DrawRect.containsPoint(mpos) && !dropdownOpenContains([]*itemData{root}, mpos) {
+		return false
+	}
+	if clickOpenDropdown([]*itemData{root}, mpos, click) {
+		return true
+	}
+	if root.ItemType == ITEM_FLOW {
+		return root.clickFlows(mpos, click)
+	}
+	return root.clickItem(mpos, click)
 }
 
 func (item *itemData) clickFlows(mpos point, click bool) bool {

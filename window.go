@@ -305,15 +305,92 @@ func (pin pinType) getItemPosition(win *windowData, item *itemData) point {
 	}
 }
 
+// getOverlayItemPosition returns the screen position for an item pinned without a window
+func (pin pinType) getOverlayItemPosition(item *itemData) point {
+	switch pin {
+	case PIN_TOP_LEFT:
+		return item.GetPos()
+	case PIN_TOP_RIGHT:
+		return point{X: float32(screenWidth) - item.GetSize().X - item.GetPos().X, Y: item.GetPos().Y}
+	case PIN_TOP_CENTER:
+		return point{X: float32(screenWidth)/2 - item.GetSize().X/2 + item.GetPos().X, Y: item.GetPos().Y}
+	case PIN_MID_LEFT:
+		return point{X: item.GetPos().X, Y: float32(screenHeight)/2 - item.GetSize().Y/2 + item.GetPos().Y}
+	case PIN_MID_CENTER:
+		return point{X: float32(screenWidth)/2 - item.GetSize().X/2 + item.GetPos().X, Y: float32(screenHeight)/2 - item.GetSize().Y/2 + item.GetPos().Y}
+	case PIN_MID_RIGHT:
+		return point{X: float32(screenWidth) - item.GetSize().X - item.GetPos().X, Y: float32(screenHeight)/2 - item.GetSize().Y/2 + item.GetPos().Y}
+	case PIN_BOTTOM_LEFT:
+		return point{X: item.GetPos().X, Y: float32(screenHeight) - item.GetSize().Y - item.GetPos().Y}
+	case PIN_BOTTOM_CENTER:
+		return point{X: float32(screenWidth)/2 - item.GetSize().X/2 + item.GetPos().X, Y: float32(screenHeight) - item.GetSize().Y - item.GetPos().Y}
+	case PIN_BOTTOM_RIGHT:
+		return point{X: float32(screenWidth) - item.GetSize().X - item.GetPos().X, Y: float32(screenHeight) - item.GetSize().Y - item.GetPos().Y}
+	default:
+		return item.GetPos()
+	}
+}
+
 func (win *windowData) getPosition() point {
 	pos := win.PinTo.getWinPosition(win)
-	pos = pointAdd(pos, point{X: win.Margin * uiScale, Y: win.Margin * uiScale})
+	m := win.Margin * uiScale
+
+	switch win.PinTo {
+	case PIN_TOP_RIGHT, PIN_MID_RIGHT, PIN_BOTTOM_RIGHT:
+		pos.X -= m
+	case PIN_TOP_LEFT, PIN_MID_LEFT, PIN_BOTTOM_LEFT:
+		pos.X += m
+	}
+
+	switch win.PinTo {
+	case PIN_BOTTOM_LEFT, PIN_BOTTOM_CENTER, PIN_BOTTOM_RIGHT:
+		pos.Y -= m
+	case PIN_TOP_LEFT, PIN_TOP_CENTER, PIN_TOP_RIGHT:
+		pos.Y += m
+	}
+
 	return pos
 }
 
 func (item *itemData) getPosition(win *windowData) point {
 	pos := item.PinTo.getItemPosition(win, item)
-	pos = pointAdd(pos, point{X: item.Margin * uiScale, Y: item.Margin * uiScale})
+	m := item.Margin * uiScale
+
+	switch item.PinTo {
+	case PIN_TOP_RIGHT, PIN_MID_RIGHT, PIN_BOTTOM_RIGHT:
+		pos.X -= m
+	case PIN_TOP_LEFT, PIN_MID_LEFT, PIN_BOTTOM_LEFT:
+		pos.X += m
+	}
+
+	switch item.PinTo {
+	case PIN_BOTTOM_LEFT, PIN_BOTTOM_CENTER, PIN_BOTTOM_RIGHT:
+		pos.Y -= m
+	case PIN_TOP_LEFT, PIN_TOP_CENTER, PIN_TOP_RIGHT:
+		pos.Y += m
+	}
+
+	return pos
+}
+
+func (item *itemData) getOverlayPosition() point {
+	pos := item.PinTo.getOverlayItemPosition(item)
+	m := item.Margin * uiScale
+
+	switch item.PinTo {
+	case PIN_TOP_RIGHT, PIN_MID_RIGHT, PIN_BOTTOM_RIGHT:
+		pos.X -= m
+	case PIN_TOP_LEFT, PIN_MID_LEFT, PIN_BOTTOM_LEFT:
+		pos.X += m
+	}
+
+	switch item.PinTo {
+	case PIN_BOTTOM_LEFT, PIN_BOTTOM_CENTER, PIN_BOTTOM_RIGHT:
+		pos.Y -= m
+	case PIN_TOP_LEFT, PIN_TOP_CENTER, PIN_TOP_RIGHT:
+		pos.Y += m
+	}
+
 	return pos
 }
 

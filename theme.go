@@ -181,6 +181,9 @@ func applyThemeToAll() {
 	for _, win := range windows {
 		applyThemeToWindow(win)
 	}
+	for _, ov := range overlays {
+		applyThemeToItem(ov)
+	}
 }
 
 // applyThemeToWindow merges the current theme's window settings into the given

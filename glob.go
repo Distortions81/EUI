@@ -19,6 +19,7 @@ var (
 	signalHandle     chan os.Signal
 	mplusFaceSource  *text.GoTextFaceSource
 	windows          []*windowData
+	overlays         []*itemData
 	activeWindow     *windowData
 	focusedItem      *itemData
 	uiScale          float32 = 1.0
