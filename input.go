@@ -216,6 +216,16 @@ func (g *Game) Update() error {
 		}
 	}
 
+	// Refresh flow layouts so scroll bars update when content size changes
+	for _, win := range windows {
+		if win.Open {
+			win.resizeFlows()
+		}
+	}
+	for _, ov := range overlays {
+		ov.resizeFlow(ov.GetSize())
+	}
+
 	return nil
 }
 
