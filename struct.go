@@ -34,6 +34,10 @@ type windowData struct {
 	HoverClose, HoverDragbar,
 	AutoSize bool
 
+	// Scroll position and behavior
+	Scroll   point
+	NoScroll bool
+
 	TitleHeight float32
 
 	// Visual customization
@@ -184,6 +188,9 @@ const (
 	PART_BOTTOM_RIGHT
 	PART_BOTTOM_LEFT
 	PART_TOP_LEFT
+
+	PART_SCROLL_V
+	PART_SCROLL_H
 )
 
 type itemTypeData int

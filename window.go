@@ -225,6 +225,23 @@ func (target *windowData) BringForward() {
 	}
 }
 
+// MarkOpen sets the window to open and brings it forward if necessary.
+func (target *windowData) MarkOpen() {
+	target.Open = true
+	found := false
+	for _, win := range windows {
+		if win == target {
+			found = true
+			break
+		}
+	}
+	if !found {
+		target.AddWindow(false)
+	} else {
+		target.BringForward()
+	}
+}
+
 // Send a window to the back
 func (target *windowData) ToBack() {
 	for w, win := range windows {
