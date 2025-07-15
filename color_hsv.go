@@ -147,5 +147,5 @@ func (c *Color) UnmarshalJSON(data []byte) error {
 			return nil
 		}
 	}
-	return fmt.Errorf("invalid color format")
+	return fmt.Errorf("invalid color format: %s", string(data))
 }
