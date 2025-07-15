@@ -1,7 +1,9 @@
 package main
 
 const (
-	MinWinSizeX = 192
+	// MinWinSizeX and MinWinSizeY enforce a sane minimum window size.
+	// Windows should never be smaller than 64x64 pixels.
+	MinWinSizeX = 64
 	MinWinSizeY = 64
 
 	DefaultTabWidth  = 128
