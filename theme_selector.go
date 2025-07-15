@@ -15,10 +15,9 @@ func makeThemeSelector() *windowData {
 	}
 	win := NewWindow(&windowData{
 		Title:     "Themes",
-		PinTo:     PIN_TOP_RIGHT,
-		Movable:   false,
-		Resizable: false,
-		Closable:  false,
+		Movable:   true,
+		Resizable: true,
+		Closable:  true,
 		// Give the dropdown room to fully render by accounting for the
 		// title bar height and the control's size. Extra height is for
 		// the saturation slider.
