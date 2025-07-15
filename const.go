@@ -16,5 +16,5 @@ const (
 )
 
 var (
-	InactiveDim = 0.5
+	InactiveDim = 0.20
 )
