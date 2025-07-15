@@ -49,6 +49,13 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 	//win.drawResizeTab(windowArea)
 	win.drawBorder(windowArea)
 	win.drawDebug(screen)
+
+	if activeWindow != win && InactiveDim > 0 {
+		r := win.getWinRect()
+		sub := screen.SubImage(r.getRectangle()).(*ebiten.Image)
+		alpha := uint8(float32(255) * float32(InactiveDim))
+		vector.DrawFilledRect(sub, 0, 0, r.X1-r.X0, r.Y1-r.Y0, color.RGBA{A: alpha}, false)
+	}
 }
 
 func (win *windowData) drawBG(screen *ebiten.Image) {

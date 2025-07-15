@@ -15,7 +15,10 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
-var debugMode *bool
+var (
+	debugMode *bool
+	themeSel  *windowData
+)
 
 //go:embed data/fonts/NotoSans-Regular.ttf
 var notoTTF []byte
@@ -50,10 +53,30 @@ func main() {
 	showcase := makeShowcaseWindow()
 	showcase.AddWindow(false)
 
-	themeSel := makeThemeSelector()
+	themeSel = makeThemeSelector()
 	if themeSel != nil {
 		themeSel.AddWindow(false)
 	}
+
+	// Add a small pinned button to toggle the themes window
+	btnWin := NewWindow(&windowData{
+		TitleHeight: 0,
+		Size:        point{X: 84, Y: 32},
+		Position:    point{X: 4, Y: 4},
+		PinTo:       PIN_BOTTOM_RIGHT,
+		Open:        true,
+		Closable:    false,
+		Movable:     false,
+		Resizable:   false,
+	})
+	toggleBtn := NewButton(&itemData{Text: "Themes", Size: point{X: 80, Y: 24}, FontSize: 8})
+	toggleBtn.Action = func() {
+		if themeSel != nil {
+			themeSel.Open = !themeSel.Open
+		}
+	}
+	btnWin.addItemTo(toggleBtn)
+	btnWin.AddWindow(false)
 
 	err := loadIcons()
 	if err != nil {

@@ -135,8 +135,10 @@ func (g *Game) Update() error {
 		//Window items
 		win.clickWindowItems(mpos, click)
 
-		//Bring window forward on click, defer
-		if win.getWinRect().containsPoint(mpos) {
+		// Bring window forward on click if the cursor is over it or an
+		// expanded dropdown. Break so windows behind don't receive the
+		// event.
+		if win.getWinRect().containsPoint(mpos) || dropdownOpenContains(win.Contents, mpos) {
 			if click && activeWindow != win {
 				win.BringForward()
 			}
