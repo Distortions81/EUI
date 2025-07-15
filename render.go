@@ -52,9 +52,8 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 
 	if activeWindow != win && InactiveDim > 0 {
 		r := win.getWinRect()
-		sub := screen.SubImage(r.getRectangle()).(*ebiten.Image)
 		alpha := uint8(float32(255) * float32(InactiveDim))
-		vector.DrawFilledRect(sub, 0, 0, r.X1-r.X0, r.Y1-r.Y0, color.RGBA{A: alpha}, false)
+		vector.DrawFilledRect(screen, r.X0, r.Y0, r.X1-r.X0, r.Y1-r.Y0, color.RGBA{A: alpha}, false)
 	}
 }
 
