@@ -125,3 +125,23 @@ func TestMarkOpen(t *testing.T) {
 		t.Errorf("window order incorrect: %v", windows)
 	}
 }
+func TestSetSizeClampAndScroll(t *testing.T) {
+	win := &windowData{
+		Size:        point{X: 100, Y: 100},
+		Scroll:      point{X: 50, Y: 50},
+		Padding:     0,
+		BorderPad:   0,
+		TitleHeight: 0,
+	}
+	// content smaller than window
+	win.Contents = []*itemData{{Size: point{X: 50, Y: 50}}}
+	win.setSize(point{-10, -10})
+	if win.Size.X < MinWinSizeX || win.Size.Y < MinWinSizeY {
+		t.Errorf("size not clamped: %+v", win.Size)
+	}
+	// enlarge window so scroll should reset
+	win.setSize(point{X: 200, Y: 200})
+	if win.Scroll.X != 0 || win.Scroll.Y != 0 {
+		t.Errorf("scroll not reset: %+v", win.Scroll)
+	}
+}

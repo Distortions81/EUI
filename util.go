@@ -91,8 +91,26 @@ func (win *windowData) dragbarRect() rect {
 }
 
 func (win *windowData) setSize(size point) bool {
-
 	tooSmall := false
+
+	// Enforce minimum dimensions and prevent negatives.
+	if size.X < MinWinSizeX {
+		size.X = MinWinSizeX
+		tooSmall = true
+	}
+	if size.Y < MinWinSizeY {
+		size.Y = MinWinSizeY
+		tooSmall = true
+	}
+	if size.X < 0 {
+		size.X = MinWinSizeX
+		tooSmall = true
+	}
+	if size.Y < 0 {
+		size.Y = MinWinSizeY
+		tooSmall = true
+	}
+
 	xc, yc := win.itemOverlap(size)
 	if !xc {
 		win.Size.X = size.X
@@ -104,18 +122,36 @@ func (win *windowData) setSize(size point) bool {
 		tooSmall = true
 	}
 
-	if size.X < MinWinSizeX {
-		size.X = MinWinSizeX
-		tooSmall = true
-	}
-
-	if size.Y < MinWinSizeY {
-		size.Y = MinWinSizeY
-		tooSmall = true
-	}
-
 	win.BringForward()
 	win.resizeFlows()
+
+	// Adjust scroll position so content never remains off screen when
+	// the window is resized larger than its contents.
+	if !win.NoScroll {
+		pad := win.Padding + win.BorderPad
+		req := win.contentBounds()
+		avail := point{
+			X: win.GetSize().X - 2*pad,
+			Y: win.GetSize().Y - win.GetTitleSize() - 2*pad,
+		}
+		if req.Y <= avail.Y {
+			win.Scroll.Y = 0
+		} else {
+			max := req.Y - avail.Y
+			if win.Scroll.Y > max {
+				win.Scroll.Y = max
+			}
+		}
+		if req.X <= avail.X {
+			win.Scroll.X = 0
+		} else {
+			max := req.X - avail.X
+			if win.Scroll.X > max {
+				win.Scroll.X = max
+			}
+		}
+	}
+
 	return tooSmall
 }
 
