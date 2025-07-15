@@ -145,3 +145,23 @@ func TestSetSizeClampAndScroll(t *testing.T) {
 		t.Errorf("scroll not reset: %+v", win.Scroll)
 	}
 }
+
+func TestFlowContentBounds(t *testing.T) {
+	uiScale = 1
+
+	vflow := &itemData{ItemType: ITEM_FLOW, FlowType: FLOW_VERTICAL}
+	vflow.addItemTo(&itemData{ItemType: ITEM_BUTTON, Size: point{X: 10, Y: 20}})
+	vflow.addItemTo(&itemData{ItemType: ITEM_BUTTON, Size: point{X: 15, Y: 30}})
+	wantV := point{X: 15, Y: 50}
+	if got := vflow.contentBounds(); got != wantV {
+		t.Errorf("vertical bounds got %+v want %+v", got, wantV)
+	}
+
+	hflow := &itemData{ItemType: ITEM_FLOW, FlowType: FLOW_HORIZONTAL}
+	hflow.addItemTo(&itemData{ItemType: ITEM_BUTTON, Size: point{X: 10, Y: 20}})
+	hflow.addItemTo(&itemData{ItemType: ITEM_BUTTON, Size: point{X: 15, Y: 30}})
+	wantH := point{X: 25, Y: 30}
+	if got := hflow.contentBounds(); got != wantH {
+		t.Errorf("horizontal bounds got %+v want %+v", got, wantH)
+	}
+}
