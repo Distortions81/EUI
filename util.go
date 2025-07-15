@@ -396,9 +396,9 @@ func (win *windowData) updateAutoSize() {
 	if req.X > size.X {
 		size.X = req.X
 	}
-	if req.Y+win.GetTitleSize() > size.Y {
-		size.Y = req.Y + win.GetTitleSize()
-	}
+
+	// Always include the titlebar height in the calculated size
+	size.Y = req.Y + win.GetTitleSize()
 	if size.X > float32(screenWidth) {
 		size.X = float32(screenWidth)
 	}
