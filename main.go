@@ -58,25 +58,22 @@ func main() {
 		themeSel.AddWindow(false)
 	}
 
-	// Add a small pinned button to toggle the themes window
-	btnWin := NewWindow(&windowData{
-		TitleHeight: 0,
-		Size:        point{X: 84, Y: 32},
-		Position:    point{X: 4, Y: 4},
-		PinTo:       PIN_BOTTOM_RIGHT,
-		Open:        true,
-		Closable:    false,
-		Movable:     false,
-		Resizable:   false,
-	})
+	// Add a small pinned button to toggle the themes window using an overlay flow
+	overlay := &itemData{
+		ItemType: ITEM_FLOW,
+		FlowType: FLOW_HORIZONTAL,
+		Size:     point{X: 84, Y: 32},
+		Position: point{X: 4, Y: 4},
+		PinTo:    PIN_BOTTOM_RIGHT,
+	}
 	toggleBtn := NewButton(&itemData{Text: "Themes", Size: point{X: 80, Y: 24}, FontSize: 8})
 	toggleBtn.Action = func() {
 		if themeSel != nil {
 			themeSel.Open = !themeSel.Open
 		}
 	}
-	btnWin.addItemTo(toggleBtn)
-	btnWin.AddWindow(false)
+	overlay.addItemTo(toggleBtn)
+	AddOverlayFlow(overlay)
 
 	err := loadIcons()
 	if err != nil {
@@ -91,6 +88,12 @@ func main() {
 func loadIcons() error {
 	for _, win := range windows {
 		err := subLoadIcons(win.Contents)
+		if err != nil {
+			return err
+		}
+	}
+	for _, ov := range overlays {
+		err := subLoadIcons([]*itemData{ov})
 		if err != nil {
 			return err
 		}
