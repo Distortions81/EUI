@@ -35,7 +35,7 @@ func main() {
 	if err := LoadTheme("AccentDark"); err != nil {
 		log.Printf("LoadTheme error: %v", err)
 	}
-	if err := LoadLayout("Default"); err != nil {
+	if err := LoadLayout("RoundFlat"); err != nil {
 		log.Printf("LoadLayout error: %v", err)
 	}
 
