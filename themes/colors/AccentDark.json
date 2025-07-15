@@ -1,18 +1,16 @@
 {
   "Comment": "Colors use #RRGGBBAA or h,s,v",
   "Colors": {
-    "background": "0.0,0.00,0.13",
-    "panel": "0.0,0.00,0.25",
+    "background": "210.0,0.16,0.15",
+    "panel": "214.3,0.15,0.19",
     "text": "0.0,0.00,1.00",
-    "outline": "0.0,0.00,0.19",
-    "button": "0.0,0.00,0.31",
-    "accent": "180.0,1.00,0.63",
+    "outline": "216.0,0.15,0.13",
+    "button": "0.0,0.00,0.25",
     "hover": "0.0,0.00,0.38",
+    "accent": "200.6,0.74,0.91",
     "disabled": "0.0,0.00,0.00,0.00"
   },
-  "RecommendedLayout": "Default",
   "Window": {
-    "Border": 0,
     "Outlined": false,
     "Padding": 8,
     "BGColor": "background",
@@ -27,9 +25,6 @@
     "TitleTextColor": "text"
   },
   "Button": {
-    "Fillet": 10,
-    "Border": 0,
-    "BorderPad": 4,
     "Filled": true,
     "Outlined": false,
     "TextColor": "text",
@@ -40,22 +35,16 @@
     "CheckedColor": "disabled"
   },
   "Text": {
-    "Fillet": 0,
-    "Border": 0,
-    "BorderPad": 4,
     "Filled": false,
     "Outlined": false,
     "TextColor": "text",
     "Color": "disabled",
     "HoverColor": "disabled",
-    "ClickColor": "disabled",
+    "ClickColor": "accent",
     "DisabledColor": "disabled",
     "CheckedColor": "disabled"
   },
   "Checkbox": {
-    "Fillet": 8,
-    "Border": 0,
-    "BorderPad": 4,
     "Filled": true,
     "Outlined": false,
     "TextColor": "text",
@@ -66,9 +55,6 @@
     "CheckedColor": "disabled"
   },
   "Radio": {
-    "Fillet": 8,
-    "Border": 0,
-    "BorderPad": 4,
     "Filled": true,
     "Outlined": false,
     "TextColor": "text",
@@ -79,9 +65,6 @@
     "CheckedColor": "disabled"
   },
   "Input": {
-    "Fillet": 4,
-    "Border": 0,
-    "BorderPad": 2,
     "Filled": true,
     "Outlined": false,
     "TextColor": "text",
@@ -92,9 +75,6 @@
     "CheckedColor": "disabled"
   },
   "Slider": {
-    "Fillet": 4,
-    "Border": 0,
-    "BorderPad": 2,
     "Filled": true,
     "Outlined": false,
     "TextColor": "text",
@@ -105,9 +85,6 @@
     "CheckedColor": "disabled"
   },
   "Dropdown": {
-    "Fillet": 4,
-    "Border": 0,
-    "BorderPad": 2,
     "Filled": true,
     "Outlined": false,
     "TextColor": "text",
@@ -119,14 +96,12 @@
     "MaxVisible": 5
   },
   "Tab": {
-    "Fillet": 8,
-    "Border": 0,
-    "BorderPad": 8,
     "Filled": true,
     "Outlined": false,
     "TextColor": "text",
     "Color": "button",
     "HoverColor": "hover",
     "ClickColor": "accent"
-  }
+  },
+  "RecommendedLayout": "Default"
 }

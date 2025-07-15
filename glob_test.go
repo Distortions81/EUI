@@ -29,11 +29,3 @@ var (
 )
 
 type Game struct{}
-
-const (
-	minWinSizeX = 192
-	minWinSizeY = 64
-
-	defaultTabWidth  = 128
-	defaultTabHeight = 24
-)

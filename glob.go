@@ -34,13 +34,7 @@ func init() {
 	whiteImage.Fill(color.White)
 }
 
-const (
-	minWinSizeX = 192
-	minWinSizeY = 64
-
-	defaultTabWidth  = 128
-	defaultTabHeight = 24
-)
+// constants moved to const.go
 
 type Game struct {
 }

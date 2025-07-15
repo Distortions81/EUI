@@ -12,7 +12,6 @@
   },
   "RecommendedLayout": "Default",
   "Window": {
-    "Border": 0,
     "Outlined": false,
     "Padding": 8,
     "BGColor": "background",
@@ -27,9 +26,6 @@
     "TitleTextColor": "text"
   },
   "Button": {
-    "Fillet": 10,
-    "Border": 0,
-    "BorderPad": 4,
     "Filled": true,
     "Outlined": false,
     "TextColor": "text",
@@ -40,9 +36,6 @@
     "CheckedColor": "disabled"
   },
   "Text": {
-    "Fillet": 0,
-    "Border": 0,
-    "BorderPad": 4,
     "Filled": false,
     "Outlined": false,
     "TextColor": "text",
@@ -53,9 +46,6 @@
     "CheckedColor": "disabled"
   },
   "Checkbox": {
-    "Fillet": 8,
-    "Border": 0,
-    "BorderPad": 4,
     "Filled": true,
     "Outlined": false,
     "TextColor": "text",
@@ -66,9 +56,6 @@
     "CheckedColor": "disabled"
   },
   "Radio": {
-    "Fillet": 8,
-    "Border": 0,
-    "BorderPad": 4,
     "Filled": true,
     "Outlined": false,
     "TextColor": "text",
@@ -79,9 +66,6 @@
     "CheckedColor": "disabled"
   },
   "Input": {
-    "Fillet": 4,
-    "Border": 0,
-    "BorderPad": 2,
     "Filled": true,
     "Outlined": false,
     "TextColor": "text",
@@ -92,9 +76,6 @@
     "CheckedColor": "disabled"
   },
   "Slider": {
-    "Fillet": 4,
-    "Border": 0,
-    "BorderPad": 2,
     "Filled": true,
     "Outlined": false,
     "TextColor": "text",
@@ -105,9 +86,6 @@
     "CheckedColor": "disabled"
   },
   "Dropdown": {
-    "Fillet": 4,
-    "Border": 0,
-    "BorderPad": 2,
     "Filled": true,
     "Outlined": false,
     "TextColor": "text",
@@ -119,9 +97,6 @@
     "MaxVisible": 5
   },
   "Tab": {
-    "Fillet": 8,
-    "Border": 0,
-    "BorderPad": 8,
     "Filled": true,
     "Outlined": false,
     "TextColor": "text",
