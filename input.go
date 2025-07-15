@@ -520,6 +520,13 @@ func scrollFlow(items []*itemData, mpos point, delta point) bool {
 						}
 						return true
 					}
+				} else {
+					if req.Y <= size.Y {
+						it.Scroll.Y = 0
+					}
+					if req.X <= size.X {
+						it.Scroll.X = 0
+					}
 				}
 			}
 			var sub []*itemData
@@ -598,6 +605,8 @@ func scrollWindow(win *windowData, delta point) bool {
 			win.Scroll.Y = max
 		}
 		handled = true
+	} else {
+		win.Scroll.Y = 0
 	}
 	if req.X > avail.X {
 		win.Scroll.X -= delta.X * 16
@@ -609,6 +618,8 @@ func scrollWindow(win *windowData, delta point) bool {
 			win.Scroll.X = max
 		}
 		handled = true
+	} else {
+		win.Scroll.X = 0
 	}
 	return handled
 }
@@ -639,6 +650,8 @@ func dragWindowScroll(win *windowData, mpos point, vert bool) {
 		} else {
 			win.Scroll.Y = 0
 		}
+	} else if vert {
+		win.Scroll.Y = 0
 	}
 	if !vert && req.X > avail.X {
 		barW := avail.X * avail.X / req.X
@@ -656,6 +669,8 @@ func dragWindowScroll(win *windowData, mpos point, vert bool) {
 		} else {
 			win.Scroll.X = 0
 		}
+	} else if !vert {
+		win.Scroll.X = 0
 	}
 }
 func dropdownOpenContains(items []*itemData, mpos point) bool {
