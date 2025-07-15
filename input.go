@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"image/color"
+	"math"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -208,16 +210,16 @@ func (item *itemData) clickFlows(mpos point, click bool) {
 		if item.ActiveTab >= len(item.Tabs) {
 			item.ActiveTab = 0
 		}
-                for i, tab := range item.Tabs {
-                        tab.Hovered = false
-                        if tab.DrawRect.containsPoint(mpos) {
-                                tab.Hovered = true
-                                if click {
-                                        item.ActiveTab = i
-                                }
-                                return
-                        }
-                }
+		for i, tab := range item.Tabs {
+			tab.Hovered = false
+			if tab.DrawRect.containsPoint(mpos) {
+				tab.Hovered = true
+				if click {
+					item.ActiveTab = i
+				}
+				return
+			}
+		}
 		for _, subItem := range item.Tabs[item.ActiveTab].Contents {
 			if subItem.ItemType == ITEM_FLOW {
 				subItem.clickFlows(mpos, click)
@@ -256,6 +258,11 @@ func (item *itemData) clickItem(mpos point, click bool) {
 
 	if click {
 		item.Clicked = time.Now()
+		if item.ItemType == ITEM_COLORWHEEL {
+			if col, ok := item.colorAt(mpos); ok {
+				SetAccentColor(col)
+			}
+		}
 		if item.ItemType == ITEM_CHECKBOX {
 			item.Checked = !item.Checked
 		} else if item.ItemType == ITEM_RADIO {
@@ -299,7 +306,11 @@ func (item *itemData) clickItem(mpos point, click bool) {
 		}
 	} else {
 		item.Hovered = true
-		if item.ItemType == ITEM_DROPDOWN && item.Open {
+		if item.ItemType == ITEM_COLORWHEEL && ebiten.IsMouseButtonPressed(ebiten.MouseButton0) {
+			if col, ok := item.colorAt(mpos); ok {
+				SetAccentColor(col)
+			}
+		} else if item.ItemType == ITEM_DROPDOWN && item.Open {
 			optionH := item.GetSize().Y
 			visible := item.MaxVisible
 			if visible <= 0 {
@@ -363,12 +374,12 @@ func subUncheckRadio(list []*itemData, group string, except *itemData) {
 func (item *itemData) setSliderValue(mpos point) {
 	// Determine the width of the slider track accounting for the
 	// displayed value text to the right of the knob.
-        maxLabel := fmt.Sprintf("%.2f", item.MaxValue)
-        textSize := (item.FontSize * uiScale) + 2
-        face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
-        maxW, _ := text.Measure(maxLabel, face, 0)
+	maxLabel := fmt.Sprintf("%.2f", item.MaxValue)
+	textSize := (item.FontSize * uiScale) + 2
+	face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
+	maxW, _ := text.Measure(maxLabel, face, 0)
 
-        width := item.DrawRect.X1 - item.DrawRect.X0 - item.AuxSize.X - currentLayout.SliderValueGap - float32(maxW)
+	width := item.DrawRect.X1 - item.DrawRect.X0 - item.AuxSize.X - currentLayout.SliderValueGap - float32(maxW)
 	if width <= 0 {
 		return
 	}
@@ -384,6 +395,33 @@ func (item *itemData) setSliderValue(mpos point) {
 	if item.IntOnly {
 		item.Value = float32(int(item.Value + 0.5))
 	}
+}
+
+func (item *itemData) colorAt(mpos point) (Color, bool) {
+	size := item.GetSize()
+	cx := item.DrawRect.X0 + size.X/2
+	cy := item.DrawRect.Y0 + size.Y/2
+	dx := float64(mpos.X - cx)
+	dy := float64(mpos.Y - cy)
+	r := float64(size.X) / 2
+	dist := math.Hypot(dx, dy)
+	if dist > r {
+		return Color{}, false
+	}
+	mid := r * 0.5
+	ang := math.Atan2(dy, dx) * 180 / math.Pi
+	if ang < 0 {
+		ang += 360
+	}
+	var col color.RGBA
+	if dist <= mid {
+		v := dist / mid
+		col = hsvaToRGBA(ang, 1, v, 1)
+	} else {
+		t := (dist - mid) / (r - mid)
+		col = hsvaToRGBA(ang, 1-t, 1, 1)
+	}
+	return Color(col), true
 }
 
 func scrollFlow(items []*itemData, mpos point, delta point) bool {

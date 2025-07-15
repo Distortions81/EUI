@@ -135,6 +135,24 @@ func listThemes() ([]string, error) {
 	return names, nil
 }
 
+// SetAccentColor updates the accent color in the current theme and applies it
+// to all windows and widgets.
+func SetAccentColor(c Color) {
+	namedColors["accent"] = c
+	if currentTheme == nil {
+		return
+	}
+	currentTheme.Window.ActiveColor = c
+	currentTheme.Button.ClickColor = c
+	currentTheme.Checkbox.ClickColor = c
+	currentTheme.Radio.ClickColor = c
+	currentTheme.Input.ClickColor = c
+	currentTheme.Slider.ClickColor = c
+	currentTheme.Dropdown.ClickColor = c
+	currentTheme.Tab.ClickColor = c
+	applyThemeToAll()
+}
+
 // applyThemeToAll updates all existing windows to use the current theme.
 func applyThemeToAll() {
 	if currentTheme == nil {

@@ -23,6 +23,9 @@ func makeThemeSelector() *windowData {
 		Position: point{X: 4, Y: 4},
 		Open:     true,
 	})
+	mainFlow := &itemData{ItemType: ITEM_FLOW, Size: win.Size, FlowType: FLOW_VERTICAL}
+	win.addItemTo(mainFlow)
+
 	dd := NewDropdown(&itemData{Size: point{X: 150, Y: 24}, FontSize: 8})
 	dd.Options = names
 	for i, n := range names {
@@ -43,6 +46,10 @@ func makeThemeSelector() *windowData {
 		}
 	}
 	dd.HoverIndex = -1
-	win.addItemTo(dd)
+	mainFlow.addItemTo(dd)
+
+	cw := NewColorWheel(&itemData{Size: point{X: 128, Y: 128}})
+	mainFlow.addItemTo(cw)
+
 	return win
 }
