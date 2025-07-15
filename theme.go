@@ -3,15 +3,28 @@ package main
 import (
 	"embed"
 	"encoding/json"
+	"fmt"
+	"image/color"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 )
 
-//go:embed themes/*.json
+//go:embed themes/colors/*.json
 var embeddedThemes embed.FS
+
+func init() {
+	data, err := embeddedThemes.ReadFile(filepath.Join("themes", "colors", "FlatDark.json"))
+	if err == nil {
+		_ = json.Unmarshal(data, baseTheme)
+	}
+	currentTheme = baseTheme
+	currentThemeName = "FlatDark"
+	applyLayoutToTheme(currentTheme)
+}
 
 // Theme bundles all style information for windows and widgets.
 type Theme struct {
@@ -26,17 +39,67 @@ type Theme struct {
 	Tab      itemData
 }
 
+type themeFile struct {
+	Comment           string            `json:"Comment"`
+	Colors            map[string]string `json:"Colors"`
+	RecommendedLayout string            `json:"RecommendedLayout"`
+}
+
+// resolveColor recursively resolves string references to colors after the
+// theme JSON has been parsed. Color strings may reference other named colors
+// from the same file.
+func resolveColor(s string, colors map[string]string, seen map[string]bool) (Color, error) {
+	s = strings.TrimSpace(s)
+	key := strings.ToLower(s)
+	if c, ok := namedColors[key]; ok {
+		return c, nil
+	}
+	if val, ok := colors[key]; ok {
+		if seen[key] {
+			return Color{}, fmt.Errorf("color reference cycle for %s", key)
+		}
+		seen[key] = true
+		c, err := resolveColor(val, colors, seen)
+		if err != nil {
+			return Color{}, err
+		}
+		namedColors[key] = c
+		return c, nil
+	}
+	var c Color
+	if err := c.UnmarshalJSON([]byte(strconv.Quote(s))); err != nil {
+		return Color{}, err
+	}
+	return c, nil
+}
+
 // LoadTheme reads a theme JSON file from the themes directory and
 // sets it as the current theme without modifying existing windows.
 func LoadTheme(name string) error {
-	data, err := embeddedThemes.ReadFile(filepath.Join("themes", name+".json"))
+	data, err := embeddedThemes.ReadFile(filepath.Join("themes", "colors", name+".json"))
 	if err != nil {
-		file := filepath.Join("themes", name+".json")
+		file := filepath.Join("themes", "colors", name+".json")
 		data, err = os.ReadFile(file)
 		if err != nil {
 			return err
 		}
 	}
+
+	// Reset named colors
+	namedColors = map[string]Color{}
+
+	var tf themeFile
+	if err := json.Unmarshal(data, &tf); err != nil {
+		return err
+	}
+	for n, v := range tf.Colors {
+		c, err := resolveColor(v, tf.Colors, map[string]bool{strings.ToLower(n): true})
+		if err != nil {
+			return fmt.Errorf("%s: %w", n, err)
+		}
+		namedColors[strings.ToLower(n)] = c
+	}
+
 	// Start with the compiled in defaults
 	th := *baseTheme
 	if err := json.Unmarshal(data, &th); err != nil {
@@ -44,15 +107,23 @@ func LoadTheme(name string) error {
 	}
 	currentTheme = &th
 	currentThemeName = name
+	applyLayoutToTheme(currentTheme)
 	applyThemeToAll()
+	if ac, ok := namedColors["accent"]; ok {
+		accentHue, accentSaturation, accentValue, accentAlpha = rgbaToHSVA(color.RGBA(ac))
+	}
+	applyAccentColor()
+	if tf.RecommendedLayout != "" {
+		_ = LoadLayout(tf.RecommendedLayout)
+	}
 	return nil
 }
 
 // listThemes returns the available theme names from the themes directory
 func listThemes() ([]string, error) {
-	entries, err := fs.ReadDir(embeddedThemes, "themes")
+	entries, err := fs.ReadDir(embeddedThemes, "themes/colors")
 	if err != nil {
-		entries, err = os.ReadDir("themes")
+		entries, err = os.ReadDir("themes/colors")
 		if err != nil {
 			return nil, err
 		}
@@ -69,6 +140,39 @@ func listThemes() ([]string, error) {
 	return names, nil
 }
 
+// SetAccentColor updates the accent color in the current theme and applies it
+// to all windows and widgets.
+func SetAccentColor(c Color) {
+	accentHue, _, accentValue, accentAlpha = rgbaToHSVA(color.RGBA(c))
+	applyAccentColor()
+}
+
+// SetAccentSaturation updates the saturation component of the accent color and
+// reapplies it to the current theme.
+func SetAccentSaturation(s float64) {
+	accentSaturation = clamp(s, 0, 1)
+	applyAccentColor()
+}
+
+// applyAccentColor composes the accent color from the stored HSV values and
+// updates all widgets.
+func applyAccentColor() {
+	col := Color(hsvaToRGBA(accentHue, accentSaturation, accentValue, accentAlpha))
+	namedColors["accent"] = col
+	if currentTheme == nil {
+		return
+	}
+	currentTheme.Window.ActiveColor = col
+	currentTheme.Button.ClickColor = col
+	currentTheme.Checkbox.ClickColor = col
+	currentTheme.Radio.ClickColor = col
+	currentTheme.Input.ClickColor = col
+	currentTheme.Slider.ClickColor = col
+	currentTheme.Dropdown.ClickColor = col
+	currentTheme.Tab.ClickColor = col
+	applyThemeToAll()
+}
+
 // applyThemeToAll updates all existing windows to use the current theme.
 func applyThemeToAll() {
 	if currentTheme == nil {
@@ -76,6 +180,9 @@ func applyThemeToAll() {
 	}
 	for _, win := range windows {
 		applyThemeToWindow(win)
+	}
+	for _, ov := range overlays {
+		applyThemeToItem(ov)
 	}
 }
 

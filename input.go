@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"image/color"
+	"math"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -13,8 +15,9 @@ var (
 	mposOld     point
 	cursorShape ebiten.CursorShapeType
 
-	dragPart dragType
-	dragWin  *windowData
+	dragPart   dragType
+	dragWin    *windowData
+	activeItem *itemData
 )
 
 func (g *Game) Update() error {
@@ -35,6 +38,7 @@ func (g *Game) Update() error {
 	if !ebiten.IsMouseButtonPressed(ebiten.MouseButton0) {
 		dragPart = PART_NONE
 		dragWin = nil
+		activeItem = nil
 	}
 	//altClick := inpututil.IsMouseButtonJustPressed(ebiten.MouseButton1)
 
@@ -133,11 +137,19 @@ func (g *Game) Update() error {
 		//Window items
 		win.clickWindowItems(mpos, click)
 
-		//Bring window forward on click, defer
-		if win.getWinRect().containsPoint(mpos) {
+		// Bring window forward on click if the cursor is over it or an
+		// expanded dropdown. Break so windows behind don't receive the
+		// event.
+		if win.getWinRect().containsPoint(mpos) || dropdownOpenContains(win.Contents, mpos) {
 			if click && activeWindow != win {
 				win.BringForward()
 			}
+			break
+		}
+	}
+
+	for i := len(overlays) - 1; i >= 0; i-- {
+		if clickOverlay(overlays[i], mpos, click) {
 			break
 		}
 	}
@@ -182,6 +194,17 @@ func (g *Game) Update() error {
 				}
 			}
 		}
+		for i := len(overlays) - 1; i >= 0; i-- {
+			ov := overlays[i]
+			if ov.DrawRect.containsPoint(mpos) || dropdownOpenContains([]*itemData{ov}, mpos) {
+				if scrollDropdown([]*itemData{ov}, mpos, wheelDelta) {
+					break
+				}
+				if scrollFlow([]*itemData{ov}, mpos, wheelDelta) {
+					break
+				}
+			}
+		}
 	}
 
 	return nil
@@ -192,49 +215,87 @@ func (win *windowData) clickWindowItems(mpos point, click bool) {
 	if !win.getMainRect().containsPoint(mpos) && !dropdownOpenContains(win.Contents, mpos) {
 		return
 	}
+	if clickOpenDropdown(win.Contents, mpos, click) {
+		return
+	}
 	win.Hovered = true
 
 	for _, item := range win.Contents {
+		handled := false
 		if item.ItemType == ITEM_FLOW {
-			item.clickFlows(mpos, click)
+			handled = item.clickFlows(mpos, click)
 		} else {
-			item.clickItem(mpos, click)
+			handled = item.clickItem(mpos, click)
+		}
+		if handled {
+			return
 		}
 	}
 }
 
-func (item *itemData) clickFlows(mpos point, click bool) {
+func clickOverlay(root *itemData, mpos point, click bool) bool {
+	if root == nil {
+		return false
+	}
+	if !root.DrawRect.containsPoint(mpos) && !dropdownOpenContains([]*itemData{root}, mpos) {
+		return false
+	}
+	if clickOpenDropdown([]*itemData{root}, mpos, click) {
+		return true
+	}
+	if root.ItemType == ITEM_FLOW {
+		return root.clickFlows(mpos, click)
+	}
+	return root.clickItem(mpos, click)
+}
+
+func (item *itemData) clickFlows(mpos point, click bool) bool {
 	if len(item.Tabs) > 0 {
 		if item.ActiveTab >= len(item.Tabs) {
 			item.ActiveTab = 0
 		}
 		for i, tab := range item.Tabs {
+			tab.Hovered = false
 			if tab.DrawRect.containsPoint(mpos) {
+				tab.Hovered = true
 				if click {
+					activeItem = tab
 					item.ActiveTab = i
 				}
-				return
+				return true
 			}
 		}
 		for _, subItem := range item.Tabs[item.ActiveTab].Contents {
 			if subItem.ItemType == ITEM_FLOW {
-				subItem.clickFlows(mpos, click)
+				if subItem.clickFlows(mpos, click) {
+					return true
+				}
 			} else {
-				subItem.clickItem(mpos, click)
+				if subItem.clickItem(mpos, click) {
+					return true
+				}
 			}
 		}
 	} else {
 		for _, subItem := range item.Contents {
 			if subItem.ItemType == ITEM_FLOW {
-				subItem.clickFlows(mpos, click)
+				if subItem.clickFlows(mpos, click) {
+					return true
+				}
 			} else {
-				subItem.clickItem(mpos, click)
+				if subItem.clickItem(mpos, click) {
+					return true
+				}
 			}
 		}
 	}
+	return item.DrawRect.containsPoint(mpos)
 }
 
-func (item *itemData) clickItem(mpos point, click bool) {
+func (item *itemData) clickItem(mpos point, click bool) bool {
+	if ebiten.IsMouseButtonPressed(ebiten.MouseButton0) && activeItem != nil && activeItem != item {
+		return false
+	}
 	// For dropdowns check the expanded option area as well
 	if !item.DrawRect.containsPoint(mpos) {
 		if !(item.ItemType == ITEM_DROPDOWN && item.Open && func() bool {
@@ -248,12 +309,18 @@ func (item *itemData) clickItem(mpos point, click bool) {
 			r := rect{X0: item.DrawRect.X0, Y0: startY, X1: item.DrawRect.X1, Y1: startY + openHeight}
 			return r.containsPoint(mpos)
 		}()) {
-			return
+			return false
 		}
 	}
 
 	if click {
+		activeItem = item
 		item.Clicked = time.Now()
+		if item.ItemType == ITEM_COLORWHEEL {
+			if col, ok := item.colorAt(mpos); ok {
+				SetAccentColor(col)
+			}
+		}
 		if item.ItemType == ITEM_CHECKBOX {
 			item.Checked = !item.Checked
 		} else if item.ItemType == ITEM_RADIO {
@@ -293,11 +360,15 @@ func (item *itemData) clickItem(mpos point, click bool) {
 		}
 		if item.Action != nil {
 			item.Action()
-			return
+			return true
 		}
 	} else {
 		item.Hovered = true
-		if item.ItemType == ITEM_DROPDOWN && item.Open {
+		if item.ItemType == ITEM_COLORWHEEL && ebiten.IsMouseButtonPressed(ebiten.MouseButton0) {
+			if col, ok := item.colorAt(mpos); ok {
+				SetAccentColor(col)
+			}
+		} else if item.ItemType == ITEM_DROPDOWN && item.Open {
 			optionH := item.GetSize().Y
 			visible := item.MaxVisible
 			if visible <= 0 {
@@ -332,6 +403,7 @@ func (item *itemData) clickItem(mpos point, click bool) {
 			}
 		}
 	}
+	return true
 }
 
 func uncheckRadioGroup(parent *itemData, group string, except *itemData) {
@@ -361,15 +433,12 @@ func subUncheckRadio(list []*itemData, group string, except *itemData) {
 func (item *itemData) setSliderValue(mpos point) {
 	// Determine the width of the slider track accounting for the
 	// displayed value text to the right of the knob.
-	valueText := fmt.Sprintf("%.2f", item.Value)
-	if item.IntOnly {
-		valueText = fmt.Sprintf("%d", int(item.Value))
-	}
+	maxLabel := fmt.Sprintf("%.2f", item.MaxValue)
 	textSize := (item.FontSize * uiScale) + 2
 	face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
-	tw, _ := text.Measure(valueText, face, 0)
+	maxW, _ := text.Measure(maxLabel, face, 0)
 
-	width := item.DrawRect.X1 - item.DrawRect.X0 - item.AuxSize.X - item.AuxSpace*3 - float32(tw)
+	width := item.DrawRect.X1 - item.DrawRect.X0 - item.AuxSize.X - currentLayout.SliderValueGap - float32(maxW)
 	if width <= 0 {
 		return
 	}
@@ -385,6 +454,33 @@ func (item *itemData) setSliderValue(mpos point) {
 	if item.IntOnly {
 		item.Value = float32(int(item.Value + 0.5))
 	}
+}
+
+func (item *itemData) colorAt(mpos point) (Color, bool) {
+	size := item.GetSize()
+	cx := item.DrawRect.X0 + size.X/2
+	cy := item.DrawRect.Y0 + size.Y/2
+	dx := float64(mpos.X - cx)
+	dy := float64(mpos.Y - cy)
+	r := float64(size.X) / 2
+	dist := math.Hypot(dx, dy)
+	if dist > r {
+		return Color{}, false
+	}
+	mid := r * 0.5
+	ang := math.Atan2(dy, dx) * 180 / math.Pi
+	if ang < 0 {
+		ang += 360
+	}
+	var col color.RGBA
+	if dist <= mid {
+		v := dist / mid
+		col = hsvaToRGBA(ang, 1, v, 1)
+	} else {
+		t := (dist - mid) / (r - mid)
+		col = hsvaToRGBA(ang, 1-t, 1, 1)
+	}
+	return Color(col), true
 }
 
 func scrollFlow(items []*itemData, mpos point, delta point) bool {
@@ -495,6 +591,37 @@ func dropdownOpenContains(items []*itemData, mpos point) bool {
 			}
 		}
 		if dropdownOpenContains(it.Contents, mpos) {
+			return true
+		}
+	}
+	return false
+}
+
+func clickOpenDropdown(items []*itemData, mpos point, click bool) bool {
+	for _, it := range items {
+		if it.ItemType == ITEM_DROPDOWN && it.Open {
+			optionH := it.GetSize().Y
+			visible := it.MaxVisible
+			if visible <= 0 {
+				visible = 5
+			}
+			startY := it.DrawRect.Y1
+			openH := optionH * float32(visible)
+			r := rect{X0: it.DrawRect.X0, Y0: startY, X1: it.DrawRect.X1, Y1: startY + openH}
+			if r.containsPoint(mpos) {
+				it.clickItem(mpos, click)
+				return true
+			}
+		}
+		if len(it.Tabs) > 0 {
+			if it.ActiveTab >= len(it.Tabs) {
+				it.ActiveTab = 0
+			}
+			if clickOpenDropdown(it.Tabs[it.ActiveTab].Contents, mpos, click) {
+				return true
+			}
+		}
+		if clickOpenDropdown(it.Contents, mpos, click) {
 			return true
 		}
 	}

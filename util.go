@@ -25,10 +25,16 @@ func (item *itemData) getItemRect(win *windowData) rect {
 
 func (parent *itemData) addItemTo(item *itemData) {
 	item.Parent = parent
+	if currentTheme != nil {
+		applyThemeToItem(item)
+	}
 	parent.Contents = append(parent.Contents, item)
 }
 
 func (parent *windowData) addItemTo(item *itemData) {
+	if currentTheme != nil {
+		applyThemeToItem(item)
+	}
 	parent.Contents = append(parent.Contents, item)
 }
 
@@ -98,13 +104,13 @@ func (win *windowData) setSize(size point) bool {
 		tooSmall = true
 	}
 
-	if size.X < minWinSizeX {
-		size.X = minWinSizeX
+	if size.X < MinWinSizeX {
+		size.X = MinWinSizeX
 		tooSmall = true
 	}
 
-	if size.Y < minWinSizeY {
-		size.Y = minWinSizeY
+	if size.Y < MinWinSizeY {
+		size.Y = MinWinSizeY
 		tooSmall = true
 	}
 
@@ -112,9 +118,6 @@ func (win *windowData) setSize(size point) bool {
 	win.resizeFlows()
 	return tooSmall
 }
-
-const cornerSize = 14
-const tol = 2
 
 func (win *windowData) getWindowPart(mpos point, click bool) dragType {
 
@@ -142,8 +145,8 @@ func (win *windowData) getWindowPart(mpos point, click bool) dragType {
 		return PART_NONE
 	}
 
-	t := tol * uiScale
-	cs := cornerSize * uiScale
+	t := Tol * uiScale
+	cs := CornerSize * uiScale
 
 	winRect := win.getWinRect()
 

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"image/color"
 	"math"
+	"strconv"
+	"strings"
 )
 
 // hsvaToRGBA converts HSV values (h in degrees [0,360), s and v in [0,1])
@@ -83,6 +85,18 @@ func clamp(v, min, max float64) float64 {
 	return v
 }
 
+// dimColor reduces the brightness of c by the given factor (0-1). A factor of
+// 0 returns the color unchanged while 1 results in black with the original
+// alpha.
+func dimColor(c Color, factor float64) Color {
+        if factor <= 0 {
+                return c
+        }
+        h, s, v, a := rgbaToHSVA(color.RGBA(c))
+        v = clamp(v*(1-factor), 0, 1)
+        return Color(hsvaToRGBA(h, s, v, a))
+}
+
 // MarshalJSON implements json.Marshaler using HSV representation.
 func (c Color) MarshalJSON() ([]byte, error) {
 	h, s, v, a := rgbaToHSVA(color.RGBA(c))
@@ -91,7 +105,9 @@ func (c Color) MarshalJSON() ([]byte, error) {
 	}{[4]float64{h, s, v, a}})
 }
 
-// UnmarshalJSON accepts either HSV or RGBA representations.
+// UnmarshalJSON accepts HSV, RGBA objects or a string. Strings may reference a
+// named color from the theme, a hex RGB(A) value like "#RRGGBB" or
+// comma-separated HSV components "h,s,v".
 func (c *Color) UnmarshalJSON(data []byte) error {
 	var hstruct struct {
 		HSV [4]float64 `json:"HSV"`
@@ -105,5 +121,44 @@ func (c *Color) UnmarshalJSON(data []byte) error {
 		*c = Color(color.RGBA{rgba.R, rgba.G, rgba.B, rgba.A})
 		return nil
 	}
-	return fmt.Errorf("invalid color format")
+	var s string
+	if err := json.Unmarshal(data, &s); err == nil {
+		s = strings.TrimSpace(s)
+		if nc, ok := namedColors[strings.ToLower(s)]; ok {
+			*c = nc
+			return nil
+		}
+		if strings.HasPrefix(s, "#") {
+			hex := strings.TrimPrefix(s, "#")
+			if len(hex) == 6 || len(hex) == 8 {
+				val, err := strconv.ParseUint(hex, 16, 32)
+				if err == nil {
+					if len(hex) == 6 {
+						val = val<<8 | 0xff
+					}
+					*c = Color(color.RGBA{R: uint8(val >> 24), G: uint8(val >> 16), B: uint8(val >> 8), A: uint8(val)})
+					return nil
+				}
+			}
+		}
+		if parts := strings.Split(s, ","); len(parts) >= 3 {
+			h, _ := strconv.ParseFloat(strings.TrimSpace(parts[0]), 64)
+			sv := func(i int) float64 {
+				if i >= len(parts) {
+					return 1
+				}
+				v, _ := strconv.ParseFloat(strings.TrimSpace(parts[i]), 64)
+				return v
+			}
+			sat := sv(1)
+			val := sv(2)
+			alp := sv(3)
+			if alp == 0 && len(parts) < 4 {
+				alp = 1
+			}
+			*c = Color(hsvaToRGBA(h, sat, val, alp))
+			return nil
+		}
+	}
+	return fmt.Errorf("invalid color format: %s", string(data))
 }

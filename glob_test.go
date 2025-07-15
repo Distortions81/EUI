@@ -16,6 +16,7 @@ var (
 	signalHandle    chan os.Signal
 	mplusFaceSource *text.GoTextFaceSource
 	windows         []*windowData
+	overlays        []*itemData
 	activeWindow    *windowData
 	focusedItem     *itemData
 	uiScale         float32 = 1.0
@@ -23,11 +24,9 @@ var (
 
 	whiteImage    interface{}
 	whiteSubImage interface{}
+
+	currentTheme     *Theme
+	currentThemeName string
 )
 
 type Game struct{}
-
-const (
-	minWinSizeX = 192
-	minWinSizeY = 64
-)

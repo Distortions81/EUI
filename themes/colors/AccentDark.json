@@ -1,0 +1,107 @@
+{
+  "Comment": "Colors use #RRGGBBAA or h,s,v",
+  "Colors": {
+    "background": "210.0,0.16,0.15",
+    "panel": "214.3,0.15,0.19",
+    "text": "0.0,0.00,1.00",
+    "outline": "216.0,0.15,0.13",
+    "button": "0.0,0.00,0.25",
+    "hover": "0.0,0.00,0.38",
+    "accent": "200.6,0.74,0.91",
+    "disabled": "0.0,0.00,0.00,0.00"
+  },
+  "Window": {
+    "Outlined": false,
+    "Padding": 8,
+    "BGColor": "background",
+    "TitleBGColor": "panel",
+    "TitleColor": "text",
+    "BorderColor": "panel",
+    "SizeTabColor": "outline",
+    "DragbarColor": "panel",
+    "HoverTitleColor": "text",
+    "HoverColor": "hover",
+    "ActiveColor": "accent",
+    "TitleTextColor": "text"
+  },
+  "Button": {
+    "Filled": true,
+    "Outlined": false,
+    "TextColor": "text",
+    "Color": "button",
+    "HoverColor": "hover",
+    "ClickColor": "accent",
+    "DisabledColor": "disabled",
+    "CheckedColor": "disabled"
+  },
+  "Text": {
+    "Filled": false,
+    "Outlined": false,
+    "TextColor": "text",
+    "Color": "disabled",
+    "HoverColor": "disabled",
+    "ClickColor": "accent",
+    "DisabledColor": "disabled",
+    "CheckedColor": "disabled"
+  },
+  "Checkbox": {
+    "Filled": true,
+    "Outlined": false,
+    "TextColor": "text",
+    "Color": "button",
+    "HoverColor": "hover",
+    "ClickColor": "accent",
+    "DisabledColor": "disabled",
+    "CheckedColor": "disabled"
+  },
+  "Radio": {
+    "Filled": true,
+    "Outlined": false,
+    "TextColor": "text",
+    "Color": "button",
+    "HoverColor": "hover",
+    "ClickColor": "accent",
+    "DisabledColor": "disabled",
+    "CheckedColor": "disabled"
+  },
+  "Input": {
+    "Filled": true,
+    "Outlined": false,
+    "TextColor": "text",
+    "Color": "button",
+    "HoverColor": "hover",
+    "ClickColor": "accent",
+    "DisabledColor": "disabled",
+    "CheckedColor": "disabled"
+  },
+  "Slider": {
+    "Filled": true,
+    "Outlined": false,
+    "TextColor": "text",
+    "Color": "button",
+    "HoverColor": "hover",
+    "ClickColor": "accent",
+    "DisabledColor": "disabled",
+    "CheckedColor": "disabled"
+  },
+  "Dropdown": {
+    "Filled": true,
+    "Outlined": false,
+    "TextColor": "text",
+    "Color": "button",
+    "HoverColor": "hover",
+    "ClickColor": "accent",
+    "DisabledColor": "disabled",
+    "CheckedColor": "disabled",
+    "MaxVisible": 5
+  },
+  "Tab": {
+    "Filled": true,
+    "Outlined": false,
+    "TextColor": "text",
+    "Color": "button",
+    "HoverColor": "hover",
+    "ClickColor": "accent"
+  },
+  "RecommendedLayout": "Default"
+}

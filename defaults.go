@@ -7,7 +7,7 @@ var defaultTheme = &windowData{
 	Border:          0,
 	Outlined:        false,
 	Fillet:          4,
-	Padding:         0,
+	Padding:         4,
 	Margin:          4,
 	BorderPad:       0,
 	TitleColor:      Color(color.RGBA{R: 255, G: 255, B: 255, A: 255}),
@@ -57,7 +57,7 @@ var defaultText = &itemData{
 	FontSize:  24,
 	LineSpace: 1.2,
 	Padding:   0,
-	Margin:    4,
+	Margin:    2,
 	TextColor: Color(color.RGBA{R: 255, G: 255, B: 255, A: 255}),
 }
 
@@ -71,7 +71,7 @@ var defaultCheckbox = &itemData{
 	FontSize:  12,
 	LineSpace: 1.2,
 	Padding:   0,
-	Margin:    4,
+	Margin:    2,
 
 	Fillet: 8,
 	Filled: true, Outlined: false,
@@ -91,7 +91,7 @@ var defaultInput = &itemData{
 	FontSize:  12,
 	LineSpace: 1.2,
 	Padding:   0,
-	Margin:    4,
+	Margin:    2,
 
 	Fillet: 4,
 	Filled: true, Outlined: false,
@@ -114,7 +114,7 @@ var defaultRadio = &itemData{
 	FontSize:  12,
 	LineSpace: 1.2,
 	Padding:   0,
-	Margin:    4,
+	Margin:    2,
 
 	Fillet: 8,
 	Filled: true, Outlined: false,
@@ -173,6 +173,13 @@ var defaultDropdown = &itemData{
 	MaxVisible: 5,
 }
 
+var defaultColorWheel = &itemData{
+	ItemType: ITEM_COLORWHEEL,
+	Size:     point{X: 128, Y: 128},
+	Position: point{X: 4, Y: 4},
+	Margin:   4,
+}
+
 var defaultTab = &itemData{
 	ItemType:   ITEM_FLOW,
 	FontSize:   12,
@@ -189,16 +196,17 @@ var defaultTab = &itemData{
 // base copies preserve the initial defaults so that LoadTheme can reset
 // to these values before applying theme overrides.
 var (
-	baseWindow   = *defaultTheme
-	baseButton   = *defaultButton
-	baseText     = *defaultText
-	baseCheckbox = *defaultCheckbox
-	baseRadio    = *defaultRadio
-	baseInput    = *defaultInput
-	baseSlider   = *defaultSlider
-	baseDropdown = *defaultDropdown
-	baseTab      = *defaultTab
-	baseTheme    = &Theme{
+	baseWindow     = *defaultTheme
+	baseButton     = *defaultButton
+	baseText       = *defaultText
+	baseCheckbox   = *defaultCheckbox
+	baseRadio      = *defaultRadio
+	baseInput      = *defaultInput
+	baseSlider     = *defaultSlider
+	baseDropdown   = *defaultDropdown
+	baseColorWheel = *defaultColorWheel
+	baseTab        = *defaultTab
+	baseTheme      = &Theme{
 		Window:   baseWindow,
 		Button:   baseButton,
 		Text:     baseText,

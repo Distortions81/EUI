@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	_ "embed"
 	"flag"
 	"fmt"
 	"image/png"
@@ -10,12 +11,17 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/hajimehoshi/ebiten/examples/resources/fonts"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
-var debugMode *bool
+var (
+	debugMode *bool
+	themeSel  *windowData
+)
+
+//go:embed data/fonts/NotoSans-Regular.ttf
+var notoTTF []byte
 
 func main() {
 
@@ -25,14 +31,17 @@ func main() {
 	signalHandle = make(chan os.Signal, 1)
 	signal.Notify(signalHandle, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 
-	// load default theme
-	if err := LoadTheme("FlatDark"); err != nil {
+	// load default themes
+	if err := LoadTheme("AccentDark"); err != nil {
 		log.Printf("LoadTheme error: %v", err)
+	}
+	if err := LoadLayout("Default"); err != nil {
+		log.Printf("LoadLayout error: %v", err)
 	}
 
 	//Load default font
 	if mplusFaceSource == nil {
-		s, err := text.NewGoTextFaceSource(bytes.NewReader(fonts.MPlus1pRegular_ttf))
+		s, err := text.NewGoTextFaceSource(bytes.NewReader(notoTTF))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -44,10 +53,28 @@ func main() {
 	showcase := makeShowcaseWindow()
 	showcase.AddWindow(false)
 
-	themeSel := makeThemeSelector()
+	themeSel = makeThemeSelector()
 	if themeSel != nil {
+		themeSel.Open = false
 		themeSel.AddWindow(false)
 	}
+
+	// Add a small pinned button to toggle the themes window using an overlay flow
+	overlay := &itemData{
+		ItemType: ITEM_FLOW,
+		FlowType: FLOW_HORIZONTAL,
+		Size:     point{X: 84, Y: 32},
+		Position: point{X: 4, Y: 4},
+		PinTo:    PIN_BOTTOM_RIGHT,
+	}
+	toggleBtn := NewButton(&itemData{Text: "Themes", Size: point{X: 80, Y: 24}, FontSize: 8})
+	toggleBtn.Action = func() {
+		if themeSel != nil {
+			themeSel.Open = !themeSel.Open
+		}
+	}
+	overlay.addItemTo(toggleBtn)
+	AddOverlayFlow(overlay)
 
 	err := loadIcons()
 	if err != nil {
@@ -62,6 +89,12 @@ func main() {
 func loadIcons() error {
 	for _, win := range windows {
 		err := subLoadIcons(win.Contents)
+		if err != nil {
+			return err
+		}
+	}
+	for _, ov := range overlays {
+		err := subLoadIcons([]*itemData{ov})
 		if err != nil {
 			return err
 		}
