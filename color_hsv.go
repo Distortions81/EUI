@@ -111,6 +111,7 @@ func (c *Color) UnmarshalJSON(data []byte) error {
 	}
 	var s string
 	if err := json.Unmarshal(data, &s); err == nil {
+		s = strings.TrimSpace(s)
 		if nc, ok := namedColors[strings.ToLower(s)]; ok {
 			*c = nc
 			return nil

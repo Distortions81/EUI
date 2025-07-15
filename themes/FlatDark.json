@@ -1,32 +1,30 @@
 {
   "Comment": "Colors use #RRGGBBAA or h,s,v",
   "Colors": {
-    "c1": "#202020ff",
-    "c2": "#404040ff",
-    "c3": "#ffffffff",
-    "c4": "#303030ff",
-    "c5": "#505050ff",
-    "c6": "#00a0a0ff",
-    "c7": "#606060ff",
-    "c8": "#00000000",
-    "c9": "#c0c0c0ff",
-    "c10": "#a0a0a0ff"
+    "background": "0.0,0.00,0.13",
+    "panel": "0.0,0.00,0.25",
+    "text": "0.0,0.00,1.00",
+    "outline": "0.0,0.00,0.19",
+    "button": "0.0,0.00,0.31",
+    "accent": "180.0,1.00,0.63",
+    "hover": "0.0,0.00,0.38",
+    "disabled": "0.0,0.00,0.00,0.00"
   },
   "RecommendedLayout": "Default",
   "Window": {
     "Border": 0,
     "Outlined": false,
     "Padding": 8,
-    "BGColor": "c1",
-    "TitleBGColor": "c2",
-    "TitleColor": "c3",
-    "BorderColor": "c2",
-    "SizeTabColor": "c4",
-    "DragbarColor": "c2",
-    "HoverTitleColor": "c3",
-    "HoverColor": "c5",
-    "ActiveColor": "c6",
-    "TitleTextColor": "c3"
+    "BGColor": "background",
+    "TitleBGColor": "panel",
+    "TitleColor": "text",
+    "BorderColor": "panel",
+    "SizeTabColor": "outline",
+    "DragbarColor": "panel",
+    "HoverTitleColor": "text",
+    "HoverColor": "hover",
+    "ActiveColor": "accent",
+    "TitleTextColor": "text"
   },
   "Button": {
     "Fillet": 10,
@@ -34,12 +32,12 @@
     "BorderPad": 4,
     "Filled": true,
     "Outlined": false,
-    "TextColor": "c3",
-    "Color": "c2",
-    "HoverColor": "c7",
-    "ClickColor": "c6",
-    "DisabledColor": "c8",
-    "CheckedColor": "c8"
+    "TextColor": "text",
+    "Color": "button",
+    "HoverColor": "hover",
+    "ClickColor": "accent",
+    "DisabledColor": "disabled",
+    "CheckedColor": "disabled"
   },
   "Text": {
     "Fillet": 0,
@@ -47,12 +45,12 @@
     "BorderPad": 4,
     "Filled": false,
     "Outlined": false,
-    "TextColor": "c3",
-    "Color": "c8",
-    "HoverColor": "c8",
-    "ClickColor": "c8",
-    "DisabledColor": "c8",
-    "CheckedColor": "c8"
+    "TextColor": "text",
+    "Color": "disabled",
+    "HoverColor": "disabled",
+    "ClickColor": "disabled",
+    "DisabledColor": "disabled",
+    "CheckedColor": "disabled"
   },
   "Checkbox": {
     "Fillet": 8,
@@ -60,12 +58,12 @@
     "BorderPad": 4,
     "Filled": true,
     "Outlined": false,
-    "TextColor": "c3",
-    "Color": "c2",
-    "HoverColor": "c7",
-    "ClickColor": "c2",
-    "DisabledColor": "c8",
-    "CheckedColor": "c8"
+    "TextColor": "text",
+    "Color": "button",
+    "HoverColor": "hover",
+    "ClickColor": "accent",
+    "DisabledColor": "disabled",
+    "CheckedColor": "disabled"
   },
   "Radio": {
     "Fillet": 8,
@@ -73,12 +71,12 @@
     "BorderPad": 4,
     "Filled": true,
     "Outlined": false,
-    "TextColor": "c3",
-    "Color": "c2",
-    "HoverColor": "c7",
-    "ClickColor": "c2",
-    "DisabledColor": "c8",
-    "CheckedColor": "c8"
+    "TextColor": "text",
+    "Color": "button",
+    "HoverColor": "hover",
+    "ClickColor": "accent",
+    "DisabledColor": "disabled",
+    "CheckedColor": "disabled"
   },
   "Input": {
     "Fillet": 4,
@@ -86,12 +84,12 @@
     "BorderPad": 2,
     "Filled": true,
     "Outlined": false,
-    "TextColor": "c3",
-    "Color": "c2",
-    "HoverColor": "c7",
-    "ClickColor": "c6",
-    "DisabledColor": "c8",
-    "CheckedColor": "c8"
+    "TextColor": "text",
+    "Color": "button",
+    "HoverColor": "hover",
+    "ClickColor": "accent",
+    "DisabledColor": "disabled",
+    "CheckedColor": "disabled"
   },
   "Slider": {
     "Fillet": 4,
@@ -99,12 +97,12 @@
     "BorderPad": 2,
     "Filled": true,
     "Outlined": false,
-    "TextColor": "c3",
-    "Color": "c2",
-    "HoverColor": "c7",
-    "ClickColor": "c9",
-    "DisabledColor": "c8",
-    "CheckedColor": "c8"
+    "TextColor": "text",
+    "Color": "button",
+    "HoverColor": "hover",
+    "ClickColor": "accent",
+    "DisabledColor": "disabled",
+    "CheckedColor": "disabled"
   },
   "Dropdown": {
     "Fillet": 4,
@@ -112,12 +110,12 @@
     "BorderPad": 2,
     "Filled": true,
     "Outlined": false,
-    "TextColor": "c3",
-    "Color": "c2",
-    "HoverColor": "c7",
-    "ClickColor": "c6",
-    "DisabledColor": "c8",
-    "CheckedColor": "c8",
+    "TextColor": "text",
+    "Color": "button",
+    "HoverColor": "hover",
+    "ClickColor": "accent",
+    "DisabledColor": "disabled",
+    "CheckedColor": "disabled",
     "MaxVisible": 5
   },
   "Tab": {
@@ -126,9 +124,9 @@
     "BorderPad": 8,
     "Filled": true,
     "Outlined": false,
-    "TextColor": "c3",
-    "Color": "c2",
-    "HoverColor": "c7",
-    "ClickColor": "c10"
+    "TextColor": "text",
+    "Color": "button",
+    "HoverColor": "hover",
+    "ClickColor": "accent"
   }
 }

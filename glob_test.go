@@ -23,6 +23,9 @@ var (
 
 	whiteImage    interface{}
 	whiteSubImage interface{}
+
+	currentTheme     *Theme
+	currentThemeName string
 )
 
 type Game struct{}
@@ -30,4 +33,7 @@ type Game struct{}
 const (
 	minWinSizeX = 192
 	minWinSizeY = 64
+
+	defaultTabWidth  = 128
+	defaultTabHeight = 24
 )
