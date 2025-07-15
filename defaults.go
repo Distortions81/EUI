@@ -64,8 +64,8 @@ var defaultText = &itemData{
 var defaultCheckbox = &itemData{
 	Text:      "",
 	ItemType:  ITEM_CHECKBOX,
-	Size:      point{X: 128, Y: 32},
-	Position:  point{X: 4, Y: 4},
+	Size:      point{X: 128, Y: 24},
+	Position:  point{X: 4, Y: 2},
 	AuxSize:   point{X: 16, Y: 16},
 	AuxSpace:  4,
 	FontSize:  12,
@@ -107,8 +107,8 @@ var defaultInput = &itemData{
 var defaultRadio = &itemData{
 	Text:      "",
 	ItemType:  ITEM_RADIO,
-	Size:      point{X: 128, Y: 32},
-	Position:  point{X: 4, Y: 4},
+	Size:      point{X: 128, Y: 24},
+	Position:  point{X: 4, Y: 2},
 	AuxSize:   point{X: 16, Y: 16},
 	AuxSpace:  4,
 	FontSize:  12,
@@ -181,16 +181,17 @@ var defaultColorWheel = &itemData{
 }
 
 var defaultTab = &itemData{
-	ItemType:   ITEM_FLOW,
-	FontSize:   12,
-	Filled:     true,
-	Border:     0,
-	BorderPad:  2,
-	Fillet:     4,
-	TextColor:  Color(color.RGBA{R: 255, G: 255, B: 255, A: 255}),
-	Color:      Color(color.RGBA{R: 64, G: 64, B: 64, A: 255}),
-	HoverColor: Color(color.RGBA{R: 96, G: 96, B: 96, A: 255}),
-	ClickColor: Color(color.RGBA{R: 0, G: 160, B: 160, A: 255}),
+	ItemType:      ITEM_FLOW,
+	FontSize:      12,
+	Filled:        true,
+	Border:        0,
+	BorderPad:     2,
+	Fillet:        4,
+	ActiveOutline: false,
+	TextColor:     Color(color.RGBA{R: 255, G: 255, B: 255, A: 255}),
+	Color:         Color(color.RGBA{R: 64, G: 64, B: 64, A: 255}),
+	HoverColor:    Color(color.RGBA{R: 96, G: 96, B: 96, A: 255}),
+	ClickColor:    Color(color.RGBA{R: 0, G: 160, B: 160, A: 255}),
 }
 
 // base copies preserve the initial defaults so that LoadTheme can reset

@@ -28,11 +28,11 @@ func makeShowcaseWindow() *windowData {
 	btnText := NewButton(&itemData{Text: "Text Button", Size: point{X: 100, Y: 24}, FontSize: 8})
 	mainFlow.addItemTo(btnText)
 
-	chk := NewCheckbox(&itemData{Text: "Enable option", Size: point{X: 140, Y: 32}, FontSize: 8})
+	chk := NewCheckbox(&itemData{Text: "Enable option", Size: point{X: 140, Y: 24}, FontSize: 8})
 	mainFlow.addItemTo(chk)
 
-	radioA := NewRadio(&itemData{Text: "Choice A", RadioGroup: "grp1", Size: point{X: 140, Y: 32}, FontSize: 8})
-	radioB := NewRadio(&itemData{Text: "Choice B", RadioGroup: "grp1", Size: point{X: 140, Y: 32}, FontSize: 8})
+	radioA := NewRadio(&itemData{Text: "Choice A", RadioGroup: "grp1", Size: point{X: 140, Y: 24}, FontSize: 8})
+	radioB := NewRadio(&itemData{Text: "Choice B", RadioGroup: "grp1", Size: point{X: 140, Y: 24}, FontSize: 8})
 	mainFlow.addItemTo(radioA)
 	mainFlow.addItemTo(radioB)
 
