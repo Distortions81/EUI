@@ -66,13 +66,14 @@ func TestPinPositions(t *testing.T) {
 	win := &windowData{Position: point{X: 10, Y: 10}, Size: point{X: 100, Y: 80}, TitleHeight: 10}
 	var pin pinType = PIN_TOP_RIGHT
 	pos := pin.getWinPosition(win)
-	exp := point{X: 800 - win.GetSize().X, Y: 0}
+	exp := point{X: 800 - win.GetSize().X - win.GetPos().X, Y: win.GetPos().Y}
 	if pos != exp {
 		t.Errorf("top right got %+v want %+v", pos, exp)
 	}
 	item := &itemData{Position: point{X: 0, Y: 0}, Size: point{X: 20, Y: 20}, PinTo: PIN_BOTTOM_CENTER}
 	res := item.PinTo.getItemPosition(win, item)
-	expItem := point{X: win.GetSize().X/2 - item.GetSize().X/2, Y: win.GetSize().Y - win.GetTitleSize()*2 - item.GetSize().Y}
+	expItem := point{X: win.GetSize().X/2 - item.GetSize().X/2 + item.GetPos().X,
+		Y: win.GetSize().Y - win.GetTitleSize() - item.GetSize().Y - item.GetPos().Y}
 	if res != expItem {
 		t.Errorf("item position got %+v want %+v", res, expItem)
 	}
