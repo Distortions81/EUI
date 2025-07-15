@@ -69,6 +69,7 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 	}
 	win.drawBG(screen)
 	win.drawItems(screen)
+	win.drawScrollbars(screen)
 	titleArea := screen.SubImage(win.getTitleRect().getRectangle()).(*ebiten.Image)
 	win.drawWinTitle(titleArea)
 	windowArea := screen.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
@@ -212,9 +213,52 @@ func (win *windowData) drawBorder(screen *ebiten.Image) {
 	}
 }
 
+func (win *windowData) drawScrollbars(screen *ebiten.Image) {
+	if win.NoScroll {
+		return
+	}
+	pad := win.Padding + win.BorderPad
+	req := win.contentBounds()
+	avail := point{
+		X: win.GetSize().X - 2*pad,
+		Y: win.GetSize().Y - win.GetTitleSize() - 2*pad,
+	}
+	if req.Y > avail.Y {
+		barH := avail.Y * avail.Y / req.Y
+		maxScroll := req.Y - avail.Y
+		pos := float32(0)
+		if maxScroll > 0 {
+			pos = (win.Scroll.Y / maxScroll) * (avail.Y - barH)
+		}
+		drawRoundRect(screen, &roundRect{
+			Size:     point{X: 4, Y: barH},
+			Position: point{X: win.getPosition().X + win.GetSize().X - win.BorderPad - 4, Y: win.getPosition().Y + win.GetTitleSize() + win.BorderPad + pos},
+			Fillet:   2,
+			Filled:   true,
+			Color:    dimColor(win.ActiveColor, dimFactor),
+		})
+	}
+	if req.X > avail.X {
+		barW := avail.X * avail.X / req.X
+		maxScroll := req.X - avail.X
+		pos := float32(0)
+		if maxScroll > 0 {
+			pos = (win.Scroll.X / maxScroll) * (avail.X - barW)
+		}
+		drawRoundRect(screen, &roundRect{
+			Size:     point{X: barW, Y: 4},
+			Position: point{X: win.getPosition().X + win.BorderPad + pos, Y: win.getPosition().Y + win.GetSize().Y - win.BorderPad - 4},
+			Fillet:   2,
+			Filled:   true,
+			Color:    dimColor(win.ActiveColor, dimFactor),
+		})
+	}
+}
+
 func (win *windowData) drawItems(screen *ebiten.Image) {
 	pad := win.Padding + win.BorderPad
 	winPos := pointAdd(win.getPosition(), point{X: pad, Y: win.GetTitleSize() + pad})
+	winPos = pointSub(winPos, win.Scroll)
 	clip := win.getMainRect()
 
 	for _, item := range win.Contents {

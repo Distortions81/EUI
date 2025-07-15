@@ -141,51 +141,92 @@ func (win *windowData) getWindowPart(mpos point, click bool) dragType {
 		}
 	}
 
-	if !win.Resizable {
-		return PART_NONE
+	if win.Resizable {
+		t := Tol * uiScale
+		cs := CornerSize * uiScale
+
+		winRect := win.getWinRect()
+
+		//Expand outer window rect
+		outRect := winRect
+		outRect.X0 -= t
+		outRect.X1 += t
+		outRect.Y0 -= t
+		outRect.Y1 += t
+
+		//Contract inner window rect
+		inRect := winRect
+		inRect.X0 += t
+		inRect.X1 -= t
+		inRect.Y0 += t
+		inRect.Y1 -= t
+
+		//If within outrect, and not within inrect it is window DRAG
+		if outRect.containsPoint(mpos) && !inRect.containsPoint(mpos) {
+			if mpos.Y < outRect.Y0+cs {
+				if mpos.X < inRect.X0+cs {
+					return PART_TOP_LEFT
+				} else if mpos.X > inRect.X1-cs {
+					return PART_TOP_RIGHT
+				} else {
+					return PART_TOP
+				}
+			} else if mpos.Y > inRect.Y1-cs {
+				if mpos.X > outRect.X1-cs {
+					return PART_BOTTOM_RIGHT
+				} else if mpos.X < outRect.X0+cs {
+					return PART_BOTTOM_LEFT
+				} else {
+					return PART_BOTTOM
+				}
+			} else if mpos.X < inRect.X0 {
+				return PART_LEFT
+			} else if mpos.X < outRect.X1 {
+				return PART_RIGHT
+			}
+		}
 	}
 
-	t := Tol * uiScale
-	cs := CornerSize * uiScale
-
-	winRect := win.getWinRect()
-
-	//Expand outer window rect
-	outRect := winRect
-	outRect.X0 -= t
-	outRect.X1 += t
-	outRect.Y0 -= t
-	outRect.Y1 += t
-
-	//Contract inner window rect
-	inRect := winRect
-	inRect.X0 += t
-	inRect.X1 -= t
-	inRect.Y0 += t
-	inRect.Y1 -= t
-
-	//If within outrect, and not within inrect it is window DRAG
-	if outRect.containsPoint(mpos) && !inRect.containsPoint(mpos) {
-		if mpos.Y < outRect.Y0+cs {
-			if mpos.X < inRect.X0+cs {
-				return PART_TOP_LEFT
-			} else if mpos.X > inRect.X1-cs {
-				return PART_TOP_RIGHT
-			} else {
-				return PART_TOP
+	if !win.NoScroll {
+		pad := win.Padding + win.BorderPad
+		req := win.contentBounds()
+		avail := point{
+			X: win.GetSize().X - 2*pad,
+			Y: win.GetSize().Y - win.GetTitleSize() - 2*pad,
+		}
+		if req.Y > avail.Y {
+			barH := avail.Y * avail.Y / req.Y
+			maxScroll := req.Y - avail.Y
+			pos := float32(0)
+			if maxScroll > 0 {
+				pos = (win.Scroll.Y / maxScroll) * (avail.Y - barH)
 			}
-		} else if mpos.Y > inRect.Y1-cs {
-			if mpos.X > outRect.X1-cs {
-				return PART_BOTTOM_RIGHT
-			} else if mpos.X < outRect.X0+cs {
-				return PART_BOTTOM_LEFT
-			} else {
-				return PART_BOTTOM
+			r := rect{
+				X0: win.getPosition().X + win.GetSize().X - win.BorderPad - 4,
+				Y0: win.getPosition().Y + win.GetTitleSize() + win.BorderPad + pos,
+				X1: win.getPosition().X + win.GetSize().X - win.BorderPad,
+				Y1: win.getPosition().Y + win.GetTitleSize() + win.BorderPad + pos + barH,
 			}
-		} else if mpos.X < inRect.X0 {
-			return PART_LEFT
-		} else if mpos.X < outRect.X1 {
-			return PART_RIGHT
+			if r.containsPoint(mpos) {
+				return PART_SCROLL_V
+			}
+		}
+		if req.X > avail.X {
+			barW := avail.X * avail.X / req.X
+			maxScroll := req.X - avail.X
+			pos := float32(0)
+			if maxScroll > 0 {
+				pos = (win.Scroll.X / maxScroll) * (avail.X - barW)
+			}
+			r := rect{
+				X0: win.getPosition().X + win.BorderPad + pos,
+				Y0: win.getPosition().Y + win.GetSize().Y - win.BorderPad - 4,
+				X1: win.getPosition().X + win.BorderPad + pos + barW,
+				Y1: win.getPosition().Y + win.GetSize().Y - win.BorderPad,
+			}
+			if r.containsPoint(mpos) {
+				return PART_SCROLL_H
+			}
 		}
 	}
 

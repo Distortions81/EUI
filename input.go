@@ -77,6 +77,8 @@ func (g *Game) Update() error {
 					c = ebiten.CursorShapeNWSEResize
 				case PART_TOP_RIGHT, PART_BOTTOM_LEFT:
 					c = ebiten.CursorShapeNESWResize
+				case PART_SCROLL_V, PART_SCROLL_H:
+					c = ebiten.CursorShapePointer
 				}
 			}
 
@@ -129,6 +131,10 @@ func (g *Game) Update() error {
 					if !win.setSize(point{X: tx, Y: ty}) {
 						win.Position.X += posCh.X
 					}
+				case PART_SCROLL_V:
+					dragWindowScroll(win, mpos, true)
+				case PART_SCROLL_H:
+					dragWindowScroll(win, mpos, false)
 				}
 				break
 			}
@@ -190,6 +196,9 @@ func (g *Game) Update() error {
 					break
 				}
 				if scrollFlow(win.Contents, mpos, wheelDelta) {
+					break
+				}
+				if scrollWindow(win, wheelDelta) {
 					break
 				}
 			}
@@ -566,6 +575,88 @@ func scrollDropdown(items []*itemData, mpos point, delta point) bool {
 		}
 	}
 	return false
+}
+
+func scrollWindow(win *windowData, delta point) bool {
+	if win.NoScroll {
+		return false
+	}
+	pad := win.Padding + win.BorderPad
+	req := win.contentBounds()
+	avail := point{
+		X: win.GetSize().X - 2*pad,
+		Y: win.GetSize().Y - win.GetTitleSize() - 2*pad,
+	}
+	handled := false
+	if req.Y > avail.Y {
+		win.Scroll.Y -= delta.Y * 16
+		if win.Scroll.Y < 0 {
+			win.Scroll.Y = 0
+		}
+		max := req.Y - avail.Y
+		if win.Scroll.Y > max {
+			win.Scroll.Y = max
+		}
+		handled = true
+	}
+	if req.X > avail.X {
+		win.Scroll.X -= delta.X * 16
+		if win.Scroll.X < 0 {
+			win.Scroll.X = 0
+		}
+		max := req.X - avail.X
+		if win.Scroll.X > max {
+			win.Scroll.X = max
+		}
+		handled = true
+	}
+	return handled
+}
+
+func dragWindowScroll(win *windowData, mpos point, vert bool) {
+	if win.NoScroll {
+		return
+	}
+	pad := win.Padding + win.BorderPad
+	req := win.contentBounds()
+	avail := point{
+		X: win.GetSize().X - 2*pad,
+		Y: win.GetSize().Y - win.GetTitleSize() - 2*pad,
+	}
+	if vert && req.Y > avail.Y {
+		barH := avail.Y * avail.Y / req.Y
+		maxScroll := req.Y - avail.Y
+		track := win.getPosition().Y + win.GetTitleSize() + win.BorderPad
+		pos := mpos.Y - (track + barH/2)
+		if pos < 0 {
+			pos = 0
+		}
+		if pos > avail.Y-barH {
+			pos = avail.Y - barH
+		}
+		if avail.Y-barH > 0 {
+			win.Scroll.Y = (pos / (avail.Y - barH)) * maxScroll
+		} else {
+			win.Scroll.Y = 0
+		}
+	}
+	if !vert && req.X > avail.X {
+		barW := avail.X * avail.X / req.X
+		maxScroll := req.X - avail.X
+		track := win.getPosition().X + win.BorderPad
+		pos := mpos.X - (track + barW/2)
+		if pos < 0 {
+			pos = 0
+		}
+		if pos > avail.X-barW {
+			pos = avail.X - barW
+		}
+		if avail.X-barW > 0 {
+			win.Scroll.X = (pos / (avail.X - barW)) * maxScroll
+		} else {
+			win.Scroll.X = 0
+		}
+	}
 }
 func dropdownOpenContains(items []*itemData, mpos point) bool {
 	for _, it := range items {
