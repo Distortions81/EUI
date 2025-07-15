@@ -182,6 +182,18 @@ func NewDropdown(item *itemData) *itemData {
 	return &newItem
 }
 
+// Create a new color wheel from the default theme
+func NewColorWheel(item *itemData) *itemData {
+	if currentTheme == nil {
+		currentTheme = baseTheme
+	}
+	newItem := baseColorWheel
+	if item != nil {
+		mergeData(&newItem, item)
+	}
+	return &newItem
+}
+
 // Create a new textbox from the default theme
 func NewText(item *itemData) *itemData {
 	if currentTheme == nil {
