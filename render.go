@@ -258,7 +258,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 		drawOffset = pointAdd(drawOffset, point{Y: tabHeight})
 		vector.DrawFilledRect(subImg,
 			offset.X,
-			offset.Y,
+			offset.Y+tabHeight-3*uiScale,
 			item.GetSize().X,
 			3*uiScale,
 			item.ClickColor,
