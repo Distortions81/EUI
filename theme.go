@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 	"encoding/json"
+	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -40,7 +41,34 @@ type themeFile struct {
 	Comment           string            `json:"Comment"`
 	Colors            map[string]string `json:"Colors"`
 	RecommendedLayout string            `json:"RecommendedLayout"`
-	Theme
+}
+
+// resolveColor recursively resolves string references to colors after the
+// theme JSON has been parsed. Color strings may reference other named colors
+// from the same file.
+func resolveColor(s string, colors map[string]string, seen map[string]bool) (Color, error) {
+	s = strings.TrimSpace(s)
+	key := strings.ToLower(s)
+	if c, ok := namedColors[key]; ok {
+		return c, nil
+	}
+	if val, ok := colors[key]; ok {
+		if seen[key] {
+			return Color{}, fmt.Errorf("color reference cycle for %s", key)
+		}
+		seen[key] = true
+		c, err := resolveColor(val, colors, seen)
+		if err != nil {
+			return Color{}, err
+		}
+		namedColors[key] = c
+		return c, nil
+	}
+	var c Color
+	if err := c.UnmarshalJSON([]byte(strconv.Quote(s))); err != nil {
+		return Color{}, err
+	}
+	return c, nil
 }
 
 // LoadTheme reads a theme JSON file from the themes directory and
@@ -58,19 +86,20 @@ func LoadTheme(name string) error {
 	// Reset named colors
 	namedColors = map[string]Color{}
 
-	// Start with the compiled in defaults
-	th := *baseTheme
-
 	var tf themeFile
 	if err := json.Unmarshal(data, &tf); err != nil {
 		return err
 	}
 	for n, v := range tf.Colors {
-		var c Color
-		if err := c.UnmarshalJSON([]byte(strconv.Quote(v))); err == nil {
-			namedColors[strings.ToLower(n)] = c
+		c, err := resolveColor(v, tf.Colors, map[string]bool{strings.ToLower(n): true})
+		if err != nil {
+			return fmt.Errorf("%s: %w", n, err)
 		}
+		namedColors[strings.ToLower(n)] = c
 	}
+
+	// Start with the compiled in defaults
+	th := *baseTheme
 	if err := json.Unmarshal(data, &th); err != nil {
 		return err
 	}
