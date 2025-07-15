@@ -55,6 +55,7 @@ func main() {
 
 	themeSel = makeThemeSelector()
 	if themeSel != nil {
+		themeSel.Open = false
 		themeSel.AddWindow(false)
 	}
 
