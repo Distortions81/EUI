@@ -15,8 +15,9 @@ var (
 	mposOld     point
 	cursorShape ebiten.CursorShapeType
 
-	dragPart dragType
-	dragWin  *windowData
+	dragPart   dragType
+	dragWin    *windowData
+	activeItem *itemData
 )
 
 func (g *Game) Update() error {
@@ -37,6 +38,7 @@ func (g *Game) Update() error {
 	if !ebiten.IsMouseButtonPressed(ebiten.MouseButton0) {
 		dragPart = PART_NONE
 		dragWin = nil
+		activeItem = nil
 	}
 	//altClick := inpututil.IsMouseButtonJustPressed(ebiten.MouseButton1)
 
@@ -224,6 +226,7 @@ func (item *itemData) clickFlows(mpos point, click bool) bool {
 			if tab.DrawRect.containsPoint(mpos) {
 				tab.Hovered = true
 				if click {
+					activeItem = tab
 					item.ActiveTab = i
 				}
 				return true
@@ -257,6 +260,9 @@ func (item *itemData) clickFlows(mpos point, click bool) bool {
 }
 
 func (item *itemData) clickItem(mpos point, click bool) bool {
+	if ebiten.IsMouseButtonPressed(ebiten.MouseButton0) && activeItem != nil && activeItem != item {
+		return false
+	}
 	// For dropdowns check the expanded option area as well
 	if !item.DrawRect.containsPoint(mpos) {
 		if !(item.ItemType == ITEM_DROPDOWN && item.Open && func() bool {
@@ -275,6 +281,7 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 	}
 
 	if click {
+		activeItem = item
 		item.Clicked = time.Now()
 		if item.ItemType == ITEM_COLORWHEEL {
 			if col, ok := item.colorAt(mpos); ok {
