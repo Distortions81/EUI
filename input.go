@@ -202,15 +202,19 @@ func (win *windowData) clickWindowItems(mpos point, click bool) {
 	win.Hovered = true
 
 	for _, item := range win.Contents {
+		handled := false
 		if item.ItemType == ITEM_FLOW {
-			item.clickFlows(mpos, click)
+			handled = item.clickFlows(mpos, click)
 		} else {
-			item.clickItem(mpos, click)
+			handled = item.clickItem(mpos, click)
+		}
+		if handled {
+			return
 		}
 	}
 }
 
-func (item *itemData) clickFlows(mpos point, click bool) {
+func (item *itemData) clickFlows(mpos point, click bool) bool {
 	if len(item.Tabs) > 0 {
 		if item.ActiveTab >= len(item.Tabs) {
 			item.ActiveTab = 0
@@ -222,28 +226,37 @@ func (item *itemData) clickFlows(mpos point, click bool) {
 				if click {
 					item.ActiveTab = i
 				}
-				return
+				return true
 			}
 		}
 		for _, subItem := range item.Tabs[item.ActiveTab].Contents {
 			if subItem.ItemType == ITEM_FLOW {
-				subItem.clickFlows(mpos, click)
+				if subItem.clickFlows(mpos, click) {
+					return true
+				}
 			} else {
-				subItem.clickItem(mpos, click)
+				if subItem.clickItem(mpos, click) {
+					return true
+				}
 			}
 		}
 	} else {
 		for _, subItem := range item.Contents {
 			if subItem.ItemType == ITEM_FLOW {
-				subItem.clickFlows(mpos, click)
+				if subItem.clickFlows(mpos, click) {
+					return true
+				}
 			} else {
-				subItem.clickItem(mpos, click)
+				if subItem.clickItem(mpos, click) {
+					return true
+				}
 			}
 		}
 	}
+	return item.DrawRect.containsPoint(mpos)
 }
 
-func (item *itemData) clickItem(mpos point, click bool) {
+func (item *itemData) clickItem(mpos point, click bool) bool {
 	// For dropdowns check the expanded option area as well
 	if !item.DrawRect.containsPoint(mpos) {
 		if !(item.ItemType == ITEM_DROPDOWN && item.Open && func() bool {
@@ -257,7 +270,7 @@ func (item *itemData) clickItem(mpos point, click bool) {
 			r := rect{X0: item.DrawRect.X0, Y0: startY, X1: item.DrawRect.X1, Y1: startY + openHeight}
 			return r.containsPoint(mpos)
 		}()) {
-			return
+			return false
 		}
 	}
 
@@ -307,7 +320,7 @@ func (item *itemData) clickItem(mpos point, click bool) {
 		}
 		if item.Action != nil {
 			item.Action()
-			return
+			return true
 		}
 	} else {
 		item.Hovered = true
@@ -350,6 +363,7 @@ func (item *itemData) clickItem(mpos point, click bool) {
 			}
 		}
 	}
+	return true
 }
 
 func uncheckRadioGroup(parent *itemData, group string, except *itemData) {

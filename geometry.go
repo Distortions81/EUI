@@ -21,7 +21,7 @@ func (it *itemData) containsPoint(win *windowData, p point) bool {
 // getRectangle converts a rect to the standard image.Rectangle type.
 func (r rect) getRectangle() image.Rectangle {
 	return image.Rectangle{
-		Min: image.Point{X: int(math.Ceil(float64(r.X0))), Y: int(math.Ceil(float64(r.Y0)))},
+		Min: image.Point{X: int(math.Floor(float64(r.X0))), Y: int(math.Floor(float64(r.Y0)))},
 		Max: image.Point{X: int(math.Ceil(float64(r.X1))), Y: int(math.Ceil(float64(r.Y1)))},
 	}
 }
