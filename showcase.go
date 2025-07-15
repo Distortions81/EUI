@@ -62,6 +62,20 @@ func makeShowcaseWindow() *windowData {
 	hFlow.addItemTo(NewButton(&itemData{Text: "Three", Size: point{X: 60, Y: 24}, FontSize: 8}))
 	hFlow.addItemTo(NewButton(&itemData{Text: "Four", Size: point{X: 60, Y: 24}, FontSize: 8}))
 
+	// A vertical flow showcasing scrolling down
+	vFlow := &itemData{
+		ItemType:   ITEM_FLOW,
+		FlowType:   FLOW_VERTICAL,
+		Size:       point{X: 120, Y: 72},
+		Fixed:      true,
+		Scrollable: true,
+	}
+	mainFlow.addItemTo(vFlow)
+	vFlow.addItemTo(NewButton(&itemData{Text: "A", Size: point{X: 100, Y: 24}, FontSize: 8}))
+	vFlow.addItemTo(NewButton(&itemData{Text: "B", Size: point{X: 100, Y: 24}, FontSize: 8}))
+	vFlow.addItemTo(NewButton(&itemData{Text: "C", Size: point{X: 100, Y: 24}, FontSize: 8}))
+	vFlow.addItemTo(NewButton(&itemData{Text: "D", Size: point{X: 100, Y: 24}, FontSize: 8}))
+
 	tabFlow := &itemData{
 		ItemType:   ITEM_FLOW,
 		FlowType:   FLOW_VERTICAL,
@@ -78,6 +92,10 @@ func makeShowcaseWindow() *windowData {
 	mainFlow.addItemTo(tabFlow)
 	tabFlow.Tabs[0].addItemTo(NewText(&itemData{Text: "Tab 1 content", Size: point{X: 100, Y: 32}, FontSize: 8}))
 	tabFlow.Tabs[1].addItemTo(NewText(&itemData{Text: "Tab 2 content", Size: point{X: 100, Y: 32}, FontSize: 8}))
+
+	// A pinned button in the window corner
+	pinnedBtn := NewButton(&itemData{Text: "Pin", Size: point{X: 60, Y: 24}, FontSize: 8, PinTo: PIN_BOTTOM_RIGHT, Position: point{X: 4, Y: 4}})
+	win.addItemTo(pinnedBtn)
 
 	return win
 }
