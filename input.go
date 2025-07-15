@@ -194,6 +194,9 @@ func (win *windowData) clickWindowItems(mpos point, click bool) {
 	if !win.getMainRect().containsPoint(mpos) && !dropdownOpenContains(win.Contents, mpos) {
 		return
 	}
+	if clickOpenDropdown(win.Contents, mpos, click) {
+		return
+	}
 	win.Hovered = true
 
 	for _, item := range win.Contents {
@@ -532,6 +535,37 @@ func dropdownOpenContains(items []*itemData, mpos point) bool {
 			}
 		}
 		if dropdownOpenContains(it.Contents, mpos) {
+			return true
+		}
+	}
+	return false
+}
+
+func clickOpenDropdown(items []*itemData, mpos point, click bool) bool {
+	for _, it := range items {
+		if it.ItemType == ITEM_DROPDOWN && it.Open {
+			optionH := it.GetSize().Y
+			visible := it.MaxVisible
+			if visible <= 0 {
+				visible = 5
+			}
+			startY := it.DrawRect.Y1
+			openH := optionH * float32(visible)
+			r := rect{X0: it.DrawRect.X0, Y0: startY, X1: it.DrawRect.X1, Y1: startY + openH}
+			if r.containsPoint(mpos) {
+				it.clickItem(mpos, click)
+				return true
+			}
+		}
+		if len(it.Tabs) > 0 {
+			if it.ActiveTab >= len(it.Tabs) {
+				it.ActiveTab = 0
+			}
+			if clickOpenDropdown(it.Tabs[it.ActiveTab].Contents, mpos, click) {
+				return true
+			}
+		}
+		if clickOpenDropdown(it.Contents, mpos, click) {
 			return true
 		}
 	}

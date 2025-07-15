@@ -21,7 +21,7 @@ func makeThemeSelector() *windowData {
 		// Give the dropdown room to fully render by accounting for the
 		// title bar height and the control's size. Extra height is for
 		// the saturation slider.
-		Size:     point{X: 192, Y: 192},
+		Size:     point{X: 192, Y: 224},
 		Position: point{X: 4, Y: 4},
 		Open:     true,
 	})
