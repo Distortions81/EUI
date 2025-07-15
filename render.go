@@ -443,6 +443,22 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 	}
 	subImg := screen.SubImage(item.DrawRect.getRectangle()).(*ebiten.Image)
 
+	if item.Label != "" {
+		textSize := (item.FontSize * uiScale) + 2
+		face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
+		loo := text.LayoutOptions{PrimaryAlign: text.AlignStart, SecondaryAlign: text.AlignCenter}
+		tdop := ebiten.DrawImageOptions{}
+		tdop.GeoM.Translate(float64(offset.X), float64(offset.Y+textSize/2))
+		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+		top.ColorScale.ScaleWithColor(dimColor(item.TextColor, dimFactor))
+		text.Draw(subImg, item.Label, face, top)
+		offset.Y += textSize + currentLayout.TextPadding
+		maxSize.Y -= textSize + currentLayout.TextPadding
+		if maxSize.Y < 0 {
+			maxSize.Y = 0
+		}
+	}
+
 	if item.ItemType == ITEM_CHECKBOX {
 
 		bThick := float32(1.0)

@@ -303,7 +303,12 @@ func (win *windowData) GetPos() point {
 }
 
 func (item *itemData) GetSize() point {
-	return point{X: item.Size.X * uiScale, Y: item.Size.Y * uiScale}
+	sz := point{X: item.Size.X * uiScale, Y: item.Size.Y * uiScale}
+	if item.Label != "" {
+		textSize := (item.FontSize * uiScale) + 2
+		sz.Y += textSize + currentLayout.TextPadding
+	}
+	return sz
 }
 
 func (item *itemData) GetPos() point {

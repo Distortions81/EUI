@@ -61,7 +61,7 @@ func makeThemeSelector() *windowData {
 	cw := NewColorWheel(&itemData{Size: point{X: 128, Y: 128}})
 	mainFlow.addItemTo(cw)
 
-	satSlider = NewSlider(&itemData{Size: point{X: 128, Y: 24}, MinValue: 0, MaxValue: 1, FontSize: 8})
+	satSlider = NewSlider(&itemData{Label: "Color Intensity", Size: point{X: 128, Y: 24}, MinValue: 0, MaxValue: 1, FontSize: 8})
 	satSlider.Value = float32(accentSaturation)
 	satSlider.Action = func() {
 		SetAccentSaturation(float64(satSlider.Value))
