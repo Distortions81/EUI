@@ -311,12 +311,23 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 			}
 			col := item.Color
 			if i == item.ActiveTab {
-				col = item.ClickColor
+				if !item.ActiveOutline {
+					col = item.ClickColor
+				}
 			} else if tab.Hovered {
 				col = item.HoverColor
 			}
 			tab.Hovered = false
 			drawTabShape(subImg, point{X: x, Y: offset.Y}, point{X: w, Y: tabHeight}, dimColor(col, dimFactor), item.Fillet*uiScale, item.BorderPad*uiScale)
+			if item.ActiveOutline && i == item.ActiveTab {
+				vector.DrawFilledRect(subImg,
+					x,
+					offset.Y,
+					w,
+					3*uiScale,
+					dimColor(item.ClickColor, dimFactor),
+					false)
+			}
 			loo := text.LayoutOptions{PrimaryAlign: text.AlignCenter, SecondaryAlign: text.AlignCenter}
 			dop := ebiten.DrawImageOptions{}
 			dop.GeoM.Translate(float64(x+w/2), float64(offset.Y+tabHeight/2))

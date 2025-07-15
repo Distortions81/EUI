@@ -101,6 +101,7 @@ type itemData struct {
 	Fillet            float32
 	Border, BorderPad float32
 	Filled, Outlined  bool
+	ActiveOutline     bool
 	AuxSize           point
 	AuxSpace          float32
 

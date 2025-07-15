@@ -232,6 +232,7 @@ func copyItemStyle(dst, src *itemData) {
 	dst.BorderPad = src.BorderPad
 	dst.Filled = src.Filled
 	dst.Outlined = src.Outlined
+	dst.ActiveOutline = src.ActiveOutline
 	dst.AuxSize = src.AuxSize
 	dst.AuxSpace = src.AuxSpace
 	dst.TextColor = src.TextColor
