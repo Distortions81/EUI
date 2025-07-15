@@ -79,7 +79,9 @@ func (target *windowData) AddWindow(toBack bool) {
 
 	if !toBack {
 		windows = append(windows, target)
-		activeWindow = target
+		if target.PinTo == PIN_TOP_LEFT {
+			activeWindow = target
+		}
 	} else {
 		windows = append([]*windowData{target}, windows...)
 	}
