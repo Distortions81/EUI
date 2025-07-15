@@ -108,3 +108,20 @@ func TestSetSliderValue(t *testing.T) {
 		t.Errorf("int slider got %v", item.Value)
 	}
 }
+
+func TestMarkOpen(t *testing.T) {
+	win1 := &windowData{Title: "win1", Open: true}
+	win2 := &windowData{Title: "win2", Open: false}
+	windows = []*windowData{win2, win1}
+	activeWindow = win1
+	win2.MarkOpen()
+	if !win2.Open {
+		t.Errorf("expected window to be open")
+	}
+	if activeWindow != win2 {
+		t.Errorf("expected active window to be win2")
+	}
+	if len(windows) != 2 || windows[1] != win2 {
+		t.Errorf("window order incorrect: %v", windows)
+	}
+}

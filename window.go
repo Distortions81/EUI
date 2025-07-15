@@ -77,20 +77,20 @@ func (target *windowData) AddWindow(toBack bool) {
 		applyThemeToWindow(target)
 	}
 
-        // Closed windows shouldn't steal focus, so add them to the back by
-        // default and don't update the active window.
-        if !target.Open {
-                toBack = true
-        }
+	// Closed windows shouldn't steal focus, so add them to the back by
+	// default and don't update the active window.
+	if !target.Open {
+		toBack = true
+	}
 
-        if !toBack {
-                windows = append(windows, target)
-                if target.PinTo == PIN_TOP_LEFT {
-                        activeWindow = target
-                }
-        } else {
-                windows = append([]*windowData{target}, windows...)
-        }
+	if !toBack {
+		windows = append(windows, target)
+		if target.PinTo == PIN_TOP_LEFT {
+			activeWindow = target
+		}
+	} else {
+		windows = append([]*windowData{target}, windows...)
+	}
 }
 
 // Remove window from window list, if found.
@@ -212,6 +212,12 @@ func NewText(item *itemData) *itemData {
 		mergeData(&newItem, item)
 	}
 	return &newItem
+}
+
+// MarkOpen sets the window as open and brings it forward.
+func (target *windowData) MarkOpen() {
+	target.Open = true
+	target.BringForward()
 }
 
 // Bring a window to the front
