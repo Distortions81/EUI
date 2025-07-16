@@ -3,7 +3,11 @@ package main
 import (
 	"embed"
 	"encoding/json"
+	"io/fs"
+	"os"
 	"path/filepath"
+	"sort"
+	"strings"
 )
 
 //go:embed themes/layout/*.json
@@ -184,4 +188,25 @@ func applyLayoutToTheme(th *Theme) {
 	th.Tab.BorderPad = currentLayout.BorderPad.Tab
 	th.Tab.Filled = currentLayout.Filled.Tab
 	th.Tab.Outlined = currentLayout.Outlined.Tab
+}
+
+// listLayouts returns the available layout theme names from the themes directory
+func listLayouts() ([]string, error) {
+	entries, err := fs.ReadDir(embeddedLayouts, "themes/layout")
+	if err != nil {
+		entries, err = os.ReadDir("themes/layout")
+		if err != nil {
+			return nil, err
+		}
+	}
+	names := []string{}
+	for _, e := range entries {
+		if e.IsDir() {
+			continue
+		}
+		name := strings.TrimSuffix(e.Name(), filepath.Ext(e.Name()))
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	return names, nil
 }
