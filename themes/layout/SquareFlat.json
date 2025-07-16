@@ -2,7 +2,7 @@
   "SliderValueGap": 16,
   "DropdownArrowPad": 8,
   "TextPadding": 8,
-  "WindowDim": true,
+  "WindowDim": false,
   "WindowDimVal": 0.2,
   "Fillet": {
     "Window": 0,

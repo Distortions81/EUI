@@ -15,11 +15,11 @@ func makeThemeSelector() *windowData {
 	}
 	win := NewWindow(&windowData{
 		Title:     "Themes",
-		Resizable: true,
-		Closable:  true,
+		Resizable: false,
+		Closable:  false,
 		PinTo:     PIN_TOP_RIGHT,
 		AutoSize:  true,
-		Open:      true,
+		Open:      false,
 	})
 	mainFlow := &itemData{ItemType: ITEM_FLOW, Size: win.Size, FlowType: FLOW_VERTICAL}
 	win.addItemTo(mainFlow)

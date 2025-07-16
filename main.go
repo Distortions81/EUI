@@ -48,14 +48,13 @@ func main() {
 		mplusFaceSource = s
 	}
 
-	SetUIScale(1.5)
+	SetUIScale(2)
 
 	showcase := makeShowcaseWindow()
 	showcase.AddWindow(false)
 
 	themeSel = makeThemeSelector()
 	if themeSel != nil {
-		themeSel.Open = false
 		themeSel.AddWindow(false)
 	}
 
