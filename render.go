@@ -928,22 +928,26 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 	)
 
 	// Align to pixel boundaries
-       aa := rrect.Fillet > 0
+	aa := rrect.Fillet > 0
 
-       x := float32(math.Floor(float64(rrect.Position.X)))
-       y := float32(math.Floor(float64(rrect.Position.Y)))
-       w := float32(math.Round(float64(rrect.Size.X)))
-       h := float32(math.Round(float64(rrect.Size.Y)))
-       fillet := rrect.Fillet
-       width := float32(math.Round(float64(rrect.Border)))
+	x := float32(math.Floor(float64(rrect.Position.X)))
+	y := float32(math.Floor(float64(rrect.Position.Y)))
+	w := float32(math.Round(float64(rrect.Size.X)))
+	h := float32(math.Round(float64(rrect.Size.Y)))
+	fillet := rrect.Fillet
+	width := float32(math.Round(float64(rrect.Border)))
+	off := float32(0)
+	if !rrect.Filled {
+		off = pixelOffset(width)
+	}
 
 	// When stroking, keep the outline fully inside the rectangle so
 	// sub-images do not clip the bottom and right edges.
-        if !rrect.Filled && width > 0 {
-                inset := width / 2
-                x += inset
-                y += inset
-                w -= width
+	if !rrect.Filled && width > 0 {
+		inset := width / 2
+		x += inset
+		y += inset
+		w -= width
 		h -= width
 		if w < 0 {
 			w = 0
@@ -951,14 +955,14 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 		if h < 0 {
 			h = 0
 		}
-                if fillet > inset {
-                        fillet -= inset
-                } else {
-                        fillet = 0
-                }
-        }
+		if fillet > inset {
+			fillet -= inset
+		} else {
+			fillet = 0
+		}
+	}
 
-       fillet = float32(math.Round(float64(fillet)))
+	fillet = float32(math.Round(float64(fillet)))
 
 	path.MoveTo(x+fillet, y)
 	path.LineTo(x+w-fillet, y)
@@ -994,24 +998,20 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 		vertices, indices = path.AppendVerticesAndIndicesForStroke(vertices[:0], indices[:0], opv)
 	}
 
-       col := dimColor(rrect.Color, dimFactor)
-       for i := range vertices {
-               vertices[i].DstX = float32(math.Floor(float64(vertices[i].DstX)))
-               vertices[i].DstY = float32(math.Floor(float64(vertices[i].DstY)))
-               if !rrect.Filled {
-                       vertices[i].DstX += 0.5
-                       vertices[i].DstY += 0.5
-               }
-               vertices[i].SrcX = 1
-               vertices[i].SrcY = 1
-               vertices[i].ColorR = float32(col.R) / 255
-               vertices[i].ColorG = float32(col.G) / 255
-               vertices[i].ColorB = float32(col.B) / 255
-               vertices[i].ColorA = float32(col.A) / 255
-       }
+	col := dimColor(rrect.Color, dimFactor)
+	for i := range vertices {
+		vertices[i].DstX = float32(math.Floor(float64(vertices[i].DstX))) + off
+		vertices[i].DstY = float32(math.Floor(float64(vertices[i].DstY))) + off
+		vertices[i].SrcX = 1
+		vertices[i].SrcY = 1
+		vertices[i].ColorR = float32(col.R) / 255
+		vertices[i].ColorG = float32(col.G) / 255
+		vertices[i].ColorB = float32(col.B) / 255
+		vertices[i].ColorA = float32(col.A) / 255
+	}
 
-       op := &ebiten.DrawTrianglesOptions{FillRule: ebiten.FillRuleNonZero, AntiAlias: aa}
-       screen.DrawTriangles(vertices, indices, whiteSubImage, op)
+	op := &ebiten.DrawTrianglesOptions{FillRule: ebiten.FillRuleNonZero, AntiAlias: aa}
+	screen.DrawTriangles(vertices, indices, whiteSubImage, op)
 }
 
 func drawTabShape(screen *ebiten.Image, pos point, size point, col Color, fillet float32, slope float32) {
@@ -1027,15 +1027,15 @@ func drawTabShape(screen *ebiten.Image, pos point, size point, col Color, fillet
 	size.X = float32(math.Round(float64(size.X)))
 	size.Y = float32(math.Round(float64(size.Y)))
 
-       origFillet := fillet
+	origFillet := fillet
 
-       if slope <= 0 {
-               slope = size.Y / 4
-       }
-       if fillet <= 0 {
-               fillet = size.Y / 8
-       }
-       fillet = float32(math.Round(float64(fillet)))
+	if slope <= 0 {
+		slope = size.Y / 4
+	}
+	if fillet <= 0 {
+		fillet = size.Y / 8
+	}
+	fillet = float32(math.Round(float64(fillet)))
 
 	path.MoveTo(pos.X, pos.Y+size.Y)
 	path.LineTo(pos.X+slope, pos.Y+size.Y)
@@ -1050,8 +1050,8 @@ func drawTabShape(screen *ebiten.Image, pos point, size point, col Color, fillet
 	vertices, indices = path.AppendVerticesAndIndicesForFilling(vertices[:0], indices[:0])
 	c := dimColor(col, dimFactor)
 	for i := range vertices {
-		vertices[i].DstX = float32(math.Floor(float64(vertices[i].DstX))) + 0.5
-		vertices[i].DstY = float32(math.Floor(float64(vertices[i].DstY))) + 0.5
+		vertices[i].DstX = float32(math.Floor(float64(vertices[i].DstX)))
+		vertices[i].DstY = float32(math.Floor(float64(vertices[i].DstY)))
 		vertices[i].SrcX = 1
 		vertices[i].SrcY = 1
 		vertices[i].ColorR = float32(c.R) / 255
@@ -1060,10 +1060,10 @@ func drawTabShape(screen *ebiten.Image, pos point, size point, col Color, fillet
 		vertices[i].ColorA = float32(c.A) / 255
 	}
 
-       op := &ebiten.DrawTrianglesOptions{}
-       op.FillRule = ebiten.FillRuleNonZero
-       op.AntiAlias = origFillet > 0
-       screen.DrawTriangles(vertices, indices, whiteSubImage, op)
+	op := &ebiten.DrawTrianglesOptions{}
+	op.FillRule = ebiten.FillRuleNonZero
+	op.AntiAlias = origFillet > 0
+	screen.DrawTriangles(vertices, indices, whiteSubImage, op)
 }
 
 func strokeTabShape(screen *ebiten.Image, pos point, size point, col Color, fillet float32, slope float32, border float32) {
@@ -1073,22 +1073,23 @@ func strokeTabShape(screen *ebiten.Image, pos point, size point, col Color, fill
 		indices  []uint16
 	)
 
-       origFillet := fillet
+	origFillet := fillet
 
-       // Align to pixel boundaries
-       pos.X = float32(math.Floor(float64(pos.X)))
-       pos.Y = float32(math.Floor(float64(pos.Y)))
-       size.X = float32(math.Round(float64(size.X)))
-       size.Y = float32(math.Round(float64(size.Y)))
-       border = float32(math.Round(float64(border)))
+	// Align to pixel boundaries
+	pos.X = float32(math.Floor(float64(pos.X)))
+	pos.Y = float32(math.Floor(float64(pos.Y)))
+	size.X = float32(math.Round(float64(size.X)))
+	size.Y = float32(math.Round(float64(size.Y)))
+	border = float32(math.Round(float64(border)))
+	off := pixelOffset(border)
 
-       if slope <= 0 {
-               slope = size.Y / 4
-       }
-       if fillet <= 0 {
-               fillet = size.Y / 8
-       }
-       fillet = float32(math.Round(float64(fillet)))
+	if slope <= 0 {
+		slope = size.Y / 4
+	}
+	if fillet <= 0 {
+		fillet = size.Y / 8
+	}
+	fillet = float32(math.Round(float64(fillet)))
 
 	path.MoveTo(pos.X, pos.Y+size.Y)
 	path.LineTo(pos.X+slope, pos.Y+size.Y)
@@ -1104,8 +1105,8 @@ func strokeTabShape(screen *ebiten.Image, pos point, size point, col Color, fill
 	vertices, indices = path.AppendVerticesAndIndicesForStroke(vertices[:0], indices[:0], opv)
 	c := dimColor(col, dimFactor)
 	for i := range vertices {
-		vertices[i].DstX = float32(math.Floor(float64(vertices[i].DstX))) + 0.5
-		vertices[i].DstY = float32(math.Floor(float64(vertices[i].DstY))) + 0.5
+		vertices[i].DstX = float32(math.Floor(float64(vertices[i].DstX))) + off
+		vertices[i].DstY = float32(math.Floor(float64(vertices[i].DstY))) + off
 		vertices[i].SrcX = 1
 		vertices[i].SrcY = 1
 		vertices[i].ColorR = float32(c.R) / 255
@@ -1114,8 +1115,8 @@ func strokeTabShape(screen *ebiten.Image, pos point, size point, col Color, fill
 		vertices[i].ColorA = float32(c.A) / 255
 	}
 
-       op := &ebiten.DrawTrianglesOptions{FillRule: ebiten.FillRuleNonZero, AntiAlias: origFillet > 0}
-       screen.DrawTriangles(vertices, indices, whiteSubImage, op)
+	op := &ebiten.DrawTrianglesOptions{FillRule: ebiten.FillRuleNonZero, AntiAlias: origFillet > 0}
+	screen.DrawTriangles(vertices, indices, whiteSubImage, op)
 }
 
 func drawTriangle(screen *ebiten.Image, pos point, size float32, col Color) {
@@ -1138,8 +1139,8 @@ func drawTriangle(screen *ebiten.Image, pos point, size float32, col Color) {
 	vertices, indices = path.AppendVerticesAndIndicesForFilling(vertices[:0], indices[:0])
 	c := dimColor(col, dimFactor)
 	for i := range vertices {
-		vertices[i].DstX = float32(math.Floor(float64(vertices[i].DstX))) + 0.5
-		vertices[i].DstY = float32(math.Floor(float64(vertices[i].DstY))) + 0.5
+		vertices[i].DstX = float32(math.Floor(float64(vertices[i].DstX)))
+		vertices[i].DstY = float32(math.Floor(float64(vertices[i].DstY)))
 		vertices[i].SrcX = 1
 		vertices[i].SrcY = 1
 		vertices[i].ColorR = float32(c.R) / 255
