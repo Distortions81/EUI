@@ -109,8 +109,9 @@ type itemData struct {
 	TextColor, Color, HoverColor,
 	ClickColor, DisabledColor, CheckedColor Color
 
-	Action   func()
-	Contents []*itemData
+	Action        func()
+	OnColorChange func(Color)
+	Contents      []*itemData
 
 	// Tabs allows a flow to contain multiple tabbed flows. Only the
 	// flow referenced by ActiveTab will be drawn and receive input.
