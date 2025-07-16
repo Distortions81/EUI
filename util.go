@@ -1,7 +1,12 @@
 package main
 
 import (
+	"image/color"
+	"math"
+
+	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
 func (win *windowData) getWinRect() rect {
@@ -533,4 +538,30 @@ func (win *windowData) resizeFlows() {
 	for _, item := range win.Contents {
 		item.resizeFlow(win.GetSize())
 	}
+}
+
+func strokeLine(dst *ebiten.Image, x0, y0, x1, y1, width float32, col color.Color, aa bool) {
+	x0 = float32(math.Floor(float64(x0))) + 0.5
+	y0 = float32(math.Floor(float64(y0))) + 0.5
+	x1 = float32(math.Floor(float64(x1))) + 0.5
+	y1 = float32(math.Floor(float64(y1))) + 0.5
+	width = float32(math.Round(float64(width)))
+	vector.StrokeLine(dst, x0, y0, x1, y1, width, col, aa)
+}
+
+func strokeRect(dst *ebiten.Image, x, y, w, h, width float32, col color.Color, aa bool) {
+	x = float32(math.Floor(float64(x))) + 0.5
+	y = float32(math.Floor(float64(y))) + 0.5
+	w = float32(math.Round(float64(w)))
+	h = float32(math.Round(float64(h)))
+	width = float32(math.Round(float64(width)))
+	vector.StrokeRect(dst, x, y, w, h, width, col, aa)
+}
+
+func drawFilledRect(dst *ebiten.Image, x, y, w, h float32, col color.Color, aa bool) {
+	x = float32(math.Floor(float64(x)))
+	y = float32(math.Floor(float64(y)))
+	w = float32(math.Round(float64(w)))
+	h = float32(math.Round(float64(h)))
+	vector.DrawFilledRect(dst, x, y, w, h, col, aa)
 }

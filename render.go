@@ -151,14 +151,14 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image) {
 				color = win.HoverTitleColor
 				win.HoverClose = false
 			}
-			vector.StrokeLine(screen,
+			strokeLine(screen,
 				win.getPosition().X+win.GetSize().X-(win.GetTitleSize())+xpad,
 				win.getPosition().Y+xpad,
 
 				win.getPosition().X+win.GetSize().X-xpad,
 				win.getPosition().Y+(win.GetTitleSize())-xpad,
 				xThick, dimColor(color, dimFactor), true)
-			vector.StrokeLine(screen,
+			strokeLine(screen,
 				win.getPosition().X+win.GetSize().X-xpad,
 				win.getPosition().Y+xpad,
 
@@ -183,7 +183,7 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image) {
 				spacing = 5
 			}
 			for x := textWidth + float64((win.GetTitleSize())/1.5); x < float64(win.GetSize().X-buttonsWidth); x = x + float64(uiScale*spacing) {
-				vector.StrokeLine(screen,
+				strokeLine(screen,
 					win.getPosition().X+float32(x), win.getPosition().Y+dpad,
 					win.getPosition().X+float32(x), win.getPosition().Y+(win.GetTitleSize())-dpad,
 					xThick, dimColor(xColor, dimFactor), false)
@@ -344,7 +344,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 				)
 			}
 			if item.ActiveOutline && i == item.ActiveTab {
-				vector.DrawFilledRect(subImg,
+				drawFilledRect(subImg,
 					x,
 					offset.Y,
 					w,
@@ -362,14 +362,14 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 			x += w + spacing
 		}
 		drawOffset = pointAdd(drawOffset, point{Y: tabHeight})
-		vector.DrawFilledRect(subImg,
+		drawFilledRect(subImg,
 			offset.X,
 			offset.Y+tabHeight-3*uiScale,
 			item.GetSize().X,
 			3*uiScale,
 			dimColor(item.ClickColor, dimFactor),
 			false)
-		vector.StrokeRect(subImg,
+		strokeRect(subImg,
 			offset.X,
 			offset.Y+tabHeight,
 			item.GetSize().X,
@@ -429,7 +429,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 			}
 			col := dimColor(Color(color.RGBA{R: 96, G: 96, B: 96, A: 192}), dimFactor)
 			sbW := currentLayout.BorderPad.Slider * 2
-			vector.DrawFilledRect(subImg, item.DrawRect.X1-sbW, item.DrawRect.Y0+pos, sbW, barH, col.ToRGBA(), false)
+			drawFilledRect(subImg, item.DrawRect.X1-sbW, item.DrawRect.Y0+pos, sbW, barH, col.ToRGBA(), false)
 		} else if item.FlowType == FLOW_HORIZONTAL && req.X > size.X {
 			barW := size.X * size.X / req.X
 			maxScroll := req.X - size.X
@@ -439,7 +439,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 			}
 			col := dimColor(Color(color.RGBA{R: 96, G: 96, B: 96, A: 192}), dimFactor)
 			sbW := currentLayout.BorderPad.Slider * 2
-			vector.DrawFilledRect(subImg, item.DrawRect.X0+pos, item.DrawRect.Y1-sbW, barW, sbW, col.ToRGBA(), false)
+			drawFilledRect(subImg, item.DrawRect.X0+pos, item.DrawRect.Y1-sbW, barW, sbW, col.ToRGBA(), false)
 		}
 	}
 }
@@ -515,14 +515,14 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		if item.Checked {
 			xThick := 2 * uiScale
 			margin := auxSize.X * 0.25
-			vector.StrokeLine(subImg,
+			strokeLine(subImg,
 				offset.X+margin,
 				offset.Y+margin,
 				offset.X+auxSize.X-margin,
 				offset.Y+auxSize.Y-margin,
 				xThick, dimColor(item.TextColor, dimFactor), true)
 
-			vector.StrokeLine(subImg,
+			strokeLine(subImg,
 				offset.X+auxSize.X-margin,
 				offset.Y+margin,
 				offset.X+margin,
@@ -698,7 +698,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		if item.Focused {
 			width, _ := text.Measure(item.Text, face, 0)
 			cx := offset.X + item.BorderPad + item.Padding + currentLayout.TextPadding + float32(width)
-			vector.StrokeLine(subImg,
+			strokeLine(subImg,
 				cx, offset.Y+2,
 				cx, offset.Y+maxSize.Y-2,
 				1, dimColor(item.TextColor, dimFactor), false)
@@ -742,8 +742,8 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			ratio = 1
 		}
 		knobX := offset.X + float32(ratio)*trackWidth
-		vector.StrokeLine(subImg, offset.X, trackY, knobX, trackY, 2*uiScale, dimColor(item.ClickColor, dimFactor), true)
-		vector.StrokeLine(subImg, knobX, trackY, offset.X+trackWidth, trackY, 2*uiScale, dimColor(itemColor, dimFactor), true)
+		strokeLine(subImg, offset.X, trackY, knobX, trackY, 2*uiScale, dimColor(item.ClickColor, dimFactor), true)
+		strokeLine(subImg, knobX, trackY, offset.X+trackWidth, trackY, 2*uiScale, dimColor(itemColor, dimFactor), true)
 		drawRoundRect(subImg, &roundRect{
 			Size:     pointScaleMul(item.AuxSize),
 			Position: point{X: knobX, Y: offset.Y + (maxSize.Y-item.AuxSize.Y)/2},
@@ -852,7 +852,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 	}
 
 	if *debugMode {
-		vector.StrokeRect(subImg,
+		strokeRect(subImg,
 			item.DrawRect.X0,
 			item.DrawRect.Y0,
 			item.DrawRect.X1-item.DrawRect.X0,
@@ -881,7 +881,7 @@ func drawDropdownOptions(item *itemData, offset point, clip rect, screen *ebiten
 		return
 	}
 	subImg := screen.SubImage(visibleRect.getRectangle()).(*ebiten.Image)
-	vector.DrawFilledRect(subImg,
+	drawFilledRect(subImg,
 		visibleRect.X0,
 		visibleRect.Y0,
 		visibleRect.X1-visibleRect.X0,
@@ -907,16 +907,16 @@ func drawDropdownOptions(item *itemData, offset point, clip rect, screen *ebiten
 func (win *windowData) drawDebug(screen *ebiten.Image) {
 	if *debugMode {
 		grab := win.getMainRect()
-		vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{R: 255, G: 255, A: 255}, false)
+		strokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{R: 255, G: 255, A: 255}, false)
 
 		grab = win.dragbarRect()
-		vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{R: 255, A: 255}, false)
+		strokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{R: 255, A: 255}, false)
 
 		grab = win.xRect()
-		vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{G: 255, A: 255}, false)
+		strokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{G: 255, A: 255}, false)
 
 		grab = win.getTitleRect()
-		vector.StrokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{B: 255, G: 255, A: 255}, false)
+		strokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{B: 255, G: 255, A: 255}, false)
 	}
 }
 
@@ -1108,7 +1108,7 @@ func drawTriangle(screen *ebiten.Image, pos point, size float32, col Color) {
 }
 
 func drawFPS(screen *ebiten.Image) {
-	vector.DrawFilledRect(screen, 0, 0, 58, 16, color.RGBA{R: 0, G: 0, B: 0, A: 192}, false)
+	drawFilledRect(screen, 0, 0, 58, 16, color.RGBA{R: 0, G: 0, B: 0, A: 192}, false)
 	buf := fmt.Sprintf("%4v FPS", int(math.Round(ebiten.ActualFPS())))
 	ebitenutil.DebugPrintAt(screen, buf, 0, 0)
 }
