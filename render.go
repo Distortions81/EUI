@@ -927,42 +927,66 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 		indices  []uint16
 	)
 
-	//Top left, after corner, clockwise with pixel alignment
+	// Align to pixel boundaries
 	x := float32(math.Floor(float64(rrect.Position.X)))
 	y := float32(math.Floor(float64(rrect.Position.Y)))
+	w := rrect.Size.X
+	h := rrect.Size.Y
+	fillet := rrect.Fillet
+	width := float32(math.Round(float64(rrect.Border)))
 
-	path.MoveTo(x+rrect.Fillet, y)
-	path.LineTo(x+rrect.Size.X-rrect.Fillet, y)
+	// When stroking, keep the outline fully inside the rectangle so
+	// sub-images do not clip the bottom and right edges.
+	if !rrect.Filled && width > 0 {
+		inset := width / 2
+		x += inset
+		y += inset
+		w -= width
+		h -= width
+		if w < 0 {
+			w = 0
+		}
+		if h < 0 {
+			h = 0
+		}
+		if fillet > inset {
+			fillet -= inset
+		} else {
+			fillet = 0
+		}
+	}
+
+	path.MoveTo(x+fillet, y)
+	path.LineTo(x+w-fillet, y)
 	path.QuadTo(
-		x+rrect.Size.X,
+		x+w,
 		y,
-		x+rrect.Size.X,
-		y+rrect.Fillet)
-	path.LineTo(x+rrect.Size.X, y+rrect.Size.Y-rrect.Fillet)
+		x+w,
+		y+fillet)
+	path.LineTo(x+w, y+h-fillet)
 	path.QuadTo(
-		x+rrect.Size.X,
-		y+rrect.Size.Y,
-		x+rrect.Size.X-rrect.Fillet,
-		y+rrect.Size.Y)
-	path.LineTo(x+rrect.Fillet, y+rrect.Size.Y)
+		x+w,
+		y+h,
+		x+w-fillet,
+		y+h)
+	path.LineTo(x+fillet, y+h)
 	path.QuadTo(
 		x,
-		y+rrect.Size.Y,
+		y+h,
 		x,
-		y+rrect.Size.Y-rrect.Fillet)
-	path.LineTo(x, y+rrect.Fillet)
+		y+h-fillet)
+	path.LineTo(x, y+fillet)
 	path.QuadTo(
 		x,
 		y,
-		x+rrect.Fillet,
+		x+fillet,
 		y)
 	path.Close()
 
 	if rrect.Filled {
 		vertices, indices = path.AppendVerticesAndIndicesForFilling(vertices[:0], indices[:0])
 	} else {
-		opv := &vector.StrokeOptions{}
-		opv.Width = float32(math.Round(float64(rrect.Border)))
+		opv := &vector.StrokeOptions{Width: width}
 		vertices, indices = path.AppendVerticesAndIndicesForStroke(vertices[:0], indices[:0], opv)
 	}
 
@@ -978,9 +1002,7 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 		vertices[i].ColorA = float32(col.A) / 255
 	}
 
-	op := &ebiten.DrawTrianglesOptions{}
-	op.FillRule = ebiten.FillRuleNonZero
-	op.AntiAlias = true
+	op := &ebiten.DrawTrianglesOptions{FillRule: ebiten.FillRuleNonZero, AntiAlias: true}
 	screen.DrawTriangles(vertices, indices, whiteSubImage, op)
 }
 
