@@ -48,107 +48,7 @@ func (g *Game) Update() error {
 	sizeCh := pointScaleMul(point{X: posCh.X / uiScale, Y: posCh.Y / uiScale})
 	c := ebiten.CursorShapeDefault
 
-	//Check floating windows first
-	for i := len(floatWindows) - 1; i >= 0; i-- {
-		win := floatWindows[i]
-		if !win.Open {
-			continue
-		}
-
-		var part dragType
-		if dragPart != PART_NONE && dragWin == win {
-			part = dragPart
-		} else {
-			part = win.getWindowPart(mpos, click)
-		}
-
-		if part != PART_NONE {
-			if dragPart == PART_NONE && c == ebiten.CursorShapeDefault {
-				switch part {
-				case PART_BAR:
-					c = ebiten.CursorShapeMove
-				case PART_LEFT, PART_RIGHT:
-					c = ebiten.CursorShapeEWResize
-				case PART_TOP, PART_BOTTOM:
-					c = ebiten.CursorShapeNSResize
-				case PART_TOP_LEFT, PART_BOTTOM_RIGHT:
-					c = ebiten.CursorShapeNWSEResize
-				case PART_TOP_RIGHT, PART_BOTTOM_LEFT:
-					c = ebiten.CursorShapeNESWResize
-				case PART_SCROLL_V, PART_SCROLL_H:
-					c = ebiten.CursorShapePointer
-				}
-			}
-
-			if click && dragPart == PART_NONE {
-				if part == PART_CLOSE {
-					win.RemoveWindow()
-					continue
-				}
-				dragPart = part
-				dragWin = win
-			} else if clickDrag && dragPart != PART_NONE && dragWin == win {
-				switch dragPart {
-				case PART_BAR:
-					win.Position = pointAdd(win.Position, posCh)
-				case PART_TOP:
-					posCh.X = 0
-					sizeCh.X = 0
-					if !win.setSize(pointSub(win.Size, sizeCh)) {
-						win.Position = pointAdd(win.Position, posCh)
-					}
-				case PART_BOTTOM:
-					sizeCh.X = 0
-					win.setSize(pointAdd(win.Size, sizeCh))
-				case PART_LEFT:
-					posCh.Y = 0
-					sizeCh.Y = 0
-					if !win.setSize(pointSub(win.Size, sizeCh)) {
-						win.Position = pointAdd(win.Position, posCh)
-					}
-				case PART_RIGHT:
-					sizeCh.Y = 0
-					win.setSize(pointAdd(win.Size, sizeCh))
-				case PART_TOP_LEFT:
-					if !win.setSize(pointSub(win.Size, sizeCh)) {
-						win.Position = pointAdd(win.Position, posCh)
-					}
-				case PART_TOP_RIGHT:
-					tx := win.Size.X + sizeCh.X
-					ty := win.Size.Y - sizeCh.Y
-					if !win.setSize(point{X: tx, Y: ty}) {
-						win.Position.Y += posCh.Y
-					}
-				case PART_BOTTOM_RIGHT:
-					tx := win.Size.X + sizeCh.X
-					ty := win.Size.Y + sizeCh.Y
-					win.setSize(point{X: tx, Y: ty})
-				case PART_BOTTOM_LEFT:
-					tx := win.Size.X - sizeCh.X
-					ty := win.Size.Y + sizeCh.Y
-					if !win.setSize(point{X: tx, Y: ty}) {
-						win.Position.X += posCh.X
-					}
-				case PART_SCROLL_V:
-					dragWindowScroll(win, mpos, true)
-				case PART_SCROLL_H:
-					dragWindowScroll(win, mpos, false)
-				}
-				break
-			}
-		}
-
-		win.clickWindowItems(mpos, click)
-
-		if win.getWinRect().containsPoint(mpos) || dropdownOpenContains(win.Contents, mpos) {
-			if click {
-				win.BringForward()
-			}
-			break
-		}
-	}
-
-	//Check all regular windows
+	//Check all windows
 	for i := len(windows) - 1; i >= 0; i-- {
 		win := windows[i]
 		if !win.Open {
@@ -285,23 +185,6 @@ func (g *Game) Update() error {
 	mposOld = mpos
 
 	if wheelDelta.X != 0 || wheelDelta.Y != 0 {
-		for i := len(floatWindows) - 1; i >= 0; i-- {
-			win := floatWindows[i]
-			if !win.Open {
-				continue
-			}
-			if win.getMainRect().containsPoint(mpos) || dropdownOpenContains(win.Contents, mpos) {
-				if scrollDropdown(win.Contents, mpos, wheelDelta) {
-					break
-				}
-				if scrollFlow(win.Contents, mpos, wheelDelta) {
-					break
-				}
-				if scrollWindow(win, wheelDelta) {
-					break
-				}
-			}
-		}
 		for i := len(windows) - 1; i >= 0; i-- {
 			win := windows[i]
 			if !win.Open {
@@ -334,11 +217,6 @@ func (g *Game) Update() error {
 
 	// Refresh flow layouts so scroll bars update when content size changes
 	for _, win := range windows {
-		if win.Open {
-			win.resizeFlows()
-		}
-	}
-	for _, win := range floatWindows {
 		if win.Open {
 			win.resizeFlows()
 		}

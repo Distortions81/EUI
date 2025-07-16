@@ -32,7 +32,7 @@ type windowData struct {
 	Open, Hovered, Flow,
 	Closable, Movable, Resizable,
 	HoverClose, HoverDragbar,
-	AutoSize, Floating bool
+	AutoSize bool
 
 	// Scroll position and behavior
 	Scroll   point

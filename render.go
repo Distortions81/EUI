@@ -37,13 +37,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		win.Draw(screen)
 	}
 
-	for _, win := range floatWindows {
-		if !win.Open {
-			continue
-		}
-		win.Draw(screen)
-	}
-
 	for _, ov := range overlays {
 		drawOverlay(ov, screen)
 	}
@@ -69,19 +62,16 @@ func drawOverlay(item *itemData, screen *ebiten.Image) {
 }
 
 func (win *windowData) Draw(screen *ebiten.Image) {
-	if win.Floating {
-		dimFactor = 0
+	if activeWindow != win {
+		dimFactor = InactiveDim
 	} else {
-		if activeWindow != win {
-			dimFactor = InactiveDim
-		} else {
-			dimFactor = 0
-		}
+		dimFactor = 0
 	}
 	win.drawBG(screen)
 	win.drawItems(screen)
 	win.drawScrollbars(screen)
-	win.drawWinTitle(screen)
+	titleArea := screen.SubImage(win.getTitleRect().getRectangle()).(*ebiten.Image)
+	win.drawWinTitle(titleArea)
 	windowArea := screen.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
 	//win.drawResizeTab(windowArea)
 	win.drawBorder(windowArea)
@@ -106,22 +96,9 @@ func (win *windowData) drawBG(screen *ebiten.Image) {
 }
 
 func (win *windowData) drawWinTitle(screen *ebiten.Image) {
+	// Window Title
 	if win.TitleHeight > 0 {
-		r := win.getTitleRect()
-		extra := float32(0)
-		if win.Floating {
-			extra = 4 * uiScale
-			r.X0 -= extra
-			r.X1 += extra
-		}
-		titleArea := screen.SubImage(r.getRectangle()).(*ebiten.Image)
-		drawRoundRect(titleArea, &roundRect{
-			Size:     point{X: r.X1 - r.X0, Y: r.Y1 - r.Y0},
-			Position: point{},
-			Fillet:   win.Fillet,
-			Filled:   true,
-			Color:    dimColor(win.TitleBGColor, dimFactor),
-		})
+		screen.Fill(dimColor(win.TitleBGColor, dimFactor))
 
 		textSize := ((win.GetTitleSize()) / 1.5)
 		face := &text.GoTextFace{
