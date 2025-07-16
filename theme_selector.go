@@ -61,6 +61,7 @@ func makeThemeSelector() *windowData {
 	}
 	dd.HoverIndex = -1
 	mainFlow.addItemTo(dd)
+	themeSelectorDropdown = dd
 
 	if len(layoutNames) > 0 {
 		ldd := NewDropdown(&itemData{Size: point{X: 150, Y: 24}, FontSize: 8})
@@ -95,6 +96,18 @@ func makeThemeSelector() *windowData {
 		SetAccentSaturation(float64(satSlider.Value))
 	}
 	mainFlow.addItemTo(satSlider)
+
+	editBtn := NewButton(&itemData{Text: "Edit Theme", Size: point{X: 80, Y: 24}, FontSize: 8})
+	editBtn.Action = func() {
+		if themeEditor == nil {
+			themeEditor = makeThemeEditor()
+			themeEditor.AddWindow(false)
+		} else {
+			themeEditor.Open = true
+			themeEditor.BringForward()
+		}
+	}
+	mainFlow.addItemTo(editBtn)
 
 	return win
 }

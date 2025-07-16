@@ -140,6 +140,25 @@ func listThemes() ([]string, error) {
 	return names, nil
 }
 
+// SaveTheme writes the current theme to a JSON file with the given name.
+func SaveTheme(name string) error {
+	if name == "" {
+		return fmt.Errorf("theme name required")
+	}
+	data, err := json.MarshalIndent(currentTheme, "", "  ")
+	if err != nil {
+		return err
+	}
+	if err := os.MkdirAll("themes/colors", 0755); err != nil {
+		return err
+	}
+	file := filepath.Join("themes", "colors", name+".json")
+	if err := os.WriteFile(file, data, 0644); err != nil {
+		return err
+	}
+	return nil
+}
+
 // SetAccentColor updates the accent color in the current theme and applies it
 // to all windows and widgets.
 func SetAccentColor(c Color) {

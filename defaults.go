@@ -174,10 +174,11 @@ var defaultDropdown = &itemData{
 }
 
 var defaultColorWheel = &itemData{
-	ItemType: ITEM_COLORWHEEL,
-	Size:     point{X: 128, Y: 128},
-	Position: point{X: 4, Y: 4},
-	Margin:   4,
+	ItemType:      ITEM_COLORWHEEL,
+	Size:          point{X: 128, Y: 128},
+	Position:      point{X: 4, Y: 4},
+	Margin:        4,
+	OnColorChange: nil,
 }
 
 var defaultTab = &itemData{

@@ -43,6 +43,9 @@ type LayoutTheme struct {
 	DropdownArrowPad float32
 	TextPadding      float32
 
+	WindowDim    bool
+	WindowDimVal float32
+
 	Fillet    LayoutNumbers
 	Border    LayoutNumbers
 	BorderPad LayoutNumbers
@@ -54,6 +57,8 @@ var defaultLayout = &LayoutTheme{
 	SliderValueGap:   16,
 	DropdownArrowPad: 8,
 	TextPadding:      4,
+	WindowDim:        true,
+	WindowDimVal:     0.20,
 	Fillet: LayoutNumbers{
 		Window:   4,
 		Button:   8,
@@ -125,6 +130,11 @@ func LoadLayout(name string) error {
 		return err
 	}
 	currentLayoutName = name
+	if currentLayout.WindowDim {
+		InactiveDim = float64(currentLayout.WindowDimVal)
+	} else {
+		InactiveDim = 0
+	}
 	if currentTheme != nil {
 		applyLayoutToTheme(currentTheme)
 		applyThemeToAll()
