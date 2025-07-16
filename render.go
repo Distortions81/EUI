@@ -230,10 +230,11 @@ func (win *windowData) drawScrollbars(screen *ebiten.Image) {
 		if maxScroll > 0 {
 			pos = (win.Scroll.Y / maxScroll) * (avail.Y - barH)
 		}
+		sbW := currentLayout.BorderPad.Slider * 2
 		drawRoundRect(screen, &roundRect{
-			Size:     point{X: 4, Y: barH},
-			Position: point{X: win.getPosition().X + win.GetSize().X - win.BorderPad - 4, Y: win.getPosition().Y + win.GetTitleSize() + win.BorderPad + pos},
-			Fillet:   2,
+			Size:     point{X: sbW, Y: barH},
+			Position: point{X: win.getPosition().X + win.GetSize().X - win.BorderPad - sbW, Y: win.getPosition().Y + win.GetTitleSize() + win.BorderPad + pos},
+			Fillet:   currentLayout.Fillet.Slider,
 			Filled:   true,
 			Color:    dimColor(win.ActiveColor, dimFactor),
 		})
@@ -245,10 +246,11 @@ func (win *windowData) drawScrollbars(screen *ebiten.Image) {
 		if maxScroll > 0 {
 			pos = (win.Scroll.X / maxScroll) * (avail.X - barW)
 		}
+		sbW := currentLayout.BorderPad.Slider * 2
 		drawRoundRect(screen, &roundRect{
-			Size:     point{X: barW, Y: 4},
-			Position: point{X: win.getPosition().X + win.BorderPad + pos, Y: win.getPosition().Y + win.GetSize().Y - win.BorderPad - 4},
-			Fillet:   2,
+			Size:     point{X: barW, Y: sbW},
+			Position: point{X: win.getPosition().X + win.BorderPad + pos, Y: win.getPosition().Y + win.GetSize().Y - win.BorderPad - sbW},
+			Fillet:   currentLayout.Fillet.Slider,
 			Filled:   true,
 			Color:    dimColor(win.ActiveColor, dimFactor),
 		})
@@ -404,7 +406,8 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 				pos = (item.Scroll.Y / maxScroll) * (size.Y - barH)
 			}
 			col := dimColor(Color(color.RGBA{R: 96, G: 96, B: 96, A: 192}), dimFactor)
-			vector.DrawFilledRect(subImg, item.DrawRect.X1-4, item.DrawRect.Y0+pos, 4, barH, col.ToRGBA(), false)
+			sbW := currentLayout.BorderPad.Slider * 2
+			vector.DrawFilledRect(subImg, item.DrawRect.X1-sbW, item.DrawRect.Y0+pos, sbW, barH, col.ToRGBA(), false)
 		} else if item.FlowType == FLOW_HORIZONTAL && req.X > size.X {
 			barW := size.X * size.X / req.X
 			maxScroll := req.X - size.X
@@ -413,7 +416,8 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 				pos = (item.Scroll.X / maxScroll) * (size.X - barW)
 			}
 			col := dimColor(Color(color.RGBA{R: 96, G: 96, B: 96, A: 192}), dimFactor)
-			vector.DrawFilledRect(subImg, item.DrawRect.X0+pos, item.DrawRect.Y1-4, barW, 4, col.ToRGBA(), false)
+			sbW := currentLayout.BorderPad.Slider * 2
+			vector.DrawFilledRect(subImg, item.DrawRect.X0+pos, item.DrawRect.Y1-sbW, barW, sbW, col.ToRGBA(), false)
 		}
 	}
 }
@@ -461,21 +465,27 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 
 	if item.ItemType == ITEM_CHECKBOX {
 
-		bThick := float32(1.0)
+		bThick := item.Border * uiScale
 		itemColor := item.Color
 		bColor := item.ClickColor
 		if item.Checked {
 			itemColor = item.ClickColor
 			bColor = item.Color
-			bThick = 2.0
+			bThick = 2 * item.Border * uiScale
 		} else if item.Hovered {
 			item.Hovered = false
 			itemColor = item.HoverColor
 		}
 		auxSize := pointScaleMul(item.AuxSize)
-		drawRoundRect(subImg, &roundRect{
-			Size:     auxSize,
-			Position: offset, Fillet: item.Fillet, Filled: true, Color: dimColor(itemColor, dimFactor)})
+		if item.Filled {
+			drawRoundRect(subImg, &roundRect{
+				Size:     auxSize,
+				Position: offset,
+				Fillet:   item.Fillet,
+				Filled:   true,
+				Color:    dimColor(itemColor, dimFactor),
+			})
+		}
 		drawRoundRect(subImg, &roundRect{
 			Size:     auxSize,
 			Position: offset, Fillet: item.Fillet, Filled: false, Color: dimColor(bColor, dimFactor), Border: bThick * uiScale})
@@ -519,25 +529,27 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 
 	} else if item.ItemType == ITEM_RADIO {
 
-		bThick := float32(1.0)
+		bThick := item.Border * uiScale
 		itemColor := item.Color
 		bColor := item.ClickColor
 		if item.Checked {
 			itemColor = item.ClickColor
 			bColor = item.Color
-			bThick = 2.0
+			bThick = 2 * item.Border * uiScale
 		} else if item.Hovered {
 			item.Hovered = false
 			itemColor = item.HoverColor
 		}
 		auxSize := pointScaleMul(item.AuxSize)
-		drawRoundRect(subImg, &roundRect{
-			Size:     auxSize,
-			Position: offset,
-			Fillet:   auxSize.X / 2,
-			Filled:   true,
-			Color:    dimColor(itemColor, dimFactor),
-		})
+		if item.Filled {
+			drawRoundRect(subImg, &roundRect{
+				Size:     auxSize,
+				Position: offset,
+				Fillet:   auxSize.X / 2,
+				Filled:   true,
+				Color:    dimColor(itemColor, dimFactor),
+			})
+		}
 		drawRoundRect(subImg, &roundRect{
 			Size:     auxSize,
 			Position: offset,
@@ -592,9 +604,15 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 				item.Hovered = false
 				itemColor = item.HoverColor
 			}
-			drawRoundRect(subImg, &roundRect{
-				Size:     maxSize,
-				Position: offset, Fillet: item.Fillet, Filled: true, Color: dimColor(itemColor, dimFactor)})
+			if item.Filled {
+				drawRoundRect(subImg, &roundRect{
+					Size:     maxSize,
+					Position: offset,
+					Fillet:   item.Fillet,
+					Filled:   true,
+					Color:    dimColor(itemColor, dimFactor),
+				})
+			}
 		}
 
 		textSize := (item.FontSize * uiScale) + 2
@@ -626,13 +644,15 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			itemColor = item.HoverColor
 		}
 
-		drawRoundRect(subImg, &roundRect{
-			Size:     maxSize,
-			Position: offset,
-			Fillet:   item.Fillet,
-			Filled:   true,
-			Color:    dimColor(itemColor, dimFactor),
-		})
+		if item.Filled {
+			drawRoundRect(subImg, &roundRect{
+				Size:     maxSize,
+				Position: offset,
+				Fillet:   item.Fillet,
+				Filled:   true,
+				Color:    dimColor(itemColor, dimFactor),
+			})
+		}
 
 		textSize := (item.FontSize * uiScale) + 2
 		face := &text.GoTextFace{
@@ -731,13 +751,15 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			itemColor = item.HoverColor
 		}
 
-		drawRoundRect(subImg, &roundRect{
-			Size:     maxSize,
-			Position: offset,
-			Fillet:   item.Fillet,
-			Filled:   true,
-			Color:    itemColor,
-		})
+		if item.Filled {
+			drawRoundRect(subImg, &roundRect{
+				Size:     maxSize,
+				Position: offset,
+				Fillet:   item.Fillet,
+				Filled:   true,
+				Color:    itemColor,
+			})
+		}
 
 		textSize := (item.FontSize * uiScale) + 2
 		face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}

@@ -22,6 +22,18 @@ type LayoutNumbers struct {
 	Tab      float32
 }
 
+type LayoutBools struct {
+	Window   bool
+	Button   bool
+	Text     bool
+	Checkbox bool
+	Radio    bool
+	Input    bool
+	Slider   bool
+	Dropdown bool
+	Tab      bool
+}
+
 type LayoutTheme struct {
 	SliderValueGap   float32
 	DropdownArrowPad float32
@@ -30,6 +42,8 @@ type LayoutTheme struct {
 	Fillet    LayoutNumbers
 	Border    LayoutNumbers
 	BorderPad LayoutNumbers
+	Filled    LayoutBools
+	Outlined  LayoutBools
 }
 
 var defaultLayout = &LayoutTheme{
@@ -69,6 +83,28 @@ var defaultLayout = &LayoutTheme{
 		Dropdown: 2,
 		Tab:      2,
 	},
+	Filled: LayoutBools{
+		Window:   true,
+		Button:   true,
+		Text:     false,
+		Checkbox: true,
+		Radio:    true,
+		Input:    true,
+		Slider:   true,
+		Dropdown: true,
+		Tab:      true,
+	},
+	Outlined: LayoutBools{
+		Window:   false,
+		Button:   false,
+		Text:     false,
+		Checkbox: false,
+		Radio:    false,
+		Input:    false,
+		Slider:   false,
+		Dropdown: false,
+		Tab:      false,
+	},
 }
 
 var (
@@ -99,36 +135,53 @@ func applyLayoutToTheme(th *Theme) {
 	th.Window.Fillet = currentLayout.Fillet.Window
 	th.Window.Border = currentLayout.Border.Window
 	th.Window.BorderPad = currentLayout.BorderPad.Window
+	th.Window.Outlined = currentLayout.Outlined.Window
 
 	th.Button.Fillet = currentLayout.Fillet.Button
 	th.Button.Border = currentLayout.Border.Button
 	th.Button.BorderPad = currentLayout.BorderPad.Button
+	th.Button.Filled = currentLayout.Filled.Button
+	th.Button.Outlined = currentLayout.Outlined.Button
 
 	th.Text.Fillet = currentLayout.Fillet.Text
 	th.Text.Border = currentLayout.Border.Text
 	th.Text.BorderPad = currentLayout.BorderPad.Text
+	th.Text.Filled = currentLayout.Filled.Text
+	th.Text.Outlined = currentLayout.Outlined.Text
 
 	th.Checkbox.Fillet = currentLayout.Fillet.Checkbox
 	th.Checkbox.Border = currentLayout.Border.Checkbox
 	th.Checkbox.BorderPad = currentLayout.BorderPad.Checkbox
+	th.Checkbox.Filled = currentLayout.Filled.Checkbox
+	th.Checkbox.Outlined = currentLayout.Outlined.Checkbox
 
 	th.Radio.Fillet = currentLayout.Fillet.Radio
 	th.Radio.Border = currentLayout.Border.Radio
 	th.Radio.BorderPad = currentLayout.BorderPad.Radio
+	th.Radio.Filled = currentLayout.Filled.Radio
+	th.Radio.Outlined = currentLayout.Outlined.Radio
 
 	th.Input.Fillet = currentLayout.Fillet.Input
 	th.Input.Border = currentLayout.Border.Input
 	th.Input.BorderPad = currentLayout.BorderPad.Input
+	th.Input.Filled = currentLayout.Filled.Input
+	th.Input.Outlined = currentLayout.Outlined.Input
 
 	th.Slider.Fillet = currentLayout.Fillet.Slider
 	th.Slider.Border = currentLayout.Border.Slider
 	th.Slider.BorderPad = currentLayout.BorderPad.Slider
+	th.Slider.Filled = currentLayout.Filled.Slider
+	th.Slider.Outlined = currentLayout.Outlined.Slider
 
 	th.Dropdown.Fillet = currentLayout.Fillet.Dropdown
 	th.Dropdown.Border = currentLayout.Border.Dropdown
 	th.Dropdown.BorderPad = currentLayout.BorderPad.Dropdown
+	th.Dropdown.Filled = currentLayout.Filled.Dropdown
+	th.Dropdown.Outlined = currentLayout.Outlined.Dropdown
 
 	th.Tab.Fillet = currentLayout.Fillet.Tab
 	th.Tab.Border = currentLayout.Border.Tab
 	th.Tab.BorderPad = currentLayout.BorderPad.Tab
+	th.Tab.Filled = currentLayout.Filled.Tab
+	th.Tab.Outlined = currentLayout.Outlined.Tab
 }

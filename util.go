@@ -237,8 +237,9 @@ func (win *windowData) getWindowPart(mpos point, click bool) dragType {
 			if maxScroll > 0 {
 				pos = (win.Scroll.Y / maxScroll) * (avail.Y - barH)
 			}
+			sbW := currentLayout.BorderPad.Slider * 2
 			r := rect{
-				X0: win.getPosition().X + win.GetSize().X - win.BorderPad - 4,
+				X0: win.getPosition().X + win.GetSize().X - win.BorderPad - sbW,
 				Y0: win.getPosition().Y + win.GetTitleSize() + win.BorderPad + pos,
 				X1: win.getPosition().X + win.GetSize().X - win.BorderPad,
 				Y1: win.getPosition().Y + win.GetTitleSize() + win.BorderPad + pos + barH,
@@ -254,9 +255,10 @@ func (win *windowData) getWindowPart(mpos point, click bool) dragType {
 			if maxScroll > 0 {
 				pos = (win.Scroll.X / maxScroll) * (avail.X - barW)
 			}
+			sbW := currentLayout.BorderPad.Slider * 2
 			r := rect{
 				X0: win.getPosition().X + win.BorderPad + pos,
-				Y0: win.getPosition().Y + win.GetSize().Y - win.BorderPad - 4,
+				Y0: win.getPosition().Y + win.GetSize().Y - win.BorderPad - sbW,
 				X1: win.getPosition().X + win.BorderPad + pos + barW,
 				Y1: win.getPosition().Y + win.GetSize().Y - win.BorderPad,
 			}
