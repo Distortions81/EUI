@@ -57,7 +57,11 @@ func isZeroValue(value reflect.Value) bool {
 
 // Add window to window list
 func (target *windowData) AddWindow(toBack bool) {
-	for _, win := range windows {
+	list := windows
+	if target.Floating {
+		list = floatWindows
+	}
+	for _, win := range list {
 		if win == target {
 			log.Println("Window already exists")
 			return
@@ -84,20 +88,32 @@ func (target *windowData) AddWindow(toBack bool) {
 	}
 
 	if !toBack {
-		windows = append(windows, target)
-		if target.PinTo == PIN_TOP_LEFT {
-			activeWindow = target
+		if target.Floating {
+			floatWindows = append(floatWindows, target)
+		} else {
+			windows = append(windows, target)
+			if target.PinTo == PIN_TOP_LEFT {
+				activeWindow = target
+			}
 		}
 	} else {
-		windows = append([]*windowData{target}, windows...)
+		if target.Floating {
+			floatWindows = append([]*windowData{target}, floatWindows...)
+		} else {
+			windows = append([]*windowData{target}, windows...)
+		}
 	}
 }
 
 // Remove window from window list, if found.
 func (target *windowData) RemoveWindow() {
-	for i, win := range windows {
-		if win == target { // Compare pointers
-			windows = append(windows[:i], windows[i+1:]...)
+	list := &windows
+	if target.Floating {
+		list = &floatWindows
+	}
+	for i, win := range *list {
+		if win == target {
+			*list = append((*list)[:i], (*list)[i+1:]...)
 			return
 		}
 	}
@@ -216,11 +232,21 @@ func NewText(item *itemData) *itemData {
 
 // Bring a window to the front
 func (target *windowData) BringForward() {
-	for w, win := range windows {
-		if win == target {
-			windows = append(windows[:w], windows[w+1:]...)
-			windows = append(windows, target)
-			activeWindow = target
+	if target.Floating {
+		for w, win := range floatWindows {
+			if win == target {
+				floatWindows = append(floatWindows[:w], floatWindows[w+1:]...)
+				floatWindows = append(floatWindows, target)
+				return
+			}
+		}
+	} else {
+		for w, win := range windows {
+			if win == target {
+				windows = append(windows[:w], windows[w+1:]...)
+				windows = append(windows, target)
+				activeWindow = target
+			}
 		}
 	}
 }
@@ -228,8 +254,14 @@ func (target *windowData) BringForward() {
 // MarkOpen sets the window to open and brings it forward if necessary.
 func (target *windowData) MarkOpen() {
 	target.Open = true
+	var list []*windowData
+	if target.Floating {
+		list = floatWindows
+	} else {
+		list = windows
+	}
 	found := false
-	for _, win := range windows {
+	for _, win := range list {
 		if win == target {
 			found = true
 			break
@@ -244,16 +276,25 @@ func (target *windowData) MarkOpen() {
 
 // Send a window to the back
 func (target *windowData) ToBack() {
-	for w, win := range windows {
-		if win == target {
-			windows = append(windows[:w], windows[w+1:]...)
-			windows = append([]*windowData{target}, windows...)
+	if target.Floating {
+		for w, win := range floatWindows {
+			if win == target {
+				floatWindows = append(floatWindows[:w], floatWindows[w+1:]...)
+				floatWindows = append([]*windowData{target}, floatWindows...)
+			}
 		}
-	}
-	if activeWindow == target {
-		numWindows := len(windows)
-		if numWindows > 0 {
-			activeWindow = windows[numWindows-1]
+	} else {
+		for w, win := range windows {
+			if win == target {
+				windows = append(windows[:w], windows[w+1:]...)
+				windows = append([]*windowData{target}, windows...)
+			}
+		}
+		if activeWindow == target {
+			numWindows := len(windows)
+			if numWindows > 0 {
+				activeWindow = windows[numWindows-1]
+			}
 		}
 	}
 }
