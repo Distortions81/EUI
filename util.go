@@ -9,6 +9,11 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
+var (
+	strokeLineFn = vector.StrokeLine
+	strokeRectFn = vector.StrokeRect
+)
+
 func (win *windowData) getWinRect() rect {
 	winPos := win.getPosition()
 	return rect{
@@ -540,22 +545,31 @@ func (win *windowData) resizeFlows() {
 	}
 }
 
+func pixelOffset(width float32) float32 {
+	if int(math.Round(float64(width)))%2 == 0 {
+		return 0
+	}
+	return 0.5
+}
+
 func strokeLine(dst *ebiten.Image, x0, y0, x1, y1, width float32, col color.Color, aa bool) {
-	x0 = float32(math.Floor(float64(x0))) + 0.5
-	y0 = float32(math.Floor(float64(y0))) + 0.5
-	x1 = float32(math.Floor(float64(x1))) + 0.5
-	y1 = float32(math.Floor(float64(y1))) + 0.5
 	width = float32(math.Round(float64(width)))
-	vector.StrokeLine(dst, x0, y0, x1, y1, width, col, aa)
+	off := pixelOffset(width)
+	x0 = float32(math.Floor(float64(x0))) + off
+	y0 = float32(math.Floor(float64(y0))) + off
+	x1 = float32(math.Floor(float64(x1))) + off
+	y1 = float32(math.Floor(float64(y1))) + off
+	strokeLineFn(dst, x0, y0, x1, y1, width, col, aa)
 }
 
 func strokeRect(dst *ebiten.Image, x, y, w, h, width float32, col color.Color, aa bool) {
-	x = float32(math.Floor(float64(x))) + 0.5
-	y = float32(math.Floor(float64(y))) + 0.5
+	width = float32(math.Round(float64(width)))
+	off := pixelOffset(width)
+	x = float32(math.Floor(float64(x))) + off
+	y = float32(math.Floor(float64(y))) + off
 	w = float32(math.Round(float64(w)))
 	h = float32(math.Round(float64(h)))
-	width = float32(math.Round(float64(width)))
-	vector.StrokeRect(dst, x, y, w, h, width, col, aa)
+	strokeRectFn(dst, x, y, w, h, width, col, aa)
 }
 
 func drawFilledRect(dst *ebiten.Image, x, y, w, h float32, col color.Color, aa bool) {

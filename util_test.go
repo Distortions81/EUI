@@ -1,6 +1,12 @@
 package main
 
-import "testing"
+import (
+	"image/color"
+	"testing"
+
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/vector"
+)
 
 func TestWithinRange(t *testing.T) {
 	if !withinRange(1, 1.1, 0.2) {
@@ -163,5 +169,55 @@ func TestFlowContentBounds(t *testing.T) {
 	wantH := point{X: 25, Y: 30}
 	if got := hflow.contentBounds(); got != wantH {
 		t.Errorf("horizontal bounds got %+v want %+v", got, wantH)
+	}
+}
+
+func TestPixelOffset(t *testing.T) {
+	if off := pixelOffset(1); off != 0.5 {
+		t.Errorf("odd width offset got %v", off)
+	}
+	if off := pixelOffset(2); off != 0 {
+		t.Errorf("even width offset got %v", off)
+	}
+	if off := pixelOffset(3); off != 0.5 {
+		t.Errorf("odd width offset got %v", off)
+	}
+}
+
+func TestStrokeLineParams(t *testing.T) {
+	var x0, y0, w float32
+	strokeLineFn = func(dst *ebiten.Image, ax0, ay0, ax1, ay1, width float32, col color.Color, aa bool) {
+		x0, y0, w = ax0, ay0, width
+	}
+	defer func() { strokeLineFn = vector.StrokeLine }()
+
+	img := ebiten.NewImage(10, 10)
+	strokeLine(img, 1.3, 2.1, 5.8, 2.1, 1, color.White, false)
+	if x0 != 1.5 || y0 != 2.5 || w != 1 {
+		t.Errorf("odd width params %v %v %v", x0, y0, w)
+	}
+
+	strokeLine(img, 3.7, 4.2, 9.1, 4.2, 2, color.White, false)
+	if x0 != 3 || y0 != 4 || w != 2 {
+		t.Errorf("even width params %v %v %v", x0, y0, w)
+	}
+}
+
+func TestStrokeRectParams(t *testing.T) {
+	var x, y, bw float32
+	strokeRectFn = func(dst *ebiten.Image, ax, ay, aw, ah, width float32, col color.Color, aa bool) {
+		x, y, bw = ax, ay, width
+	}
+	defer func() { strokeRectFn = vector.StrokeRect }()
+
+	img := ebiten.NewImage(10, 10)
+	strokeRect(img, 1.3, 2.2, 5.6, 4.4, 3, color.White, false)
+	if x != 1.5 || y != 2.5 || bw != 3 {
+		t.Errorf("rect odd width params %v %v %v", x, y, bw)
+	}
+
+	strokeRect(img, 6.7, 1.4, 3.3, 2.8, 2, color.White, false)
+	if x != 6 || y != 1 || bw != 2 {
+		t.Errorf("rect even width params %v %v %v", x, y, bw)
 	}
 }
