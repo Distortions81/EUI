@@ -13,7 +13,7 @@ var defaultTheme = &windowData{
 	TitleColor:      Color(color.RGBA{R: 255, G: 255, B: 255, A: 255}),
 	TitleTextColor:  Color(color.RGBA{R: 255, G: 255, B: 255, A: 255}),
 	TitleBGColor:    Color(color.RGBA{R: 64, G: 64, B: 64, A: 255}),
-	CloseBGColor:    Color(color.RGBA{R: 0, G: 0, B: 0, A: 0}),
+	CloseBGColor:    Color(color.RGBA{R: 48, G: 48, B: 48, A: 255}),
 	DragbarSpacing:  5,
 	ShowDragbar:     false,
 	BorderColor:     Color(color.RGBA{R: 64, G: 64, B: 64, A: 255}),
