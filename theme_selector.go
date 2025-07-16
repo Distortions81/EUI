@@ -15,15 +15,11 @@ func makeThemeSelector() *windowData {
 	}
 	win := NewWindow(&windowData{
 		Title:     "Themes",
-		Movable:   true,
 		Resizable: true,
 		Closable:  true,
-		// Give the dropdown room to fully render by accounting for the
-		// title bar height and the control's size. Extra height is for
-		// additional layout selection controls.
-		Size:     point{X: 192, Y: 248},
-		Position: point{X: 4, Y: 4},
-		Open:     true,
+		PinTo:     PIN_TOP_RIGHT,
+		AutoSize:  true,
+		Open:      true,
 	})
 	mainFlow := &itemData{ItemType: ITEM_FLOW, Size: win.Size, FlowType: FLOW_VERTICAL}
 	win.addItemTo(mainFlow)
@@ -61,7 +57,6 @@ func makeThemeSelector() *windowData {
 	}
 	dd.HoverIndex = -1
 	mainFlow.addItemTo(dd)
-	themeSelectorDropdown = dd
 
 	if len(layoutNames) > 0 {
 		ldd := NewDropdown(&itemData{Size: point{X: 150, Y: 24}, FontSize: 8})
@@ -96,18 +91,6 @@ func makeThemeSelector() *windowData {
 		SetAccentSaturation(float64(satSlider.Value))
 	}
 	mainFlow.addItemTo(satSlider)
-
-	editBtn := NewButton(&itemData{Text: "Edit Theme", Size: point{X: 80, Y: 24}, FontSize: 8})
-	editBtn.Action = func() {
-		if themeEditor == nil {
-			themeEditor = makeThemeEditor()
-			themeEditor.AddWindow(false)
-		} else {
-			themeEditor.Open = true
-			themeEditor.BringForward()
-		}
-	}
-	mainFlow.addItemTo(editBtn)
 
 	return win
 }
