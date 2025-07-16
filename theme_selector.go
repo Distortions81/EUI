@@ -20,8 +20,8 @@ func makeThemeSelector() *windowData {
 		Closable:  true,
 		// Give the dropdown room to fully render by accounting for the
 		// title bar height and the control's size. Extra height is for
-		// the saturation slider.
-		Size:     point{X: 192, Y: 224},
+		// additional layout selection controls.
+		Size:     point{X: 192, Y: 248},
 		Position: point{X: 4, Y: 4},
 		Open:     true,
 	})
@@ -29,6 +29,10 @@ func makeThemeSelector() *windowData {
 	win.addItemTo(mainFlow)
 
 	var satSlider *itemData
+	layoutNames, lerr := listLayouts()
+	if lerr != nil {
+		log.Printf("listLayouts error: %v", lerr)
+	}
 
 	dd := NewDropdown(&itemData{Size: point{X: 150, Y: 24}, FontSize: 8})
 	dd.Options = names
@@ -57,6 +61,30 @@ func makeThemeSelector() *windowData {
 	}
 	dd.HoverIndex = -1
 	mainFlow.addItemTo(dd)
+
+	if len(layoutNames) > 0 {
+		ldd := NewDropdown(&itemData{Size: point{X: 150, Y: 24}, FontSize: 8})
+		ldd.Options = layoutNames
+		for i, n := range layoutNames {
+			if n == currentLayoutName {
+				ldd.Selected = i
+				break
+			}
+		}
+		ldd.OnSelect = func(idx int) {
+			currentLayoutName = layoutNames[idx]
+			if err := LoadLayout(currentLayoutName); err != nil {
+				log.Printf("LoadLayout error: %v", err)
+			}
+		}
+		ldd.OnHover = func(idx int) {
+			if err := LoadLayout(layoutNames[idx]); err != nil {
+				log.Printf("LoadLayout error: %v", err)
+			}
+		}
+		ldd.HoverIndex = -1
+		mainFlow.addItemTo(ldd)
+	}
 
 	cw := NewColorWheel(&itemData{Size: point{X: 128, Y: 128}})
 	mainFlow.addItemTo(cw)
