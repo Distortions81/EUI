@@ -1,14 +1,14 @@
 {
   "Comment": "Colors use #RRGGBBAA or h,s,v",
   "Colors": {
-    "background": "0.0,0.00,0.13",
-    "panel": "0.0,0.00,0.25",
+    "background": "0.0,0.00,0.08",
+    "panel": "0.0,0.00,0.1",
     "text": "0.0,0.00,1.00",
-    "outline": "0.0,0.00,0.19",
-    "button": "0.0,0.00,0.31",
-    "accent": "180.0,1.00,0.63",
-    "hover": "0.0,0.00,0.38",
-    "disabled": "0.0,0.00,0.00,0.00"
+    "outline": "23.0,0.8,0.5",
+    "button": "0.0,0.00,0.3",
+    "accent": "0.0,0.00,0.2",
+    "hover": "0.0,0.00,0.4",
+    "disabled": "0.0,0.00,0.00,0.1"
   },
   "RecommendedLayout": "Default",
   "Window": {
