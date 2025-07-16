@@ -26,6 +26,9 @@ func (g *Game) Update() error {
 
 	click := inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0)
 	if click {
+		if !dropdownOpenContainsAnywhere(mpos) {
+			closeAllDropdowns()
+		}
 		if focusedItem != nil {
 			focusedItem.Focused = false
 		}
@@ -751,4 +754,41 @@ func clickOpenDropdown(items []*itemData, mpos point, click bool) bool {
 		}
 	}
 	return false
+}
+
+func dropdownOpenContainsAnywhere(mpos point) bool {
+	for _, win := range windows {
+		if win.Open && dropdownOpenContains(win.Contents, mpos) {
+			return true
+		}
+	}
+	for _, ov := range overlays {
+		if dropdownOpenContains([]*itemData{ov}, mpos) {
+			return true
+		}
+	}
+	return false
+}
+
+func closeDropdowns(items []*itemData) {
+	for _, it := range items {
+		if it.ItemType == ITEM_DROPDOWN {
+			it.Open = false
+		}
+		for _, tab := range it.Tabs {
+			closeDropdowns(tab.Contents)
+		}
+		closeDropdowns(it.Contents)
+	}
+}
+
+func closeAllDropdowns() {
+	for _, win := range windows {
+		if win.Open {
+			closeDropdowns(win.Contents)
+		}
+	}
+	for _, ov := range overlays {
+		closeDropdowns([]*itemData{ov})
+	}
 }

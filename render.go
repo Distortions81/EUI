@@ -320,15 +320,27 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 				col = item.HoverColor
 			}
 			tab.Hovered = false
-			drawTabShape(subImg, point{X: x, Y: offset.Y}, point{X: w, Y: tabHeight}, dimColor(col, dimFactor), item.Fillet*uiScale, item.BorderPad*uiScale)
-			if item.Outlined && item.Border > 0 {
+			if item.Filled {
+				drawTabShape(subImg,
+					point{X: x, Y: offset.Y},
+					point{X: w, Y: tabHeight},
+					dimColor(col, dimFactor),
+					item.Fillet*uiScale,
+					item.BorderPad*uiScale,
+				)
+			}
+			if item.Outlined || !item.Filled {
+				border := item.Border * uiScale
+				if border <= 0 {
+					border = 1 * uiScale
+				}
 				strokeTabShape(subImg,
 					point{X: x, Y: offset.Y},
 					point{X: w, Y: tabHeight},
 					dimColor(item.Color, dimFactor),
 					item.Fillet*uiScale,
 					item.BorderPad*uiScale,
-					item.Border*uiScale,
+					border,
 				)
 			}
 			if item.ActiveOutline && i == item.ActiveTab {
