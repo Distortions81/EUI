@@ -207,7 +207,7 @@ func (win *windowData) drawBorder(screen *ebiten.Image) {
 			Position: win.getPosition(),
 			Fillet:   win.Fillet,
 			Filled:   false,
-			Border:   win.Border * uiScale,
+			Border:   win.Border,
 			Color:    dimColor(FrameColor, dimFactor),
 		})
 	}
@@ -933,13 +933,29 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 
 	path.MoveTo(x+rrect.Fillet, y)
 	path.LineTo(x+rrect.Size.X-rrect.Fillet, y)
-	path.Arc(x+rrect.Size.X-rrect.Fillet, y+rrect.Fillet, rrect.Fillet, -math.Pi/2, 0, vector.Clockwise)
+	path.QuadTo(
+		x+rrect.Size.X,
+		y,
+		x+rrect.Size.X,
+		y+rrect.Fillet)
 	path.LineTo(x+rrect.Size.X, y+rrect.Size.Y-rrect.Fillet)
-	path.Arc(x+rrect.Size.X-rrect.Fillet, y+rrect.Size.Y-rrect.Fillet, rrect.Fillet, 0, math.Pi/2, vector.Clockwise)
+	path.QuadTo(
+		x+rrect.Size.X,
+		y+rrect.Size.Y,
+		x+rrect.Size.X-rrect.Fillet,
+		y+rrect.Size.Y)
 	path.LineTo(x+rrect.Fillet, y+rrect.Size.Y)
-	path.Arc(x+rrect.Fillet, y+rrect.Size.Y-rrect.Fillet, rrect.Fillet, math.Pi/2, math.Pi, vector.Clockwise)
+	path.QuadTo(
+		x,
+		y+rrect.Size.Y,
+		x,
+		y+rrect.Size.Y-rrect.Fillet)
 	path.LineTo(x, y+rrect.Fillet)
-	path.Arc(x+rrect.Fillet, y+rrect.Fillet, rrect.Fillet, math.Pi, math.Pi*3/2, vector.Clockwise)
+	path.QuadTo(
+		x,
+		y,
+		x+rrect.Fillet,
+		y)
 	path.Close()
 
 	if rrect.Filled {
@@ -989,9 +1005,9 @@ func drawTabShape(screen *ebiten.Image, pos point, size point, col Color, fillet
 	path.MoveTo(pos.X, pos.Y+size.Y)
 	path.LineTo(pos.X+slope, pos.Y+size.Y)
 	path.LineTo(pos.X+slope, pos.Y+fillet)
-	path.Arc(pos.X+slope+fillet, pos.Y+fillet, fillet, math.Pi, math.Pi*3/2, vector.CounterClockwise)
+	path.QuadTo(pos.X+slope, pos.Y, pos.X+slope+fillet, pos.Y)
 	path.LineTo(pos.X+size.X-slope-fillet, pos.Y)
-	path.Arc(pos.X+size.X-slope-fillet, pos.Y+fillet, fillet, -math.Pi/2, 0, vector.CounterClockwise)
+	path.QuadTo(pos.X+size.X-slope, pos.Y, pos.X+size.X-slope, pos.Y+fillet)
 	path.LineTo(pos.X+size.X-slope, pos.Y+size.Y)
 	path.LineTo(pos.X, pos.Y+size.Y)
 	path.Close()
@@ -1037,9 +1053,9 @@ func strokeTabShape(screen *ebiten.Image, pos point, size point, col Color, fill
 	path.MoveTo(pos.X, pos.Y+size.Y)
 	path.LineTo(pos.X+slope, pos.Y+size.Y)
 	path.LineTo(pos.X+slope, pos.Y+fillet)
-	path.Arc(pos.X+slope+fillet, pos.Y+fillet, fillet, math.Pi, math.Pi*3/2, vector.CounterClockwise)
+	path.QuadTo(pos.X+slope, pos.Y, pos.X+slope+fillet, pos.Y)
 	path.LineTo(pos.X+size.X-slope-fillet, pos.Y)
-	path.Arc(pos.X+size.X-slope-fillet, pos.Y+fillet, fillet, -math.Pi/2, 0, vector.CounterClockwise)
+	path.QuadTo(pos.X+size.X-slope, pos.Y, pos.X+size.X-slope, pos.Y+fillet)
 	path.LineTo(pos.X+size.X-slope, pos.Y+size.Y)
 	path.LineTo(pos.X, pos.Y+size.Y)
 	path.Close()
