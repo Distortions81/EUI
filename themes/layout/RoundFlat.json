@@ -34,5 +34,27 @@
     "Slider": 4,
     "Dropdown": 4,
     "Tab": 4
+  },
+  "Filled": {
+    "Window": true,
+    "Button": true,
+    "Text": false,
+    "Checkbox": true,
+    "Radio": true,
+    "Input": true,
+    "Slider": true,
+    "Dropdown": true,
+    "Tab": true
+  },
+  "Outlined": {
+    "Window": false,
+    "Button": false,
+    "Text": false,
+    "Checkbox": false,
+    "Radio": false,
+    "Input": false,
+    "Slider": false,
+    "Dropdown": false,
+    "Tab": false
   }
 }

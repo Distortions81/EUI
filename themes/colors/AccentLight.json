@@ -12,7 +12,6 @@
   },
   "RecommendedLayout": "Default",
   "Window": {
-    "Outlined": false,
     "Padding": 8,
     "BGColor": "background",
     "TitleBGColor": "panel",
@@ -26,8 +25,6 @@
     "TitleTextColor": "text"
   },
   "Button": {
-    "Filled": true,
-    "Outlined": false,
     "TextColor": "text",
     "Color": "button",
     "HoverColor": "hover",
@@ -36,8 +33,6 @@
     "CheckedColor": "disabled"
   },
   "Text": {
-    "Filled": false,
-    "Outlined": false,
     "TextColor": "text",
     "Color": "disabled",
     "HoverColor": "disabled",
@@ -46,8 +41,6 @@
     "CheckedColor": "disabled"
   },
   "Checkbox": {
-    "Filled": true,
-    "Outlined": false,
     "TextColor": "text",
     "Color": "button",
     "HoverColor": "hover",
@@ -56,8 +49,6 @@
     "CheckedColor": "disabled"
   },
   "Radio": {
-    "Filled": true,
-    "Outlined": false,
     "TextColor": "text",
     "Color": "button",
     "HoverColor": "hover",
@@ -66,8 +57,6 @@
     "CheckedColor": "disabled"
   },
   "Input": {
-    "Filled": true,
-    "Outlined": false,
     "TextColor": "text",
     "Color": "button",
     "HoverColor": "hover",
@@ -76,8 +65,6 @@
     "CheckedColor": "disabled"
   },
   "Slider": {
-    "Filled": true,
-    "Outlined": false,
     "TextColor": "text",
     "Color": "button",
     "HoverColor": "hover",
@@ -86,8 +73,6 @@
     "CheckedColor": "disabled"
   },
   "Dropdown": {
-    "Filled": true,
-    "Outlined": false,
     "TextColor": "text",
     "Color": "button",
     "HoverColor": "hover",
@@ -97,8 +82,6 @@
     "MaxVisible": 5
   },
   "Tab": {
-    "Filled": true,
-    "Outlined": false,
     "TextColor": "text",
     "Color": "button",
     "HoverColor": "hover",
