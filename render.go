@@ -930,8 +930,8 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 	// Align to pixel boundaries
 	x := float32(math.Floor(float64(rrect.Position.X)))
 	y := float32(math.Floor(float64(rrect.Position.Y)))
-	w := rrect.Size.X
-	h := rrect.Size.Y
+	w := float32(math.Round(float64(rrect.Size.X)))
+	h := float32(math.Round(float64(rrect.Size.Y)))
 	fillet := rrect.Fillet
 	width := float32(math.Round(float64(rrect.Border)))
 
@@ -1002,7 +1002,7 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 		vertices[i].ColorA = float32(col.A) / 255
 	}
 
-	op := &ebiten.DrawTrianglesOptions{FillRule: ebiten.FillRuleNonZero, AntiAlias: true}
+	op := &ebiten.DrawTrianglesOptions{FillRule: ebiten.FillRuleNonZero, AntiAlias: fillet > 0}
 	screen.DrawTriangles(vertices, indices, whiteSubImage, op)
 }
 
@@ -1016,6 +1016,8 @@ func drawTabShape(screen *ebiten.Image, pos point, size point, col Color, fillet
 	// Align to pixel boundaries to avoid artifacts
 	pos.X = float32(math.Floor(float64(pos.X)))
 	pos.Y = float32(math.Floor(float64(pos.Y)))
+	size.X = float32(math.Round(float64(size.X)))
+	size.Y = float32(math.Round(float64(size.Y)))
 
 	if slope <= 0 {
 		slope = size.Y / 4
@@ -1049,7 +1051,7 @@ func drawTabShape(screen *ebiten.Image, pos point, size point, col Color, fillet
 
 	op := &ebiten.DrawTrianglesOptions{}
 	op.FillRule = ebiten.FillRuleNonZero
-	op.AntiAlias = true
+	op.AntiAlias = fillet > 0
 	screen.DrawTriangles(vertices, indices, whiteSubImage, op)
 }
 
@@ -1063,6 +1065,8 @@ func strokeTabShape(screen *ebiten.Image, pos point, size point, col Color, fill
 	// Align to pixel boundaries
 	pos.X = float32(math.Floor(float64(pos.X)))
 	pos.Y = float32(math.Floor(float64(pos.Y)))
+	size.X = float32(math.Round(float64(size.X)))
+	size.Y = float32(math.Round(float64(size.Y)))
 	border = float32(math.Round(float64(border)))
 
 	if slope <= 0 {
@@ -1096,7 +1100,7 @@ func strokeTabShape(screen *ebiten.Image, pos point, size point, col Color, fill
 		vertices[i].ColorA = float32(c.A) / 255
 	}
 
-	op := &ebiten.DrawTrianglesOptions{FillRule: ebiten.FillRuleNonZero, AntiAlias: true}
+	op := &ebiten.DrawTrianglesOptions{FillRule: ebiten.FillRuleNonZero, AntiAlias: fillet > 0}
 	screen.DrawTriangles(vertices, indices, whiteSubImage, op)
 }
 
@@ -1106,6 +1110,11 @@ func drawTriangle(screen *ebiten.Image, pos point, size float32, col Color) {
 		vertices []ebiten.Vertex
 		indices  []uint16
 	)
+
+	// Quantize to pixel boundaries
+	pos.X = float32(math.Floor(float64(pos.X)))
+	pos.Y = float32(math.Floor(float64(pos.Y)))
+	size = float32(math.Round(float64(size)))
 
 	path.MoveTo(pos.X, pos.Y)
 	path.LineTo(pos.X+size, pos.Y)
@@ -1125,7 +1134,7 @@ func drawTriangle(screen *ebiten.Image, pos point, size float32, col Color) {
 		vertices[i].ColorA = float32(c.A) / 255
 	}
 
-	op := &ebiten.DrawTrianglesOptions{FillRule: ebiten.FillRuleNonZero, AntiAlias: true}
+	op := &ebiten.DrawTrianglesOptions{FillRule: ebiten.FillRuleNonZero, AntiAlias: false}
 	screen.DrawTriangles(vertices, indices, whiteSubImage, op)
 }
 
