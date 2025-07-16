@@ -930,16 +930,17 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 	// Align to pixel boundaries
 	aa := rrect.Fillet > 0
 
-	x := float32(math.Floor(float64(rrect.Position.X)))
-	y := float32(math.Floor(float64(rrect.Position.Y)))
-	w := float32(math.Round(float64(rrect.Size.X)))
-	h := float32(math.Round(float64(rrect.Size.Y)))
-	fillet := rrect.Fillet
 	width := float32(math.Round(float64(rrect.Border)))
 	off := float32(0)
 	if !rrect.Filled {
 		off = pixelOffset(width)
 	}
+
+	x := float32(math.Floor(float64(rrect.Position.X))) + off
+	y := float32(math.Floor(float64(rrect.Position.Y))) + off
+	w := float32(math.Round(float64(rrect.Size.X)))
+	h := float32(math.Round(float64(rrect.Size.Y)))
+	fillet := rrect.Fillet
 
 	// When stroking, keep the outline fully inside the rectangle so
 	// sub-images do not clip the bottom and right edges.
@@ -1000,8 +1001,6 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 
 	col := dimColor(rrect.Color, dimFactor)
 	for i := range vertices {
-		vertices[i].DstX = float32(math.Floor(float64(vertices[i].DstX))) + off
-		vertices[i].DstY = float32(math.Floor(float64(vertices[i].DstY))) + off
 		vertices[i].SrcX = 1
 		vertices[i].SrcY = 1
 		vertices[i].ColorR = float32(col.R) / 255
