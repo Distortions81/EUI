@@ -730,6 +730,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			trackWidth = 0
 		}
 
+		trackStart := offset.X + item.AuxSize.X/2
 		trackY := offset.Y + maxSize.Y/2
 
 		ratio := 0.0
@@ -741,12 +742,12 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		} else if ratio > 1 {
 			ratio = 1
 		}
-		knobX := offset.X + float32(ratio)*trackWidth
-		strokeLine(subImg, offset.X, trackY, knobX, trackY, 2*uiScale, dimColor(item.ClickColor, dimFactor), true)
-		strokeLine(subImg, knobX, trackY, offset.X+trackWidth, trackY, 2*uiScale, dimColor(itemColor, dimFactor), true)
+		knobCenter := trackStart + float32(ratio)*trackWidth
+		strokeLine(subImg, trackStart, trackY, knobCenter, trackY, 2*uiScale, dimColor(item.ClickColor, dimFactor), true)
+		strokeLine(subImg, knobCenter, trackY, trackStart+trackWidth, trackY, 2*uiScale, dimColor(itemColor, dimFactor), true)
 		drawRoundRect(subImg, &roundRect{
 			Size:     pointScaleMul(item.AuxSize),
-			Position: point{X: knobX, Y: offset.Y + (maxSize.Y-item.AuxSize.Y)/2},
+			Position: point{X: knobCenter - item.AuxSize.X/2, Y: offset.Y + (maxSize.Y-item.AuxSize.Y)/2},
 			Fillet:   item.Fillet,
 			Filled:   true,
 			Color:    dimColor(item.ClickColor, dimFactor),
@@ -756,7 +757,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		loo := text.LayoutOptions{LineSpacing: 1.2, PrimaryAlign: text.AlignStart, SecondaryAlign: text.AlignCenter}
 		tdop := ebiten.DrawImageOptions{}
 		tdop.GeoM.Translate(
-			float64(offset.X+trackWidth+gap),
+			float64(trackStart+trackWidth+gap),
 			float64(offset.Y+(maxSize.Y/2)),
 		)
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
