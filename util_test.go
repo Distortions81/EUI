@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"image/color"
 	"math"
 	"testing"
@@ -116,7 +115,7 @@ func TestSetSliderValue(t *testing.T) {
 	item := &itemData{MinValue: 0, MaxValue: 10, AuxSize: point{X: 8}, AuxSpace: 4}
 	item.DrawRect = rect{X0: 0, Y0: 0, X1: 100, Y1: 20}
 	item.setSliderValue(point{X: 42})
-	maxLabel := fmt.Sprintf("%.2f", item.MaxValue)
+	maxLabel := sliderMaxLabel
 	textSize := (item.FontSize * uiScale) + 2
 	face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
 	maxW, _ := text.Measure(maxLabel, face, 0)
@@ -143,7 +142,9 @@ func TestSetSliderValue(t *testing.T) {
 
 func sliderTrackWidth(item *itemData) float32 {
 	maxSize := item.GetSize()
-	maxLabel := fmt.Sprintf("%.2f", item.MaxValue)
+	// Use a fixed label width when measuring so sliders with
+	// different ranges have equal track lengths.
+	maxLabel := sliderMaxLabel
 	textSize := (item.FontSize * uiScale) + 2
 	face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
 	maxW, _ := text.Measure(maxLabel, face, 0)
@@ -168,6 +169,7 @@ func TestSliderTrackLengthMatch(t *testing.T) {
 	floatTrack := sliderTrackWidth(base)
 
 	intSlider := *base
+	intSlider.MaxValue = 10
 	intSlider.IntOnly = true
 	intTrack := sliderTrackWidth(&intSlider)
 

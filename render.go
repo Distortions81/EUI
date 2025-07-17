@@ -714,8 +714,10 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 
 		// Prepare value text and measure the largest value label so the
 		// slider track remains consistent length
+		// Use a constant max label width so all sliders have the
+		// same track length regardless of their numeric range.
 		valueText := fmt.Sprintf("%.2f", item.Value)
-		maxLabel := fmt.Sprintf("%.2f", item.MaxValue)
+		maxLabel := sliderMaxLabel
 		if item.IntOnly {
 			// Pad the integer value so the value field width matches
 			// the float slider which reserves space for two decimal

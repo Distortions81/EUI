@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"math"
 	"time"
 
@@ -464,7 +463,9 @@ func subUncheckRadio(list []*itemData, group string, except *itemData) {
 func (item *itemData) setSliderValue(mpos point) {
 	// Determine the width of the slider track accounting for the
 	// displayed value text to the right of the knob.
-	maxLabel := fmt.Sprintf("%.2f", item.MaxValue)
+	// Measure against a consistent label width so sliders with
+	// different ranges have identical track lengths.
+	maxLabel := sliderMaxLabel
 	textSize := (item.FontSize * uiScale) + 2
 	face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
 	maxW, _ := text.Measure(maxLabel, face, 0)
