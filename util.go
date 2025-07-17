@@ -555,26 +555,26 @@ func pixelOffset(width float32) float32 {
 func strokeLine(dst *ebiten.Image, x0, y0, x1, y1, width float32, col color.Color, aa bool) {
 	width = float32(math.Round(float64(width)))
 	off := pixelOffset(width)
-	x0 = float32(math.Floor(float64(x0))) + off
-	y0 = float32(math.Floor(float64(y0))) + off
-	x1 = float32(math.Floor(float64(x1))) + off
-	y1 = float32(math.Floor(float64(y1))) + off
+	x0 = float32(math.Round(float64(x0))) + off
+	y0 = float32(math.Round(float64(y0))) + off
+	x1 = float32(math.Round(float64(x1))) + off
+	y1 = float32(math.Round(float64(y1))) + off
 	strokeLineFn(dst, x0, y0, x1, y1, width, col, aa)
 }
 
 func strokeRect(dst *ebiten.Image, x, y, w, h, width float32, col color.Color, aa bool) {
 	width = float32(math.Round(float64(width)))
 	off := pixelOffset(width)
-	x = float32(math.Floor(float64(x))) + off
-	y = float32(math.Floor(float64(y))) + off
+	x = float32(math.Round(float64(x))) + off
+	y = float32(math.Round(float64(y))) + off
 	w = float32(math.Round(float64(w)))
 	h = float32(math.Round(float64(h)))
 	strokeRectFn(dst, x, y, w, h, width, col, aa)
 }
 
 func drawFilledRect(dst *ebiten.Image, x, y, w, h float32, col color.Color, aa bool) {
-	x = float32(math.Floor(float64(x)))
-	y = float32(math.Floor(float64(y)))
+	x = float32(math.Round(float64(x)))
+	y = float32(math.Round(float64(y)))
 	w = float32(math.Round(float64(w)))
 	h = float32(math.Round(float64(h)))
 	vector.DrawFilledRect(dst, x, y, w, h, col, aa)
