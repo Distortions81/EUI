@@ -1,10 +1,14 @@
 package main
 
 import (
+	"bytes"
+	"fmt"
 	"image/color"
+	"math"
 	"testing"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
@@ -102,16 +106,36 @@ func TestItemOverlap(t *testing.T) {
 }
 
 func TestSetSliderValue(t *testing.T) {
+	if mplusFaceSource == nil {
+		s, err := text.NewGoTextFaceSource(bytes.NewReader(notoTTF))
+		if err != nil {
+			t.Fatalf("font init: %v", err)
+		}
+		mplusFaceSource = s
+	}
 	item := &itemData{MinValue: 0, MaxValue: 10, AuxSize: point{X: 8}, AuxSpace: 4}
 	item.DrawRect = rect{X0: 0, Y0: 0, X1: 100, Y1: 20}
 	item.setSliderValue(point{X: 42})
-	if item.Value < 4.9 || item.Value > 5.1 {
-		t.Errorf("slider value got %v", item.Value)
+	maxLabel := fmt.Sprintf("%.2f", item.MaxValue)
+	textSize := (item.FontSize * uiScale) + 2
+	face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
+	maxW, _ := text.Measure(maxLabel, face, 0)
+	width := item.DrawRect.X1 - item.DrawRect.X0 - item.AuxSize.X - currentLayout.SliderValueGap - float32(maxW)
+	val := float32(42) - item.DrawRect.X0
+	if val < 0 {
+		val = 0
+	}
+	if val > width {
+		val = width
+	}
+	want := item.MinValue + (val/width)*(item.MaxValue-item.MinValue)
+	if math.Abs(float64(item.Value-want)) > 0.001 {
+		t.Errorf("slider value got %v want %v", item.Value, want)
 	}
 	item.IntOnly = true
 	item.setSliderValue(point{X: 42})
-	if item.Value != 5 {
-		t.Errorf("int slider got %v", item.Value)
+	if item.Value != float32(int(want+0.5)) {
+		t.Errorf("int slider got %v want %v", item.Value, float32(int(want+0.5)))
 	}
 }
 
@@ -184,6 +208,70 @@ func TestPixelOffset(t *testing.T) {
 	}
 }
 
+func roundRectKeyPoints(rrect *roundRect) []point {
+	width := float32(math.Round(float64(rrect.Border)))
+	off := float32(0)
+	if !rrect.Filled {
+		off = pixelOffset(width)
+	}
+	x := float32(math.Round(float64(rrect.Position.X))) + off
+	y := float32(math.Round(float64(rrect.Position.Y))) + off
+	w := float32(math.Round(float64(rrect.Size.X)))
+	h := float32(math.Round(float64(rrect.Size.Y)))
+	fillet := rrect.Fillet
+	if !rrect.Filled && width > 0 {
+		inset := width / 2
+		x += inset
+		y += inset
+		w -= width
+		h -= width
+		if w < 0 {
+			w = 0
+		}
+		if h < 0 {
+			h = 0
+		}
+		if fillet > inset {
+			fillet -= inset
+		} else {
+			fillet = 0
+		}
+	}
+	fillet = float32(math.Round(float64(fillet)))
+	return []point{
+		{X: x + fillet, Y: y},
+		{X: x + w - fillet, Y: y},
+		{X: x + w, Y: y + fillet},
+		{X: x + w, Y: y + h - fillet},
+		{X: x + w - fillet, Y: y + h},
+		{X: x + fillet, Y: y + h},
+		{X: x, Y: y + h - fillet},
+		{X: x, Y: y + fillet},
+	}
+}
+
+func TestRoundRectSymmetry(t *testing.T) {
+	r := &roundRect{
+		Size:     point{X: 23.7, Y: 15.2},
+		Position: point{X: 4.3, Y: 7.6},
+		Fillet:   5,
+		Filled:   true,
+	}
+	pts := roundRectKeyPoints(r)
+	mid := float32(math.Round(float64(r.Position.X))) + float32(math.Round(float64(r.Size.X)))/2
+	checkMirror := func(a, b point) bool {
+		ax := a.X - mid
+		bx := b.X - mid
+		return math.Abs(float64(ax+bx)) < 0.001 && math.Abs(float64(a.Y-b.Y)) < 0.001
+	}
+	pairs := [][2]int{{0, 1}, {2, 7}, {3, 6}, {4, 5}}
+	for _, p := range pairs {
+		if !checkMirror(pts[p[0]], pts[p[1]]) {
+			t.Errorf("points %d and %d not symmetrical: %+v vs %+v", p[0], p[1], pts[p[0]], pts[p[1]])
+		}
+	}
+}
+
 func TestStrokeLineParams(t *testing.T) {
 	var x0, y0, w float32
 	strokeLineFn = func(dst *ebiten.Image, ax0, ay0, ax1, ay1, width float32, col color.Color, aa bool) {
@@ -198,7 +286,7 @@ func TestStrokeLineParams(t *testing.T) {
 	}
 
 	strokeLine(img, 3.7, 4.2, 9.1, 4.2, 2, color.White, false)
-	if x0 != 3 || y0 != 4 || w != 2 {
+	if x0 != 4 || y0 != 4 || w != 2 {
 		t.Errorf("even width params %v %v %v", x0, y0, w)
 	}
 }
@@ -217,7 +305,7 @@ func TestStrokeRectParams(t *testing.T) {
 	}
 
 	strokeRect(img, 6.7, 1.4, 3.3, 2.8, 2, color.White, false)
-	if x != 6 || y != 1 || bw != 2 {
+	if x != 7 || y != 1 || bw != 2 {
 		t.Errorf("rect even width params %v %v %v", x, y, bw)
 	}
 }
