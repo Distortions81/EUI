@@ -471,7 +471,8 @@ func (item *itemData) setSliderValue(mpos point) {
 	if width <= 0 {
 		return
 	}
-	val := (mpos.X - item.DrawRect.X0)
+	start := item.DrawRect.X0 + item.AuxSize.X/2
+	val := (mpos.X - start)
 	if val < 0 {
 		val = 0
 	}
