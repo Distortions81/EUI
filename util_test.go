@@ -216,8 +216,10 @@ func roundRectKeyPoints(rrect *roundRect) []point {
 	}
 	x := float32(math.Round(float64(rrect.Position.X))) + off
 	y := float32(math.Round(float64(rrect.Position.Y))) + off
-	w := float32(math.Round(float64(rrect.Size.X)))
-	h := float32(math.Round(float64(rrect.Size.Y)))
+	x1 := float32(math.Round(float64(rrect.Position.X+rrect.Size.X))) + off
+	y1 := float32(math.Round(float64(rrect.Position.Y+rrect.Size.Y))) + off
+	w := x1 - x
+	h := y1 - y
 	fillet := rrect.Fillet
 	if !rrect.Filled && width > 0 {
 		inset := width / 2
@@ -258,7 +260,9 @@ func TestRoundRectSymmetry(t *testing.T) {
 		Filled:   true,
 	}
 	pts := roundRectKeyPoints(r)
-	mid := float32(math.Round(float64(r.Position.X))) + float32(math.Round(float64(r.Size.X)))/2
+	x := float32(math.Round(float64(r.Position.X)))
+	x1 := float32(math.Round(float64(r.Position.X + r.Size.X)))
+	mid := x + (x1-x)/2
 	checkMirror := func(a, b point) bool {
 		ax := a.X - mid
 		bx := b.X - mid

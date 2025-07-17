@@ -938,8 +938,10 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 
 	x := float32(math.Round(float64(rrect.Position.X))) + off
 	y := float32(math.Round(float64(rrect.Position.Y))) + off
-	w := float32(math.Round(float64(rrect.Size.X)))
-	h := float32(math.Round(float64(rrect.Size.Y)))
+	x1 := float32(math.Round(float64(rrect.Position.X+rrect.Size.X))) + off
+	y1 := float32(math.Round(float64(rrect.Position.Y+rrect.Size.Y))) + off
+	w := x1 - x
+	h := y1 - y
 	fillet := rrect.Fillet
 
 	// When stroking, keep the outline fully inside the rectangle so
