@@ -190,6 +190,7 @@ func applyAccentColor() {
 	currentTheme.Dropdown.ClickColor = col
 	currentTheme.Tab.ClickColor = col
 	applyThemeToAll()
+	updateColorWheels(col)
 }
 
 // applyThemeToAll updates all existing windows to use the current theme.
@@ -298,5 +299,28 @@ func applyThemeToItem(it *itemData) {
 	}
 	for _, tab := range it.Tabs {
 		applyThemeToItem(tab)
+	}
+}
+
+// updateColorWheels sets the SelectedColor field of all color wheel widgets to
+// the provided color.
+func updateColorWheels(col Color) {
+	for _, win := range windows {
+		updateColorWheelList(win.Contents, col)
+	}
+	for _, ov := range overlays {
+		updateColorWheelList(ov.Contents, col)
+	}
+}
+
+func updateColorWheelList(items []*itemData, col Color) {
+	for _, it := range items {
+		if it.ItemType == ITEM_COLORWHEEL {
+			it.SelectedColor = col
+		}
+		updateColorWheelList(it.Contents, col)
+		for _, tab := range it.Tabs {
+			updateColorWheelList(tab.Contents, col)
+		}
 	}
 }

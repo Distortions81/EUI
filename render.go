@@ -725,12 +725,14 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		maxW, _ := text.Measure(maxLabel, face, 0)
 
 		gap := currentLayout.SliderValueGap
-		trackWidth := maxSize.X - item.AuxSize.X - gap - float32(maxW)
+		knobW := item.AuxSize.X * uiScale
+		knobH := item.AuxSize.Y * uiScale
+		trackWidth := maxSize.X - knobW - gap - float32(maxW)
 		if trackWidth < 0 {
 			trackWidth = 0
 		}
 
-		trackStart := offset.X + item.AuxSize.X/2
+		trackStart := offset.X + knobW/2
 		trackY := offset.Y + maxSize.Y/2
 
 		ratio := 0.0
@@ -747,7 +749,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		strokeLine(subImg, knobCenter, trackY, trackStart+trackWidth, trackY, 2*uiScale, dimColor(itemColor, dimFactor), true)
 		drawRoundRect(subImg, &roundRect{
 			Size:     pointScaleMul(item.AuxSize),
-			Position: point{X: knobCenter - item.AuxSize.X/2, Y: offset.Y + (maxSize.Y-item.AuxSize.Y)/2},
+			Position: point{X: knobCenter - knobW/2, Y: offset.Y + (maxSize.Y-knobH)/2},
 			Fillet:   item.Fillet,
 			Filled:   true,
 			Color:    dimColor(item.ClickColor, dimFactor),
