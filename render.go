@@ -818,6 +818,24 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		op.GeoM.Translate(float64(offset.X), float64(offset.Y))
 		subImg.DrawImage(item.Image, op)
 
+		h, _, v, _ := rgbaToHSVA(color.RGBA(item.SelectedColor))
+		radius := maxSize.X / 2
+		cx := offset.X + radius
+		cy := offset.Y + radius
+		px := cx + float32(math.Cos(h*math.Pi/180))*radius*float32(v)
+		py := cy + float32(math.Sin(h*math.Pi/180))*radius*float32(v)
+		vector.DrawFilledCircle(subImg, px, py, 4*uiScale, color.Black, true)
+		vector.DrawFilledCircle(subImg, px, py, 2*uiScale, color.White, true)
+
+		sw := maxSize.X / 5
+		if sw < 10*uiScale {
+			sw = 10 * uiScale
+		}
+		sx := offset.X + maxSize.X - sw - 4*uiScale
+		sy := offset.Y + maxSize.Y - sw - 4*uiScale
+		drawFilledRect(subImg, sx, sy, sw, sw, color.RGBA(item.SelectedColor), true)
+		strokeRect(subImg, sx, sy, sw, sw, 1, color.Black, true)
+
 	} else if item.ItemType == ITEM_TEXT {
 
 		textSize := (item.FontSize * uiScale) + 2
