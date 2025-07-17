@@ -427,7 +427,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 			if maxScroll > 0 {
 				pos = (item.Scroll.Y / maxScroll) * (size.Y - barH)
 			}
-			col := dimColor(Color(color.RGBA{R: 96, G: 96, B: 96, A: 192}), dimFactor)
+			col := dimColor(NewColor(96, 96, 96, 192), dimFactor)
 			sbW := currentLayout.BorderPad.Slider * 2
 			drawFilledRect(subImg, item.DrawRect.X1-sbW, item.DrawRect.Y0+pos, sbW, barH, col.ToRGBA(), false)
 		} else if item.FlowType == FLOW_HORIZONTAL && req.X > size.X {
@@ -437,7 +437,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 			if maxScroll > 0 {
 				pos = (item.Scroll.X / maxScroll) * (size.X - barW)
 			}
-			col := dimColor(Color(color.RGBA{R: 96, G: 96, B: 96, A: 192}), dimFactor)
+			col := dimColor(NewColor(96, 96, 96, 192), dimFactor)
 			sbW := currentLayout.BorderPad.Slider * 2
 			drawFilledRect(subImg, item.DrawRect.X0+pos, item.DrawRect.Y1-sbW, barW, sbW, col.ToRGBA(), false)
 		}

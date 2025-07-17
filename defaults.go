@@ -1,7 +1,5 @@
 package main
 
-import "image/color"
-
 var defaultTheme = &windowData{
 	TitleHeight:     24,
 	Border:          0,
@@ -10,19 +8,19 @@ var defaultTheme = &windowData{
 	Padding:         4,
 	Margin:          4,
 	BorderPad:       0,
-	TitleColor:      Color(color.RGBA{R: 255, G: 255, B: 255, A: 255}),
-	TitleTextColor:  Color(color.RGBA{R: 255, G: 255, B: 255, A: 255}),
-	TitleBGColor:    Color(color.RGBA{R: 64, G: 64, B: 64, A: 255}),
-	CloseBGColor:    Color(color.RGBA{R: 0, G: 0, B: 0, A: 0}),
+	TitleColor:      NewColor(255, 255, 255, 255),
+	TitleTextColor:  NewColor(255, 255, 255, 255),
+	TitleBGColor:    NewColor(64, 64, 64, 255),
+	CloseBGColor:    NewColor(0, 0, 0, 0),
 	DragbarSpacing:  5,
 	ShowDragbar:     false,
-	BorderColor:     Color(color.RGBA{R: 64, G: 64, B: 64, A: 255}),
-	SizeTabColor:    Color(color.RGBA{R: 48, G: 48, B: 48, A: 255}),
-	DragbarColor:    Color(color.RGBA{R: 64, G: 64, B: 64, A: 255}),
-	HoverTitleColor: Color(color.RGBA{R: 0, G: 160, B: 160, A: 255}),
-	HoverColor:      Color(color.RGBA{R: 80, G: 80, B: 80, A: 255}),
-	BGColor:         Color(color.RGBA{R: 32, G: 32, B: 32, A: 255}),
-	ActiveColor:     Color(color.RGBA{R: 0, G: 160, B: 160, A: 255}),
+	BorderColor:     NewColor(64, 64, 64, 255),
+	SizeTabColor:    NewColor(48, 48, 48, 255),
+	DragbarColor:    NewColor(64, 64, 64, 255),
+	HoverTitleColor: NewColor(0, 160, 160, 255),
+	HoverColor:      NewColor(80, 80, 80, 255),
+	BGColor:         NewColor(32, 32, 32, 255),
+	ActiveColor:     NewColor(0, 160, 160, 255),
 
 	Movable: true, Closable: true, Resizable: true, Open: true, AutoSize: false,
 }
@@ -43,10 +41,10 @@ var defaultButton = &itemData{
 	Border:    0,
 	BorderPad: 4,
 
-	TextColor:  Color(color.RGBA{R: 255, G: 255, B: 255, A: 255}),
-	Color:      Color(color.RGBA{R: 48, G: 48, B: 48, A: 255}),
-	HoverColor: Color(color.RGBA{R: 96, G: 96, B: 96, A: 255}),
-	ClickColor: Color(color.RGBA{R: 0, G: 160, B: 160, A: 255}),
+	TextColor:  NewColor(255, 255, 255, 255),
+	Color:      NewColor(48, 48, 48, 255),
+	HoverColor: NewColor(96, 96, 96, 255),
+	ClickColor: NewColor(0, 160, 160, 255),
 }
 
 var defaultText = &itemData{
@@ -58,7 +56,7 @@ var defaultText = &itemData{
 	LineSpace: 1.2,
 	Padding:   0,
 	Margin:    2,
-	TextColor: Color(color.RGBA{R: 255, G: 255, B: 255, A: 255}),
+	TextColor: NewColor(255, 255, 255, 255),
 }
 
 var defaultCheckbox = &itemData{
@@ -78,10 +76,10 @@ var defaultCheckbox = &itemData{
 	Border:    0,
 	BorderPad: 4,
 
-	TextColor:  Color(color.RGBA{R: 255, G: 255, B: 255, A: 255}),
-	Color:      Color(color.RGBA{R: 48, G: 48, B: 48, A: 255}),
-	HoverColor: Color(color.RGBA{R: 96, G: 96, B: 96, A: 255}),
-	ClickColor: Color(color.RGBA{R: 0, G: 160, B: 160, A: 255}),
+	TextColor:  NewColor(255, 255, 255, 255),
+	Color:      NewColor(48, 48, 48, 255),
+	HoverColor: NewColor(96, 96, 96, 255),
+	ClickColor: NewColor(0, 160, 160, 255),
 }
 
 var defaultInput = &itemData{
@@ -98,10 +96,10 @@ var defaultInput = &itemData{
 	Border:    0,
 	BorderPad: 2,
 
-	TextColor:  Color(color.RGBA{R: 255, G: 255, B: 255, A: 255}),
-	Color:      Color(color.RGBA{R: 48, G: 48, B: 48, A: 255}),
-	HoverColor: Color(color.RGBA{R: 96, G: 96, B: 96, A: 255}),
-	ClickColor: Color(color.RGBA{R: 0, G: 160, B: 160, A: 255}),
+	TextColor:  NewColor(255, 255, 255, 255),
+	Color:      NewColor(48, 48, 48, 255),
+	HoverColor: NewColor(96, 96, 96, 255),
+	ClickColor: NewColor(0, 160, 160, 255),
 }
 
 var defaultRadio = &itemData{
@@ -121,10 +119,10 @@ var defaultRadio = &itemData{
 	Border:    0,
 	BorderPad: 4,
 
-	TextColor:  Color(color.RGBA{R: 255, G: 255, B: 255, A: 255}),
-	Color:      Color(color.RGBA{R: 48, G: 48, B: 48, A: 255}),
-	HoverColor: Color(color.RGBA{R: 96, G: 96, B: 96, A: 255}),
-	ClickColor: Color(color.RGBA{R: 0, G: 160, B: 160, A: 255}),
+	TextColor:  NewColor(255, 255, 255, 255),
+	Color:      NewColor(48, 48, 48, 255),
+	HoverColor: NewColor(96, 96, 96, 255),
+	ClickColor: NewColor(0, 160, 160, 255),
 }
 
 var defaultSlider = &itemData{
@@ -147,10 +145,10 @@ var defaultSlider = &itemData{
 	Border:    0,
 	BorderPad: 2,
 
-	TextColor:  Color(color.RGBA{R: 255, G: 255, B: 255, A: 255}),
-	Color:      Color(color.RGBA{R: 48, G: 48, B: 48, A: 255}),
-	HoverColor: Color(color.RGBA{R: 96, G: 96, B: 96, A: 255}),
-	ClickColor: Color(color.RGBA{R: 0, G: 160, B: 160, A: 255}),
+	TextColor:  NewColor(255, 255, 255, 255),
+	Color:      NewColor(48, 48, 48, 255),
+	HoverColor: NewColor(96, 96, 96, 255),
+	ClickColor: NewColor(0, 160, 160, 255),
 }
 
 var defaultDropdown = &itemData{
@@ -166,10 +164,10 @@ var defaultDropdown = &itemData{
 	Border:    0,
 	BorderPad: 2,
 
-	TextColor:  Color(color.RGBA{R: 255, G: 255, B: 255, A: 255}),
-	Color:      Color(color.RGBA{R: 48, G: 48, B: 48, A: 255}),
-	HoverColor: Color(color.RGBA{R: 96, G: 96, B: 96, A: 255}),
-	ClickColor: Color(color.RGBA{R: 0, G: 160, B: 160, A: 255}),
+	TextColor:  NewColor(255, 255, 255, 255),
+	Color:      NewColor(48, 48, 48, 255),
+	HoverColor: NewColor(96, 96, 96, 255),
+	ClickColor: NewColor(0, 160, 160, 255),
 	MaxVisible: 5,
 }
 
@@ -189,10 +187,10 @@ var defaultTab = &itemData{
 	BorderPad:     2,
 	Fillet:        4,
 	ActiveOutline: false,
-	TextColor:     Color(color.RGBA{R: 255, G: 255, B: 255, A: 255}),
-	Color:         Color(color.RGBA{R: 64, G: 64, B: 64, A: 255}),
-	HoverColor:    Color(color.RGBA{R: 96, G: 96, B: 96, A: 255}),
-	ClickColor:    Color(color.RGBA{R: 0, G: 160, B: 160, A: 255}),
+	TextColor:     NewColor(255, 255, 255, 255),
+	Color:         NewColor(64, 64, 64, 255),
+	HoverColor:    NewColor(96, 96, 96, 255),
+	ClickColor:    NewColor(0, 160, 160, 255),
 }
 
 // base copies preserve the initial defaults so that LoadTheme can reset
