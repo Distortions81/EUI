@@ -60,27 +60,3 @@ var (
 
 	ColorVeryDarkGray = NewColor(64, 64, 64, 255)
 )
-
-// builtinColorMap maps lowercase color names to their Color values.
-var builtinColorMap = map[string]Color{
-	"white":   ColorWhite,
-	"black":   ColorBlack,
-	"red":     ColorRed,
-	"green":   ColorGreen,
-	"blue":    ColorBlue,
-	"yellow":  ColorYellow,
-	"gray":    ColorGray,
-	"orange":  ColorOrange,
-	"pink":    ColorPink,
-	"purple":  ColorPurple,
-	"silver":  ColorSilver,
-	"teal":    ColorTeal,
-	"maroon":  ColorMaroon,
-	"navy":    ColorNavy,
-	"olive":   ColorOlive,
-	"lime":    ColorLime,
-	"fuchsia": ColorFuchsia,
-	"aqua":    ColorAqua,
-	"brown":   ColorBrown,
-	"rust":    ColorRust,
-}

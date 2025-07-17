@@ -2,10 +2,7 @@ module EUI
 
 go 1.23.2
 
-require (
-	github.com/hajimehoshi/ebiten v1.12.12
-	github.com/hajimehoshi/ebiten/v2 v2.8.5
-)
+require github.com/hajimehoshi/ebiten/v2 v2.8.5
 
 require (
 	github.com/ebitengine/gomobile v0.0.0-20240911145611-4856209ac325 // indirect

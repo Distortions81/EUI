@@ -10,14 +10,6 @@ func (r rect) containsPoint(p point) bool {
 	return p.X >= r.X0 && p.Y >= r.Y0 && p.X <= r.X1 && p.Y <= r.Y1
 }
 
-// containsPoint determines if the point is inside the item's rectangle on the window.
-func (it *itemData) containsPoint(win *windowData, p point) bool {
-	return p.X >= win.getPosition().X+it.getPosition(win).X &&
-		p.X <= win.getPosition().X+it.getPosition(win).X+it.GetSize().X &&
-		p.Y >= win.getPosition().Y+it.getPosition(win).Y &&
-		p.Y <= win.getPosition().Y+it.getPosition(win).Y+it.GetSize().Y
-}
-
 // getRectangle converts a rect to the standard image.Rectangle type.
 func (r rect) getRectangle() image.Rectangle {
 	return image.Rectangle{
