@@ -177,6 +177,7 @@ var defaultColorWheel = &itemData{
 	Position:      point{X: 4, Y: 4},
 	Margin:        4,
 	OnColorChange: nil,
+	SelectedColor: NewColor(255, 0, 0, 255),
 }
 
 var defaultTab = &itemData{

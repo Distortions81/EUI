@@ -111,6 +111,7 @@ type itemData struct {
 
 	Action        func()
 	OnColorChange func(Color)
+	SelectedColor Color
 	Contents      []*itemData
 
 	// Tabs allows a flow to contain multiple tabbed flows. Only the

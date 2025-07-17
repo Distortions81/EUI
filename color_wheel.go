@@ -16,27 +16,47 @@ func ColorWheelImage(size int) *ebiten.Image {
 	}
 	img := ebiten.NewImage(size, size)
 	r := float64(size) / 2
+	offsets := []float64{0.25, 0.75}
 	for y := 0; y < size; y++ {
 		for x := 0; x < size; x++ {
-			dx := float64(x) - r
-			dy := float64(y) - r
-			dist := math.Hypot(dx, dy)
-			if dist > r {
+			var rr, gg, bb, aa float64
+			var samples int
+			for _, oy := range offsets {
+				for _, ox := range offsets {
+					dx := float64(x) + ox - r
+					dy := float64(y) + oy - r
+					dist := math.Hypot(dx, dy)
+					if dist > r {
+						continue
+					}
+					ang := math.Atan2(dy, dx) * 180 / math.Pi
+					if ang < 0 {
+						ang += 360
+					}
+					v := dist / r
+					if v < 0 {
+						v = 0
+					} else if v > 1 {
+						v = 1
+					}
+					col := hsvaToRGBA(ang, 1, v, 1)
+					rr += float64(col.R)
+					gg += float64(col.G)
+					bb += float64(col.B)
+					aa += float64(col.A)
+					samples++
+				}
+			}
+			if samples == 0 {
 				img.Set(x, y, color.Transparent)
 				continue
 			}
-			ang := math.Atan2(dy, dx) * 180 / math.Pi
-			if ang < 0 {
-				ang += 360
-			}
-			v := dist / r
-			if v < 0 {
-				v = 0
-			} else if v > 1 {
-				v = 1
-			}
-			col := hsvaToRGBA(ang, 1, v, 1)
-			img.Set(x, y, col)
+			img.Set(x, y, color.RGBA{
+				R: uint8(rr / float64(samples)),
+				G: uint8(gg / float64(samples)),
+				B: uint8(bb / float64(samples)),
+				A: uint8(aa / float64(samples)),
+			})
 		}
 	}
 	return img
