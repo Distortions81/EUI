@@ -513,21 +513,21 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			Position: offset, Fillet: item.Fillet, Filled: false, Color: dimColor(bColor, dimFactor), Border: bThick * uiScale})
 
 		if item.Checked {
-			xThick := 2 * uiScale
+			cThick := 2 * uiScale
 			margin := auxSize.X * 0.25
-			strokeLine(subImg,
-				offset.X+margin,
-				offset.Y+margin,
-				offset.X+auxSize.X-margin,
-				offset.Y+auxSize.Y-margin,
-				xThick, dimColor(item.TextColor, dimFactor), true)
 
-			strokeLine(subImg,
-				offset.X+auxSize.X-margin,
-				offset.Y+margin,
-				offset.X+margin,
-				offset.Y+auxSize.Y-margin,
-				xThick, dimColor(item.TextColor, dimFactor), true)
+			startX := offset.X + margin
+			startY := offset.Y + auxSize.Y*0.55
+			midX := offset.X + auxSize.X*0.45
+			midY := offset.Y + auxSize.Y - margin
+			endX := offset.X + auxSize.X - margin
+			endY := offset.Y + margin
+
+			strokeLine(subImg, startX, startY, midX, midY,
+				cThick, dimColor(item.TextColor, dimFactor), true)
+
+			strokeLine(subImg, midX, midY, endX, endY,
+				cThick, dimColor(item.TextColor, dimFactor), true)
 		}
 
 		textSize := (item.FontSize * uiScale) + 2
