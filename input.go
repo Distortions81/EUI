@@ -465,6 +465,13 @@ func (item *itemData) setSliderValue(mpos point) {
 	// Determine the width of the slider track accounting for the
 	// displayed value text to the right of the knob.
 	maxLabel := fmt.Sprintf("%.2f", item.MaxValue)
+	if item.IntOnly {
+		// Ensure the measured label width matches the padded integer
+		// value used during rendering so the slider track length
+		// calculation is consistent between float and integer sliders.
+		width := len(maxLabel)
+		maxLabel = fmt.Sprintf("%*d", width, int(item.MaxValue))
+	}
 	textSize := (item.FontSize * uiScale) + 2
 	face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
 	maxW, _ := text.Measure(maxLabel, face, 0)
