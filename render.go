@@ -1049,8 +1049,6 @@ func drawTabShape(screen *ebiten.Image, pos point, size point, col Color, fillet
 	vertices, indices = path.AppendVerticesAndIndicesForFilling(vertices[:0], indices[:0])
 	c := dimColor(col, dimFactor)
 	for i := range vertices {
-		vertices[i].DstX = float32(math.Floor(float64(vertices[i].DstX)))
-		vertices[i].DstY = float32(math.Floor(float64(vertices[i].DstY)))
 		vertices[i].SrcX = 1
 		vertices[i].SrcY = 1
 		vertices[i].ColorR = float32(c.R) / 255
@@ -1075,12 +1073,12 @@ func strokeTabShape(screen *ebiten.Image, pos point, size point, col Color, fill
 	origFillet := fillet
 
 	// Align to pixel boundaries
-	pos.X = float32(math.Floor(float64(pos.X)))
-	pos.Y = float32(math.Floor(float64(pos.Y)))
-	size.X = float32(math.Round(float64(size.X)))
-	size.Y = float32(math.Round(float64(size.Y)))
 	border = float32(math.Round(float64(border)))
 	off := pixelOffset(border)
+	pos.X = float32(math.Floor(float64(pos.X))) + off
+	pos.Y = float32(math.Floor(float64(pos.Y))) + off
+	size.X = float32(math.Round(float64(size.X)))
+	size.Y = float32(math.Round(float64(size.Y)))
 
 	if slope <= 0 {
 		slope = size.Y / 4
@@ -1104,8 +1102,6 @@ func strokeTabShape(screen *ebiten.Image, pos point, size point, col Color, fill
 	vertices, indices = path.AppendVerticesAndIndicesForStroke(vertices[:0], indices[:0], opv)
 	c := dimColor(col, dimFactor)
 	for i := range vertices {
-		vertices[i].DstX = float32(math.Floor(float64(vertices[i].DstX))) + off
-		vertices[i].DstY = float32(math.Floor(float64(vertices[i].DstY))) + off
 		vertices[i].SrcX = 1
 		vertices[i].SrcY = 1
 		vertices[i].ColorR = float32(c.R) / 255
@@ -1138,8 +1134,6 @@ func drawTriangle(screen *ebiten.Image, pos point, size float32, col Color) {
 	vertices, indices = path.AppendVerticesAndIndicesForFilling(vertices[:0], indices[:0])
 	c := dimColor(col, dimFactor)
 	for i := range vertices {
-		vertices[i].DstX = float32(math.Floor(float64(vertices[i].DstX)))
-		vertices[i].DstY = float32(math.Floor(float64(vertices[i].DstY)))
 		vertices[i].SrcX = 1
 		vertices[i].SrcY = 1
 		vertices[i].ColorR = float32(c.R) / 255
