@@ -89,12 +89,12 @@ func clamp(v, min, max float64) float64 {
 // 0 returns the color unchanged while 1 results in black with the original
 // alpha.
 func dimColor(c Color, factor float64) Color {
-        if factor <= 0 {
-                return c
-        }
-        h, s, v, a := rgbaToHSVA(color.RGBA(c))
-        v = clamp(v*(1-factor), 0, 1)
-        return Color(hsvaToRGBA(h, s, v, a))
+	if factor <= 0 {
+		return c
+	}
+	h, s, v, a := rgbaToHSVA(color.RGBA(c))
+	v = clamp(v*(1-factor), 0, 1)
+	return Color(hsvaToRGBA(h, s, v, a))
 }
 
 // MarshalJSON implements json.Marshaler using HSV representation.
@@ -118,7 +118,7 @@ func (c *Color) UnmarshalJSON(data []byte) error {
 	}
 	var rgba struct{ R, G, B, A uint8 }
 	if err := json.Unmarshal(data, &rgba); err == nil {
-		*c = Color(color.RGBA{rgba.R, rgba.G, rgba.B, rgba.A})
+		*c = NewColor(rgba.R, rgba.G, rgba.B, rgba.A)
 		return nil
 	}
 	var s string
@@ -136,7 +136,7 @@ func (c *Color) UnmarshalJSON(data []byte) error {
 					if len(hex) == 6 {
 						val = val<<8 | 0xff
 					}
-					*c = Color(color.RGBA{R: uint8(val >> 24), G: uint8(val >> 16), B: uint8(val >> 8), A: uint8(val)})
+					*c = NewColor(uint8(val>>24), uint8(val>>16), uint8(val>>8), uint8(val))
 					return nil
 				}
 			}
