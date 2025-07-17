@@ -100,7 +100,7 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image) {
 	if win.TitleHeight > 0 {
 		screen.Fill(dimColor(win.TitleBGColor, dimFactor))
 
-		textSize := ((win.GetTitleSize()) / 1.5)
+		textSize := ((win.GetTitleSize()) / 2)
 		face := &text.GoTextFace{
 			Source: mplusFaceSource,
 			Size:   float64(textSize),
@@ -138,7 +138,7 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image) {
 		//Close X
 		var buttonsWidth float32 = 0
 		if win.Closable {
-			var xpad float32 = (win.GetTitleSize()) / 4.0
+			var xpad float32 = (win.GetTitleSize()) / 3.0
 			color := win.TitleColor
 			// fill background for close area if configured
 			if win.CloseBGColor.A > 0 {
@@ -146,7 +146,7 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image) {
 				closeArea := screen.SubImage(r.getRectangle()).(*ebiten.Image)
 				closeArea.Fill(dimColor(win.CloseBGColor, dimFactor))
 			}
-			xThick := 3 * uiScale
+			xThick := 1 * uiScale
 			if win.HoverClose {
 				color = win.HoverTitleColor
 				win.HoverClose = false
