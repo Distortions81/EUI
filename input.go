@@ -469,11 +469,12 @@ func (item *itemData) setSliderValue(mpos point) {
 	face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
 	maxW, _ := text.Measure(maxLabel, face, 0)
 
-	width := item.DrawRect.X1 - item.DrawRect.X0 - item.AuxSize.X - currentLayout.SliderValueGap - float32(maxW)
+	knobW := item.AuxSize.X * uiScale
+	width := item.DrawRect.X1 - item.DrawRect.X0 - knobW - currentLayout.SliderValueGap - float32(maxW)
 	if width <= 0 {
 		return
 	}
-	start := item.DrawRect.X0 + item.AuxSize.X/2
+	start := item.DrawRect.X0 + knobW/2
 	val := (mpos.X - start)
 	if val < 0 {
 		val = 0

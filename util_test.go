@@ -120,8 +120,9 @@ func TestSetSliderValue(t *testing.T) {
 	textSize := (item.FontSize * uiScale) + 2
 	face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
 	maxW, _ := text.Measure(maxLabel, face, 0)
-	width := item.DrawRect.X1 - item.DrawRect.X0 - item.AuxSize.X - currentLayout.SliderValueGap - float32(maxW)
-	start := item.DrawRect.X0 + item.AuxSize.X/2
+	knobW := item.AuxSize.X * uiScale
+	width := item.DrawRect.X1 - item.DrawRect.X0 - knobW - currentLayout.SliderValueGap - float32(maxW)
+	start := item.DrawRect.X0 + knobW/2
 	val := float32(42) - start
 	if val < 0 {
 		val = 0
