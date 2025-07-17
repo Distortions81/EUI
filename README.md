@@ -3,18 +3,10 @@
 *For quicker development, the code is not composed as a library at this time*  
 Drawn using vectors and supports floating-point UI scaling.
 
-![demo animation](https://github.com/user-attachments/assets/eef712c8-fa1e-4afe-826e-624c860ab842)
-
-# Windows, and flows:
-window -> main-flow -> sub-flow  
-Each flow has a direction, horizontal or vertical.
-
-![flows-screenshot](https://github.com/user-attachments/assets/dcc79179-361d-420c-959f-c1785433bb5b)
+![screenshot](https://raw.githubusercontent.com/Distortions81/EUI/refs/heads/main/Screenshot.png)
 
 An additional showcase window demonstrating all widget types can be found in
 `showcase.go`.
-
-
 
 # Flow and item pinning:
 Flows and items can have pinning type set. The default is PIN_TOP_LEFT.
