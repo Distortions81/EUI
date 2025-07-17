@@ -936,8 +936,8 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 		off = pixelOffset(width)
 	}
 
-	x := float32(math.Floor(float64(rrect.Position.X))) + off
-	y := float32(math.Floor(float64(rrect.Position.Y))) + off
+	x := float32(math.Round(float64(rrect.Position.X))) + off
+	y := float32(math.Round(float64(rrect.Position.Y))) + off
 	w := float32(math.Round(float64(rrect.Size.X)))
 	h := float32(math.Round(float64(rrect.Size.Y)))
 	fillet := rrect.Fillet
@@ -1021,8 +1021,8 @@ func drawTabShape(screen *ebiten.Image, pos point, size point, col Color, fillet
 	)
 
 	// Align to pixel boundaries to avoid artifacts
-	pos.X = float32(math.Floor(float64(pos.X)))
-	pos.Y = float32(math.Floor(float64(pos.Y)))
+	pos.X = float32(math.Round(float64(pos.X)))
+	pos.Y = float32(math.Round(float64(pos.Y)))
 	size.X = float32(math.Round(float64(size.X)))
 	size.Y = float32(math.Round(float64(size.Y)))
 
@@ -1075,8 +1075,8 @@ func strokeTabShape(screen *ebiten.Image, pos point, size point, col Color, fill
 	// Align to pixel boundaries
 	border = float32(math.Round(float64(border)))
 	off := pixelOffset(border)
-	pos.X = float32(math.Floor(float64(pos.X))) + off
-	pos.Y = float32(math.Floor(float64(pos.Y))) + off
+	pos.X = float32(math.Round(float64(pos.X))) + off
+	pos.Y = float32(math.Round(float64(pos.Y))) + off
 	size.X = float32(math.Round(float64(size.X)))
 	size.Y = float32(math.Round(float64(size.Y)))
 
@@ -1122,8 +1122,8 @@ func drawTriangle(screen *ebiten.Image, pos point, size float32, col Color) {
 	)
 
 	// Quantize to pixel boundaries
-	pos.X = float32(math.Floor(float64(pos.X)))
-	pos.Y = float32(math.Floor(float64(pos.Y)))
+	pos.X = float32(math.Round(float64(pos.X)))
+	pos.Y = float32(math.Round(float64(pos.Y)))
 	size = float32(math.Round(float64(size)))
 
 	path.MoveTo(pos.X, pos.Y)
