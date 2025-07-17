@@ -239,6 +239,12 @@ func roundRectKeyPoints(rrect *roundRect) []point {
 			fillet = 0
 		}
 	}
+	if fillet*2 > w {
+		fillet = w / 2
+	}
+	if fillet*2 > h {
+		fillet = h / 2
+	}
 	fillet = float32(math.Round(float64(fillet)))
 	return []point{
 		{X: x + fillet, Y: y},
@@ -273,6 +279,19 @@ func TestRoundRectSymmetry(t *testing.T) {
 		if !checkMirror(pts[p[0]], pts[p[1]]) {
 			t.Errorf("points %d and %d not symmetrical: %+v vs %+v", p[0], p[1], pts[p[0]], pts[p[1]])
 		}
+	}
+}
+
+func TestRoundRectFilletClamp(t *testing.T) {
+	r := &roundRect{
+		Size:     point{X: 4, Y: 10},
+		Position: point{X: 1, Y: 1},
+		Fillet:   8,
+		Filled:   true,
+	}
+	pts := roundRectKeyPoints(r)
+	if pts[0].X != 3 || pts[1].X != 3 {
+		t.Errorf("fillet clamp failed: %+v", pts)
 	}
 }
 

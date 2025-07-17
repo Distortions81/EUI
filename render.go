@@ -965,6 +965,12 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 		}
 	}
 
+	if fillet*2 > w {
+		fillet = w / 2
+	}
+	if fillet*2 > h {
+		fillet = h / 2
+	}
 	fillet = float32(math.Round(float64(fillet)))
 
 	path.MoveTo(x+fillet, y)
