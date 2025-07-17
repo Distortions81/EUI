@@ -719,12 +719,9 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		if item.IntOnly {
 			// Pad the integer value so the value field width matches
 			// the float slider which reserves space for two decimal
-			// places. Apply the same padding to the max label so the
-			// reserved width for value text is identical between
-			// float and integer sliders.
+			// places.
 			width := len(maxLabel)
 			valueText = fmt.Sprintf("%*d", width, int(item.Value))
-			maxLabel = fmt.Sprintf("%*d", width, int(item.MaxValue))
 		}
 
 		textSize := (item.FontSize * uiScale) + 2

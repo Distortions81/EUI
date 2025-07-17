@@ -141,6 +141,41 @@ func TestSetSliderValue(t *testing.T) {
 	}
 }
 
+func sliderTrackWidth(item *itemData) float32 {
+	maxSize := item.GetSize()
+	maxLabel := fmt.Sprintf("%.2f", item.MaxValue)
+	textSize := (item.FontSize * uiScale) + 2
+	face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
+	maxW, _ := text.Measure(maxLabel, face, 0)
+	knobW := item.AuxSize.X * uiScale
+	width := maxSize.X - knobW - currentLayout.SliderValueGap - float32(maxW)
+	if width < 0 {
+		width = 0
+	}
+	return width
+}
+
+func TestSliderTrackLengthMatch(t *testing.T) {
+	if mplusFaceSource == nil {
+		s, err := text.NewGoTextFaceSource(bytes.NewReader(notoTTF))
+		if err != nil {
+			t.Fatalf("font init: %v", err)
+		}
+		mplusFaceSource = s
+	}
+
+	base := &itemData{Size: point{X: 180, Y: 24}, AuxSize: point{X: 8, Y: 16}, FontSize: 12, MaxValue: 100}
+	floatTrack := sliderTrackWidth(base)
+
+	intSlider := *base
+	intSlider.IntOnly = true
+	intTrack := sliderTrackWidth(&intSlider)
+
+	if math.Abs(float64(floatTrack-intTrack)) > 0.001 {
+		t.Errorf("track width mismatch: float %v int %v", floatTrack, intTrack)
+	}
+}
+
 func TestMarkOpen(t *testing.T) {
 	win1 := &windowData{Title: "win1", Open: true}
 	win2 := &windowData{Title: "win2", Open: false}
