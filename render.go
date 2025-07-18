@@ -340,7 +340,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 					point{X: x, Y: offset.Y},
 					point{X: w, Y: tabHeight},
 					item.ClickColor,
-					0,
+					item.Fillet*uiScale,
 					item.BorderPad*uiScale,
 					3*uiScale,
 				)
