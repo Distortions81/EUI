@@ -82,13 +82,10 @@ func makeThemeSelector() *windowData {
 		mainFlow.addItemTo(ldd)
 	}
 
-	// Widen the color wheel widget slightly so that the swatch drawn to the
-	// right of the wheel is within the window's bounds.
-	cw := NewColorWheel(&itemData{Size: point{X: 160, Y: 128}})
+	cw := NewColorWheel(&itemData{Size: point{X: 128, Y: 128}})
 	mainFlow.addItemTo(cw)
 
-	// Match the slider width to the widened color wheel for consistent layout.
-	satSlider = NewSlider(&itemData{Label: "Color Intensity", Size: point{X: 160, Y: 24}, MinValue: 0, MaxValue: 1, FontSize: 8})
+	satSlider = NewSlider(&itemData{Label: "Color Intensity", Size: point{X: 128, Y: 24}, MinValue: 0, MaxValue: 1, FontSize: 8})
 	satSlider.Value = float32(accentSaturation)
 	satSlider.Action = func() {
 		SetAccentSaturation(float64(satSlider.Value))
