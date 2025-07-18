@@ -56,5 +56,8 @@
     "Slider": false,
     "Dropdown": true,
     "Tab": false
+  },
+  "ActiveOutline": {
+    "Tab": true
   }
 }

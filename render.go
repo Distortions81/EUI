@@ -749,12 +749,21 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		filledCol := item.SelectedColor
 		strokeLine(subImg, trackStart, trackY, knobCenter, trackY, 2*uiScale, filledCol, true)
 		strokeLine(subImg, knobCenter, trackY, trackStart+trackWidth, trackY, 2*uiScale, itemColor, true)
+		knobRect := point{X: knobCenter - knobW/2, Y: offset.Y + (maxSize.Y-knobH)/2}
 		drawRoundRect(subImg, &roundRect{
 			Size:     pointScaleMul(item.AuxSize),
-			Position: point{X: knobCenter - knobW/2, Y: offset.Y + (maxSize.Y-knobH)/2},
+			Position: knobRect,
 			Fillet:   item.Fillet,
 			Filled:   true,
 			Color:    item.Color,
+		})
+		drawRoundRect(subImg, &roundRect{
+			Size:     pointScaleMul(item.AuxSize),
+			Position: knobRect,
+			Fillet:   item.Fillet,
+			Filled:   false,
+			Border:   1 * uiScale,
+			Color:    item.OutlineColor,
 		})
 
 		// value text drawn to the right of the slider track

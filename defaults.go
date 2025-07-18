@@ -193,7 +193,7 @@ var defaultTab = &itemData{
 	Border:        0,
 	BorderPad:     2,
 	Fillet:        4,
-	ActiveOutline: false,
+	ActiveOutline: true,
 	TextColor:     NewColor(255, 255, 255, 255),
 	Color:         NewColor(64, 64, 64, 255),
 	HoverColor:    NewColor(96, 96, 96, 255),
