@@ -335,16 +335,16 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 					border,
 				)
 			}
-                               if item.ActiveOutline && i == item.ActiveTab {
-                                       strokeTabTop(subImg,
-                                               point{X: x, Y: offset.Y},
-                                               point{X: w, Y: tabHeight},
-                                               item.ClickColor,
-                                               0,
-                                               item.BorderPad*uiScale,
-                                               3*uiScale,
-                                       )
-                               }
+			if item.ActiveOutline && i == item.ActiveTab {
+				strokeTabTop(subImg,
+					point{X: x, Y: offset.Y},
+					point{X: w, Y: tabHeight},
+					item.ClickColor,
+					0,
+					item.BorderPad*uiScale,
+					3*uiScale,
+				)
+			}
 			loo := text.LayoutOptions{PrimaryAlign: text.AlignCenter, SecondaryAlign: text.AlignCenter}
 			dop := ebiten.DrawImageOptions{}
 			dop.GeoM.Translate(float64(x+w/2), float64(offset.Y+tabHeight/2))
@@ -1172,15 +1172,20 @@ func strokeTabTop(screen *ebiten.Image, pos point, size point, col Color, fillet
 	if slope <= 0 {
 		slope = size.Y / 4
 	}
-	if fillet <= 0 {
+	if fillet < 0 {
 		fillet = size.Y / 8
 	}
 	fillet = float32(math.Round(float64(fillet)))
 
-	path.MoveTo(pos.X+slope, pos.Y+fillet)
-	path.QuadTo(pos.X+slope, pos.Y, pos.X+slope+fillet, pos.Y)
-	path.LineTo(pos.X+size.X-slope-fillet, pos.Y)
-	path.QuadTo(pos.X+size.X-slope, pos.Y, pos.X+size.X-slope, pos.Y+fillet)
+	if fillet > 0 {
+		path.MoveTo(pos.X+slope, pos.Y+fillet)
+		path.QuadTo(pos.X+slope, pos.Y, pos.X+slope+fillet, pos.Y)
+		path.LineTo(pos.X+size.X-slope-fillet, pos.Y)
+		path.QuadTo(pos.X+size.X-slope, pos.Y, pos.X+size.X-slope, pos.Y+fillet)
+	} else {
+		path.MoveTo(pos.X+slope, pos.Y)
+		path.LineTo(pos.X+size.X-slope, pos.Y)
+	}
 
 	opv := &vector.StrokeOptions{Width: border}
 	vertices, indices = path.AppendVerticesAndIndicesForStroke(vertices[:0], indices[:0], opv)
