@@ -183,19 +183,12 @@ func applyAccentColor() {
 	}
 	currentTheme.Window.ActiveColor = col
 	currentTheme.Button.ClickColor = col
-	currentTheme.Button.OutlineColor = col
 	currentTheme.Checkbox.ClickColor = col
-	currentTheme.Checkbox.OutlineColor = col
 	currentTheme.Radio.ClickColor = col
-	currentTheme.Radio.OutlineColor = col
 	currentTheme.Input.ClickColor = col
-	currentTheme.Input.OutlineColor = col
 	currentTheme.Slider.ClickColor = col
-	currentTheme.Slider.OutlineColor = col
 	currentTheme.Dropdown.ClickColor = col
-	currentTheme.Dropdown.OutlineColor = col
 	currentTheme.Tab.ClickColor = col
-	currentTheme.Tab.OutlineColor = col
 	applyThemeToAll()
 	updateColorWheels(col)
 }
