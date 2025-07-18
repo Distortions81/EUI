@@ -500,12 +500,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		}
 		drawRoundRect(subImg, &roundRect{
 			Size:     auxSize,
-			Position: offset,
-			Fillet:   item.Fillet,
-			Filled:   false,
-			Color:    bColor,
-			Border:   bThick,
-		})
+			Position: offset, Fillet: item.Fillet, Filled: false, Color: bColor, Border: bThick * uiScale})
 
 		if item.Checked {
 			cThick := 2 * uiScale
@@ -573,7 +568,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			Fillet:   auxSize.X / 2,
 			Filled:   false,
 			Color:    bColor,
-			Border:   bThick,
+			Border:   bThick * uiScale,
 		})
 		if item.Checked {
 			inner := auxSize.X / 2.5
