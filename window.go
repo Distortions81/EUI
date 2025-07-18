@@ -199,8 +199,8 @@ func NewColorWheel(item *itemData) *itemData {
 	if item != nil {
 		mergeData(&newItem, item)
 	}
-	if ac, ok := namedColors["accent"]; ok && newItem.SelectedColor == (Color{}) {
-		newItem.SelectedColor = ac
+	if ac, ok := namedColors["accent"]; ok && newItem.WheelColor == (Color{}) {
+		newItem.WheelColor = ac
 	}
 	return &newItem
 }

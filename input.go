@@ -340,7 +340,7 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 		item.Clicked = time.Now()
 		if item.ItemType == ITEM_COLORWHEEL {
 			if col, ok := item.colorAt(mpos); ok {
-				item.SelectedColor = col
+				item.WheelColor = col
 				if item.OnColorChange != nil {
 					item.OnColorChange(col)
 				} else {
@@ -393,7 +393,7 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 		item.Hovered = true
 		if item.ItemType == ITEM_COLORWHEEL && ebiten.IsMouseButtonPressed(ebiten.MouseButton0) {
 			if col, ok := item.colorAt(mpos); ok {
-				item.SelectedColor = col
+				item.WheelColor = col
 				if item.OnColorChange != nil {
 					item.OnColorChange(col)
 				} else {

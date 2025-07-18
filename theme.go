@@ -252,7 +252,7 @@ func copyItemStyle(dst, src *itemData) {
 	dst.ClickColor = src.ClickColor
 	dst.OutlineColor = src.OutlineColor
 	dst.DisabledColor = src.DisabledColor
-	dst.CheckedColor = src.CheckedColor
+	dst.SelectedColor = src.SelectedColor
 	if src.MaxVisible != 0 {
 		dst.MaxVisible = src.MaxVisible
 	}
@@ -294,7 +294,7 @@ func applyThemeToItem(it *itemData) {
 	}
 }
 
-// updateColorWheels sets the SelectedColor field of all color wheel widgets to
+// updateColorWheels sets the WheelColor field of all color wheel widgets to
 // the provided color.
 func updateColorWheels(col Color) {
 	for _, win := range windows {
@@ -308,7 +308,7 @@ func updateColorWheels(col Color) {
 func updateColorWheelList(items []*itemData, col Color) {
 	for _, it := range items {
 		if it.ItemType == ITEM_COLORWHEEL {
-			it.SelectedColor = col
+			it.WheelColor = col
 		}
 		updateColorWheelList(it.Contents, col)
 		for _, tab := range it.Tabs {
