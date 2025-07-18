@@ -20,6 +20,8 @@ var (
 
 func (g *Game) Update() error {
 
+	checkThemeLayoutMods()
+
 	mx, my := ebiten.CursorPosition()
 	mpos := point{X: float32(mx), Y: float32(my)}
 
