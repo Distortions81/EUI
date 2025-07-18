@@ -117,9 +117,13 @@ var (
 )
 
 func LoadLayout(name string) error {
-	data, err := embeddedLayouts.ReadFile(filepath.Join("themes/layout", name+".json"))
+	file := filepath.Join("themes/layout", name+".json")
+	data, err := os.ReadFile(file)
 	if err != nil {
-		return err
+		data, err = embeddedLayouts.ReadFile(filepath.Join("themes/layout", name+".json"))
+		if err != nil {
+			return err
+		}
 	}
 	if err := json.Unmarshal(data, currentLayout); err != nil {
 		return err

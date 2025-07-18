@@ -76,10 +76,10 @@ func resolveColor(s string, colors map[string]string, seen map[string]bool) (Col
 // LoadTheme reads a theme JSON file from the themes directory and
 // sets it as the current theme without modifying existing windows.
 func LoadTheme(name string) error {
-	data, err := embeddedThemes.ReadFile(filepath.Join("themes", "colors", name+".json"))
+	file := filepath.Join("themes", "colors", name+".json")
+	data, err := os.ReadFile(file)
 	if err != nil {
-		file := filepath.Join("themes", "colors", name+".json")
-		data, err = os.ReadFile(file)
+		data, err = embeddedThemes.ReadFile(filepath.Join("themes", "colors", name+".json"))
 		if err != nil {
 			return err
 		}
