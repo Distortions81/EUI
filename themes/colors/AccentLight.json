@@ -29,6 +29,7 @@
     "Color": "button",
     "HoverColor": "hover",
     "ClickColor": "accent",
+    "OutlineColor": "outline",
     "DisabledColor": "disabled",
     "CheckedColor": "disabled"
   },
@@ -37,6 +38,7 @@
     "Color": "disabled",
     "HoverColor": "disabled",
     "ClickColor": "disabled",
+    "OutlineColor": "outline",
     "DisabledColor": "disabled",
     "CheckedColor": "disabled"
   },
@@ -45,6 +47,7 @@
     "Color": "button",
     "HoverColor": "hover",
     "ClickColor": "button",
+    "OutlineColor": "outline",
     "DisabledColor": "disabled",
     "CheckedColor": "disabled"
   },
@@ -53,6 +56,7 @@
     "Color": "button",
     "HoverColor": "hover",
     "ClickColor": "button",
+    "OutlineColor": "outline",
     "DisabledColor": "disabled",
     "CheckedColor": "disabled"
   },
@@ -61,6 +65,7 @@
     "Color": "button",
     "HoverColor": "hover",
     "ClickColor": "accent",
+    "OutlineColor": "outline",
     "DisabledColor": "disabled",
     "CheckedColor": "disabled"
   },
@@ -69,6 +74,7 @@
     "Color": "button",
     "HoverColor": "hover",
     "ClickColor": "hover",
+    "OutlineColor": "outline",
     "DisabledColor": "disabled",
     "CheckedColor": "disabled"
   },
@@ -77,6 +83,7 @@
     "Color": "button",
     "HoverColor": "hover",
     "ClickColor": "accent",
+    "OutlineColor": "outline",
     "DisabledColor": "disabled",
     "CheckedColor": "disabled",
     "MaxVisible": 5
@@ -85,6 +92,7 @@
     "TextColor": "text",
     "Color": "button",
     "HoverColor": "hover",
-    "ClickColor": "button"
+    "ClickColor": "button",
+    "OutlineColor": "outline"
   }
 }

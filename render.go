@@ -337,7 +337,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 				strokeTabShape(subImg,
 					point{X: x, Y: offset.Y},
 					point{X: w, Y: tabHeight},
-					dimColor(item.Color, dimFactor),
+					dimColor(item.OutlineColor, dimFactor),
 					item.Fillet*uiScale,
 					item.BorderPad*uiScale,
 					border,
@@ -375,7 +375,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 			item.GetSize().X,
 			item.GetSize().Y-tabHeight,
 			1,
-			dimColor(item.Color, dimFactor),
+			dimColor(item.OutlineColor, dimFactor),
 			false)
 		activeContents = item.Tabs[item.ActiveTab].Contents
 	} else {
@@ -489,7 +489,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 
 		bThick := item.Border * uiScale
 		itemColor := item.Color
-		bColor := item.ClickColor
+		bColor := item.OutlineColor
 		if item.Checked {
 			itemColor = item.ClickColor
 			bColor = item.Color
@@ -553,7 +553,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 
 		bThick := item.Border * uiScale
 		itemColor := item.Color
-		bColor := item.ClickColor
+		bColor := item.OutlineColor
 		if item.Checked {
 			itemColor = item.ClickColor
 			bColor = item.Color
@@ -873,7 +873,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			Position: offset,
 			Fillet:   item.Fillet,
 			Filled:   false,
-			Color:    item.Color,
+			Color:    item.OutlineColor,
 			Border:   item.Border * uiScale,
 		})
 	}
