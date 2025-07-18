@@ -19,7 +19,7 @@ func makeThemeSelector() *windowData {
 		Closable:  false,
 		PinTo:     PIN_TOP_RIGHT,
 		AutoSize:  true,
-		Open:      false,
+		Open:      true,
 	})
 	mainFlow := &itemData{ItemType: ITEM_FLOW, Size: win.Size, FlowType: FLOW_VERTICAL}
 	win.addItemTo(mainFlow)

@@ -36,7 +36,7 @@
     "TextColor": "text",
     "Color": "disabled",
     "HoverColor": "disabled",
-    "ClickColor": "accent",
+    "ClickColor": "disabled",
     "OutlineColor": "outline",
     "DisabledColor": "disabled",
     "SelectedColor": "disabled"
@@ -63,7 +63,7 @@
     "TextColor": "text",
     "Color": "button",
     "HoverColor": "hover",
-    "ClickColor": "accent",
+    "ClickColor": "button",
     "OutlineColor": "outline",
     "DisabledColor": "disabled",
     "SelectedColor": "disabled"
