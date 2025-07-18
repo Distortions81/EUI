@@ -816,15 +816,20 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 
 	} else if item.ItemType == ITEM_COLORWHEEL {
 
-		if item.Image == nil || item.Image.Bounds().Dx() != int(maxSize.X) {
-			item.Image = ColorWheelImage(int(maxSize.X))
+		wheelSize := maxSize.Y
+		if wheelSize > maxSize.X {
+			wheelSize = maxSize.X
+		}
+
+		if item.Image == nil || item.Image.Bounds().Dx() != int(wheelSize) {
+			item.Image = ColorWheelImage(int(wheelSize))
 		}
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(float64(offset.X), float64(offset.Y))
 		subImg.DrawImage(item.Image, op)
 
 		h, _, v, _ := rgbaToHSVA(color.RGBA(item.WheelColor))
-		radius := maxSize.X / 2
+		radius := wheelSize / 2
 		cx := offset.X + radius
 		cy := offset.Y + radius
 		px := cx + float32(math.Cos(h*math.Pi/180))*radius*float32(v)
@@ -832,11 +837,11 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		vector.DrawFilledCircle(subImg, px, py, 4*uiScale, color.Black, true)
 		vector.DrawFilledCircle(subImg, px, py, 2*uiScale, color.White, true)
 
-		sw := maxSize.X / 5
+		sw := wheelSize / 5
 		if sw < 10*uiScale {
 			sw = 10 * uiScale
 		}
-		sx := offset.X + maxSize.X - sw - 4*uiScale
+		sx := offset.X + wheelSize + 4*uiScale
 		sy := offset.Y + maxSize.Y - sw - 4*uiScale
 		drawFilledRect(subImg, sx, sy, sw, sw, color.RGBA(item.WheelColor), true)
 		strokeRect(subImg, sx, sy, sw, sw, 1, color.Black, true)

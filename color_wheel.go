@@ -16,7 +16,8 @@ func ColorWheelImage(size int) *ebiten.Image {
 	}
 	img := ebiten.NewImage(size, size)
 	r := float64(size) / 2
-	offsets := []float64{0.25, 0.75}
+	// Use a 4x4 grid of subpixel samples for smoother edges
+	offsets := []float64{0.125, 0.375, 0.625, 0.875}
 	for y := 0; y < size; y++ {
 		for x := 0; x < size; x++ {
 			var rr, gg, bb, aa float64

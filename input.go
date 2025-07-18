@@ -498,15 +498,25 @@ func (item *itemData) colorAt(mpos point) (Color, bool) {
 	if item.Label != "" {
 		offsetY = (item.FontSize*uiScale + 2) + currentLayout.TextPadding
 	}
-	cx := item.DrawRect.X0 + size.X/2
-	cy := item.DrawRect.Y0 + offsetY + size.Y/2
+	wheelSize := size.Y
+	if wheelSize > size.X {
+		wheelSize = size.X
+	}
+	radius := wheelSize / 2
+	cx := item.DrawRect.X0 + radius
+	cy := item.DrawRect.Y0 + offsetY + radius
 	dx := float64(mpos.X - cx)
 	dy := float64(mpos.Y - cy)
-	r := float64(size.X) / 2
+	r := float64(radius)
 	dist := math.Hypot(dx, dy)
-	if dist > r {
+
+	if !item.DrawRect.containsPoint(mpos) {
 		return Color{}, false
 	}
+	if dist > r {
+		dist = r
+	}
+
 	ang := math.Atan2(dy, dx) * 180 / math.Pi
 	if ang < 0 {
 		ang += 360
