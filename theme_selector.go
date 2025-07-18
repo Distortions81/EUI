@@ -82,7 +82,7 @@ func makeThemeSelector() *windowData {
 		mainFlow.addItemTo(ldd)
 	}
 
-	cw := NewColorWheel(&itemData{Size: point{X: 128, Y: 128}})
+	cw := NewColorWheel(&itemData{Size: point{X: 160, Y: 128}})
 	mainFlow.addItemTo(cw)
 
 	satSlider = NewSlider(&itemData{Label: "Color Intensity", Size: point{X: 128, Y: 24}, MinValue: 0, MaxValue: 1, FontSize: 8})
