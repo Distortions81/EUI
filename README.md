@@ -4,3 +4,6 @@
 Drawn using vectors and supports floating-point UI scaling.
 
 ![screenshot](https://raw.githubusercontent.com/Distortions81/EUI/refs/heads/main/Screenshot.png)
+
+For a detailed list of all available functions and how they fit into the project
+structure, see the [API documentation](api.md).
