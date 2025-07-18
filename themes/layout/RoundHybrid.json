@@ -9,7 +9,7 @@
     "Checkbox": 4,
     "Radio": 0,
     "Input": 4,
-    "Slider": 0,
+    "Slider": 8,
     "Dropdown": 8,
     "Tab": 4
   },
