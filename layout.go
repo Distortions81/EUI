@@ -129,6 +129,7 @@ func LoadLayout(name string) error {
 		applyLayoutToTheme(currentTheme)
 		applyThemeToAll()
 	}
+	refreshLayoutMod()
 	return nil
 }
 

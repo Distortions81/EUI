@@ -116,6 +116,7 @@ func LoadTheme(name string) error {
 	if tf.RecommendedLayout != "" {
 		_ = LoadLayout(tf.RecommendedLayout)
 	}
+	refreshThemeMod()
 	return nil
 }
 
