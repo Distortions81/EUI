@@ -107,11 +107,11 @@ type itemData struct {
 	AuxSpace          float32
 
 	TextColor, Color, HoverColor,
-	ClickColor, OutlineColor, DisabledColor, CheckedColor Color
+	ClickColor, OutlineColor, DisabledColor, SelectedColor Color
 
 	Action        func()
 	OnColorChange func(Color)
-	SelectedColor Color
+	WheelColor    Color
 	Contents      []*itemData
 
 	// Tabs allows a flow to contain multiple tabbed flows. Only the

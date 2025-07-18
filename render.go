@@ -304,7 +304,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 			col := item.Color
 			if i == item.ActiveTab {
 				if !item.ActiveOutline {
-					col = item.ClickColor
+					col = item.SelectedColor
 				}
 			} else if tab.Hovered {
 				col = item.HoverColor
@@ -339,7 +339,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 					offset.Y,
 					w,
 					3*uiScale,
-					item.ClickColor,
+					item.SelectedColor,
 					false)
 			}
 			loo := text.LayoutOptions{PrimaryAlign: text.AlignCenter, SecondaryAlign: text.AlignCenter}
@@ -357,7 +357,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 			offset.Y+tabHeight-3*uiScale,
 			item.GetSize().X,
 			3*uiScale,
-			item.ClickColor,
+			item.SelectedColor,
 			false)
 		strokeRect(subImg,
 			offset.X,
@@ -744,14 +744,18 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			ratio = 1
 		}
 		knobCenter := trackStart + float32(ratio)*trackWidth
-		strokeLine(subImg, trackStart, trackY, knobCenter, trackY, 2*uiScale, item.ClickColor, true)
+		filledCol := item.SelectedColor
+		if c, ok := namedColors["sliderfilled"]; ok {
+			filledCol = c
+		}
+		strokeLine(subImg, trackStart, trackY, knobCenter, trackY, 2*uiScale, filledCol, true)
 		strokeLine(subImg, knobCenter, trackY, trackStart+trackWidth, trackY, 2*uiScale, itemColor, true)
 		drawRoundRect(subImg, &roundRect{
 			Size:     pointScaleMul(item.AuxSize),
 			Position: point{X: knobCenter - knobW/2, Y: offset.Y + (maxSize.Y-knobH)/2},
 			Fillet:   item.Fillet,
 			Filled:   true,
-			Color:    item.ClickColor,
+			Color:    item.Color,
 		})
 
 		// value text drawn to the right of the slider track
@@ -769,7 +773,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 
 		itemColor := item.Color
 		if item.Open {
-			itemColor = item.ClickColor
+			itemColor = item.SelectedColor
 		} else if item.Hovered {
 			item.Hovered = false
 			itemColor = item.HoverColor
@@ -819,7 +823,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		op.GeoM.Translate(float64(offset.X), float64(offset.Y))
 		subImg.DrawImage(item.Image, op)
 
-		h, _, v, _ := rgbaToHSVA(color.RGBA(item.SelectedColor))
+		h, _, v, _ := rgbaToHSVA(color.RGBA(item.WheelColor))
 		radius := maxSize.X / 2
 		cx := offset.X + radius
 		cy := offset.Y + radius
@@ -834,7 +838,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		}
 		sx := offset.X + maxSize.X - sw - 4*uiScale
 		sy := offset.Y + maxSize.Y - sw - 4*uiScale
-		drawFilledRect(subImg, sx, sy, sw, sw, color.RGBA(item.SelectedColor), true)
+		drawFilledRect(subImg, sx, sy, sw, sw, color.RGBA(item.WheelColor), true)
 		strokeRect(subImg, sx, sy, sw, sw, 1, color.Black, true)
 
 	} else if item.ItemType == ITEM_TEXT {
@@ -910,7 +914,7 @@ func drawDropdownOptions(item *itemData, offset point, clip rect, screen *ebiten
 	for i := first; i < first+visible && i < len(item.Options); i++ {
 		y := offY + float32(i-first)*optionH
 		if i == item.Selected || i == item.HoverIndex {
-			col := item.ClickColor
+			col := item.SelectedColor
 			if i == item.HoverIndex && i != item.Selected {
 				col = item.HoverColor
 			}

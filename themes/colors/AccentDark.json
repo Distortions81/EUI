@@ -30,7 +30,7 @@
     "ClickColor": "accent",
     "OutlineColor": "outline",
     "DisabledColor": "disabled",
-    "CheckedColor": "disabled"
+    "SelectedColor": "disabled"
   },
   "Text": {
     "TextColor": "text",
@@ -39,7 +39,7 @@
     "ClickColor": "accent",
     "OutlineColor": "outline",
     "DisabledColor": "disabled",
-    "CheckedColor": "disabled"
+    "SelectedColor": "disabled"
   },
   "Checkbox": {
     "TextColor": "text",
@@ -48,7 +48,7 @@
     "ClickColor": "accent",
     "OutlineColor": "outline",
     "DisabledColor": "disabled",
-    "CheckedColor": "disabled"
+    "SelectedColor": "disabled"
   },
   "Radio": {
     "TextColor": "text",
@@ -57,7 +57,7 @@
     "ClickColor": "accent",
     "OutlineColor": "outline",
     "DisabledColor": "disabled",
-    "CheckedColor": "disabled"
+    "SelectedColor": "disabled"
   },
   "Input": {
     "TextColor": "text",
@@ -66,7 +66,7 @@
     "ClickColor": "accent",
     "OutlineColor": "outline",
     "DisabledColor": "disabled",
-    "CheckedColor": "disabled"
+    "SelectedColor": "disabled"
   },
   "Slider": {
     "TextColor": "text",
@@ -75,7 +75,7 @@
     "ClickColor": "accent",
     "OutlineColor": "outline",
     "DisabledColor": "disabled",
-    "CheckedColor": "disabled"
+    "SelectedColor": "disabled"
   },
   "Dropdown": {
     "TextColor": "text",
@@ -84,7 +84,7 @@
     "ClickColor": "accent",
     "OutlineColor": "outline",
     "DisabledColor": "disabled",
-    "CheckedColor": "disabled",
+    "SelectedColor": "disabled",
     "MaxVisible": 5
   },
   "Tab": {
@@ -92,7 +92,8 @@
     "Color": "button",
     "HoverColor": "hover",
     "ClickColor": "accent",
-    "OutlineColor": "outline"
+    "OutlineColor": "outline",
+    "SelectedColor": "accent"
   },
   "RecommendedLayout": "RoundHybrid"
 }
