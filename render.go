@@ -335,16 +335,16 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 					border,
 				)
 			}
-			if item.ActiveOutline && i == item.ActiveTab {
-				strokeTabTop(subImg,
-					point{X: x, Y: offset.Y},
-					point{X: w, Y: tabHeight},
-					item.ClickColor,
-					item.Fillet*uiScale,
-					item.BorderPad*uiScale,
-					3*uiScale,
-				)
-			}
+                               if item.ActiveOutline && i == item.ActiveTab {
+                                       strokeTabTop(subImg,
+                                               point{X: x, Y: offset.Y},
+                                               point{X: w, Y: tabHeight},
+                                               item.ClickColor,
+                                               0,
+                                               item.BorderPad*uiScale,
+                                               3*uiScale,
+                                       )
+                               }
 			loo := text.LayoutOptions{PrimaryAlign: text.AlignCenter, SecondaryAlign: text.AlignCenter}
 			dop := ebiten.DrawImageOptions{}
 			dop.GeoM.Translate(float64(x+w/2), float64(offset.Y+tabHeight/2))
