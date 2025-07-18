@@ -336,13 +336,14 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 				)
 			}
 			if item.ActiveOutline && i == item.ActiveTab {
-				drawFilledRect(subImg,
-					x,
-					offset.Y,
-					w,
+				strokeTabTop(subImg,
+					point{X: x, Y: offset.Y},
+					point{X: w, Y: tabHeight},
+					item.ClickColor,
+					item.Fillet*uiScale,
+					item.BorderPad*uiScale,
 					3*uiScale,
-					item.SelectedColor,
-					false)
+				)
 			}
 			loo := text.LayoutOptions{PrimaryAlign: text.AlignCenter, SecondaryAlign: text.AlignCenter}
 			dop := ebiten.DrawImageOptions{}
@@ -1137,6 +1138,51 @@ func strokeTabShape(screen *ebiten.Image, pos point, size point, col Color, fill
 	path.LineTo(pos.X+size.X-slope, pos.Y+size.Y)
 	path.LineTo(pos.X, pos.Y+size.Y)
 	path.Close()
+
+	opv := &vector.StrokeOptions{Width: border}
+	vertices, indices = path.AppendVerticesAndIndicesForStroke(vertices[:0], indices[:0], opv)
+	c := col
+	for i := range vertices {
+		vertices[i].SrcX = 1
+		vertices[i].SrcY = 1
+		vertices[i].ColorR = float32(c.R) / 255
+		vertices[i].ColorG = float32(c.G) / 255
+		vertices[i].ColorB = float32(c.B) / 255
+		vertices[i].ColorA = float32(c.A) / 255
+	}
+
+	op := &ebiten.DrawTrianglesOptions{FillRule: ebiten.FillRuleNonZero, AntiAlias: true}
+	screen.DrawTriangles(vertices, indices, whiteSubImage, op)
+}
+
+func strokeTabTop(screen *ebiten.Image, pos point, size point, col Color, fillet float32, slope float32, border float32) {
+	var (
+		path     vector.Path
+		vertices []ebiten.Vertex
+		indices  []uint16
+	)
+
+	border = float32(math.Round(float64(border)))
+	off := pixelOffset(border)
+	pos.X = float32(math.Round(float64(pos.X))) + off
+	pos.Y = float32(math.Round(float64(pos.Y))) + off
+	size.X = float32(math.Round(float64(size.X)))
+	size.Y = float32(math.Round(float64(size.Y)))
+
+	if slope <= 0 {
+		slope = size.Y / 4
+	}
+	if fillet <= 0 {
+		fillet = size.Y / 8
+	}
+	fillet = float32(math.Round(float64(fillet)))
+
+	path.MoveTo(pos.X+slope, pos.Y+size.Y)
+	path.LineTo(pos.X+slope, pos.Y+fillet)
+	path.QuadTo(pos.X+slope, pos.Y, pos.X+slope+fillet, pos.Y)
+	path.LineTo(pos.X+size.X-slope-fillet, pos.Y)
+	path.QuadTo(pos.X+size.X-slope, pos.Y, pos.X+size.X-slope, pos.Y+fillet)
+	path.LineTo(pos.X+size.X-slope, pos.Y+size.Y)
 
 	opv := &vector.StrokeOptions{Width: border}
 	vertices, indices = path.AppendVerticesAndIndicesForStroke(vertices[:0], indices[:0], opv)
