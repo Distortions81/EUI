@@ -21,10 +21,6 @@ type dropdownRender struct {
 
 var pendingDropdowns []dropdownRender
 
-// dimFactor stores the brightness reduction applied when rendering an inactive
-// window. It ranges from 0 (no dimming) to 1 (fully black).
-var dimFactor float64
-
 func (g *Game) Draw(screen *ebiten.Image) {
 
 	pendingDropdowns = pendingDropdowns[:0]
@@ -62,11 +58,6 @@ func drawOverlay(item *itemData, screen *ebiten.Image) {
 }
 
 func (win *windowData) Draw(screen *ebiten.Image) {
-	if activeWindow != win {
-		dimFactor = InactiveDim
-	} else {
-		dimFactor = 0
-	}
 	win.drawBG(screen)
 	win.drawItems(screen)
 	win.drawScrollbars(screen)
@@ -76,7 +67,6 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 	//win.drawResizeTab(windowArea)
 	win.drawBorder(windowArea)
 	win.drawDebug(screen)
-	dimFactor = 0
 }
 
 func (win *windowData) drawBG(screen *ebiten.Image) {
@@ -91,14 +81,14 @@ func (win *windowData) drawBG(screen *ebiten.Image) {
 		Position: point{X: r.X0, Y: r.Y0},
 		Fillet:   win.Fillet,
 		Filled:   true,
-		Color:    dimColor(win.BGColor, dimFactor),
+		Color:    win.BGColor,
 	})
 }
 
 func (win *windowData) drawWinTitle(screen *ebiten.Image) {
 	// Window Title
 	if win.TitleHeight > 0 {
-		screen.Fill(dimColor(win.TitleBGColor, dimFactor))
+		screen.Fill(win.TitleBGColor)
 
 		textSize := ((win.GetTitleSize()) / 2)
 		face := &text.GoTextFace{
@@ -127,7 +117,7 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image) {
 
 			top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 
-			top.ColorScale.ScaleWithColor(dimColor(win.TitleTextColor, dimFactor))
+			top.ColorScale.ScaleWithColor(win.TitleTextColor)
 			buf := strings.ReplaceAll(win.Title, "\n", "") //Remove newline
 			buf = strings.ReplaceAll(buf, "\r", "")        //Remove return
 			text.Draw(screen, buf, face, top)
@@ -144,7 +134,7 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image) {
 			if win.CloseBGColor.A > 0 {
 				r := win.xRect()
 				closeArea := screen.SubImage(r.getRectangle()).(*ebiten.Image)
-				closeArea.Fill(dimColor(win.CloseBGColor, dimFactor))
+				closeArea.Fill(win.CloseBGColor)
 			}
 			xThick := 1 * uiScale
 			if win.HoverClose {
@@ -157,14 +147,14 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image) {
 
 				win.getPosition().X+win.GetSize().X-xpad,
 				win.getPosition().Y+(win.GetTitleSize())-xpad,
-				xThick, dimColor(color, dimFactor), true)
+				xThick, color, true)
 			strokeLine(screen,
 				win.getPosition().X+win.GetSize().X-xpad,
 				win.getPosition().Y+xpad,
 
 				win.getPosition().X+win.GetSize().X-(win.GetTitleSize())+xpad,
 				win.getPosition().Y+(win.GetTitleSize())-xpad,
-				xThick, dimColor(color, dimFactor), true)
+				xThick, color, true)
 
 			buttonsWidth += (win.GetTitleSize())
 		}
@@ -186,7 +176,7 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image) {
 				strokeLine(screen,
 					win.getPosition().X+float32(x), win.getPosition().Y+dpad,
 					win.getPosition().X+float32(x), win.getPosition().Y+(win.GetTitleSize())-dpad,
-					xThick, dimColor(xColor, dimFactor), false)
+					xThick, xColor, false)
 			}
 		}
 	}
@@ -208,7 +198,7 @@ func (win *windowData) drawBorder(screen *ebiten.Image) {
 			Fillet:   win.Fillet,
 			Filled:   false,
 			Border:   win.Border,
-			Color:    dimColor(FrameColor, dimFactor),
+			Color:    FrameColor,
 		})
 	}
 }
@@ -236,7 +226,7 @@ func (win *windowData) drawScrollbars(screen *ebiten.Image) {
 			Position: point{X: win.getPosition().X + win.GetSize().X - win.BorderPad - sbW, Y: win.getPosition().Y + win.GetTitleSize() + win.BorderPad + pos},
 			Fillet:   currentLayout.Fillet.Slider,
 			Filled:   true,
-			Color:    dimColor(win.ActiveColor, dimFactor),
+			Color:    win.ActiveColor,
 		})
 	}
 	if req.X > avail.X {
@@ -252,7 +242,7 @@ func (win *windowData) drawScrollbars(screen *ebiten.Image) {
 			Position: point{X: win.getPosition().X + win.BorderPad + pos, Y: win.getPosition().Y + win.GetSize().Y - win.BorderPad - sbW},
 			Fillet:   currentLayout.Fillet.Slider,
 			Filled:   true,
-			Color:    dimColor(win.ActiveColor, dimFactor),
+			Color:    win.ActiveColor,
 		})
 	}
 }
@@ -324,7 +314,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 				drawTabShape(subImg,
 					point{X: x, Y: offset.Y},
 					point{X: w, Y: tabHeight},
-					dimColor(col, dimFactor),
+					col,
 					item.Fillet*uiScale,
 					item.BorderPad*uiScale,
 				)
@@ -337,7 +327,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 				strokeTabShape(subImg,
 					point{X: x, Y: offset.Y},
 					point{X: w, Y: tabHeight},
-					dimColor(item.OutlineColor, dimFactor),
+					item.OutlineColor,
 					item.Fillet*uiScale,
 					item.BorderPad*uiScale,
 					border,
@@ -349,14 +339,14 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 					offset.Y,
 					w,
 					3*uiScale,
-					dimColor(item.ClickColor, dimFactor),
+					item.ClickColor,
 					false)
 			}
 			loo := text.LayoutOptions{PrimaryAlign: text.AlignCenter, SecondaryAlign: text.AlignCenter}
 			dop := ebiten.DrawImageOptions{}
 			dop.GeoM.Translate(float64(x+w/2), float64(offset.Y+tabHeight/2))
 			dto := &text.DrawOptions{DrawImageOptions: dop, LayoutOptions: loo}
-			dto.ColorScale.ScaleWithColor(dimColor(item.TextColor, dimFactor))
+			dto.ColorScale.ScaleWithColor(item.TextColor)
 			text.Draw(subImg, tab.Name, face, dto)
 			tab.DrawRect = rect{X0: x, Y0: offset.Y, X1: x + w, Y1: offset.Y + tabHeight}
 			x += w + spacing
@@ -367,7 +357,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 			offset.Y+tabHeight-3*uiScale,
 			item.GetSize().X,
 			3*uiScale,
-			dimColor(item.ClickColor, dimFactor),
+			item.ClickColor,
 			false)
 		strokeRect(subImg,
 			offset.X,
@@ -375,7 +365,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 			item.GetSize().X,
 			item.GetSize().Y-tabHeight,
 			1,
-			dimColor(item.OutlineColor, dimFactor),
+			item.OutlineColor,
 			false)
 		activeContents = item.Tabs[item.ActiveTab].Contents
 	} else {
@@ -427,7 +417,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 			if maxScroll > 0 {
 				pos = (item.Scroll.Y / maxScroll) * (size.Y - barH)
 			}
-			col := dimColor(NewColor(96, 96, 96, 192), dimFactor)
+			col := NewColor(96, 96, 96, 192)
 			sbW := currentLayout.BorderPad.Slider * 2
 			drawFilledRect(subImg, item.DrawRect.X1-sbW, item.DrawRect.Y0+pos, sbW, barH, col.ToRGBA(), false)
 		} else if item.FlowType == FLOW_HORIZONTAL && req.X > size.X {
@@ -437,7 +427,7 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 			if maxScroll > 0 {
 				pos = (item.Scroll.X / maxScroll) * (size.X - barW)
 			}
-			col := dimColor(NewColor(96, 96, 96, 192), dimFactor)
+			col := NewColor(96, 96, 96, 192)
 			sbW := currentLayout.BorderPad.Slider * 2
 			drawFilledRect(subImg, item.DrawRect.X0+pos, item.DrawRect.Y1-sbW, barW, sbW, col.ToRGBA(), false)
 		}
@@ -476,7 +466,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		tdop := ebiten.DrawImageOptions{}
 		tdop.GeoM.Translate(float64(offset.X), float64(offset.Y+textSize/2))
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
-		top.ColorScale.ScaleWithColor(dimColor(item.TextColor, dimFactor))
+		top.ColorScale.ScaleWithColor(item.TextColor)
 		text.Draw(subImg, item.Label, face, top)
 		offset.Y += textSize + currentLayout.TextPadding
 		maxSize.Y -= textSize + currentLayout.TextPadding
@@ -505,12 +495,12 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 				Position: offset,
 				Fillet:   item.Fillet,
 				Filled:   true,
-				Color:    dimColor(itemColor, dimFactor),
+				Color:    itemColor,
 			})
 		}
 		drawRoundRect(subImg, &roundRect{
 			Size:     auxSize,
-			Position: offset, Fillet: item.Fillet, Filled: false, Color: dimColor(bColor, dimFactor), Border: bThick * uiScale})
+			Position: offset, Fillet: item.Fillet, Filled: false, Color: bColor, Border: bThick * uiScale})
 
 		if item.Checked {
 			cThick := 2 * uiScale
@@ -524,10 +514,10 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			endY := offset.Y + margin
 
 			strokeLine(subImg, startX, startY, midX, midY,
-				cThick, dimColor(item.TextColor, dimFactor), true)
+				cThick, item.TextColor, true)
 
 			strokeLine(subImg, midX, midY, endX, endY,
-				cThick, dimColor(item.TextColor, dimFactor), true)
+				cThick, item.TextColor, true)
 		}
 
 		textSize := (item.FontSize * uiScale) + 2
@@ -546,7 +536,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			float64(offset.Y+(auxSize.Y/2)),
 		)
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
-		top.ColorScale.ScaleWithColor(dimColor(item.TextColor, dimFactor))
+		top.ColorScale.ScaleWithColor(item.TextColor)
 		text.Draw(subImg, item.Text, face, top)
 
 	} else if item.ItemType == ITEM_RADIO {
@@ -569,7 +559,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 				Position: offset,
 				Fillet:   auxSize.X / 2,
 				Filled:   true,
-				Color:    dimColor(itemColor, dimFactor),
+				Color:    itemColor,
 			})
 		}
 		drawRoundRect(subImg, &roundRect{
@@ -577,7 +567,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			Position: offset,
 			Fillet:   auxSize.X / 2,
 			Filled:   false,
-			Color:    dimColor(bColor, dimFactor),
+			Color:    bColor,
 			Border:   bThick * uiScale,
 		})
 		if item.Checked {
@@ -587,7 +577,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 				Position: point{X: offset.X + (auxSize.X-inner)/2, Y: offset.Y + (auxSize.Y-inner)/2},
 				Fillet:   inner / 2,
 				Filled:   true,
-				Color:    dimColor(item.TextColor, dimFactor),
+				Color:    item.TextColor,
 			})
 		}
 
@@ -607,7 +597,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			float64(offset.Y+(auxSize.Y/2)),
 		)
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
-		top.ColorScale.ScaleWithColor(dimColor(item.TextColor, dimFactor))
+		top.ColorScale.ScaleWithColor(item.TextColor)
 		text.Draw(subImg, item.Text, face, top)
 
 	} else if item.ItemType == ITEM_BUTTON {
@@ -632,7 +622,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 					Position: offset,
 					Fillet:   item.Fillet,
 					Filled:   true,
-					Color:    dimColor(itemColor, dimFactor),
+					Color:    itemColor,
 				})
 			}
 		}
@@ -652,7 +642,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			float64(offset.X+((maxSize.X)/2)),
 			float64(offset.Y+((maxSize.Y)/2)))
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
-		top.ColorScale.ScaleWithColor(dimColor(item.TextColor, dimFactor))
+		top.ColorScale.ScaleWithColor(item.TextColor)
 		text.Draw(subImg, item.Text, face, top)
 
 		//Text
@@ -672,7 +662,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 				Position: offset,
 				Fillet:   item.Fillet,
 				Filled:   true,
-				Color:    dimColor(itemColor, dimFactor),
+				Color:    itemColor,
 			})
 		}
 
@@ -692,7 +682,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			float64(offset.Y+((maxSize.Y)/2)),
 		)
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
-		top.ColorScale.ScaleWithColor(dimColor(item.TextColor, dimFactor))
+		top.ColorScale.ScaleWithColor(item.TextColor)
 		text.Draw(subImg, item.Text, face, top)
 
 		if item.Focused {
@@ -701,7 +691,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			strokeLine(subImg,
 				cx, offset.Y+2,
 				cx, offset.Y+maxSize.Y-2,
-				1, dimColor(item.TextColor, dimFactor), false)
+				1, item.TextColor, false)
 		}
 
 	} else if item.ItemType == ITEM_SLIDER {
@@ -751,14 +741,14 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			ratio = 1
 		}
 		knobCenter := trackStart + float32(ratio)*trackWidth
-		strokeLine(subImg, trackStart, trackY, knobCenter, trackY, 2*uiScale, dimColor(item.ClickColor, dimFactor), true)
-		strokeLine(subImg, knobCenter, trackY, trackStart+trackWidth, trackY, 2*uiScale, dimColor(itemColor, dimFactor), true)
+		strokeLine(subImg, trackStart, trackY, knobCenter, trackY, 2*uiScale, item.ClickColor, true)
+		strokeLine(subImg, knobCenter, trackY, trackStart+trackWidth, trackY, 2*uiScale, itemColor, true)
 		drawRoundRect(subImg, &roundRect{
 			Size:     pointScaleMul(item.AuxSize),
 			Position: point{X: knobCenter - knobW/2, Y: offset.Y + (maxSize.Y-knobH)/2},
 			Fillet:   item.Fillet,
 			Filled:   true,
-			Color:    dimColor(item.ClickColor, dimFactor),
+			Color:    item.ClickColor,
 		})
 
 		// value text drawn to the right of the slider track
@@ -769,7 +759,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			float64(offset.Y+(maxSize.Y/2)),
 		)
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
-		top.ColorScale.ScaleWithColor(dimColor(item.TextColor, dimFactor))
+		top.ColorScale.ScaleWithColor(item.TextColor)
 		text.Draw(subImg, valueText, face, top)
 
 	} else if item.ItemType == ITEM_DROPDOWN {
@@ -798,7 +788,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		tdop := ebiten.DrawImageOptions{}
 		tdop.GeoM.Translate(float64(offset.X+item.BorderPad+item.Padding+currentLayout.TextPadding), float64(offset.Y+maxSize.Y/2))
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
-		top.ColorScale.ScaleWithColor(dimColor(item.TextColor, dimFactor))
+		top.ColorScale.ScaleWithColor(item.TextColor)
 		label := item.Text
 		if item.Selected >= 0 && item.Selected < len(item.Options) {
 			label = item.Options[item.Selected]
@@ -863,7 +853,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 
-		top.ColorScale.ScaleWithColor(dimColor(item.TextColor, dimFactor))
+		top.ColorScale.ScaleWithColor(item.TextColor)
 		text.Draw(subImg, item.Text, face, top)
 	}
 
@@ -913,7 +903,7 @@ func drawDropdownOptions(item *itemData, offset point, clip rect, screen *ebiten
 		visibleRect.Y0,
 		visibleRect.X1-visibleRect.X0,
 		visibleRect.Y1-visibleRect.Y0,
-		dimColor(item.Color, dimFactor), false)
+		item.Color, false)
 	for i := first; i < first+visible && i < len(item.Options); i++ {
 		y := offY + float32(i-first)*optionH
 		if i == item.Selected || i == item.HoverIndex {
@@ -921,12 +911,12 @@ func drawDropdownOptions(item *itemData, offset point, clip rect, screen *ebiten
 			if i == item.HoverIndex && i != item.Selected {
 				col = item.HoverColor
 			}
-			drawRoundRect(subImg, &roundRect{Size: maxSize, Position: point{X: offset.X, Y: y}, Fillet: item.Fillet, Filled: true, Color: dimColor(col, dimFactor)})
+			drawRoundRect(subImg, &roundRect{Size: maxSize, Position: point{X: offset.X, Y: y}, Fillet: item.Fillet, Filled: true, Color: col})
 		}
 		td := ebiten.DrawImageOptions{}
 		td.GeoM.Translate(float64(offset.X+item.BorderPad+item.Padding+currentLayout.TextPadding), float64(y+optionH/2))
 		tdo := &text.DrawOptions{DrawImageOptions: td, LayoutOptions: loo}
-		tdo.ColorScale.ScaleWithColor(dimColor(item.TextColor, dimFactor))
+		tdo.ColorScale.ScaleWithColor(item.TextColor)
 		text.Draw(subImg, item.Options[i], face, tdo)
 	}
 }
@@ -1031,7 +1021,7 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 		vertices, indices = path.AppendVerticesAndIndicesForStroke(vertices[:0], indices[:0], opv)
 	}
 
-	col := dimColor(rrect.Color, dimFactor)
+	col := rrect.Color
 	for i := range vertices {
 		vertices[i].SrcX = 1
 		vertices[i].SrcY = 1
@@ -1079,7 +1069,7 @@ func drawTabShape(screen *ebiten.Image, pos point, size point, col Color, fillet
 	path.Close()
 
 	vertices, indices = path.AppendVerticesAndIndicesForFilling(vertices[:0], indices[:0])
-	c := dimColor(col, dimFactor)
+	c := col
 	for i := range vertices {
 		vertices[i].SrcX = 1
 		vertices[i].SrcY = 1
@@ -1130,7 +1120,7 @@ func strokeTabShape(screen *ebiten.Image, pos point, size point, col Color, fill
 
 	opv := &vector.StrokeOptions{Width: border}
 	vertices, indices = path.AppendVerticesAndIndicesForStroke(vertices[:0], indices[:0], opv)
-	c := dimColor(col, dimFactor)
+	c := col
 	for i := range vertices {
 		vertices[i].SrcX = 1
 		vertices[i].SrcY = 1
@@ -1162,7 +1152,7 @@ func drawTriangle(screen *ebiten.Image, pos point, size float32, col Color) {
 	path.Close()
 
 	vertices, indices = path.AppendVerticesAndIndicesForFilling(vertices[:0], indices[:0])
-	c := dimColor(col, dimFactor)
+	c := col
 	for i := range vertices {
 		vertices[i].SrcX = 1
 		vertices[i].SrcY = 1

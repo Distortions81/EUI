@@ -16,12 +16,4 @@ const (
 	// field of sliders. Using a constant ensures int and float sliders have
 	// identical track lengths regardless of their numeric ranges.
 	sliderMaxLabel = "100.00"
-
-	// InactiveDim controls the opacity of the black overlay drawn over
-	// inactive windows. Values range from 0.0 (no dimming) to 1.0 (fully
-	// black)
-)
-
-var (
-	InactiveDim = 0.20
 )
