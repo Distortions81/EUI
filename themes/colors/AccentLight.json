@@ -1,10 +1,10 @@
 {
   "Comment": "Colors use #RRGGBBAA or h,s,v",
   "Colors": {
-    "background": "210.0,0.01,0.95",
-    "panel": "210.0,0.02,0.89",
+    "background": "0,0,1",
+    "panel": "0,0,0.9",
     "text": "0.0,0.00,0.00",
-    "outline": "210.0,0.15,0.16",
+    "outline": "210.0,0.15,0.8",
     "button": "210.0,0.02,0.91",
     "hover": "0.0,0.00,0.75",
     "accent": "200.6,0.74,0.91",

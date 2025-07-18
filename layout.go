@@ -117,7 +117,7 @@ var (
 )
 
 func LoadLayout(name string) error {
-	file := filepath.Join("themes/layout", name+".json")
+	file := filepath.Join(os.Getenv("PWD")+"/themes/layout", name+".json")
 	data, err := os.ReadFile(file)
 	if err != nil {
 		data, err = embeddedLayouts.ReadFile(filepath.Join("themes/layout", name+".json"))

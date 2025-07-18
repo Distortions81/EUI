@@ -16,16 +16,6 @@ import (
 //go:embed themes/colors/*.json
 var embeddedThemes embed.FS
 
-func init() {
-	data, err := embeddedThemes.ReadFile(filepath.Join("themes", "colors", "FlatDark.json"))
-	if err == nil {
-		_ = json.Unmarshal(data, baseTheme)
-	}
-	currentTheme = baseTheme
-	currentThemeName = "FlatDark"
-	applyLayoutToTheme(currentTheme)
-}
-
 // Theme bundles all style information for windows and widgets.
 type Theme struct {
 	Window   windowData
@@ -76,7 +66,7 @@ func resolveColor(s string, colors map[string]string, seen map[string]bool) (Col
 // LoadTheme reads a theme JSON file from the themes directory and
 // sets it as the current theme without modifying existing windows.
 func LoadTheme(name string) error {
-	file := filepath.Join("themes", "colors", name+".json")
+	file := filepath.Join(os.Getenv("PWD")+"/themes", "colors", name+".json")
 	data, err := os.ReadFile(file)
 	if err != nil {
 		data, err = embeddedThemes.ReadFile(filepath.Join("themes", "colors", name+".json"))
