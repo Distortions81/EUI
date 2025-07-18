@@ -282,6 +282,7 @@ func (item *itemData) clickFlows(mpos point, click bool) bool {
 				tab.Hovered = true
 				if click {
 					activeItem = tab
+					tab.Clicked = time.Now()
 					item.ActiveTab = i
 				}
 				return true
