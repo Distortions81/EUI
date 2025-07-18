@@ -483,7 +483,6 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		if item.Checked {
 			itemColor = item.ClickColor
 			bColor = item.Color
-			bThick = 2 * item.Border * uiScale
 		} else if item.Hovered {
 			item.Hovered = false
 			itemColor = item.HoverColor
@@ -500,7 +499,12 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		}
 		drawRoundRect(subImg, &roundRect{
 			Size:     auxSize,
-			Position: offset, Fillet: item.Fillet, Filled: false, Color: bColor, Border: bThick * uiScale})
+			Position: offset,
+			Fillet:   item.Fillet,
+			Filled:   false,
+			Color:    bColor,
+			Border:   bThick,
+		})
 
 		if item.Checked {
 			cThick := 2 * uiScale
@@ -546,8 +550,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		bColor := item.OutlineColor
 		if item.Checked {
 			itemColor = item.ClickColor
-			bColor = item.Color
-			bThick = 2 * item.Border * uiScale
+			bColor = item.OutlineColor
 		} else if item.Hovered {
 			item.Hovered = false
 			itemColor = item.HoverColor
@@ -568,7 +571,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			Fillet:   auxSize.X / 2,
 			Filled:   false,
 			Color:    bColor,
-			Border:   bThick * uiScale,
+			Border:   bThick,
 		})
 		if item.Checked {
 			inner := auxSize.X / 2.5
