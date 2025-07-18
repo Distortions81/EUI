@@ -836,9 +836,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		if sw < 10*uiScale {
 			sw = 10 * uiScale
 		}
-		// Position the swatch to the right of the wheel so it never
-		// overlaps the color wheel itself.
-		sx := offset.X + maxSize.X + 4*uiScale
+		sx := offset.X + maxSize.X - sw - 4*uiScale
 		sy := offset.Y + maxSize.Y - sw - 4*uiScale
 		drawFilledRect(subImg, sx, sy, sw, sw, color.RGBA(item.WheelColor), true)
 		strokeRect(subImg, sx, sy, sw, sw, 1, color.Black, true)
