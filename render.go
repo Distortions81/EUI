@@ -1178,10 +1178,8 @@ func strokeTabTop(screen *ebiten.Image, pos point, size point, col Color, fillet
 	fillet = float32(math.Round(float64(fillet)))
 
 	if fillet > 0 {
-		path.MoveTo(pos.X+slope, pos.Y+fillet)
-		path.QuadTo(pos.X+slope, pos.Y, pos.X+slope+fillet, pos.Y)
+		path.MoveTo(pos.X+slope+fillet, pos.Y)
 		path.LineTo(pos.X+size.X-slope-fillet, pos.Y)
-		path.QuadTo(pos.X+size.X-slope, pos.Y, pos.X+size.X-slope, pos.Y+fillet)
 	} else {
 		path.MoveTo(pos.X+slope, pos.Y)
 		path.LineTo(pos.X+size.X-slope, pos.Y)
