@@ -179,6 +179,7 @@ func applyAccentColor() {
 	currentTheme.Input.ClickColor = col
 	currentTheme.Slider.ClickColor = col
 	currentTheme.Dropdown.ClickColor = col
+	currentTheme.Tab.ClickColor = col
 	applyThemeToAll()
 	updateColorWheels(col)
 }
