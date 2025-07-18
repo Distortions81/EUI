@@ -75,6 +75,7 @@
     "ClickColor": "accent",
     "OutlineColor": "outline",
     "DisabledColor": "disabled",
+    "SliderFilled": "accent",
     "SelectedColor": "disabled"
   },
   "Dropdown": {
@@ -84,7 +85,7 @@
     "ClickColor": "accent",
     "OutlineColor": "outline",
     "DisabledColor": "disabled",
-    "SelectedColor": "disabled",
+    "SelectedColor": "accent",
     "MaxVisible": 5
   },
   "Tab": {
@@ -93,7 +94,7 @@
     "HoverColor": "hover",
     "ClickColor": "accent",
     "OutlineColor": "outline",
-    "SelectedColor": "accent"
+    "SelectedColor": "hover"
   },
   "RecommendedLayout": "RoundHybrid"
 }
