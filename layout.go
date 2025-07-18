@@ -43,11 +43,12 @@ type LayoutTheme struct {
 	DropdownArrowPad float32
 	TextPadding      float32
 
-	Fillet    LayoutNumbers
-	Border    LayoutNumbers
-	BorderPad LayoutNumbers
-	Filled    LayoutBools
-	Outlined  LayoutBools
+	Fillet        LayoutNumbers
+	Border        LayoutNumbers
+	BorderPad     LayoutNumbers
+	Filled        LayoutBools
+	Outlined      LayoutBools
+	ActiveOutline LayoutBools
 }
 
 var defaultLayout = &LayoutTheme{
@@ -108,6 +109,9 @@ var defaultLayout = &LayoutTheme{
 		Slider:   false,
 		Dropdown: false,
 		Tab:      false,
+	},
+	ActiveOutline: LayoutBools{
+		Tab: true,
 	},
 }
 
@@ -193,6 +197,7 @@ func applyLayoutToTheme(th *Theme) {
 	th.Tab.BorderPad = currentLayout.BorderPad.Tab
 	th.Tab.Filled = currentLayout.Filled.Tab
 	th.Tab.Outlined = currentLayout.Outlined.Tab
+	th.Tab.ActiveOutline = currentLayout.ActiveOutline.Tab
 }
 
 // listLayouts returns the available layout theme names from the themes directory
