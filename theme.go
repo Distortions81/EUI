@@ -95,7 +95,20 @@ func LoadTheme(name string) error {
 	if err := json.Unmarshal(data, &th); err != nil {
 		return err
 	}
+	// Extract additional color fields not present in Theme struct
+	var extra struct {
+		Slider struct {
+			SliderFilled string `json:"SliderFilled"`
+		} `json:"Slider"`
+	}
+	_ = json.Unmarshal(data, &extra)
 	currentTheme = &th
+	if extra.Slider.SliderFilled != "" {
+		if col, err := resolveColor(extra.Slider.SliderFilled, tf.Colors, map[string]bool{"sliderfilled": true}); err == nil {
+			namedColors["sliderfilled"] = col
+			currentTheme.Slider.SelectedColor = col
+		}
+	}
 	currentThemeName = name
 	applyLayoutToTheme(currentTheme)
 	applyThemeToAll()
@@ -178,8 +191,11 @@ func applyAccentColor() {
 	currentTheme.Radio.ClickColor = col
 	currentTheme.Input.ClickColor = col
 	currentTheme.Slider.ClickColor = col
+	currentTheme.Slider.SelectedColor = col
 	currentTheme.Dropdown.ClickColor = col
+	currentTheme.Dropdown.SelectedColor = col
 	currentTheme.Tab.ClickColor = col
+	namedColors["sliderfilled"] = col
 	applyThemeToAll()
 	updateColorWheels(col)
 }

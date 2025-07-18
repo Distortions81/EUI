@@ -302,7 +302,9 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 				w = float32(DefaultTabWidth) * uiScale
 			}
 			col := item.Color
-			if i == item.ActiveTab {
+			if time.Since(tab.Clicked) < clickFlash {
+				col = item.ClickColor
+			} else if i == item.ActiveTab {
 				if !item.ActiveOutline {
 					col = item.SelectedColor
 				}
@@ -745,9 +747,6 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		}
 		knobCenter := trackStart + float32(ratio)*trackWidth
 		filledCol := item.SelectedColor
-		if c, ok := namedColors["sliderfilled"]; ok {
-			filledCol = c
-		}
 		strokeLine(subImg, trackStart, trackY, knobCenter, trackY, 2*uiScale, filledCol, true)
 		strokeLine(subImg, knobCenter, trackY, trackStart+trackWidth, trackY, 2*uiScale, itemColor, true)
 		drawRoundRect(subImg, &roundRect{
