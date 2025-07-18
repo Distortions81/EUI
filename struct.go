@@ -107,7 +107,7 @@ type itemData struct {
 	AuxSpace          float32
 
 	TextColor, Color, HoverColor,
-	ClickColor, DisabledColor, CheckedColor Color
+	ClickColor, OutlineColor, DisabledColor, CheckedColor Color
 
 	Action        func()
 	OnColorChange func(Color)
