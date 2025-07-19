@@ -48,11 +48,15 @@ type windowData struct {
 	DragbarSpacing float32
 	ShowDragbar    bool
 
-	HoverTitleColor, HoverColor, ActiveColor Color
+        HoverTitleColor, HoverColor, ActiveColor Color
 
-	Contents []*itemData
+        Contents []*itemData
 
-	Theme *Theme
+        Theme *Theme
+
+        // Drop shadow styling
+        ShadowSize  float32
+        ShadowColor Color
 }
 
 type itemData struct {
@@ -119,10 +123,14 @@ type itemData struct {
 	Tabs      []*itemData
 	ActiveTab int
 
-	// DrawRect stores the last drawn rectangle of the item in screen
-	// coordinates so input handling can use the exact same area that was
-	// rendered.
-	DrawRect rect
+        // DrawRect stores the last drawn rectangle of the item in screen
+        // coordinates so input handling can use the exact same area that was
+        // rendered.
+        DrawRect rect
+
+        // Drop shadow styling
+        ShadowSize  float32
+        ShadowColor Color
 }
 
 type roundRect struct {
