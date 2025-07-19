@@ -1,9 +1,10 @@
 package main
 
-uniform RectSize vec2
-uniform Fillet float
-uniform ShadowSize float
-uniform ShadowColor vec4
+// Uniform inputs
+var RectSize vec2
+var Fillet float
+var ShadowSize float
+var ShadowColor vec4
 
 func roundRectSDF(p vec2, size vec2, r float) float {
     q := abs(p - size*0.5) - (size*0.5 - vec2(r, r))
