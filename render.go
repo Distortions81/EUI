@@ -991,6 +991,11 @@ func drawDropShadow(screen *ebiten.Image, rrect *roundRect, size float32, col Co
         return
     }
 
+    if softShadowShader != nil {
+        drawSoftDropShadow(screen, rrect, size, col)
+        return
+    }
+
     shadow := *rrect
     shadow.Position.X += size
     shadow.Position.Y += size
@@ -1000,6 +1005,27 @@ func drawDropShadow(screen *ebiten.Image, rrect *roundRect, size float32, col Co
     shadow.Color = col
     shadow.Filled = true
     drawRoundRect(screen, &shadow)
+}
+
+// drawSoftDropShadow renders a soft drop shadow for the given rounded rectangle
+// using an Ebiten shader. The shadow fades outward by the specified size.
+func drawSoftDropShadow(screen *ebiten.Image, rrect *roundRect, size float32, col Color) {
+    w := int(rrect.Size.X + size*2)
+    h := int(rrect.Size.Y + size*2)
+    if w <= 0 || h <= 0 {
+        return
+    }
+
+    op := &ebiten.DrawRectShaderOptions{}
+    op.GeoM.Translate(float64(rrect.Position.X-size), float64(rrect.Position.Y-size))
+    op.Uniforms = map[string]any{
+        "RectSize":   []float32{rrect.Size.X, rrect.Size.Y},
+        "Fillet":     rrect.Fillet,
+        "ShadowSize": size,
+        "ShadowColor": []float32{float32(col.R) / 255, float32(col.G) / 255, float32(col.B) / 255, float32(col.A) / 255},
+    }
+
+    screen.DrawRectShader(w, h, softShadowShader, op)
 }
 
 func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {

@@ -1,0 +1,21 @@
+package main
+
+uniform RectSize vec2
+uniform Fillet float
+uniform ShadowSize float
+uniform ShadowColor vec4
+
+func roundRectSDF(p vec2, size vec2, r float) float {
+    q := abs(p - size*0.5) - (size*0.5 - vec2(r, r))
+    return length(max(q, vec2(0.0, 0.0))) + min(max(q.x, q.y), 0.0) - r
+}
+
+func Fragment(position vec4, texCoord vec2, col vec4) vec4 {
+    p := position.xy
+    d := roundRectSDF(p - vec2(ShadowSize, ShadowSize), RectSize, Fillet)
+    outside := min(max(d, 0.0), ShadowSize)
+    a := (ShadowSize - outside) / ShadowSize
+    a *= step(0.0, d)
+    a = smoothstep(0.0, 1.0, a)
+    return vec4(ShadowColor.rgb, ShadowColor.a * a)
+}
