@@ -122,7 +122,9 @@ type itemData struct {
 	// DrawRect stores the last drawn rectangle of the item in screen
 	// coordinates so input handling can use the exact same area that was
 	// rendered.
-	DrawRect rect
+        DrawRect rect
+
+       Theme *Theme
 }
 
 type roundRect struct {

@@ -10,9 +10,36 @@ import (
 )
 
 var (
-	strokeLineFn = vector.StrokeLine
-	strokeRectFn = vector.StrokeRect
+        strokeLineFn = vector.StrokeLine
+        strokeRectFn = vector.StrokeRect
 )
+
+func (item *itemData) themeStyle() *itemData {
+       if item == nil || item.Theme == nil {
+               return nil
+       }
+       switch item.ItemType {
+       case ITEM_BUTTON:
+               return &item.Theme.Button
+       case ITEM_TEXT:
+               return &item.Theme.Text
+       case ITEM_CHECKBOX:
+               return &item.Theme.Checkbox
+       case ITEM_RADIO:
+               return &item.Theme.Radio
+       case ITEM_INPUT:
+               return &item.Theme.Input
+       case ITEM_SLIDER:
+               return &item.Theme.Slider
+       case ITEM_DROPDOWN:
+               return &item.Theme.Dropdown
+       case ITEM_FLOW:
+               if len(item.Tabs) > 0 {
+                       return &item.Theme.Tab
+               }
+       }
+       return nil
+}
 
 func (win *windowData) getWinRect() rect {
 	winPos := win.getPosition()
