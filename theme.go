@@ -223,30 +223,20 @@ func copyWindowStyle(dst, src *windowData) {
 	dst.Fillet = src.Fillet
 	dst.Outlined = src.Outlined
 	dst.TitleHeight = src.TitleHeight
-	dst.BGColor = src.BGColor
-	dst.TitleBGColor = src.TitleBGColor
-	dst.TitleColor = src.TitleColor
-	dst.TitleTextColor = src.TitleTextColor
-	dst.BorderColor = src.BorderColor
-	dst.SizeTabColor = src.SizeTabColor
-	dst.DragbarColor = src.DragbarColor
-	dst.CloseBGColor = src.CloseBGColor
-	dst.DragbarSpacing = src.DragbarSpacing
-	dst.ShowDragbar = src.ShowDragbar
-	dst.HoverTitleColor = src.HoverTitleColor
-	dst.HoverColor = src.HoverColor
-	dst.ActiveColor = src.ActiveColor
+       dst.DragbarSpacing = src.DragbarSpacing
+       dst.ShowDragbar = src.ShowDragbar
 }
 
 func applyThemeToWindow(win *windowData) {
 	if win == nil || currentTheme == nil {
 		return
 	}
-	copyWindowStyle(win, &currentTheme.Window)
-	win.Theme = currentTheme
-	for _, item := range win.Contents {
-		applyThemeToItem(item)
-	}
+       copyWindowStyle(win, &currentTheme.Window)
+       stripWindowColors(win)
+       win.Theme = currentTheme
+       for _, item := range win.Contents {
+               applyThemeToItem(item)
+       }
 }
 
 // applyThemeToItem merges style data from the current theme based on item type
@@ -262,22 +252,15 @@ func copyItemStyle(dst, src *itemData) {
 	dst.ActiveOutline = src.ActiveOutline
 	dst.AuxSize = src.AuxSize
 	dst.AuxSpace = src.AuxSpace
-	dst.TextColor = src.TextColor
-	dst.Color = src.Color
-	dst.HoverColor = src.HoverColor
-	dst.ClickColor = src.ClickColor
-	dst.OutlineColor = src.OutlineColor
-	dst.DisabledColor = src.DisabledColor
-	dst.SelectedColor = src.SelectedColor
-	if src.MaxVisible != 0 {
-		dst.MaxVisible = src.MaxVisible
-	}
+       if src.MaxVisible != 0 {
+               dst.MaxVisible = src.MaxVisible
+       }
 }
 
 func applyThemeToItem(it *itemData) {
-	if it == nil || currentTheme == nil {
-		return
-	}
+        if it == nil || currentTheme == nil {
+                return
+        }
 	var src *itemData
 	switch it.ItemType {
 	case ITEM_FLOW:
@@ -299,12 +282,14 @@ func applyThemeToItem(it *itemData) {
 	case ITEM_DROPDOWN:
 		src = &currentTheme.Dropdown
 	}
-	if src != nil {
-		copyItemStyle(it, src)
-	}
-	for _, child := range it.Contents {
-		applyThemeToItem(child)
-	}
+       if src != nil {
+               copyItemStyle(it, src)
+       }
+       stripItemColors(it)
+       it.Theme = currentTheme
+        for _, child := range it.Contents {
+                applyThemeToItem(child)
+        }
 	for _, tab := range it.Tabs {
 		applyThemeToItem(tab)
 	}

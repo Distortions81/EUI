@@ -123,6 +123,7 @@ type itemData struct {
 	Tabs      []*itemData
 	ActiveTab int
 
+       Theme *Theme
         // DrawRect stores the last drawn rectangle of the item in screen
         // coordinates so input handling can use the exact same area that was
         // rendered.

@@ -52,7 +52,31 @@ func mergeData(original interface{}, updates interface{}) interface{} {
 }
 
 func isZeroValue(value reflect.Value) bool {
-	return reflect.DeepEqual(value.Interface(), reflect.Zero(value.Type()).Interface())
+        return reflect.DeepEqual(value.Interface(), reflect.Zero(value.Type()).Interface())
+}
+
+func stripWindowColors(w *windowData) {
+       w.BGColor = Color{}
+       w.TitleBGColor = Color{}
+       w.TitleColor = Color{}
+       w.TitleTextColor = Color{}
+       w.BorderColor = Color{}
+       w.SizeTabColor = Color{}
+       w.DragbarColor = Color{}
+       w.CloseBGColor = Color{}
+       w.HoverTitleColor = Color{}
+       w.HoverColor = Color{}
+       w.ActiveColor = Color{}
+}
+
+func stripItemColors(it *itemData) {
+       it.TextColor = Color{}
+       it.Color = Color{}
+       it.HoverColor = Color{}
+       it.ClickColor = Color{}
+       it.OutlineColor = Color{}
+       it.DisabledColor = Color{}
+       it.SelectedColor = Color{}
 }
 
 // Add window to window list
@@ -110,12 +134,13 @@ func NewWindow(win *windowData) *windowData {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
-	newWindow := currentTheme.Window
-	if win != nil {
-		mergeData(&newWindow, win)
-	}
-	newWindow.Theme = currentTheme
-	return &newWindow
+       newWindow := currentTheme.Window
+       if win != nil {
+               mergeData(&newWindow, win)
+       }
+       stripWindowColors(&newWindow)
+       newWindow.Theme = currentTheme
+       return &newWindow
 }
 
 // Create a new button from the default theme
@@ -123,11 +148,13 @@ func NewButton(item *itemData) *itemData {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
-	newItem := currentTheme.Button
-	if item != nil {
-		mergeData(&newItem, item)
-	}
-	return &newItem
+       newItem := currentTheme.Button
+       if item != nil {
+               mergeData(&newItem, item)
+       }
+       stripItemColors(&newItem)
+       newItem.Theme = currentTheme
+       return &newItem
 }
 
 // Create a new button from the default theme
@@ -135,11 +162,13 @@ func NewCheckbox(item *itemData) *itemData {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
-	newItem := currentTheme.Checkbox
-	if item != nil {
-		mergeData(&newItem, item)
-	}
-	return &newItem
+       newItem := currentTheme.Checkbox
+       if item != nil {
+               mergeData(&newItem, item)
+       }
+       stripItemColors(&newItem)
+       newItem.Theme = currentTheme
+       return &newItem
 }
 
 // Create a new radio button from the default theme
@@ -147,11 +176,13 @@ func NewRadio(item *itemData) *itemData {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
-	newItem := currentTheme.Radio
-	if item != nil {
-		mergeData(&newItem, item)
-	}
-	return &newItem
+       newItem := currentTheme.Radio
+       if item != nil {
+               mergeData(&newItem, item)
+       }
+       stripItemColors(&newItem)
+       newItem.Theme = currentTheme
+       return &newItem
 }
 
 // Create a new input box from the default theme
@@ -159,11 +190,13 @@ func NewInput(item *itemData) *itemData {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
-	newItem := currentTheme.Input
-	if item != nil {
-		mergeData(&newItem, item)
-	}
-	return &newItem
+       newItem := currentTheme.Input
+       if item != nil {
+               mergeData(&newItem, item)
+       }
+       stripItemColors(&newItem)
+       newItem.Theme = currentTheme
+       return &newItem
 }
 
 // Create a new slider from the default theme
@@ -171,11 +204,13 @@ func NewSlider(item *itemData) *itemData {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
-	newItem := currentTheme.Slider
-	if item != nil {
-		mergeData(&newItem, item)
-	}
-	return &newItem
+       newItem := currentTheme.Slider
+       if item != nil {
+               mergeData(&newItem, item)
+       }
+       stripItemColors(&newItem)
+       newItem.Theme = currentTheme
+       return &newItem
 }
 
 // Create a new dropdown from the default theme
@@ -183,11 +218,13 @@ func NewDropdown(item *itemData) *itemData {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
-	newItem := currentTheme.Dropdown
-	if item != nil {
-		mergeData(&newItem, item)
-	}
-	return &newItem
+       newItem := currentTheme.Dropdown
+       if item != nil {
+               mergeData(&newItem, item)
+       }
+       stripItemColors(&newItem)
+       newItem.Theme = currentTheme
+       return &newItem
 }
 
 // Create a new color wheel from the default theme
@@ -195,14 +232,16 @@ func NewColorWheel(item *itemData) *itemData {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
-	newItem := baseColorWheel
-	if item != nil {
-		mergeData(&newItem, item)
-	}
-	if ac, ok := namedColors["accent"]; ok && newItem.WheelColor == (Color{}) {
-		newItem.WheelColor = ac
-	}
-	return &newItem
+       newItem := baseColorWheel
+       if item != nil {
+               mergeData(&newItem, item)
+       }
+       if ac, ok := namedColors["accent"]; ok && newItem.WheelColor == (Color{}) {
+               newItem.WheelColor = ac
+       }
+       stripItemColors(&newItem)
+       newItem.Theme = currentTheme
+       return &newItem
 }
 
 // Create a new textbox from the default theme
@@ -210,11 +249,13 @@ func NewText(item *itemData) *itemData {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
-	newItem := currentTheme.Text
-	if item != nil {
-		mergeData(&newItem, item)
-	}
-	return &newItem
+       newItem := currentTheme.Text
+       if item != nil {
+               mergeData(&newItem, item)
+       }
+       stripItemColors(&newItem)
+       newItem.Theme = currentTheme
+       return &newItem
 }
 
 // Bring a window to the front
