@@ -70,11 +70,21 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 }
 
 func (win *windowData) drawBG(screen *ebiten.Image) {
-	r := rect{
-		X0: win.getPosition().X + win.BorderPad,
-		Y0: win.getPosition().Y + win.BorderPad,
-		X1: win.getPosition().X + win.GetSize().X - win.BorderPad,
-		Y1: win.getPosition().Y + win.GetSize().Y - win.BorderPad,
+       if win.ShadowSize > 0 && win.ShadowColor.A > 0 {
+               rr := roundRect{
+                       Size:     win.GetSize(),
+                       Position: win.getPosition(),
+                       Fillet:   win.Fillet,
+                       Filled:   true,
+                       Color:    win.ShadowColor,
+               }
+               drawDropShadow(screen, &rr, win.ShadowSize, win.ShadowColor)
+       }
+       r := rect{
+               X0: win.getPosition().X + win.BorderPad,
+               Y0: win.getPosition().Y + win.BorderPad,
+               X1: win.getPosition().X + win.GetSize().X - win.BorderPad,
+               Y1: win.getPosition().Y + win.GetSize().Y - win.BorderPad,
 	}
 	drawRoundRect(screen, &roundRect{
 		Size:     point{X: r.X1 - r.X0, Y: r.Y1 - r.Y0},
@@ -913,7 +923,18 @@ func drawDropdownOptions(item *itemData, offset point, clip rect, screen *ebiten
 	textSize := (item.FontSize * uiScale) + 2
 	face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
 	loo := text.LayoutOptions{PrimaryAlign: text.AlignStart, SecondaryAlign: text.AlignCenter}
-	drawRect := rect{X0: offset.X, Y0: startY, X1: offset.X + maxSize.X, Y1: startY + optionH*float32(visible)}
+       drawRect := rect{X0: offset.X, Y0: startY, X1: offset.X + maxSize.X, Y1: startY + optionH*float32(visible)}
+
+       if item.ShadowSize > 0 && item.ShadowColor.A > 0 {
+               rr := roundRect{
+                       Size:     point{X: drawRect.X1 - drawRect.X0, Y: drawRect.Y1 - drawRect.Y0},
+                       Position: point{X: drawRect.X0, Y: drawRect.Y0},
+                       Fillet:   item.Fillet,
+                       Filled:   true,
+                       Color:    item.ShadowColor,
+               }
+               drawDropShadow(screen, &rr, item.ShadowSize, item.ShadowColor)
+       }
 	visibleRect := intersectRect(drawRect, clip)
 	if visibleRect.X1 <= visibleRect.X0 || visibleRect.Y1 <= visibleRect.Y0 {
 		return
@@ -956,6 +977,25 @@ func (win *windowData) drawDebug(screen *ebiten.Image) {
 		grab = win.getTitleRect()
 		strokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{B: 255, G: 255, A: 255}, false)
 	}
+}
+
+// drawDropShadow draws a simple drop shadow by offsetting and expanding the
+// provided rounded rectangle before drawing it. The shadow is drawn using the
+// specified color with the alpha preserved.
+func drawDropShadow(screen *ebiten.Image, rrect *roundRect, size float32, col Color) {
+    if size <= 0 || col.A == 0 {
+        return
+    }
+
+    shadow := *rrect
+    shadow.Position.X += size
+    shadow.Position.Y += size
+    shadow.Size.X += size
+    shadow.Size.Y += size
+    shadow.Fillet += size
+    shadow.Color = col
+    shadow.Filled = true
+    drawRoundRect(screen, &shadow)
 }
 
 func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
