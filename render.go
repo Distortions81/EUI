@@ -991,15 +991,26 @@ func drawDropShadow(screen *ebiten.Image, rrect *roundRect, size float32, col Co
         return
     }
 
-    shadow := *rrect
-    shadow.Position.X += size
-    shadow.Position.Y += size
-    shadow.Size.X += size
-    shadow.Size.Y += size
-    shadow.Fillet += size
-    shadow.Color = col
-    shadow.Filled = true
-    drawRoundRect(screen, &shadow)
+    layers := int(math.Ceil(float64(size)))
+    if layers < 1 {
+        layers = 1
+    }
+
+    step := size / float32(layers)
+    for i := layers; i >= 1; i-- {
+        expand := step * float32(i)
+        alpha := float32(col.A) * float32(layers-i+1) / float32(layers)
+
+        shadow := *rrect
+        shadow.Position.X += expand
+        shadow.Position.Y += expand
+        shadow.Size.X += expand
+        shadow.Size.Y += expand
+        shadow.Fillet += expand
+        shadow.Color = Color{R: col.R, G: col.G, B: col.B, A: uint8(alpha)}
+        shadow.Filled = true
+        drawRoundRect(screen, &shadow)
+    }
 }
 
 func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
