@@ -20,12 +20,12 @@ var defaultTheme = &windowData{
 	HoverTitleColor: NewColor(0, 160, 160, 255),
 	HoverColor:      NewColor(80, 80, 80, 255),
 	BGColor:         NewColor(32, 32, 32, 255),
-       ActiveColor:     NewColor(0, 160, 160, 255),
+	ActiveColor:     NewColor(0, 160, 160, 255),
 
-        ShadowSize:  8,
-        ShadowColor: NewColor(0, 0, 0, 160),
+	ShadowSize:  16,
+	ShadowColor: NewColor(0, 0, 0, 160),
 
-       Movable: true, Closable: true, Resizable: true, Open: true, AutoSize: false,
+	Movable: true, Closable: true, Resizable: true, Open: true, AutoSize: false,
 }
 
 var defaultButton = &itemData{
@@ -176,11 +176,11 @@ var defaultDropdown = &itemData{
 	Color:        NewColor(48, 48, 48, 255),
 	HoverColor:   NewColor(96, 96, 96, 255),
 	ClickColor:   NewColor(0, 160, 160, 255),
-        OutlineColor: NewColor(0, 160, 160, 255),
-        MaxVisible:   5,
+	OutlineColor: NewColor(0, 160, 160, 255),
+	MaxVisible:   5,
 
-        ShadowSize:   8,
-        ShadowColor: NewColor(0, 0, 0, 160),
+	ShadowSize:  16,
+	ShadowColor: NewColor(0, 0, 0, 160),
 }
 
 var defaultColorWheel = &itemData{
