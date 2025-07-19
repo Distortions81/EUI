@@ -991,7 +991,7 @@ func drawDropShadow(screen *ebiten.Image, rrect *roundRect, size float32, col Co
         return
     }
 
-    layers := int(math.Ceil(float64(size)))
+    layers := int(math.Ceil(float64(size)*2))
     if layers < 1 {
         layers = 1
     }

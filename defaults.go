@@ -22,7 +22,7 @@ var defaultTheme = &windowData{
 	BGColor:         NewColor(32, 32, 32, 255),
        ActiveColor:     NewColor(0, 160, 160, 255),
 
-        ShadowSize:  4,
+        ShadowSize:  8,
         ShadowColor: NewColor(0, 0, 0, 160),
 
        Movable: true, Closable: true, Resizable: true, Open: true, AutoSize: false,
@@ -179,7 +179,7 @@ var defaultDropdown = &itemData{
         OutlineColor: NewColor(0, 160, 160, 255),
         MaxVisible:   5,
 
-        ShadowSize:  4,
+        ShadowSize:   8,
         ShadowColor: NewColor(0, 0, 0, 160),
 }
 
