@@ -60,6 +60,9 @@ type windowData struct {
 
 	// cache stores the pre-rendered window image when all items are clean.
 	cache *ebiten.Image
+	// PrevHovered stores the window hover state from the previous frame so
+	// we can detect changes and invalidate the cache only when necessary.
+	PrevHovered bool
 }
 
 type itemData struct {
@@ -141,6 +144,11 @@ type itemData struct {
 
 	// Dirty indicates the item needs to be re-rendered.
 	Dirty bool
+	// PrevHovered tracks the previous frame hover state so changes can mark
+	// the item dirty. PrevClick records if the item was showing its click
+	// highlight last frame.
+	PrevHovered bool
+	PrevClick   bool
 }
 
 type roundRect struct {
