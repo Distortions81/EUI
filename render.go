@@ -448,6 +448,33 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 			drawFilledRect(subImg, item.DrawRect.X0+pos, item.DrawRect.Y1-sbW, barW, sbW, col.ToRGBA(), false)
 		}
 	}
+
+	if *debugMode {
+		strokeRect(subImg,
+			item.DrawRect.X0,
+			item.DrawRect.Y0,
+			item.DrawRect.X1-item.DrawRect.X0,
+			item.DrawRect.Y1-item.DrawRect.Y0,
+			1,
+			Color{G: 255},
+			false)
+
+		midX := (item.DrawRect.X0 + item.DrawRect.X1) / 2
+		midY := (item.DrawRect.Y0 + item.DrawRect.Y1) / 2
+		margin := float32(4) * uiScale
+		col := Color{B: 255, A: 255}
+
+		switch item.FlowType {
+		case FLOW_HORIZONTAL:
+			drawArrow(subImg, item.DrawRect.X0+margin, midY, item.DrawRect.X1-margin, midY, 1, col)
+		case FLOW_VERTICAL:
+			drawArrow(subImg, midX, item.DrawRect.Y0+margin, midX, item.DrawRect.Y1-margin, 1, col)
+		case FLOW_HORIZONTAL_REV:
+			drawArrow(subImg, item.DrawRect.X1-margin, midY, item.DrawRect.X0+margin, midY, 1, col)
+		case FLOW_VERTICAL_REV:
+			drawArrow(subImg, midX, item.DrawRect.Y1-margin, midX, item.DrawRect.Y0+margin, 1, col)
+		}
+	}
 }
 
 func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen *ebiten.Image) {
@@ -1288,6 +1315,21 @@ func drawTriangle(screen *ebiten.Image, pos point, size float32, col Color) {
 
 	op := &ebiten.DrawTrianglesOptions{FillRule: ebiten.FillRuleNonZero, AntiAlias: true}
 	screen.DrawTriangles(vertices, indices, whiteSubImage, op)
+}
+
+func drawArrow(screen *ebiten.Image, x0, y0, x1, y1, width float32, col Color) {
+	strokeLine(screen, x0, y0, x1, y1, width, col, true)
+
+	head := float32(6) * uiScale
+	angle := math.Atan2(float64(y1-y0), float64(x1-x0))
+
+	leftX := x1 - head*float32(math.Cos(angle-math.Pi/6))
+	leftY := y1 - head*float32(math.Sin(angle-math.Pi/6))
+	strokeLine(screen, x1, y1, leftX, leftY, width, col, true)
+
+	rightX := x1 - head*float32(math.Cos(angle+math.Pi/6))
+	rightY := y1 - head*float32(math.Sin(angle+math.Pi/6))
+	strokeLine(screen, x1, y1, rightX, rightY, width, col, true)
 }
 
 func drawFPS(screen *ebiten.Image) {
