@@ -50,8 +50,11 @@ func main() {
 
 	SetUIScale(1.5)
 
-	showcase := makeShowcaseWindow()
-	showcase.AddWindow(false)
+       showcase := makeShowcaseWindow()
+       showcase.AddWindow(false)
+
+       flowTest := makeFlowTestWindow()
+       flowTest.AddWindow(false)
 
 	themeSel = makeThemeSelector()
 	if themeSel != nil {
