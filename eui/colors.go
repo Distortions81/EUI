@@ -1,4 +1,4 @@
-package main
+package eui
 
 var (
 	ColorWhite   = NewColor(255, 255, 255, 255)

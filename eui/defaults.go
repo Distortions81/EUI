@@ -1,4 +1,4 @@
-package main
+package eui
 
 var defaultTheme = &windowData{
 	TitleHeight:     24,

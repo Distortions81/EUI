@@ -1,6 +1,6 @@
 //go:build !test
 
-package main
+package eui
 
 import (
 	"image"
@@ -27,6 +27,9 @@ var (
 	currentThemeName string
 	clickFlash       = time.Millisecond * 100
 
+	// DebugMode enables rendering of debug outlines.
+	DebugMode bool
+
 	whiteImage    = ebiten.NewImage(3, 3)
 	whiteSubImage = whiteImage.SubImage(image.Rect(1, 1, 2, 2)).(*ebiten.Image)
 )
@@ -38,4 +41,9 @@ func init() {
 // constants moved to const.go
 
 type Game struct {
+}
+
+func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
+	screenWidth, screenHeight = outsideWidth, outsideHeight
+	return outsideWidth, outsideHeight
 }

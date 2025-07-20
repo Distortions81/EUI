@@ -1,4 +1,4 @@
-package main
+package eui
 
 import (
 	"image/color"
@@ -220,3 +220,21 @@ const (
 	ITEM_DROPDOWN
 	ITEM_COLORWHEEL
 )
+
+// Exported type aliases for library consumers
+
+type WindowData = windowData
+
+type ItemData = itemData
+
+type RoundRect = roundRect
+
+type Rect = rect
+
+type Point = point
+
+type FlowType = flowType
+type AlignType = alignType
+type PinType = pinType
+type DragType = dragType
+type ItemTypeData = itemTypeData

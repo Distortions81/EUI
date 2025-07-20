@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	_ "embed"
 	"flag"
 	"fmt"
@@ -11,13 +10,14 @@ import (
 	"os/signal"
 	"syscall"
 
+	eui "EUI/eui"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
 var (
-	debugMode *bool
-	themeSel  *windowData
+	debugMode    *bool
+	themeSel     *eui.WindowData
+	signalHandle chan os.Signal
 )
 
 //go:embed data/fonts/NotoSans-Regular.ttf
@@ -32,29 +32,25 @@ func main() {
 	signal.Notify(signalHandle, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 
 	// load default themes
-	if err := LoadTheme("AccentDark"); err != nil {
-		log.Printf("LoadTheme error: %v", err)
+	if err := eui.LoadTheme("AccentDark"); err != nil {
+		log.Printf("eui.LoadTheme error: %v", err)
 	}
-	if err := LoadLayout("RoundHybrid"); err != nil {
-		log.Printf("LoadLayout error: %v", err)
-	}
-
-	//Load default font
-	if mplusFaceSource == nil {
-		s, err := text.NewGoTextFaceSource(bytes.NewReader(notoTTF))
-		if err != nil {
-			log.Fatal(err)
-		}
-		mplusFaceSource = s
+	if err := eui.LoadLayout("RoundHybrid"); err != nil {
+		log.Printf("eui.LoadLayout error: %v", err)
 	}
 
-	SetUIScale(1.5)
+	// Load default font
+	if err := eui.EnsureFontSource(notoTTF); err != nil {
+		log.Fatal(err)
+	}
 
-       showcase := makeShowcaseWindow()
-       showcase.AddWindow(false)
+	eui.SetUIScale(1.5)
 
-       flowTest := makeFlowTestWindow()
-       flowTest.AddWindow(false)
+	showcase := makeShowcaseWindow()
+	showcase.AddWindow(false)
+
+	flowTest := makeFlowTestWindow()
+	flowTest.AddWindow(false)
 
 	themeSel = makeThemeSelector()
 	if themeSel != nil {
@@ -62,14 +58,14 @@ func main() {
 	}
 
 	// Add a small pinned button to toggle the themes window using an overlay flow
-	overlay := &itemData{
-		ItemType: ITEM_FLOW,
-		FlowType: FLOW_HORIZONTAL,
-		Size:     point{X: 84, Y: 32},
-		Position: point{X: 4, Y: 4},
-		PinTo:    PIN_BOTTOM_RIGHT,
+	overlay := &eui.ItemData{
+		ItemType: eui.ITEM_FLOW,
+		FlowType: eui.FLOW_HORIZONTAL,
+		Size:     eui.Point{X: 84, Y: 32},
+		Position: eui.Point{X: 4, Y: 4},
+		PinTo:    eui.PIN_BOTTOM_RIGHT,
 	}
-	toggleBtn := NewButton(&itemData{Text: "Themes", Size: point{X: 80, Y: 24}, FontSize: 8})
+	toggleBtn := eui.NewButton(&eui.ItemData{Text: "Themes", Size: eui.Point{X: 80, Y: 24}, FontSize: 8})
 	toggleBtn.Action = func() {
 		if themeSel != nil {
 			if !themeSel.Open {
@@ -81,8 +77,8 @@ func main() {
 			}
 		}
 	}
-	overlay.addItemTo(toggleBtn)
-	AddOverlayFlow(overlay)
+	overlay.AddItem(toggleBtn)
+	eui.AddOverlayFlow(overlay)
 
 	err := loadIcons()
 	if err != nil {
@@ -95,14 +91,14 @@ func main() {
 }
 
 func loadIcons() error {
-	for _, win := range windows {
+	for _, win := range eui.Windows() {
 		err := subLoadIcons(win.Contents)
 		if err != nil {
 			return err
 		}
 	}
-	for _, ov := range overlays {
-		err := subLoadIcons([]*itemData{ov})
+	for _, ov := range eui.Overlays() {
+		err := subLoadIcons([]*eui.ItemData{ov})
 		if err != nil {
 			return err
 		}
@@ -111,7 +107,7 @@ func loadIcons() error {
 	return nil
 }
 
-func subLoadIcons(parent []*itemData) error {
+func subLoadIcons(parent []*eui.ItemData) error {
 	for _, item := range parent {
 		if len(item.Tabs) > 0 {
 			for _, tab := range item.Tabs {
@@ -159,7 +155,8 @@ func startEbiten() {
 	ebiten.SetTPS(ebiten.SyncWithFPS)
 
 	/* Set up our window */
-	ebiten.SetWindowSize(screenWidth, screenHeight)
+	w, h := eui.ScreenSize()
+	ebiten.SetWindowSize(w, h)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 
 	ebiten.SetWindowTitle("EUI Prototype")
@@ -171,11 +168,6 @@ func startEbiten() {
 	signalHandle <- syscall.SIGINT
 }
 
-func newGame() *Game {
-	return &Game{}
-}
-
-func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
-	screenWidth, screenHeight = outsideWidth, outsideHeight
-	return outsideWidth, outsideHeight
+func newGame() *eui.Game {
+	return eui.NewGame()
 }

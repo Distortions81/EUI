@@ -1,6 +1,6 @@
 //go:build !test
 
-package main
+package eui
 
 import (
 	"os"

@@ -1,4 +1,6 @@
-package main
+//go:build test
+
+package eui
 
 import (
 	"bytes"
