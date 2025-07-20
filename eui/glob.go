@@ -30,6 +30,9 @@ var (
 	// DebugMode enables rendering of debug outlines.
 	DebugMode bool
 
+	// DropShadows controls rendering of drop shadows on windows and widgets.
+	DropShadows bool = true
+
 	whiteImage    = ebiten.NewImage(3, 3)
 	whiteSubImage = whiteImage.SubImage(image.Rect(1, 1, 2, 2)).(*ebiten.Image)
 )

@@ -41,7 +41,8 @@ It is currently in a pre‑alpha state and the API may change at any time.
 
 ## Variables
 
-- `DebugMode` – when set, additional outlines are rendered for debugging.
+ - `DebugMode` – when set, additional outlines are rendered for debugging.
+ - `DropShadows` – toggle drop shadow rendering for windows and widgets.
 - `ColorWhite`, `ColorBlack`, `ColorRed`, ... – a large palette of predefined
   colors available as variables of type `Color`.
 

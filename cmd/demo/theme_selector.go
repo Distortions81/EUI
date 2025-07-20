@@ -86,6 +86,13 @@ func makeThemeSelector() *eui.WindowData {
 	cw := eui.NewColorWheel(&eui.ItemData{Size: eui.Point{X: 160, Y: 128}})
 	mainFlow.AddItem(cw)
 
+	shadowChk := eui.NewCheckbox(&eui.ItemData{Text: "Drop Shadows", Size: eui.Point{X: 150, Y: 24}, FontSize: 8})
+	shadowChk.Checked = eui.DropShadows
+	shadowChk.Action = func() {
+		eui.DropShadows = shadowChk.Checked
+	}
+	mainFlow.AddItem(shadowChk)
+
 	satSlider = eui.NewSlider(&eui.ItemData{Label: "Color Intensity", Size: eui.Point{X: 128, Y: 24}, MinValue: 0, MaxValue: 1, FontSize: 8})
 	satSlider.Value = float32(eui.AccentSaturation())
 	satSlider.Action = func() {
