@@ -1,6 +1,6 @@
 # EUI
 
-EUI is a minimal retained‑mode UI experiment built with the [Ebiten](https://ebiten.org/) game engine.
+EUI is a minimal retained‑mode UI built with the [Ebiten](https://ebiten.org/) game engine.
 It provides basic window management, flows and widgets built entirely with vector graphics.
 The project is currently in an early pre‑alpha state and APIs may change frequently.
 
