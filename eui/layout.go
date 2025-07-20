@@ -117,7 +117,7 @@ var defaultLayout = &LayoutTheme{
 
 var (
 	currentLayout     = defaultLayout
-	currentLayoutName = "Default"
+	currentLayoutName = "RoundHybrid"
 )
 
 func LoadLayout(name string) error {

@@ -25,7 +25,7 @@ func makeShowcaseWindow() *eui.WindowData {
 	titleText := eui.NewText(&eui.ItemData{Text: "Demonstration of widgets", Size: eui.Point{X: 380, Y: 32}, FontSize: 10})
 	mainFlow.AddItem(titleText)
 
-	btnImage := eui.NewButton(&eui.ItemData{Text: "Sprite Button", ImageName: "1", Size: eui.Point{X: 100, Y: 64}, FontSize: 8})
+	btnImage := eui.NewButton(&eui.ItemData{Text: "Sprite Button", Size: eui.Point{X: 100, Y: 64}, FontSize: 8})
 	mainFlow.AddItem(btnImage)
 	btnText := eui.NewButton(&eui.ItemData{Text: "Text Button", Size: eui.Point{X: 100, Y: 24}, FontSize: 8})
 	mainFlow.AddItem(btnText)
