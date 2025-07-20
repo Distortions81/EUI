@@ -38,11 +38,21 @@ go build -o demo ./cmd/demo
 ./demo -debug                # optional debug overlays
 ```
 
+## Customization
+
+The library loads the built in `AccentDark` color theme, `RoundHybrid` layout and a default font automatically. To use your own files enable `eui.AutoReload` and load them explicitly:
+
+```go
+// var ttf []byte
+// _ = eui.EnsureFontSource(ttf)
+// _ = eui.LoadTheme("MyTheme")
+// _ = eui.LoadLayout("MyLayout")
+```
+
 ## Project Layout
 
 - `eui` – reusable library code containing windows, flows and widgets
 - `cmd/demo` – standalone example program wiring the library together
-- `data` – shared assets used by the demo
 - `scripts/setup.sh` – helper for installing build dependencies
 
 For a generated listing of all library functions see the [API reference](api.md).

@@ -11,6 +11,9 @@ var (
 	themeModTime  time.Time
 	layoutModTime time.Time
 	modCheckTime  time.Time
+	// AutoReload enables automatic reloading of theme and layout files
+	// when they are modified on disk.
+	AutoReload bool
 )
 
 func init() {
@@ -38,6 +41,9 @@ func refreshLayoutMod() {
 }
 
 func checkThemeLayoutMods() {
+	if !AutoReload {
+		return
+	}
 	if time.Since(modCheckTime) < 500*time.Millisecond {
 		return
 	}
