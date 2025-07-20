@@ -24,6 +24,8 @@ type dropdownRender struct {
 var (
 	pendingDropdowns []dropdownRender
 	renderMS         float64
+	updateMS         float64
+	cpuPercent       float64
 )
 
 func (g *Game) Draw(screen *ebiten.Image) {
@@ -48,6 +50,13 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 
 	renderMS = float64(time.Since(start).Microseconds()) / 1000.0
+	tps := ebiten.ActualTPS()
+	if tps > 0 {
+		frameMS := 1000.0 / tps
+		cpuPercent = (updateMS + renderMS) / frameMS * 100.0
+	} else {
+		cpuPercent = 0
+	}
 	drawFPS(screen)
 }
 
@@ -1325,7 +1334,7 @@ func drawArrow(screen *ebiten.Image, x0, y0, x1, y1, width float32, col Color) {
 }
 
 func drawFPS(screen *ebiten.Image) {
-	drawFilledRect(screen, 0, 0, 90, 16, color.RGBA{R: 0, G: 0, B: 0, A: 192}, false)
-	buf := fmt.Sprintf("%4v FPS %5.2fms", int(math.Round(ebiten.ActualFPS())), renderMS)
+	drawFilledRect(screen, 0, 0, 180, 16, color.RGBA{R: 0, G: 0, B: 0, A: 192}, false)
+	buf := fmt.Sprintf("%4v FPS R:%5.2fms U:%5.2fms %3.0f%%", int(math.Round(ebiten.ActualFPS())), renderMS, updateMS, cpuPercent)
 	ebitenutil.DebugPrintAt(screen, buf, 0, 0)
 }
