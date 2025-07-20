@@ -21,9 +21,13 @@ type dropdownRender struct {
 	clip   rect
 }
 
-var pendingDropdowns []dropdownRender
+var (
+	pendingDropdowns []dropdownRender
+	renderMS         float64
+)
 
 func (g *Game) Draw(screen *ebiten.Image) {
+	start := time.Now()
 
 	pendingDropdowns = pendingDropdowns[:0]
 
@@ -43,6 +47,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		drawDropdownOptions(dr.item, dr.offset, dr.clip, screen)
 	}
 
+	renderMS = float64(time.Since(start).Microseconds()) / 1000.0
 	drawFPS(screen)
 }
 
@@ -71,7 +76,7 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 }
 
 func (win *windowData) drawBG(screen *ebiten.Image) {
-	if win.ShadowSize > 0 && win.ShadowColor.A > 0 {
+	if DropShadows && win.ShadowSize > 0 && win.ShadowColor.A > 0 {
 		rr := roundRect{
 			Size:     win.GetSize(),
 			Position: win.getPosition(),
@@ -944,7 +949,7 @@ func drawDropdownOptions(item *itemData, offset point, clip rect, screen *ebiten
 	loo := text.LayoutOptions{PrimaryAlign: text.AlignStart, SecondaryAlign: text.AlignCenter}
 	drawRect := rect{X0: offset.X, Y0: startY, X1: offset.X + maxSize.X, Y1: startY + optionH*float32(visible)}
 
-	if item.ShadowSize > 0 && item.ShadowColor.A > 0 {
+	if DropShadows && item.ShadowSize > 0 && item.ShadowColor.A > 0 {
 		rr := roundRect{
 			Size:     point{X: drawRect.X1 - drawRect.X0, Y: drawRect.Y1 - drawRect.Y0},
 			Position: point{X: drawRect.X0, Y: drawRect.Y0},
@@ -1320,7 +1325,7 @@ func drawArrow(screen *ebiten.Image, x0, y0, x1, y1, width float32, col Color) {
 }
 
 func drawFPS(screen *ebiten.Image) {
-	drawFilledRect(screen, 0, 0, 58, 16, color.RGBA{R: 0, G: 0, B: 0, A: 192}, false)
-	buf := fmt.Sprintf("%4v FPS", int(math.Round(ebiten.ActualFPS())))
+	drawFilledRect(screen, 0, 0, 90, 16, color.RGBA{R: 0, G: 0, B: 0, A: 192}, false)
+	buf := fmt.Sprintf("%4v FPS %5.2fms", int(math.Round(ebiten.ActualFPS())), renderMS)
 	ebitenutil.DebugPrintAt(screen, buf, 0, 0)
 }
