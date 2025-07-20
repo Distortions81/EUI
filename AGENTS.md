@@ -18,3 +18,4 @@ Run `gofmt -w` on all Go source files you modify to keep formatting consistent.
 Update any relevant documentation (README.md, api.md, etc.) when behavior,
 commands or public APIs change so docs stay in sync with the code.
 
+When you are finishing up a commit, update agents.md and ./scripts/setup.sh with any dependencies or utilities you used during your work to save time in the future.
