@@ -1,14 +1,20 @@
 # Agent Instructions
 
-To compile and test this project, run the setup script once to install system dependencies:
+Use the setup script once to install required system packages:
 
 ```sh
 ./scripts/setup.sh
 ```
 
-Then run the following checks before committing any changes:
+Before committing new changes run the following checks from the repository root:
 
 ```sh
 go vet ./...
 go build ./...
 ```
+
+Run `gofmt -w` on all Go source files you modify to keep formatting consistent.
+
+Update any relevant documentation (README.md, api.md, etc.) when behavior,
+commands or public APIs change so docs stay in sync with the code.
+

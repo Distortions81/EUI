@@ -21,6 +21,12 @@ go vet ./...
 go build ./...
 ```
 
+Format modified Go files before committing:
+
+```sh
+gofmt -w <files>
+```
+
 ## Running the Demo
 
 The demonstration application lives under `cmd/demo`. You can run it directly using `go run` or build a binary:
