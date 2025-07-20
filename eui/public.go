@@ -2,6 +2,7 @@ package eui
 
 import (
 	"bytes"
+
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 

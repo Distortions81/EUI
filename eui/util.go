@@ -131,20 +131,20 @@ func (win *windowData) setSize(size point) bool {
 	tooSmall := false
 
 	// Enforce minimum dimensions and prevent negatives.
-	if size.X < MinWinSizeX {
-		size.X = MinWinSizeX
+	if size.X < minWinSizeX {
+		size.X = minWinSizeX
 		tooSmall = true
 	}
-	if size.Y < MinWinSizeY {
-		size.Y = MinWinSizeY
+	if size.Y < minWinSizeY {
+		size.Y = minWinSizeY
 		tooSmall = true
 	}
 	if size.X < 0 {
-		size.X = MinWinSizeX
+		size.X = minWinSizeX
 		tooSmall = true
 	}
 	if size.Y < 0 {
-		size.Y = MinWinSizeY
+		size.Y = minWinSizeY
 		tooSmall = true
 	}
 
@@ -215,7 +215,7 @@ func (win *windowData) getWindowPart(mpos point, click bool) dragType {
 	}
 
 	if win.Resizable {
-		t := Tol * uiScale
+		t := scrollTolerance * uiScale
 
 		winRect := win.getWinRect()
 

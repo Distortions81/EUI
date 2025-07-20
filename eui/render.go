@@ -298,7 +298,7 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 			item.ActiveTab = 0
 		}
 
-		tabHeight := float32(DefaultTabHeight) * uiScale
+		tabHeight := float32(defaultTabHeight) * uiScale
 		if th := item.FontSize*uiScale + 4; th > tabHeight {
 			tabHeight = th
 		}
@@ -309,8 +309,8 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 			face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
 			tw, _ := text.Measure(tab.Name, face, 0)
 			w := float32(tw) + 8
-			if w < float32(DefaultTabWidth)*uiScale {
-				w = float32(DefaultTabWidth) * uiScale
+			if w < float32(defaultTabWidth)*uiScale {
+				w = float32(defaultTabWidth) * uiScale
 			}
 			col := style.Color
 			if time.Since(tab.Clicked) < clickFlash {
@@ -879,7 +879,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		}
 
 		if item.Image == nil || item.Image.Bounds().Dx() != int(wheelSize) {
-			item.Image = ColorWheelImage(int(wheelSize))
+			item.Image = colorWheelImage(int(wheelSize))
 		}
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(float64(offset.X), float64(offset.Y))

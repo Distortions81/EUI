@@ -12,7 +12,7 @@ var (
 	layoutModTime time.Time
 	modCheckTime  time.Time
 	// AutoReload enables automatic reloading of theme and layout files
-	// when they are modified on disk.
+	// when they are modified on disk, only use this for quickly iterating when designing your own themes.
 	AutoReload bool
 )
 

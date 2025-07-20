@@ -7,10 +7,10 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-// ColorWheelImage creates an Ebiten image containing a color wheel of the given size.
+// colorWheelImage creates an Ebiten image containing a color wheel of the given size.
 // The wheel ranges 0-359 degrees with black at the center and fully saturated
 // color on the outer edge.
-func ColorWheelImage(size int) *ebiten.Image {
+func colorWheelImage(size int) *ebiten.Image {
 	if size <= 0 {
 		return ebiten.NewImage(1, 1)
 	}
