@@ -26,6 +26,9 @@ func (g *Game) Update() error {
 
 	checkThemeLayoutMods()
 
+	// Reset hover states and update click-based dirty flags each frame.
+	refreshDirtyStates()
+
 	mx, my := ebiten.CursorPosition()
 	mpos := point{X: float32(mx), Y: float32(my)}
 
@@ -245,7 +248,10 @@ func (win *windowData) clickWindowItems(mpos point, click bool) {
 	if clickOpenDropdown(win.Contents, mpos, click) {
 		return
 	}
-	win.Hovered = true
+	if !win.Hovered {
+		win.Hovered = true
+		win.cache = nil
+	}
 
 	for _, item := range win.Contents {
 		handled := false
@@ -282,12 +288,15 @@ func (item *itemData) clickFlows(mpos point, click bool) bool {
 			item.ActiveTab = 0
 		}
 		for i, tab := range item.Tabs {
-			tab.Hovered = false
 			if tab.DrawRect.containsPoint(mpos) {
-				tab.Hovered = true
+				if !tab.Hovered {
+					tab.Hovered = true
+					tab.Dirty = true
+				}
 				if click {
 					activeItem = tab
 					tab.Clicked = time.Now()
+					tab.Dirty = true
 					item.ActiveTab = i
 				}
 				return true
@@ -344,6 +353,7 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 	if click {
 		activeItem = item
 		item.Clicked = time.Now()
+		item.Dirty = true
 		if item.ItemType == ITEM_COLORWHEEL {
 			if col, ok := item.colorAt(mpos); ok {
 				item.WheelColor = col
@@ -403,7 +413,10 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 			return true
 		}
 	} else {
-		item.Hovered = true
+		if !item.Hovered {
+			item.Hovered = true
+			item.Dirty = true
+		}
 		if item.ItemType == ITEM_COLORWHEEL && ebiten.IsMouseButtonPressed(ebiten.MouseButton0) {
 			if col, ok := item.colorAt(mpos); ok {
 				item.WheelColor = col
