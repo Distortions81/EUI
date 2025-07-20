@@ -230,7 +230,7 @@ func (g *Game) Update() error {
 		ov.resizeFlow(ov.GetSize())
 	}
 
-	updateMS = float64(time.Since(start).Microseconds()) / 1000.0
+	updateMSFrame = float64(time.Since(start).Microseconds()) / 1000.0
 	return nil
 }
 

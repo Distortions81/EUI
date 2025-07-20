@@ -26,10 +26,21 @@ var (
 	renderMS         float64
 	updateMS         float64
 	cpuPercent       float64
+
+	sumRenderMS   float64
+	sumUpdateMS   float64
+	sumCPUPercent float64
+	avgFrameCount int
+	avgStart      time.Time
+
+	updateMSFrame float64
 )
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	start := time.Now()
+	if avgStart.IsZero() {
+		avgStart = start
+	}
 
 	pendingDropdowns = pendingDropdowns[:0]
 
@@ -49,14 +60,38 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		drawDropdownOptions(dr.item, dr.offset, dr.clip, screen)
 	}
 
-	renderMS = float64(time.Since(start).Microseconds()) / 1000.0
+	frameRender := float64(time.Since(start).Microseconds()) / 1000.0
+	renderMSFrame := frameRender
+	update := updateMSFrame
 	tps := ebiten.ActualTPS()
+	var cpuFrame float64
 	if tps > 0 {
 		frameMS := 1000.0 / tps
-		cpuPercent = (updateMS + renderMS) / frameMS * 100.0
-	} else {
-		cpuPercent = 0
+		cpuFrame = (update + renderMSFrame) / frameMS * 100.0
 	}
+
+	sumRenderMS += renderMSFrame
+	sumUpdateMS += update
+	sumCPUPercent += cpuFrame
+	avgFrameCount++
+
+	if time.Since(avgStart) >= time.Second {
+		if avgFrameCount > 0 {
+			renderMS = sumRenderMS / float64(avgFrameCount)
+			updateMS = sumUpdateMS / float64(avgFrameCount)
+			cpuPercent = sumCPUPercent / float64(avgFrameCount)
+		} else {
+			renderMS = 0
+			updateMS = 0
+			cpuPercent = 0
+		}
+		sumRenderMS = 0
+		sumUpdateMS = 0
+		sumCPUPercent = 0
+		avgFrameCount = 0
+		avgStart = start
+	}
+
 	drawFPS(screen)
 }
 
