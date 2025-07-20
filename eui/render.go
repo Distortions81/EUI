@@ -102,10 +102,7 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image) {
 		screen.Fill(win.Theme.Window.TitleBGColor)
 
 		textSize := ((win.GetTitleSize()) / 2)
-		face := &text.GoTextFace{
-			Source: mplusFaceSource,
-			Size:   float64(textSize),
-		}
+		face := textFace(textSize)
 
 		skipTitleText := false
 		textWidth, textHeight := text.Measure(win.Title, face, 0)
@@ -306,7 +303,7 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 		x := offset.X
 		spacing := float32(4) * uiScale
 		for i, tab := range item.Tabs {
-			face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
+			face := textFace(textSize)
 			tw, _ := text.Measure(tab.Name, face, 0)
 			w := float32(tw) + 8
 			if w < float32(defaultTabWidth)*uiScale {
@@ -510,7 +507,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 
 	if item.Label != "" {
 		textSize := (item.FontSize * uiScale) + 2
-		face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
+		face := textFace(textSize)
 		loo := text.LayoutOptions{PrimaryAlign: text.AlignStart, SecondaryAlign: text.AlignCenter}
 		tdop := ebiten.DrawImageOptions{}
 		tdop.GeoM.Translate(float64(offset.X), float64(offset.Y+textSize/2))
@@ -576,10 +573,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		}
 
 		textSize := (item.FontSize * uiScale) + 2
-		face := &text.GoTextFace{
-			Source: mplusFaceSource,
-			Size:   float64(textSize),
-		}
+		face := textFace(textSize)
 		loo := text.LayoutOptions{
 			LineSpacing:    1.2,
 			PrimaryAlign:   text.AlignStart,
@@ -636,10 +630,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		}
 
 		textSize := (item.FontSize * uiScale) + 2
-		face := &text.GoTextFace{
-			Source: mplusFaceSource,
-			Size:   float64(textSize),
-		}
+		face := textFace(textSize)
 		loo := text.LayoutOptions{
 			LineSpacing:    1.2,
 			PrimaryAlign:   text.AlignStart,
@@ -682,10 +673,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		}
 
 		textSize := (item.FontSize * uiScale) + 2
-		face := &text.GoTextFace{
-			Source: mplusFaceSource,
-			Size:   float64(textSize),
-		}
+		face := textFace(textSize)
 		loo := text.LayoutOptions{
 			LineSpacing:    0,
 			PrimaryAlign:   text.AlignCenter,
@@ -721,10 +709,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		}
 
 		textSize := (item.FontSize * uiScale) + 2
-		face := &text.GoTextFace{
-			Source: mplusFaceSource,
-			Size:   float64(textSize),
-		}
+		face := textFace(textSize)
 		loo := text.LayoutOptions{
 			LineSpacing:    0,
 			PrimaryAlign:   text.AlignStart,
@@ -771,7 +756,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		}
 
 		textSize := (item.FontSize * uiScale) + 2
-		face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
+		face := textFace(textSize)
 		maxW, _ := text.Measure(maxLabel, face, 0)
 
 		gap := currentLayout.SliderValueGap
@@ -847,7 +832,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		}
 
 		textSize := (item.FontSize * uiScale) + 2
-		face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
+		face := textFace(textSize)
 		loo := text.LayoutOptions{PrimaryAlign: text.AlignStart, SecondaryAlign: text.AlignCenter}
 		tdop := ebiten.DrawImageOptions{}
 		tdop.GeoM.Translate(float64(offset.X+item.BorderPad+item.Padding+currentLayout.TextPadding), float64(offset.Y+maxSize.Y/2))
@@ -906,10 +891,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 	} else if item.ItemType == ITEM_TEXT {
 
 		textSize := (item.FontSize * uiScale) + 2
-		face := &text.GoTextFace{
-			Source: mplusFaceSource,
-			Size:   float64(textSize),
-		}
+		face := textFace(textSize)
 		loo := text.LayoutOptions{
 			LineSpacing:    float64(textSize) * 1.2,
 			PrimaryAlign:   text.AlignStart,
@@ -958,7 +940,7 @@ func drawDropdownOptions(item *itemData, offset point, clip rect, screen *ebiten
 	first := int(item.Scroll.Y / optionH)
 	offY := startY - (item.Scroll.Y - float32(first)*optionH)
 	textSize := (item.FontSize * uiScale) + 2
-	face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
+	face := textFace(textSize)
 	loo := text.LayoutOptions{PrimaryAlign: text.AlignStart, SecondaryAlign: text.AlignCenter}
 	drawRect := rect{X0: offset.X, Y0: startY, X1: offset.X + maxSize.X, Y1: startY + optionH*float32(visible)}
 
