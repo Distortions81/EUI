@@ -2,7 +2,7 @@
 
 EUI is a minimal retained‑mode UI built with the [Ebiten](https://ebiten.org/) game engine.
 It provides basic window management, flows and widgets built entirely with vector graphics.
-The project is currently in an early pre‑alpha state and APIs may change frequently.
+The project is currently in an early development and APIs will likely change.
 
 ![screenshot](https://raw.githubusercontent.com/Distortions81/EUI/refs/heads/main/Screenshot.png)
 
