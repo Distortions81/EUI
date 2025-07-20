@@ -1,29 +1,31 @@
 # API Reference
 
-This document provides a generated listing of every function present in the
-source tree. Functions are grouped by the file that defines them along with
-their full Go syntax. The project is in an early pre‑alpha state so these APIs
-may change frequently. This reference can help contributors navigate the code
-base and locate specific functionality quickly.
+This document provides a generated listing of every exported and unexported function found in the repository. Functions are grouped by source file with their full Go syntax so that developers can quickly locate implementations. The project is a small retained‑mode UI experiment for the Ebiten engine and the APIs may change frequently.
 
-The lists below were produced by scanning all `*.go` files with `grep` and
-extracting every `func` declaration. Helper methods used solely in tests are
-included as well so that nothing is omitted.
+## Overview
+
+Source code is split between a reusable library under the `eui` directory and a showcase application in `cmd/demo`. JSON files in `eui/themes` define color and layout themes loaded at runtime. The demo application wires these pieces together and lives in `cmd/demo` along with its assets.
 
 ## Setup and Testing
 
-The repository includes a `scripts/setup.sh` helper that installs the system
-packages required to build the Ebiten based demo. After running it once, the
-project can be compiled and vetted using the standard Go tools:
+A helper script is included for installing the system packages required by Ebiten. Run it once before building:
 
 ```sh
-./scripts/setup.sh   # install dependencies (only needed once)
+./scripts/setup.sh
+```
+
+Afterwards the project can be vetted and built with standard Go tooling:
+
+```sh
 go vet ./...
 go build ./...
 ```
 
-Running these commands prior to committing changes ensures the code remains in a
-buildable state.
+Running these commands prior to committing changes ensures the code remains in a buildable state. To run the demonstration program use:
+
+```sh
+go run ./cmd/demo
+```
 
 ## color_hsv.go
 
