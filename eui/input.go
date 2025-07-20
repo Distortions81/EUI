@@ -43,7 +43,6 @@ func (g *Game) Update() error {
 		dragWin = nil
 		activeItem = nil
 	}
-	//altClick := inpututil.IsMouseButtonJustPressed(ebiten.MouseButton1)
 
 	wx, wy := ebiten.Wheel()
 	wheelDelta := point{X: float32(wx), Y: float32(wy)}
