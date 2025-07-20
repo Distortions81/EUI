@@ -73,8 +73,8 @@ It is currently in a pre‑alpha state and the API may change at any time.
 - `SetFontSource(src *text.GoTextFaceSource)`
 - `FontSource() *text.GoTextFaceSource`
 - `EnsureFontSource(ttf []byte) error`
-- `ListThemes() ([]string, error)`
-- `ListLayouts() ([]string, error)`
+- `ListThemes() ([]string, error)` – list the bundled color theme names
+- `ListLayouts() ([]string, error)` – list the bundled layout theme names
 - `CurrentThemeName() string`
 - `SetCurrentThemeName(name string)`
 - `CurrentLayoutName() string`
