@@ -469,7 +469,7 @@ func (item *itemData) setSliderValue(mpos point) {
 	// different ranges have identical track lengths.
 	maxLabel := sliderMaxLabel
 	textSize := (item.FontSize * uiScale) + 2
-	face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
+	face := textFace(textSize)
 	maxW, _ := text.Measure(maxLabel, face, 0)
 
 	knobW := item.AuxSize.X * uiScale

@@ -119,7 +119,7 @@ func TestSetSliderValue(t *testing.T) {
 	item.setSliderValue(point{X: 42})
 	maxLabel := sliderMaxLabel
 	textSize := (item.FontSize * uiScale) + 2
-	face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
+	face := textFace(textSize)
 	maxW, _ := text.Measure(maxLabel, face, 0)
 	knobW := item.AuxSize.X * uiScale
 	width := item.DrawRect.X1 - item.DrawRect.X0 - knobW - currentLayout.SliderValueGap - float32(maxW)
@@ -148,7 +148,7 @@ func sliderTrackWidth(item *itemData) float32 {
 	// different ranges have equal track lengths.
 	maxLabel := sliderMaxLabel
 	textSize := (item.FontSize * uiScale) + 2
-	face := &text.GoTextFace{Source: mplusFaceSource, Size: float64(textSize)}
+	face := textFace(textSize)
 	maxW, _ := text.Measure(maxLabel, face, 0)
 	knobW := item.AuxSize.X * uiScale
 	width := maxSize.X - knobW - currentLayout.SliderValueGap - float32(maxW)

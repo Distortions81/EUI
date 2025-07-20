@@ -300,10 +300,7 @@ func (win *windowData) titleTextWidth() point {
 		return point{}
 	}
 	textSize := ((win.GetTitleSize()) / 1.5)
-	face := &text.GoTextFace{
-		Source: mplusFaceSource,
-		Size:   float64(textSize),
-	}
+	face := textFace(textSize)
 	textWidth, textHeight := text.Measure(win.Title, face, 0)
 	return point{X: float32(textWidth), Y: float32(textHeight)}
 }
