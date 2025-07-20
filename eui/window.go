@@ -101,6 +101,10 @@ func (target *windowData) AddWindow(toBack bool) {
 		applyThemeToWindow(target)
 	}
 
+	for _, it := range target.Contents {
+		markDirty(it)
+	}
+
 	// Closed windows shouldn't steal focus, so add them to the back by
 	// default and don't update the active window.
 	if !target.Open {
@@ -140,6 +144,10 @@ func NewWindow(win *windowData) *windowData {
 	}
 	stripWindowColors(&newWindow)
 	newWindow.Theme = currentTheme
+	// mark all items dirty when the window is created
+	for _, it := range newWindow.Contents {
+		markDirty(it)
+	}
 	return &newWindow
 }
 
@@ -154,6 +162,7 @@ func NewButton(item *itemData) *itemData {
 	}
 	stripItemColors(&newItem)
 	newItem.Theme = currentTheme
+	newItem.Dirty = true
 	return &newItem
 }
 
@@ -168,6 +177,7 @@ func NewCheckbox(item *itemData) *itemData {
 	}
 	stripItemColors(&newItem)
 	newItem.Theme = currentTheme
+	newItem.Dirty = true
 	return &newItem
 }
 
@@ -182,6 +192,7 @@ func NewRadio(item *itemData) *itemData {
 	}
 	stripItemColors(&newItem)
 	newItem.Theme = currentTheme
+	newItem.Dirty = true
 	return &newItem
 }
 
@@ -196,6 +207,7 @@ func NewInput(item *itemData) *itemData {
 	}
 	stripItemColors(&newItem)
 	newItem.Theme = currentTheme
+	newItem.Dirty = true
 	return &newItem
 }
 
@@ -210,6 +222,7 @@ func NewSlider(item *itemData) *itemData {
 	}
 	stripItemColors(&newItem)
 	newItem.Theme = currentTheme
+	newItem.Dirty = true
 	return &newItem
 }
 
@@ -224,6 +237,7 @@ func NewDropdown(item *itemData) *itemData {
 	}
 	stripItemColors(&newItem)
 	newItem.Theme = currentTheme
+	newItem.Dirty = true
 	return &newItem
 }
 
@@ -241,6 +255,7 @@ func NewColorWheel(item *itemData) *itemData {
 	}
 	stripItemColors(&newItem)
 	newItem.Theme = currentTheme
+	newItem.Dirty = true
 	return &newItem
 }
 
@@ -255,6 +270,7 @@ func NewText(item *itemData) *itemData {
 	}
 	stripItemColors(&newItem)
 	newItem.Theme = currentTheme
+	newItem.Dirty = true
 	return &newItem
 }
 

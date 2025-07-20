@@ -57,6 +57,9 @@ type windowData struct {
 	// Drop shadow styling
 	ShadowSize  float32
 	ShadowColor Color
+
+	// cache stores the pre-rendered window image when all items are clean.
+	cache *ebiten.Image
 }
 
 type itemData struct {
@@ -135,6 +138,9 @@ type itemData struct {
 	// Drop shadow styling
 	ShadowSize  float32
 	ShadowColor Color
+
+	// Dirty indicates the item needs to be re-rendered.
+	Dirty bool
 }
 
 type roundRect struct {
