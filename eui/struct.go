@@ -99,6 +99,9 @@ type itemData struct {
 
 	ImageName string
 	Image     *ebiten.Image
+	// wheelImg caches the generated color wheel graphic so it doesn't
+	// need to be recreated every frame.
+	wheelImg *ebiten.Image
 
 	//Style
 	Padding, Margin float32

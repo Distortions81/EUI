@@ -877,12 +877,10 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			wheelSize = maxSize.X
 		}
 
-		if item.Image == nil || item.Image.Bounds().Dx() != int(wheelSize) {
-			item.Image = colorWheelImage(int(wheelSize))
-		}
+		img := item.wheelImage(int(wheelSize))
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(float64(offset.X), float64(offset.Y))
-		subImg.DrawImage(item.Image, op)
+		subImg.DrawImage(img, op)
 
 		h, _, v, _ := rgbaToHSVA(color.RGBA(item.WheelColor))
 		radius := wheelSize / 2

@@ -7,6 +7,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+var sampleOffsets = []float64{0.125, 0.375, 0.625, 0.875}
+
 // colorWheelImage creates an Ebiten image containing a color wheel of the given size.
 // The wheel ranges 0-359 degrees with black at the center and fully saturated
 // color on the outer edge.
@@ -17,14 +19,13 @@ func colorWheelImage(size int) *ebiten.Image {
 	img := ebiten.NewImage(size, size)
 	r := float64(size) / 2
 	// Use a 4x4 grid of subpixel samples for smoother edges
-	offsets := []float64{0.125, 0.375, 0.625, 0.875}
-	maxSamples := len(offsets) * len(offsets)
+	maxSamples := len(sampleOffsets) * len(sampleOffsets)
 	for y := 0; y < size; y++ {
 		for x := 0; x < size; x++ {
 			var rr, gg, bb, aa float64
 			var coverage int
-			for _, oy := range offsets {
-				for _, ox := range offsets {
+			for _, oy := range sampleOffsets {
+				for _, ox := range sampleOffsets {
 					dx := float64(x) + ox - r
 					dy := float64(y) + oy - r
 					dist := math.Hypot(dx, dy)
@@ -62,4 +63,17 @@ func colorWheelImage(size int) *ebiten.Image {
 		}
 	}
 	return img
+}
+
+// wheelImage returns a cached color wheel image for the item, generating one
+// if necessary. The image is recreated when the requested size differs from the
+// cached version.
+func (it *itemData) wheelImage(size int) *ebiten.Image {
+	if size <= 0 {
+		size = 1
+	}
+	if it.wheelImg == nil || it.wheelImg.Bounds().Dx() != size {
+		it.wheelImg = colorWheelImage(size)
+	}
+	return it.wheelImg
 }

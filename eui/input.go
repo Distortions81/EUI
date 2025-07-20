@@ -3,6 +3,7 @@ package eui
 import (
 	"math"
 	"time"
+	"unicode/utf8"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -16,6 +17,8 @@ var (
 	dragPart   dragType
 	dragWin    *windowData
 	activeItem *itemData
+
+	charBuffer []rune
 )
 
 func (g *Game) Update() error {
@@ -169,16 +172,14 @@ func (g *Game) Update() error {
 	}
 
 	if focusedItem != nil {
-		for _, r := range ebiten.AppendInputChars(nil) {
+		charBuffer = ebiten.AppendInputChars(charBuffer[:0])
+		for _, r := range charBuffer {
 			if r >= 32 && r != 127 && r != '\r' && r != '\n' {
 				focusedItem.Text += string(r)
 			}
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyBackspace) {
-			runes := []rune(focusedItem.Text)
-			if len(runes) > 0 {
-				focusedItem.Text = string(runes[:len(runes)-1])
-			}
+			focusedItem.Text = removeLastRune(focusedItem.Text)
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 			focusedItem.Focused = false
@@ -810,4 +811,17 @@ func closeAllDropdowns() {
 	for _, ov := range overlays {
 		closeDropdowns([]*itemData{ov})
 	}
+}
+
+// removeLastRune returns the given string with the last UTF-8 encoded rune
+// removed. It avoids converting the entire string to []rune.
+func removeLastRune(s string) string {
+	if len(s) == 0 {
+		return s
+	}
+	_, size := utf8.DecodeLastRuneInString(s)
+	if size <= 0 {
+		return s
+	}
+	return s[:len(s)-size]
 }
