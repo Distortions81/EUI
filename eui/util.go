@@ -3,6 +3,7 @@ package eui
 import (
 	"image/color"
 	"math"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
@@ -131,6 +132,7 @@ func (win *windowData) dragbarRect() rect {
 
 func (win *windowData) setSize(size point) bool {
 	tooSmall := false
+	prev := win.Size
 
 	// Enforce minimum dimensions and prevent negatives.
 	if size.X < minWinSizeX {
@@ -189,6 +191,10 @@ func (win *windowData) setSize(size point) bool {
 				win.Scroll.X = max
 			}
 		}
+	}
+
+	if win.Size != prev {
+		win.cache = nil
 	}
 
 	return tooSmall
@@ -605,6 +611,81 @@ func clearDirty(it *itemData) {
 		for _, sub := range tab.Contents {
 			clearDirty(sub)
 		}
+	}
+}
+
+// clearHover recursively clears the Hovered flag on the item and its children.
+// When the flag was previously true, the item is marked Dirty so the visual
+// state updates on the next render.
+func clearHover(it *itemData) {
+	if it == nil {
+		return
+	}
+	if it.Hovered {
+		it.Hovered = false
+		it.Dirty = true
+	}
+	for _, sub := range it.Contents {
+		clearHover(sub)
+	}
+	for _, tab := range it.Tabs {
+		if tab.Hovered {
+			tab.Hovered = false
+			tab.Dirty = true
+		}
+		for _, sub := range tab.Contents {
+			clearHover(sub)
+		}
+	}
+}
+
+// clearAllHover resets hover state on all windows and overlays.
+func clearAllHover() {
+	for _, win := range windows {
+		if win.Hovered {
+			win.Hovered = false
+			win.cache = nil
+		}
+		for _, it := range win.Contents {
+			clearHover(it)
+		}
+	}
+	for _, ov := range overlays {
+		clearHover(ov)
+	}
+}
+
+// updateClickDirty marks items dirty while their click highlight is active and
+// for a brief period afterwards so the cached image updates when the highlight
+// ends.
+func updateClickDirty(it *itemData) {
+	if it == nil {
+		return
+	}
+	if time.Since(it.Clicked) < clickFlash*2 {
+		it.Dirty = true
+	}
+	for _, sub := range it.Contents {
+		updateClickDirty(sub)
+	}
+	for _, tab := range it.Tabs {
+		updateClickDirty(tab)
+		for _, sub := range tab.Contents {
+			updateClickDirty(sub)
+		}
+	}
+}
+
+// refreshDirtyStates updates transient item states each frame.
+func refreshDirtyStates() {
+	clearAllHover()
+	for _, win := range windows {
+		for _, it := range win.Contents {
+			updateClickDirty(it)
+		}
+	}
+	for _, ov := range overlays {
+		updateClickDirty(ov)
 	}
 }
 

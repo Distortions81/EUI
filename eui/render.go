@@ -74,27 +74,26 @@ func drawOverlay(item *itemData, screen *ebiten.Image) {
 }
 
 func (win *windowData) Draw(screen *ebiten.Image) {
-	dirty := itemsDirty(win.Contents) || win.cache == nil
-	if dirty {
-		if win.cache == nil || win.cache.Bounds().Dx() != screenWidth || win.cache.Bounds().Dy() != screenHeight {
-			win.cache = ebiten.NewImage(screenWidth, screenHeight)
-		}
-		win.cache.Clear()
-		win.drawBG(win.cache)
-		win.drawItems(win.cache)
-		win.drawScrollbars(win.cache)
-		titleArea := win.cache.SubImage(win.getTitleRect().getRectangle()).(*ebiten.Image)
-		win.drawWinTitle(titleArea)
-		windowArea := win.cache.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
-		win.drawBorder(windowArea)
-		win.drawDebug(win.cache)
-		for _, it := range win.Contents {
-			clearDirty(it)
-		}
+	if win.cache == nil || win.cache.Bounds().Dx() != screenWidth ||
+		win.cache.Bounds().Dy() != screenHeight {
+		win.cache = ebiten.NewImage(screenWidth, screenHeight)
 	}
-	if win.cache != nil {
-		screen.DrawImage(win.cache, nil)
+
+	// Always redraw the window so interactive elements update correctly.
+	win.cache.Clear()
+	win.drawBG(win.cache)
+	win.drawItems(win.cache)
+	win.drawScrollbars(win.cache)
+	titleArea := win.cache.SubImage(win.getTitleRect().getRectangle()).(*ebiten.Image)
+	win.drawWinTitle(titleArea)
+	windowArea := win.cache.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
+	win.drawBorder(windowArea)
+	win.drawDebug(win.cache)
+	for _, it := range win.Contents {
+		clearDirty(it)
 	}
+
+	screen.DrawImage(win.cache, nil)
 }
 
 func (win *windowData) drawBG(screen *ebiten.Image) {
