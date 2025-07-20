@@ -11,6 +11,7 @@ func makeFlowTestWindow() *windowData {
 		Open:      true,
 		Resizable: true,
 		Movable:   true,
+		Closable:  true,
 	})
 
 	mainFlow := &itemData{
