@@ -53,7 +53,7 @@ func drawOverlay(item *itemData, screen *ebiten.Image) {
 	offset := item.getOverlayPosition()
 	clip := rect{X0: 0, Y0: 0, X1: float32(screenWidth), Y1: float32(screenHeight)}
 	if item.ItemType == ITEM_FLOW {
-		item.drawFlows(nil, offset, clip, screen)
+		item.drawFlows(nil, nil, offset, clip, screen)
 	} else {
 		item.drawItem(nil, offset, clip, screen)
 	}
@@ -269,14 +269,14 @@ func (win *windowData) drawItems(screen *ebiten.Image) {
 		itemPos := pointAdd(winPos, item.getPosition(win))
 
 		if item.ItemType == ITEM_FLOW {
-			item.drawFlows(nil, itemPos, clip, screen)
+			item.drawFlows(win, nil, itemPos, clip, screen)
 		} else {
 			item.drawItem(nil, itemPos, clip, screen)
 		}
 	}
 }
 
-func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, screen *ebiten.Image) {
+func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point, clip rect, screen *ebiten.Image) {
 	// Store the drawn rectangle for input handling
 	itemRect := rect{
 		X0: offset.X,
@@ -396,20 +396,27 @@ func (item *itemData) drawFlows(parent *itemData, offset point, clip rect, scree
 			flowPos := pointAdd(drawOffset, item.GetPos())
 			flowOff := pointAdd(flowPos, flowOffset)
 			itemPos := pointAdd(flowOff, subItem.GetPos())
-			subItem.drawFlows(item, itemPos, item.DrawRect, screen)
+			subItem.drawFlows(win, item, itemPos, item.DrawRect, screen)
 		} else {
 			flowOff := pointAdd(drawOffset, flowOffset)
 
-			objOff := flowOff
-			if parent != nil && parent.ItemType == ITEM_FLOW {
-				if parent.FlowType == FLOW_HORIZONTAL {
-					objOff = pointAdd(objOff, point{X: subItem.GetPos().X})
-				} else if parent.FlowType == FLOW_VERTICAL {
-					objOff = pointAdd(objOff, point{Y: subItem.GetPos().Y})
+			if subItem.PinTo != PIN_TOP_LEFT {
+				pad := win.Padding + win.BorderPad
+				objOff := pointAdd(win.getPosition(), point{X: pad, Y: win.GetTitleSize() + pad})
+				objOff = pointSub(objOff, win.Scroll)
+				objOff = pointAdd(objOff, subItem.getPosition(win))
+				subItem.drawItem(item, objOff, win.getMainRect(), screen)
+			} else {
+				objOff := flowOff
+				if parent != nil && parent.ItemType == ITEM_FLOW {
+					if parent.FlowType == FLOW_HORIZONTAL {
+						objOff = pointAdd(objOff, point{X: subItem.GetPos().X})
+					} else if parent.FlowType == FLOW_VERTICAL {
+						objOff = pointAdd(objOff, point{Y: subItem.GetPos().Y})
+					}
 				}
+				subItem.drawItem(item, objOff, item.DrawRect, screen)
 			}
-
-			subItem.drawItem(item, objOff, item.DrawRect, screen)
 		}
 
 		if item.ItemType == ITEM_FLOW {

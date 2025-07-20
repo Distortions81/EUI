@@ -79,6 +79,17 @@ func makeFlowTestWindow() *windowData {
 	nestV := &itemData{ItemType: ITEM_FLOW, FlowType: FLOW_VERTICAL, Size: point{X: 100, Y: 60}, Fixed: true}
 	nestV.addItemTo(NewButton(&itemData{Text: "NV1", Size: point{X: 60, Y: 20}, FontSize: 8}))
 	nestV.addItemTo(NewButton(&itemData{Text: "NV2", Size: point{X: 60, Y: 20}, FontSize: 8}))
+
+	// add another level of nesting to test deeper flows
+	deepH := &itemData{ItemType: ITEM_FLOW, FlowType: FLOW_HORIZONTAL, Size: point{X: 80, Y: 24}, Fixed: true}
+	deepH.addItemTo(NewButton(&itemData{Text: "DNH1", Size: point{X: 40, Y: 20}, FontSize: 8}))
+	deepH.addItemTo(NewButton(&itemData{Text: "DNH2", Size: point{X: 40, Y: 20}, FontSize: 8}))
+
+	deepV := &itemData{ItemType: ITEM_FLOW, FlowType: FLOW_VERTICAL, Size: point{X: 60, Y: 44}, Fixed: true}
+	deepV.addItemTo(deepH)
+	deepV.addItemTo(NewButton(&itemData{Text: "DNV", Size: point{X: 40, Y: 20}, FontSize: 8}))
+
+	nestV.addItemTo(deepV)
 	nested.addItemTo(nestV)
 
 	nestH := &itemData{ItemType: ITEM_FLOW, FlowType: FLOW_HORIZONTAL, Size: point{X: 100, Y: 32}, Fixed: true}
@@ -86,7 +97,7 @@ func makeFlowTestWindow() *windowData {
 	nestH.addItemTo(NewButton(&itemData{Text: "NH2", Size: point{X: 40, Y: 24}, FontSize: 8}))
 	nested.addItemTo(nestH)
 
-	// Pinned buttons inside the window
+	// Pinned buttons inside the flow so we can test pinning behavior within flows
 	mainFlow.addItemTo(NewButton(&itemData{Text: "TopLeft", PinTo: PIN_TOP_LEFT, Size: point{X: 60, Y: 20}, FontSize: 8}))
 	mainFlow.addItemTo(NewButton(&itemData{Text: "TopRight", PinTo: PIN_TOP_RIGHT, Size: point{X: 60, Y: 20}, FontSize: 8}))
 	mainFlow.addItemTo(NewButton(&itemData{Text: "BottomLeft", PinTo: PIN_BOTTOM_LEFT, Size: point{X: 80, Y: 20}, FontSize: 8}))
