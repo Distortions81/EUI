@@ -7,6 +7,7 @@ import (
 	"syscall"
 
 	eui "EUI/eui"
+
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -41,9 +42,6 @@ func main() {
 
 	showcase := makeShowcaseWindow()
 	showcase.AddWindow(false)
-
-	flowTest := makeFlowTestWindow()
-	flowTest.AddWindow(false)
 
 	themeSel = makeThemeSelector()
 	if themeSel != nil {
