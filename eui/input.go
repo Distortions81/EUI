@@ -255,7 +255,6 @@ func (win *windowData) clickWindowItems(mpos point, click bool) {
 	}
 	if !win.Hovered {
 		win.Hovered = true
-		win.cache = nil
 	}
 
 	for _, item := range win.Contents {

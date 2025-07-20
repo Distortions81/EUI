@@ -194,7 +194,10 @@ func (win *windowData) setSize(size point) bool {
 	}
 
 	if win.Size != prev {
-		win.cache = nil
+		// size changed, mark contents dirty so caches refresh
+		for _, it := range win.Contents {
+			markDirty(it)
+		}
 	}
 
 	return tooSmall
@@ -705,13 +708,10 @@ func markItemStateChanges(it *itemData) {
 	}
 }
 
-// applyStateChanges checks for changed hover states and invalidates window
-// caches when needed.
+// applyStateChanges checks for changed hover states and marks items dirty when
+// their visual state changes.
 func applyStateChanges() {
 	for _, win := range windows {
-		if win.PrevHovered != win.Hovered {
-			win.cache = nil
-		}
 		win.PrevHovered = win.Hovered
 		for _, it := range win.Contents {
 			markItemStateChanges(it)

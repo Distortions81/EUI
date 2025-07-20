@@ -2,6 +2,7 @@ package eui
 
 import (
 	"fmt"
+	"image"
 	"image/color"
 	"math"
 	"strings"
@@ -109,26 +110,17 @@ func drawOverlay(item *itemData, screen *ebiten.Image) {
 }
 
 func (win *windowData) Draw(screen *ebiten.Image) {
-	if win.cache == nil || win.cache.Bounds().Dx() != screenWidth ||
-		win.cache.Bounds().Dy() != screenHeight {
-		win.cache = ebiten.NewImage(screenWidth, screenHeight)
-	}
-
-	// Always redraw the window so interactive elements update correctly.
-	win.cache.Clear()
-	win.drawBG(win.cache)
-	win.drawItems(win.cache)
-	win.drawScrollbars(win.cache)
-	titleArea := win.cache.SubImage(win.getTitleRect().getRectangle()).(*ebiten.Image)
+	win.drawBG(screen)
+	win.drawItems(screen)
+	win.drawScrollbars(screen)
+	titleArea := screen.SubImage(win.getTitleRect().getRectangle()).(*ebiten.Image)
 	win.drawWinTitle(titleArea)
-	windowArea := win.cache.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
+	windowArea := screen.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
 	win.drawBorder(windowArea)
-	win.drawDebug(win.cache)
+	win.drawDebug(screen)
 	for _, it := range win.Contents {
 		clearDirty(it)
 	}
-
-	screen.DrawImage(win.cache, nil)
 }
 
 func (win *windowData) drawBG(screen *ebiten.Image) {
@@ -332,6 +324,73 @@ func (win *windowData) drawItems(screen *ebiten.Image) {
 }
 
 func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point, clip rect, screen *ebiten.Image) {
+	itemRect := rect{X0: offset.X, Y0: offset.Y, X1: offset.X + item.GetSize().X, Y1: offset.Y + item.GetSize().Y}
+	drawRect := intersectRect(itemRect, clip)
+	item.DrawRect = drawRect
+	if drawRect.X1 <= drawRect.X0 || drawRect.Y1 <= drawRect.Y0 {
+		return
+	}
+
+	w := int(math.Ceil(float64(item.GetSize().X)))
+	h := int(math.Ceil(float64(item.GetSize().Y)))
+	if w <= 0 {
+		w = 1
+	}
+	if h <= 0 {
+		h = 1
+	}
+	if item.cache == nil || item.Dirty || item.cache.Bounds().Dx() != w || item.cache.Bounds().Dy() != h {
+		item.cache = ebiten.NewImage(w, h)
+		item.renderFlows(win, parent, point{}, rect{X0: 0, Y0: 0, X1: item.GetSize().X, Y1: item.GetSize().Y}, item.cache)
+		item.Dirty = false
+	}
+
+	srcRect := image.Rect(int(drawRect.X0-offset.X), int(drawRect.Y0-offset.Y), int(drawRect.X1-offset.X), int(drawRect.Y1-offset.Y))
+	dst := screen.SubImage(drawRect.getRectangle()).(*ebiten.Image)
+	src := item.cache.SubImage(srcRect).(*ebiten.Image)
+	dst.DrawImage(src, nil)
+}
+
+func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen *ebiten.Image) {
+	if parent == nil {
+		parent = item
+	}
+	maxSize := item.GetSize()
+	if item.Size.X > parent.Size.X {
+		maxSize.X = parent.GetSize().X
+	}
+	if item.Size.Y > parent.Size.Y {
+		maxSize.Y = parent.GetSize().Y
+	}
+
+	itemRect := rect{X0: offset.X, Y0: offset.Y, X1: offset.X + maxSize.X, Y1: offset.Y + maxSize.Y}
+	drawRect := intersectRect(itemRect, clip)
+	item.DrawRect = drawRect
+	if drawRect.X1 <= drawRect.X0 || drawRect.Y1 <= drawRect.Y0 {
+		return
+	}
+
+	w := int(math.Ceil(float64(maxSize.X)))
+	h := int(math.Ceil(float64(maxSize.Y)))
+	if w <= 0 {
+		w = 1
+	}
+	if h <= 0 {
+		h = 1
+	}
+	if item.cache == nil || item.Dirty || item.cache.Bounds().Dx() != w || item.cache.Bounds().Dy() != h {
+		item.cache = ebiten.NewImage(w, h)
+		item.renderItem(parent, point{}, rect{X0: 0, Y0: 0, X1: maxSize.X, Y1: maxSize.Y}, item.cache)
+		item.Dirty = false
+	}
+
+	srcRect := image.Rect(int(drawRect.X0-offset.X), int(drawRect.Y0-offset.Y), int(drawRect.X1-offset.X), int(drawRect.Y1-offset.Y))
+	dst := screen.SubImage(drawRect.getRectangle()).(*ebiten.Image)
+	src := item.cache.SubImage(srcRect).(*ebiten.Image)
+	dst.DrawImage(src, nil)
+}
+
+func (item *itemData) renderFlows(win *windowData, parent *itemData, offset point, clip rect, screen *ebiten.Image) {
 	// Store the drawn rectangle for input handling
 	itemRect := rect{
 		X0: offset.X,
@@ -538,7 +597,7 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 	}
 }
 
-func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen *ebiten.Image) {
+func (item *itemData) renderItem(parent *itemData, offset point, clip rect, screen *ebiten.Image) {
 
 	if parent == nil {
 		parent = item
