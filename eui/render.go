@@ -66,7 +66,6 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 	titleArea := screen.SubImage(win.getTitleRect().getRectangle()).(*ebiten.Image)
 	win.drawWinTitle(titleArea)
 	windowArea := screen.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
-	//win.drawResizeTab(windowArea)
 	win.drawBorder(windowArea)
 	win.drawDebug(screen)
 }
@@ -113,7 +112,6 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image) {
 		if textWidth > float64(win.GetSize().X) ||
 			textHeight > float64(win.GetTitleSize()) {
 			skipTitleText = true
-			//log.Print("Title text too big for title size.")
 		}
 
 		//Title text

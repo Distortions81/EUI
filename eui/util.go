@@ -216,7 +216,6 @@ func (win *windowData) getWindowPart(mpos point, click bool) dragType {
 
 	if win.Resizable {
 		t := Tol * uiScale
-		cs := CornerSize * uiScale
 
 		winRect := win.getWinRect()
 
@@ -236,25 +235,13 @@ func (win *windowData) getWindowPart(mpos point, click bool) dragType {
 
 		//If within outrect, and not within inrect it is window DRAG
 		if outRect.containsPoint(mpos) && !inRect.containsPoint(mpos) {
-			if mpos.Y < outRect.Y0+cs {
-				if mpos.X < inRect.X0+cs {
-					return PART_TOP_LEFT
-				} else if mpos.X > inRect.X1-cs {
-					return PART_TOP_RIGHT
-				} else {
-					return PART_TOP
-				}
-			} else if mpos.Y > inRect.Y1-cs {
-				if mpos.X > outRect.X1-cs {
-					return PART_BOTTOM_RIGHT
-				} else if mpos.X < outRect.X0+cs {
-					return PART_BOTTOM_LEFT
-				} else {
-					return PART_BOTTOM
-				}
+			if mpos.Y < inRect.Y0 {
+				return PART_TOP
+			} else if mpos.Y > inRect.Y1 {
+				return PART_BOTTOM
 			} else if mpos.X < inRect.X0 {
 				return PART_LEFT
-			} else if mpos.X < outRect.X1 {
+			} else if mpos.X > inRect.X1 {
 				return PART_RIGHT
 			}
 		}

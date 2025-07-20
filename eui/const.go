@@ -9,8 +9,7 @@ const (
 	DefaultTabWidth  = 128
 	DefaultTabHeight = 24
 
-	CornerSize = 14
-	Tol        = 2
+	Tol = 2
 
 	// sliderMaxLabel defines the formatted text used to measure the value
 	// field of sliders. Using a constant ensures int and float sliders have

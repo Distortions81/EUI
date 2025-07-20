@@ -1,13 +1,14 @@
 # API Reference
 
-This document lists the exported constants, variables, types and functions provided by the `eui` package.  The library implements a minimal retained‑mode user interface on top of the Ebiten game engine.  It is currently in a pre‑alpha state and the API may change at any time.
+This document lists the exported constants, variables, types and functions provided by the `eui` package.
+The library implements a minimal retained‑mode user interface on top of the [Ebiten](https://ebiten.org/) game engine.
+It is currently in a pre‑alpha state and the API may change at any time.
 
 ## Constants
 
-- `MinWinSizeX`, `MinWinSizeY` – enforce a minimum window size of 64×64 pixels.
-- `DefaultTabWidth`, `DefaultTabHeight` – default dimensions of window tabs.
-- `CornerSize` – radius used when drawing rounded corners.
-- `Tol` – geometry tolerance for hit testing.
+- `MinWinSizeX`, `MinWinSizeY` – minimum window dimensions in pixels. Windows cannot be resized smaller than 64×64.
+- `DefaultTabWidth`, `DefaultTabHeight` – dimensions used when creating tab widgets.
+- `Tol` – geometry tolerance used for hit testing on window edges when resizing.
 
 ### Enumerations
 
@@ -113,6 +114,17 @@ This document lists the exported constants, variables, types and functions provi
 - `(win *WindowData) GetPos() Point`
 - `(item *ItemData) GetSize() Point`
 - `(item *ItemData) GetPos() Point`
+
+### Example
+
+The snippet below creates a simple window containing a button:
+
+```go
+win := eui.NewWindow(&eui.WindowData{Title: "Example", Size: eui.Point{X: 200, Y: 120}})
+btn := eui.NewButton(&eui.ItemData{Text: "Click Me"})
+win.AddItem(btn)
+win.AddWindow(false)
+```
 
 To regenerate this file run:
 
