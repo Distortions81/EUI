@@ -84,6 +84,9 @@ It is currently in a pre‑alpha state and the API may change at any time.
 - `SetAccentSaturation(s float64)`
 - `SetUIScale(scale float32)`
 - `NewGame() *Game`
+- `Update() error`
+- `Draw(screen *ebiten.Image)`
+- `Layout(outsideWidth, outsideHeight int) (int, int)`
 - `(g *Game) Update() error`
 - `(g *Game) Draw(screen *ebiten.Image)`
 - `(g *Game) Layout(outsideWidth, outsideHeight int) (int, int)`
