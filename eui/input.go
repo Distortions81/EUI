@@ -176,13 +176,16 @@ func (g *Game) Update() error {
 		for _, r := range charBuffer {
 			if r >= 32 && r != 127 && r != '\r' && r != '\n' {
 				focusedItem.Text += string(r)
+				focusedItem.Dirty = true
 			}
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyBackspace) {
 			focusedItem.Text = removeLastRune(focusedItem.Text)
+			focusedItem.Dirty = true
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 			focusedItem.Focused = false
+			focusedItem.Dirty = true
 			focusedItem = nil
 		}
 	}
@@ -344,6 +347,7 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 		if item.ItemType == ITEM_COLORWHEEL {
 			if col, ok := item.colorAt(mpos); ok {
 				item.WheelColor = col
+				item.Dirty = true
 				if item.OnColorChange != nil {
 					item.OnColorChange(col)
 				} else {
@@ -353,8 +357,10 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 		}
 		if item.ItemType == ITEM_CHECKBOX {
 			item.Checked = !item.Checked
+			item.Dirty = true
 		} else if item.ItemType == ITEM_RADIO {
 			item.Checked = true
+			item.Dirty = true
 			// uncheck others in group
 			if item.RadioGroup != "" {
 				uncheckRadioGroup(item.Parent, item.RadioGroup, item)
@@ -362,6 +368,7 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 		} else if item.ItemType == ITEM_INPUT {
 			focusedItem = item
 			item.Focused = true
+			item.Dirty = true
 		} else if item.ItemType == ITEM_DROPDOWN {
 			if item.Open {
 				optionH := item.GetSize().Y
@@ -377,15 +384,18 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 					if idx >= 0 && idx < len(item.Options) {
 						item.Selected = idx
 						item.Open = false
+						item.Dirty = true
 						if item.OnSelect != nil {
 							item.OnSelect(idx)
 						}
 					}
 				} else {
 					item.Open = false
+					item.Dirty = true
 				}
 			} else {
 				item.Open = true
+				item.Dirty = true
 			}
 		}
 		if item.Action != nil {
@@ -454,7 +464,10 @@ func uncheckRadioGroup(parent *itemData, group string, except *itemData) {
 func subUncheckRadio(list []*itemData, group string, except *itemData) {
 	for _, it := range list {
 		if it.ItemType == ITEM_RADIO && it.RadioGroup == group && it != except {
-			it.Checked = false
+			if it.Checked {
+				it.Checked = false
+				it.Dirty = true
+			}
 		}
 		if len(it.Tabs) > 0 {
 			for _, tab := range it.Tabs {
@@ -489,9 +502,13 @@ func (item *itemData) setSliderValue(mpos point) {
 		val = width
 	}
 	ratio := val / width
-	item.Value = item.MinValue + ratio*(item.MaxValue-item.MinValue)
+	newVal := item.MinValue + ratio*(item.MaxValue-item.MinValue)
 	if item.IntOnly {
-		item.Value = float32(int(item.Value + 0.5))
+		newVal = float32(int(newVal + 0.5))
+	}
+	if newVal != item.Value {
+		item.Value = newVal
+		item.Dirty = true
 	}
 }
 

@@ -66,6 +66,7 @@ func (parent *itemData) addItemTo(item *itemData) {
 		applyThemeToItem(item)
 	}
 	parent.Contents = append(parent.Contents, item)
+	markDirty(item)
 }
 
 func (parent *windowData) addItemTo(item *itemData) {
@@ -73,6 +74,7 @@ func (parent *windowData) addItemTo(item *itemData) {
 		applyThemeToItem(item)
 	}
 	parent.Contents = append(parent.Contents, item)
+	markDirty(item)
 }
 
 func (win *windowData) getMainRect() rect {
@@ -553,6 +555,56 @@ func (item *itemData) resizeFlow(parentSize point) {
 func (win *windowData) resizeFlows() {
 	for _, item := range win.Contents {
 		item.resizeFlow(win.GetSize())
+	}
+}
+
+// markDirty sets the Dirty flag on the item and all of its descendants.
+func markDirty(it *itemData) {
+	if it == nil {
+		return
+	}
+	it.Dirty = true
+	for _, sub := range it.Contents {
+		markDirty(sub)
+	}
+	for _, tab := range it.Tabs {
+		for _, sub := range tab.Contents {
+			markDirty(sub)
+		}
+	}
+}
+
+// itemsDirty returns true if any item in the list is marked Dirty.
+func itemsDirty(list []*itemData) bool {
+	for _, it := range list {
+		if it.Dirty {
+			return true
+		}
+		if itemsDirty(it.Contents) {
+			return true
+		}
+		for _, tab := range it.Tabs {
+			if itemsDirty(tab.Contents) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// clearDirty recursively clears the Dirty flag on the item and its children.
+func clearDirty(it *itemData) {
+	if it == nil {
+		return
+	}
+	it.Dirty = false
+	for _, sub := range it.Contents {
+		clearDirty(sub)
+	}
+	for _, tab := range it.Tabs {
+		for _, sub := range tab.Contents {
+			clearDirty(sub)
+		}
 	}
 }
 
