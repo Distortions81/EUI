@@ -621,18 +621,12 @@ func clearHover(it *itemData) {
 	if it == nil {
 		return
 	}
-	if it.Hovered {
-		it.Hovered = false
-		it.Dirty = true
-	}
+	it.Hovered = false
 	for _, sub := range it.Contents {
 		clearHover(sub)
 	}
 	for _, tab := range it.Tabs {
-		if tab.Hovered {
-			tab.Hovered = false
-			tab.Dirty = true
-		}
+		tab.Hovered = false
 		for _, sub := range tab.Contents {
 			clearHover(sub)
 		}
@@ -642,10 +636,7 @@ func clearHover(it *itemData) {
 // clearAllHover resets hover state on all windows and overlays.
 func clearAllHover() {
 	for _, win := range windows {
-		if win.Hovered {
-			win.Hovered = false
-			win.cache = nil
-		}
+		win.Hovered = false
 		for _, it := range win.Contents {
 			clearHover(it)
 		}
@@ -658,34 +649,76 @@ func clearAllHover() {
 // updateClickDirty marks items dirty while their click highlight is active and
 // for a brief period afterwards so the cached image updates when the highlight
 // ends.
-func updateClickDirty(it *itemData) {
+// storePrevItemState copies hover and click highlight state so changes can be
+// detected later in the frame.
+func storePrevItemState(it *itemData) {
 	if it == nil {
 		return
 	}
-	if time.Since(it.Clicked) < clickFlash*2 {
-		it.Dirty = true
-	}
+	it.PrevHovered = it.Hovered
+	it.PrevClick = time.Since(it.Clicked) < clickFlash*2
 	for _, sub := range it.Contents {
-		updateClickDirty(sub)
+		storePrevItemState(sub)
 	}
 	for _, tab := range it.Tabs {
-		updateClickDirty(tab)
+		storePrevItemState(tab)
 		for _, sub := range tab.Contents {
-			updateClickDirty(sub)
+			storePrevItemState(sub)
 		}
 	}
 }
 
-// refreshDirtyStates updates transient item states each frame.
-func refreshDirtyStates() {
-	clearAllHover()
+// storePrevStates records previous window and item state before input is
+// processed.
+func storePrevStates() {
 	for _, win := range windows {
+		win.PrevHovered = win.Hovered
 		for _, it := range win.Contents {
-			updateClickDirty(it)
+			storePrevItemState(it)
 		}
 	}
 	for _, ov := range overlays {
-		updateClickDirty(ov)
+		storePrevItemState(ov)
+	}
+}
+
+// markItemStateChanges sets Dirty when hover or click states differ from the
+// previous frame.
+func markItemStateChanges(it *itemData) {
+	if it == nil {
+		return
+	}
+	clickActive := time.Since(it.Clicked) < clickFlash*2
+	if it.PrevHovered != it.Hovered || it.PrevClick != clickActive {
+		it.Dirty = true
+	}
+	it.PrevHovered = it.Hovered
+	it.PrevClick = clickActive
+	for _, sub := range it.Contents {
+		markItemStateChanges(sub)
+	}
+	for _, tab := range it.Tabs {
+		markItemStateChanges(tab)
+		for _, sub := range tab.Contents {
+			markItemStateChanges(sub)
+		}
+	}
+}
+
+// applyStateChanges checks for changed hover states and invalidates window
+// caches when needed.
+func applyStateChanges() {
+	for _, win := range windows {
+		if win.PrevHovered != win.Hovered {
+			win.cache = nil
+		}
+		win.PrevHovered = win.Hovered
+		for _, it := range win.Contents {
+			markItemStateChanges(it)
+		}
+	}
+	for _, ov := range overlays {
+		markItemStateChanges(ov)
 	}
 }
 

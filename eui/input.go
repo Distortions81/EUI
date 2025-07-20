@@ -26,8 +26,9 @@ func (g *Game) Update() error {
 
 	checkThemeLayoutMods()
 
-	// Reset hover states and update click-based dirty flags each frame.
-	refreshDirtyStates()
+	// Record previous input state then reset hover flags for this frame.
+	storePrevStates()
+	clearAllHover()
 
 	mx, my := ebiten.CursorPosition()
 	mpos := point{X: float32(mx), Y: float32(my)}
@@ -235,6 +236,10 @@ func (g *Game) Update() error {
 	for _, ov := range overlays {
 		ov.resizeFlow(ov.GetSize())
 	}
+
+	// Compare current state with the previous frame and mark dirty when
+	// changes are detected.
+	applyStateChanges()
 
 	updateMSFrame = float64(time.Since(start).Microseconds()) / 1000.0
 	return nil
