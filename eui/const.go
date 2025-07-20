@@ -1,4 +1,4 @@
-package main
+package eui
 
 const (
 	// MinWinSizeX and MinWinSizeY enforce a sane minimum window size.

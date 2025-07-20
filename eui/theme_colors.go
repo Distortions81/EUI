@@ -1,4 +1,4 @@
-package main
+package eui
 
 // namedColors holds theme-specific color mappings
 var namedColors map[string]Color

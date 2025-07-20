@@ -1,4 +1,4 @@
-package main
+package eui
 
 import (
 	"fmt"
@@ -456,7 +456,7 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 		}
 	}
 
-	if *debugMode {
+	if DebugMode {
 		strokeRect(subImg,
 			item.DrawRect.X0,
 			item.DrawRect.Y0,
@@ -938,7 +938,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		})
 	}
 
-	if *debugMode {
+	if DebugMode {
 		strokeRect(subImg,
 			item.DrawRect.X0,
 			item.DrawRect.Y0,
@@ -1004,7 +1004,7 @@ func drawDropdownOptions(item *itemData, offset point, clip rect, screen *ebiten
 }
 
 func (win *windowData) drawDebug(screen *ebiten.Image) {
-	if *debugMode {
+	if DebugMode {
 		grab := win.getMainRect()
 		strokeRect(screen, grab.X0, grab.Y0, grab.X1-grab.X0, grab.Y1-grab.Y0, 1, color.RGBA{R: 255, G: 255, A: 255}, false)
 
