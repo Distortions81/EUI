@@ -345,10 +345,16 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 		item.Dirty = false
 	}
 
-	srcRect := image.Rect(int(drawRect.X0-offset.X), int(drawRect.Y0-offset.Y), int(drawRect.X1-offset.X), int(drawRect.Y1-offset.Y))
-	dst := screen.SubImage(drawRect.getRectangle()).(*ebiten.Image)
+	srcRect := image.Rect(
+		int(drawRect.X0-offset.X),
+		int(drawRect.Y0-offset.Y),
+		int(drawRect.X1-offset.X),
+		int(drawRect.Y1-offset.Y),
+	)
 	src := item.cache.SubImage(srcRect).(*ebiten.Image)
-	dst.DrawImage(src, nil)
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(float64(drawRect.X0), float64(drawRect.Y0))
+	screen.DrawImage(src, op)
 }
 
 func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen *ebiten.Image) {
@@ -384,10 +390,16 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		item.Dirty = false
 	}
 
-	srcRect := image.Rect(int(drawRect.X0-offset.X), int(drawRect.Y0-offset.Y), int(drawRect.X1-offset.X), int(drawRect.Y1-offset.Y))
-	dst := screen.SubImage(drawRect.getRectangle()).(*ebiten.Image)
+	srcRect := image.Rect(
+		int(drawRect.X0-offset.X),
+		int(drawRect.Y0-offset.Y),
+		int(drawRect.X1-offset.X),
+		int(drawRect.Y1-offset.Y),
+	)
 	src := item.cache.SubImage(srcRect).(*ebiten.Image)
-	dst.DrawImage(src, nil)
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(float64(drawRect.X0), float64(drawRect.Y0))
+	screen.DrawImage(src, op)
 }
 
 func (item *itemData) renderFlows(win *windowData, parent *itemData, offset point, clip rect, screen *ebiten.Image) {
