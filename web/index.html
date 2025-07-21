@@ -6,11 +6,16 @@
 </head>
 <body>
     <script src="wasm_exec.js"></script>
-    <script>
+    <script type="module">
+        import brotliPromise from 'https://unpkg.com/brotli-dec-wasm@2.3.0/index.js';
+
+        const brotli = await brotliPromise;
         const go = new Go();
-        WebAssembly.instantiateStreaming(fetch("demo.wasm"), go.importObject).then((result) => {
-            go.run(result.instance);
-        });
+        const resp = await fetch('demo.wasm.br');
+        const compressed = new Uint8Array(await resp.arrayBuffer());
+        const decompressed = brotli.decompress(compressed);
+        const { instance } = await WebAssembly.instantiate(decompressed.buffer, go.importObject);
+        go.run(instance);
     </script>
 </body>
 </html>

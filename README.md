@@ -44,7 +44,9 @@ go run ./cmd/demo -debug
 
 ## Building for WebAssembly
 
-Compile the demo to `wasm` using the provided script:
+Compile the demo to `wasm` using the provided script. It passes size
+optimization flags to `go build` and also creates a Brotli compressed
+`demo.wasm.br` for the browser:
 
 ```sh
 ./scripts/build_wasm.sh
