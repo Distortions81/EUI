@@ -115,9 +115,16 @@ func startEbiten() {
 
 type demoGame struct{}
 
-func (g *demoGame) Update() error             { return eui.Update() }
-func (g *demoGame) Draw(screen *ebiten.Image) { eui.Draw(screen) }
+func (g *demoGame) Update() error {
+	//Your input code here
+	return eui.Update()
+}
+func (g *demoGame) Draw(screen *ebiten.Image) {
+	//Your draw code here
+	eui.Draw(screen)
+}
 func (g *demoGame) Layout(outsideWidth, outsideHeight int) (int, int) {
+	//Your layout handling code here
 	return eui.Layout(outsideWidth, outsideHeight)
 }
 
