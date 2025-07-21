@@ -4,6 +4,8 @@ EUI is a minimal retained‑mode UI built with the [Ebiten](https://ebiten.org/)
 It provides basic window management, flows and widgets built entirely with vector graphics.
 The project is currently in early development and APIs will likely change.
 
+[Live demo here](https://m45sci.xyz/u/dist/eui/)
+
 ## Currently the API is not complete!
 
 ![screenshot](https://raw.githubusercontent.com/Distortions81/EUI/refs/heads/main/Screenshot.png)
