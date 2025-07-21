@@ -25,6 +25,7 @@ building a game UI. Highlights include:
   callbacks so your code can react to clicks, slider movements and text input.
 - **Debug overlays** – toggle with the `-debug` flag when running the demo.
 - **Cross platform** – runs anywhere Ebiten does: desktop, web or mobile.
+- Touch controls are not yet implemented.
 
 ## Getting Started
 
