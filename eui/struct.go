@@ -116,6 +116,7 @@ type itemData struct {
 	Action        func()
 	OnColorChange func(Color)
 	WheelColor    Color
+	TextPtr       *string
 	Handler       *EventHandler
 	Contents      []*itemData
 

@@ -10,6 +10,7 @@ const (
 	EventCheckboxChanged
 	EventRadioSelected
 	EventColorChanged
+	EventInputChanged
 )
 
 // UIEvent describes a user interaction with a widget.
@@ -20,6 +21,7 @@ type UIEvent struct {
 	Index   int
 	Checked bool
 	Color   Color
+	Text    string
 }
 
 // EventHandler holds a channel widgets use to emit events.

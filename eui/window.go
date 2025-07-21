@@ -205,6 +205,11 @@ func NewInput(item *itemData) (*itemData, *EventHandler) {
 	}
 	stripItemColors(&newItem)
 	newItem.Theme = currentTheme
+	if newItem.TextPtr == nil {
+		newItem.TextPtr = &newItem.Text
+	} else {
+		*newItem.TextPtr = newItem.Text
+	}
 	h := newHandler()
 	newItem.Handler = h
 	return &newItem, h

@@ -338,6 +338,10 @@ func (item *itemData) GetPos() point {
 	return point{X: item.Position.X * uiScale, Y: item.Position.Y * uiScale}
 }
 
+func (item *itemData) GetTextPtr() *string {
+	return &item.Text
+}
+
 func (item *itemData) markDirty() {
 	if item != nil && item.ItemType != ITEM_FLOW {
 		item.Dirty = true
