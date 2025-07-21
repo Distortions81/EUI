@@ -10,7 +10,7 @@
     "accent": "200.6,0.74,0.91",
     "disabled": "0.0,0.00,0.00,0.00"
   },
-  "RecommendedLayout": "Default",
+  "RecommendedStyle": "Default",
   "Window": {
     "Padding": 8,
     "BGColor": "background",

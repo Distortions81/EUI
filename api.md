@@ -172,8 +172,8 @@ func AccentSaturation() float64
     AccentSaturation returns the current accent color saturation value.
 
 func AddOverlayFlow(flow *itemData)
-func CurrentLayoutName() string
-    CurrentLayoutName returns the active style theme name.
+func CurrentStyleName() string
+    CurrentStyleName returns the active style theme name.
 
 func CurrentThemeName() string
     CurrentThemeName returns the active theme name.
@@ -197,13 +197,13 @@ func Layout(outsideWidth, outsideHeight int) (int, int)
     Layout reports the dimensions for the game's screen. Pass Ebiten's outside
     size values to this from your Layout function.
 
-func ListLayouts() ([]string, error)
-    ListLayouts returns the available style theme names.
+func ListStyles() ([]string, error)
+    ListStyles returns the available style theme names.
 
 func ListThemes() ([]string, error)
     ListThemes returns the available palette names.
 
-func LoadLayout(name string) error
+func LoadStyle(name string) error
 func LoadTheme(name string) error
     LoadTheme reads a theme JSON file from the themes directory and sets it as
     the current theme without modifying existing windows.
@@ -246,8 +246,8 @@ func SetAccentSaturation(s float64)
     SetAccentSaturation updates the saturation component of the accent color and
     reapplies it to the current theme.
 
-func SetCurrentLayoutName(name string)
-    SetCurrentLayoutName updates the active style theme name.
+func SetCurrentStyleName(name string)
+    SetCurrentStyleName updates the active style theme name.
 
 func SetCurrentThemeName(name string)
     SetCurrentThemeName updates the active theme name.
@@ -312,7 +312,7 @@ func (parent *ItemData) AddItem(child *ItemData)
 
 type ItemTypeData = itemTypeData
 
-type LayoutBools struct {
+type StyleBools struct {
 	Window   bool
 	Button   bool
 	Text     bool
@@ -324,7 +324,7 @@ type LayoutBools struct {
 	Tab      bool
 }
 
-type LayoutNumbers struct {
+type StyleNumbers struct {
 	Window   float32
 	Button   float32
 	Text     float32
@@ -335,19 +335,19 @@ type LayoutNumbers struct {
 	Dropdown float32
 	Tab      float32
 }
-    LayoutTheme controls spacing and padding used by widgets.
+    StyleTheme controls spacing and padding used by widgets.
 
-type LayoutTheme struct {
+type StyleTheme struct {
 	SliderValueGap   float32
 	DropdownArrowPad float32
 	TextPadding      float32
 
-	Fillet        LayoutNumbers
-	Border        LayoutNumbers
-	BorderPad     LayoutNumbers
-	Filled        LayoutBools
-	Outlined      LayoutBools
-	ActiveOutline LayoutBools
+        Fillet        StyleNumbers
+        Border        StyleNumbers
+        BorderPad     StyleNumbers
+        Filled        StyleBools
+        Outlined      StyleBools
+        ActiveOutline StyleBools
 }
 
 type PinType = pinType

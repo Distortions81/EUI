@@ -240,11 +240,11 @@ func (win *windowData) drawScrollbars(screen *ebiten.Image) {
 		if maxScroll > 0 {
 			pos = (win.Scroll.Y / maxScroll) * (avail.Y - barH)
 		}
-		sbW := currentLayout.BorderPad.Slider * 2
+		sbW := currentStyle.BorderPad.Slider * 2
 		drawRoundRect(screen, &roundRect{
 			Size:     point{X: sbW, Y: barH},
 			Position: point{X: win.getPosition().X + win.GetSize().X - win.BorderPad - sbW, Y: win.getPosition().Y + win.GetTitleSize() + win.BorderPad + pos},
-			Fillet:   currentLayout.Fillet.Slider,
+			Fillet:   currentStyle.Fillet.Slider,
 			Filled:   true,
 			Color:    win.Theme.Window.ActiveColor,
 		})
@@ -256,11 +256,11 @@ func (win *windowData) drawScrollbars(screen *ebiten.Image) {
 		if maxScroll > 0 {
 			pos = (win.Scroll.X / maxScroll) * (avail.X - barW)
 		}
-		sbW := currentLayout.BorderPad.Slider * 2
+		sbW := currentStyle.BorderPad.Slider * 2
 		drawRoundRect(screen, &roundRect{
 			Size:     point{X: barW, Y: sbW},
 			Position: point{X: win.getPosition().X + win.BorderPad + pos, Y: win.getPosition().Y + win.GetSize().Y - win.BorderPad - sbW},
-			Fillet:   currentLayout.Fillet.Slider,
+			Fillet:   currentStyle.Fillet.Slider,
 			Filled:   true,
 			Color:    win.Theme.Window.ActiveColor,
 		})
@@ -449,7 +449,7 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 				pos = (item.Scroll.Y / maxScroll) * (size.Y - barH)
 			}
 			col := NewColor(96, 96, 96, 192)
-			sbW := currentLayout.BorderPad.Slider * 2
+			sbW := currentStyle.BorderPad.Slider * 2
 			drawFilledRect(subImg, item.DrawRect.X1-sbW, item.DrawRect.Y0+pos, sbW, barH, col.ToRGBA(), false)
 		} else if item.FlowType == FLOW_HORIZONTAL && req.X > size.X {
 			barW := size.X * size.X / req.X
@@ -459,7 +459,7 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 				pos = (item.Scroll.X / maxScroll) * (size.X - barW)
 			}
 			col := NewColor(96, 96, 96, 192)
-			sbW := currentLayout.BorderPad.Slider * 2
+			sbW := currentStyle.BorderPad.Slider * 2
 			drawFilledRect(subImg, item.DrawRect.X0+pos, item.DrawRect.Y1-sbW, barW, sbW, col.ToRGBA(), false)
 		}
 	}
@@ -529,8 +529,8 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 			top.ColorScale.ScaleWithColor(style.TextColor)
 		}
 		text.Draw(subImg, item.Label, face, top)
-		offset.Y += textSize + currentLayout.TextPadding
-		maxSize.Y -= textSize + currentLayout.TextPadding
+		offset.Y += textSize + currentStyle.TextPadding
+		maxSize.Y -= textSize + currentStyle.TextPadding
 		if maxSize.Y < 0 {
 			maxSize.Y = 0
 		}
@@ -730,7 +730,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		}
 		tdop := ebiten.DrawImageOptions{}
 		tdop.GeoM.Translate(
-			float64(offset.X+item.BorderPad+item.Padding+currentLayout.TextPadding),
+			float64(offset.X+item.BorderPad+item.Padding+currentStyle.TextPadding),
 			float64(offset.Y+((maxSize.Y)/2)),
 		)
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
@@ -739,7 +739,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 
 		if item.Focused {
 			width, _ := text.Measure(item.Text, face, 0)
-			cx := offset.X + item.BorderPad + item.Padding + currentLayout.TextPadding + float32(width)
+			cx := offset.X + item.BorderPad + item.Padding + currentStyle.TextPadding + float32(width)
 			strokeLine(subImg,
 				cx, offset.Y+2,
 				cx, offset.Y+maxSize.Y-2,
@@ -772,7 +772,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		face := textFace(textSize)
 		maxW, _ := text.Measure(maxLabel, face, 0)
 
-		gap := currentLayout.SliderValueGap
+		gap := currentStyle.SliderValueGap
 		knobW := item.AuxSize.X * uiScale
 		knobH := item.AuxSize.Y * uiScale
 		trackWidth := maxSize.X - knobW - gap - float32(maxW)
@@ -848,7 +848,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		face := textFace(textSize)
 		loo := text.LayoutOptions{PrimaryAlign: text.AlignStart, SecondaryAlign: text.AlignCenter}
 		tdop := ebiten.DrawImageOptions{}
-		tdop.GeoM.Translate(float64(offset.X+item.BorderPad+item.Padding+currentLayout.TextPadding), float64(offset.Y+maxSize.Y/2))
+		tdop.GeoM.Translate(float64(offset.X+item.BorderPad+item.Padding+currentStyle.TextPadding), float64(offset.Y+maxSize.Y/2))
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 		top.ColorScale.ScaleWithColor(style.TextColor)
 		label := item.Text
@@ -859,7 +859,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 
 		arrow := maxSize.Y * 0.4
 		drawTriangle(subImg,
-			point{X: offset.X + maxSize.X - arrow - item.BorderPad - item.Padding - currentLayout.DropdownArrowPad,
+			point{X: offset.X + maxSize.X - arrow - item.BorderPad - item.Padding - currentStyle.DropdownArrowPad,
 				Y: offset.Y + (maxSize.Y-arrow)/2},
 			arrow,
 			style.TextColor)
@@ -994,7 +994,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			dropOff := offset
 			if item.Label != "" {
 				textSize := (item.FontSize * uiScale) + 2
-				dropOff.Y += textSize + currentLayout.TextPadding
+				dropOff.Y += textSize + currentStyle.TextPadding
 			}
 			screenClip := rect{X0: 0, Y0: 0, X1: float32(screenWidth), Y1: float32(screenHeight)}
 			pendingDropdowns = append(pendingDropdowns, dropdownRender{item: item, offset: dropOff, clip: screenClip})
@@ -1056,7 +1056,7 @@ func drawDropdownOptions(item *itemData, offset point, clip rect, screen *ebiten
 			drawRoundRect(subImg, &roundRect{Size: maxSize, Position: point{X: offset.X, Y: y}, Fillet: item.Fillet, Filled: true, Color: col})
 		}
 		td := ebiten.DrawImageOptions{}
-		td.GeoM.Translate(float64(offset.X+item.BorderPad+item.Padding+currentLayout.TextPadding), float64(y+optionH/2))
+		td.GeoM.Translate(float64(offset.X+item.BorderPad+item.Padding+currentStyle.TextPadding), float64(y+optionH/2))
 		tdo := &text.DrawOptions{DrawImageOptions: td, LayoutOptions: loo}
 		tdo.ColorScale.ScaleWithColor(style.TextColor)
 		text.Draw(subImg, item.Options[i], face, tdo)

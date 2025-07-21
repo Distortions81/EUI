@@ -24,7 +24,7 @@ Color palettes live under `themes/palettes`. Each file defines a `Colors` map fo
   },
   "Button": { "TextColor": "accent", "Color": "panel" },
   ...
-  "RecommendedLayout": "RoundHybrid"
+  "RecommendedStyle": "RoundHybrid"
 }
 ```
 
@@ -41,7 +41,7 @@ Each widget block (`Window`, `Button`, `Text`, `Checkbox`, `Radio`, `Input`, `Sl
 
 The `Window` block also supports `TitleColor`, `TitleBGColor`, `BorderColor`, `SizeTabColor`, `DragbarColor`, `HoverTitleColor`, `HoverColor`, `ActiveColor` and `TitleTextColor`.
 
-`RecommendedLayout` hints at a layout theme that pairs well with the color scheme.
+`RecommendedStyle` hints at a style theme that pairs well with the palette.
 
 ## Styles
 
@@ -81,12 +81,12 @@ Palettes:
 Styles:
 `CleanLines`, `MinimalFade`, `MinimalPro`, `MonoEdge`, `NeoRounded`, `RoundFlat`, `RoundHybrid`, `RoundOutline`, `SharpEdge`, `SoftRound`, `SolidBlock`, `SquareFlat`, `SquareOutline`, `ThinOutline`.
 
-Use `eui.ListThemes()` and `eui.ListLayouts()` to get these names at runtime.
+Use `eui.ListThemes()` and `eui.ListStyles()` to get these names at runtime.
 
 ## Creating Your Own
 
 1. Copy an existing file from `palettes` or `styles` as a starting point.
 2. Adjust the values or add new color names in the `Colors` map.
 3. Save the file under the appropriate directory with a new name.
-4. Call `eui.LoadTheme("YourTheme")` and `eui.LoadLayout("YourLayout")` to apply them. Enabling `eui.AutoReload` helps when iterating on your design.
+4. Call `eui.LoadTheme("YourTheme")` and `eui.LoadStyle("YourStyle")` to apply them. Enabling `eui.AutoReload` helps when iterating on your design.
 

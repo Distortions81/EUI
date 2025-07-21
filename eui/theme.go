@@ -30,9 +30,9 @@ type Theme struct {
 }
 
 type themeFile struct {
-	Comment           string            `json:"Comment"`
-	Colors            map[string]string `json:"Colors"`
-	RecommendedLayout string            `json:"RecommendedLayout"`
+	Comment          string            `json:"Comment"`
+	Colors           map[string]string `json:"Colors"`
+	RecommendedStyle string            `json:"RecommendedStyle"`
 }
 
 // resolveColor recursively resolves string references to colors after the
@@ -110,15 +110,15 @@ func LoadTheme(name string) error {
 		}
 	}
 	currentThemeName = name
-	applyLayoutToTheme(currentTheme)
+	applyStyleToTheme(currentTheme)
 	applyThemeToAll()
 	markAllDirty()
 	if ac, ok := namedColors["accent"]; ok {
 		accentHue, accentSaturation, accentValue, accentAlpha = rgbaToHSVA(color.RGBA(ac))
 	}
 	applyAccentColor()
-	if tf.RecommendedLayout != "" {
-		_ = LoadLayout(tf.RecommendedLayout)
+	if tf.RecommendedStyle != "" {
+		_ = LoadStyle(tf.RecommendedStyle)
 	}
 	refreshThemeMod()
 	return nil

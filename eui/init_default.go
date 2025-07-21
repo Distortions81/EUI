@@ -15,7 +15,7 @@ func init() {
 	if err := LoadTheme(currentThemeName); err != nil {
 		log.Printf("LoadTheme error: %v", err)
 	}
-	if err := LoadLayout(currentLayoutName); err != nil {
-		log.Printf("LoadLayout error: %v", err)
+	if err := LoadStyle(currentStyleName); err != nil {
+		log.Printf("LoadStyle error: %v", err)
 	}
 }

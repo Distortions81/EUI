@@ -50,11 +50,11 @@ func (parent *ItemData) AddItem(child *ItemData) { parent.addItemTo(child) }
 // AddItem appends a child item to the window.
 func (win *WindowData) AddItem(child *ItemData) { win.addItemTo(child) }
 
-// ListThemes returns the available color theme names.
+// ListThemes returns the available palette names.
 func ListThemes() ([]string, error) { return listThemes() }
 
-// ListLayouts returns the available style theme names.
-func ListLayouts() ([]string, error) { return listLayouts() }
+// ListStyles returns the available style theme names.
+func ListStyles() ([]string, error) { return listStyles() }
 
 // CurrentThemeName returns the active theme name.
 func CurrentThemeName() string { return currentThemeName }
@@ -62,11 +62,11 @@ func CurrentThemeName() string { return currentThemeName }
 // SetCurrentThemeName updates the active theme name.
 func SetCurrentThemeName(name string) { currentThemeName = name }
 
-// CurrentLayoutName returns the active layout theme name.
-func CurrentLayoutName() string { return currentLayoutName }
+// CurrentStyleName returns the active style theme name.
+func CurrentStyleName() string { return currentStyleName }
 
-// SetCurrentLayoutName updates the active layout theme name.
-func SetCurrentLayoutName(name string) { currentLayoutName = name }
+// SetCurrentStyleName updates the active style theme name.
+func SetCurrentStyleName(name string) { currentStyleName = name }
 
 // AccentSaturation returns the current accent color saturation value.
 func AccentSaturation() float64 { return accentSaturation }

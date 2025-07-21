@@ -26,9 +26,9 @@ func makeThemeSelector() *eui.WindowData {
 	win.AddItem(mainFlow)
 
 	var satSlider *eui.ItemData
-	layoutNames, lerr := eui.ListLayouts()
-	if lerr != nil {
-		log.Printf("listLayouts error: %v", lerr)
+	styleNames, serr := eui.ListStyles()
+	if serr != nil {
+		log.Printf("listStyles error: %v", serr)
 	}
 
 	dd, ddEvents := eui.NewDropdown(&eui.ItemData{Label: "Palette", Size: eui.Point{X: 150, Y: 24}, FontSize: 8})
@@ -54,11 +54,11 @@ func makeThemeSelector() *eui.WindowData {
 	}
 	mainFlow.AddItem(dd)
 
-	if len(layoutNames) > 0 {
+	if len(styleNames) > 0 {
 		ldd, lddEvents := eui.NewDropdown(&eui.ItemData{Label: "Style", Size: eui.Point{X: 150, Y: 24}, FontSize: 8})
-		ldd.Options = layoutNames
-		for i, n := range layoutNames {
-			if n == eui.CurrentLayoutName() {
+		ldd.Options = styleNames
+		for i, n := range styleNames {
+			if n == eui.CurrentStyleName() {
 				ldd.Selected = i
 				break
 			}
@@ -67,9 +67,9 @@ func makeThemeSelector() *eui.WindowData {
 		lddEvents.Handle = func(ev eui.UIEvent) {
 			if ev.Type == eui.EventDropdownSelected {
 				idx := ev.Index
-				eui.SetCurrentLayoutName(layoutNames[idx])
-				if err := eui.LoadLayout(eui.CurrentLayoutName()); err != nil {
-					log.Printf("eui.LoadLayout error: %v", err)
+				eui.SetCurrentStyleName(styleNames[idx])
+				if err := eui.LoadStyle(eui.CurrentStyleName()); err != nil {
+					log.Printf("eui.LoadStyle error: %v", err)
 				}
 			}
 		}

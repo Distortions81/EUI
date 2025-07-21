@@ -261,7 +261,7 @@ func (win *windowData) getWindowPart(mpos point, click bool) dragType {
 			if maxScroll > 0 {
 				pos = (win.Scroll.Y / maxScroll) * (avail.Y - barH)
 			}
-			sbW := currentLayout.BorderPad.Slider * 2
+			sbW := currentStyle.BorderPad.Slider * 2
 			r := rect{
 				X0: win.getPosition().X + win.GetSize().X - win.BorderPad - sbW,
 				Y0: win.getPosition().Y + win.GetTitleSize() + win.BorderPad + pos,
@@ -279,7 +279,7 @@ func (win *windowData) getWindowPart(mpos point, click bool) dragType {
 			if maxScroll > 0 {
 				pos = (win.Scroll.X / maxScroll) * (avail.X - barW)
 			}
-			sbW := currentLayout.BorderPad.Slider * 2
+			sbW := currentStyle.BorderPad.Slider * 2
 			r := rect{
 				X0: win.getPosition().X + win.BorderPad + pos,
 				Y0: win.getPosition().Y + win.GetSize().Y - win.BorderPad - sbW,
@@ -329,7 +329,7 @@ func (item *itemData) GetSize() point {
 	sz := point{X: item.Size.X * uiScale, Y: item.Size.Y * uiScale}
 	if item.Label != "" {
 		textSize := (item.FontSize * uiScale) + 2
-		sz.Y += textSize + currentLayout.TextPadding
+		sz.Y += textSize + currentStyle.TextPadding
 	}
 	return sz
 }
