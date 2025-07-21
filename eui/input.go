@@ -362,7 +362,7 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 		activeItem = item
 		item.Clicked = time.Now()
 		if item.ItemType == ITEM_BUTTON && item.Handler != nil {
-			item.Handler.Events <- UIEvent{Item: item, Type: EventClick}
+			item.Handler.Emit(UIEvent{Item: item, Type: EventClick})
 		}
 		item.markDirty()
 		if item.ItemType == ITEM_COLORWHEEL {
@@ -370,7 +370,7 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 				item.WheelColor = col
 				item.markDirty()
 				if item.Handler != nil {
-					item.Handler.Events <- UIEvent{Item: item, Type: EventColorChanged, Color: col}
+					item.Handler.Emit(UIEvent{Item: item, Type: EventColorChanged, Color: col})
 				}
 				if item.OnColorChange != nil {
 					item.OnColorChange(col)
@@ -383,7 +383,7 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 			item.Checked = !item.Checked
 			item.markDirty()
 			if item.Handler != nil {
-				item.Handler.Events <- UIEvent{Item: item, Type: EventCheckboxChanged, Checked: item.Checked}
+				item.Handler.Emit(UIEvent{Item: item, Type: EventCheckboxChanged, Checked: item.Checked})
 			}
 		} else if item.ItemType == ITEM_RADIO {
 			item.Checked = true
@@ -393,7 +393,7 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 			}
 			item.markDirty()
 			if item.Handler != nil {
-				item.Handler.Events <- UIEvent{Item: item, Type: EventRadioSelected, Checked: true}
+				item.Handler.Emit(UIEvent{Item: item, Type: EventRadioSelected, Checked: true})
 			}
 		} else if item.ItemType == ITEM_INPUT {
 			focusedItem = item
@@ -416,7 +416,7 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 						item.Open = false
 						item.markDirty()
 						if item.Handler != nil {
-							item.Handler.Events <- UIEvent{Item: item, Type: EventDropdownSelected, Index: idx}
+							item.Handler.Emit(UIEvent{Item: item, Type: EventDropdownSelected, Index: idx})
 						}
 						if item.OnSelect != nil {
 							item.OnSelect(idx)
@@ -446,7 +446,7 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 				item.WheelColor = col
 				item.markDirty()
 				if item.Handler != nil {
-					item.Handler.Events <- UIEvent{Item: item, Type: EventColorChanged, Color: col}
+					item.Handler.Emit(UIEvent{Item: item, Type: EventColorChanged, Color: col})
 				}
 				if item.OnColorChange != nil {
 					item.OnColorChange(col)
@@ -569,7 +569,7 @@ func (item *itemData) setSliderValue(mpos point) {
 	}
 	item.markDirty()
 	if item.Handler != nil {
-		item.Handler.Events <- UIEvent{Item: item, Type: EventSliderChanged, Value: item.Value}
+		item.Handler.Emit(UIEvent{Item: item, Type: EventSliderChanged, Value: item.Value})
 	}
 }
 

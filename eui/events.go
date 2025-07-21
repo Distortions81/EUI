@@ -23,8 +23,23 @@ type UIEvent struct {
 }
 
 // EventHandler holds a channel widgets use to emit events.
+// EventHandler provides both channel and callback based event delivery.
 type EventHandler struct {
 	Events chan UIEvent
+	Handle func(UIEvent)
+}
+
+// Emit delivers the event through the channel and callback if present.
+func (h *EventHandler) Emit(ev UIEvent) {
+	if h == nil {
+		return
+	}
+	if h.Events != nil {
+		h.Events <- ev
+	}
+	if h.Handle != nil {
+		h.Handle(ev)
+	}
 }
 
 func newHandler() *EventHandler {
