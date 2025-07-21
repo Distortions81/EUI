@@ -5,6 +5,7 @@ import (
 	"image"
 	"image/color"
 	"math"
+	"os"
 	"strings"
 	"time"
 
@@ -23,6 +24,7 @@ type dropdownRender struct {
 }
 
 var pendingDropdowns []dropdownRender
+var dumpDone bool
 
 func (g *Game) Draw(screen *ebiten.Image) {
 
@@ -45,6 +47,14 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 
 	drawFPS(screen)
+
+	if DumpMode && !dumpDone {
+		if err := DumpCachedImages(); err != nil {
+			panic(err)
+		}
+		dumpDone = true
+		os.Exit(0)
+	}
 }
 
 func drawOverlay(item *itemData, screen *ebiten.Image) {
