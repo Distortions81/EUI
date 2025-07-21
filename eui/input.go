@@ -295,7 +295,6 @@ func (item *itemData) clickFlows(mpos point, click bool) bool {
 			if tab.DrawRect.containsPoint(mpos) {
 				if !tab.Hovered {
 					tab.Hovered = true
-					tab.Dirty = true
 				}
 				if click {
 					activeItem = tab
@@ -419,7 +418,6 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 	} else {
 		if !item.Hovered {
 			item.Hovered = true
-			item.Dirty = true
 		}
 		if item.ItemType == ITEM_COLORWHEEL && ebiten.IsMouseButtonPressed(ebiten.MouseButton0) {
 			if col, ok := item.colorAt(mpos); ok {
