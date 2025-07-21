@@ -324,41 +324,8 @@ func (win *windowData) drawItems(screen *ebiten.Image) {
 }
 
 func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point, clip rect, screen *ebiten.Image) {
-	itemRect := rect{X0: offset.X, Y0: offset.Y, X1: offset.X + item.GetSize().X, Y1: offset.Y + item.GetSize().Y}
-	drawRect := intersectRect(itemRect, clip)
-	item.DrawRect = drawRect
-	if drawRect.X1 <= drawRect.X0 || drawRect.Y1 <= drawRect.Y0 {
-		return
-	}
-
-	w := int(math.Ceil(float64(item.GetSize().X)))
-	h := int(math.Ceil(float64(item.GetSize().Y)))
-	if w <= 0 {
-		w = 1
-	}
-	if h <= 0 {
-		h = 1
-	}
-	if item.cache == nil || item.Dirty || item.cache.Bounds().Dx() != w || item.cache.Bounds().Dy() != h {
-		item.cache = ebiten.NewImage(w, h)
-		item.renderFlows(win, parent, point{}, rect{X0: 0, Y0: 0, X1: item.GetSize().X, Y1: item.GetSize().Y}, item.cache)
-		if DebugMode {
-			item.RenderCount++
-			drawCacheCount(item.cache, item.RenderCount)
-		}
-		item.Dirty = false
-	}
-
-	srcRect := image.Rect(
-		int(drawRect.X0-offset.X),
-		int(drawRect.Y0-offset.Y),
-		int(drawRect.X1-offset.X),
-		int(drawRect.Y1-offset.Y),
-	)
-	src := item.cache.SubImage(srcRect).(*ebiten.Image)
-	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(float64(drawRect.X0), float64(drawRect.Y0))
-	screen.DrawImage(src, op)
+	// Directly render the flow each frame instead of caching the result.
+	item.renderFlows(win, parent, offset, clip, screen)
 }
 
 func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen *ebiten.Image) {
