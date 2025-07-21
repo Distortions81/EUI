@@ -75,13 +75,6 @@ func main() {
 	overlay.AddItem(toggleBtn)
 	eui.AddOverlayFlow(overlay)
 
-	if eui.DumpMode {
-		if err := eui.DumpCachedImages(); err != nil {
-			panic(err)
-		}
-		return
-	}
-
 	go startEbiten()
 
 	<-signalHandle

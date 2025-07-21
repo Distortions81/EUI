@@ -38,7 +38,7 @@ go run ./cmd/demo             # launches the showcase window
 # or
 go build -o demo ./cmd/demo
 ./demo -debug                 # optional debug overlays
-# dump cached images to ./debug (runs once then exits)
+# dump cached images to ./debug after one frame then exit
 ./demo -dump
 # pass -debug with go run to enable overlays
 go run ./cmd/demo -debug
