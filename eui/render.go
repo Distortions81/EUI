@@ -26,7 +26,9 @@ type dropdownRender struct {
 var pendingDropdowns []dropdownRender
 var dumpDone bool
 
-func (g *Game) Draw(screen *ebiten.Image) {
+// Draw renders the UI to the provided screen image.
+// Call this from your Ebiten Draw function.
+func Draw(screen *ebiten.Image) {
 
 	pendingDropdowns = pendingDropdowns[:0]
 
