@@ -15,7 +15,7 @@ func makeShowcaseWindow() *eui.WindowData {
 		Open:      true,
 		Movable:   true,
 		Resizable: true,
-		Closable:  true,
+		Closable:  false,
 	})
 
 	mainFlow := &eui.ItemData{
