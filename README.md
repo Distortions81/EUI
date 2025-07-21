@@ -34,10 +34,12 @@ gofmt -w <files>
 The demonstration application lives under `cmd/demo`. You can run it directly using `go run` or build a binary:
 
 ```sh
-go run ./cmd/demo            # launches the showcase window
+go run ./cmd/demo             # launches the showcase window
 # or
 go build -o demo ./cmd/demo
-./demo -debug                # optional debug overlays
+./demo -debug                 # optional debug overlays
+# pass -debug with go run to enable overlays
+go run ./cmd/demo -debug
 ```
 
 ## Customization

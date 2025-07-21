@@ -131,8 +131,9 @@ type itemData struct {
 
 	// Render caches the pre-rendered image for this item when Dirty is
 	// false. Flows are never cached.
-	Render *ebiten.Image
-	Dirty  bool
+	Render      *ebiten.Image
+	Dirty       bool
+	RenderCount int
 
 	// Drop shadow styling
 	ShadowSize  float32

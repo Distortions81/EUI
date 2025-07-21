@@ -942,6 +942,10 @@ func (item *itemData) ensureRender() {
 	prevHover := item.Hovered
 	item.Render.Clear()
 	item.drawItemInternal(nil, point{}, rect{X0: 0, Y0: 0, X1: size.X, Y1: size.Y}, item.Render)
+	if DebugMode {
+		item.RenderCount++
+		ebitenutil.DebugPrintAt(item.Render, fmt.Sprintf("%d", item.RenderCount), 0, 0)
+	}
 	item.DrawRect = prevRect
 	item.Hovered = prevHover
 	item.Dirty = false
