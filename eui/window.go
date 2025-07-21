@@ -117,11 +117,14 @@ func (target *windowData) AddWindow(toBack bool) {
 	}
 }
 
-// Remove window from window list, if found.
+// RemoveWindow removes a window from the active list. Any cached images
+// belonging to the window are disposed and pointers cleared.
 func (target *windowData) RemoveWindow() {
 	for i, win := range windows {
 		if win == target { // Compare pointers
+			win.disposeImages()
 			windows = append(windows[:i], windows[i+1:]...)
+			win.Open = false
 			return
 		}
 	}
