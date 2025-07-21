@@ -2,6 +2,7 @@ package eui
 
 import (
 	"fmt"
+	"image"
 	"image/color"
 	"math"
 	"strings"
@@ -479,7 +480,7 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 	}
 }
 
-func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen *ebiten.Image) {
+func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect, screen *ebiten.Image) {
 
 	if parent == nil {
 		parent = item
@@ -927,6 +928,67 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			1, color.RGBA{R: 128}, false)
 	}
 
+}
+
+func (item *itemData) ensureRender() {
+	if item.ItemType == ITEM_FLOW {
+		return
+	}
+	size := item.GetSize()
+	w, h := int(size.X), int(size.Y)
+	if item.Render == nil || item.Render.Bounds().Dx() != w || item.Render.Bounds().Dy() != h {
+		item.Render = ebiten.NewImage(w, h)
+		item.Dirty = true
+	}
+	if !item.Dirty {
+		return
+	}
+	prevRect := item.DrawRect
+	prevHover := item.Hovered
+	item.Render.Clear()
+	item.drawItemInternal(nil, point{}, rect{X0: 0, Y0: 0, X1: size.X, Y1: size.Y}, item.Render)
+	item.DrawRect = prevRect
+	item.Hovered = prevHover
+	item.Dirty = false
+}
+
+func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen *ebiten.Image) {
+	if item.ItemType != ITEM_FLOW {
+		item.ensureRender()
+
+		if parent == nil {
+			parent = item
+		}
+		maxSize := item.GetSize()
+		if item.Size.X > parent.Size.X {
+			maxSize.X = parent.GetSize().X
+		}
+		if item.Size.Y > parent.Size.Y {
+			maxSize.Y = parent.GetSize().Y
+		}
+
+		itemRect := rect{X0: offset.X, Y0: offset.Y, X1: offset.X + maxSize.X, Y1: offset.Y + maxSize.Y}
+		item.DrawRect = intersectRect(itemRect, clip)
+		if item.DrawRect.X1 <= item.DrawRect.X0 || item.DrawRect.Y1 <= item.DrawRect.Y0 {
+			return
+		}
+
+		src := image.Rect(int(item.DrawRect.X0-offset.X), int(item.DrawRect.Y0-offset.Y), int(item.DrawRect.X1-offset.X), int(item.DrawRect.Y1-offset.Y))
+		sub := item.Render.SubImage(src).(*ebiten.Image)
+		op := &ebiten.DrawImageOptions{}
+		op.GeoM.Translate(float64(item.DrawRect.X0), float64(item.DrawRect.Y0))
+		screen.DrawImage(sub, op)
+
+		if item.ItemType == ITEM_DROPDOWN && item.Open {
+			drawDropdownOptions(item, offset, clip, screen)
+		}
+		if DebugMode {
+			strokeRect(screen, item.DrawRect.X0, item.DrawRect.Y0, item.DrawRect.X1-item.DrawRect.X0, item.DrawRect.Y1-item.DrawRect.Y0, 1, color.RGBA{R: 128}, false)
+		}
+		return
+	}
+
+	item.drawItemInternal(parent, offset, clip, screen)
 }
 
 func drawDropdownOptions(item *itemData, offset point, clip rect, screen *ebiten.Image) {
