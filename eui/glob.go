@@ -31,6 +31,10 @@ var (
 	// DebugMode enables rendering of debug outlines.
 	DebugMode bool
 
+	// DumpMode causes the library to write cached images to disk
+	// before exiting when enabled.
+	DumpMode bool
+
 	whiteImage    = ebiten.NewImage(3, 3)
 	whiteSubImage = whiteImage.SubImage(image.Rect(1, 1, 2, 2)).(*ebiten.Image)
 )

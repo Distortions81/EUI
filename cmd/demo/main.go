@@ -13,6 +13,7 @@ import (
 
 var (
 	debugMode    *bool
+	dumpMode     *bool
 	themeSel     *eui.WindowData
 	signalHandle chan os.Signal
 )
@@ -20,8 +21,10 @@ var (
 func main() {
 
 	debugMode = flag.Bool("debug", false, "enable debug visuals")
+	dumpMode = flag.Bool("dump", false, "dump cached images and exit")
 	flag.Parse()
 	eui.DebugMode = *debugMode
+	eui.DumpMode = *dumpMode
 
 	signalHandle = make(chan os.Signal, 1)
 	signal.Notify(signalHandle, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
@@ -71,6 +74,13 @@ func main() {
 	}
 	overlay.AddItem(toggleBtn)
 	eui.AddOverlayFlow(overlay)
+
+	if eui.DumpMode {
+		if err := eui.DumpCachedImages(); err != nil {
+			panic(err)
+		}
+		return
+	}
 
 	go startEbiten()
 

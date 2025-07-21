@@ -42,6 +42,8 @@ It is currently in a pre‑alpha state and the API may change at any time.
 ## Variables
 
 - `DebugMode` – when set, additional outlines are rendered for debugging.
+- `DumpMode` – when set, cached images are written to `./debug` and the
+  program exits.
 - `ColorWhite`, `ColorBlack`, `ColorRed`, ... – a large palette of predefined
   colors available as variables of type `Color`.
 
@@ -68,6 +70,7 @@ It is currently in a pre‑alpha state and the API may change at any time.
 - `Windows() []*WindowData`
 - `Overlays() []*ItemData`
 - `AddOverlayFlow(flow *ItemData)`
+- `DumpCachedImages() error` – write cached images to `./debug`
 - `SetScreenSize(w, h int)`
 - `ScreenSize() (int, int)`
 - `SetFontSource(src *text.GoTextFaceSource)`
