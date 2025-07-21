@@ -40,20 +40,18 @@ func makeThemeSelector() *eui.WindowData {
 		}
 	}
 	dd.HoverIndex = -1
-	go func() {
-		for ev := range ddEvents.Events {
-			if ev.Type == eui.EventDropdownSelected {
-				idx := ev.Index
-				eui.SetCurrentThemeName(names[idx])
-				if err := eui.LoadTheme(eui.CurrentThemeName()); err != nil {
-					log.Printf("eui.LoadTheme error: %v", err)
-				}
-				if satSlider != nil {
-					satSlider.Value = float32(eui.AccentSaturation())
-				}
+	ddEvents.Handle = func(ev eui.UIEvent) {
+		if ev.Type == eui.EventDropdownSelected {
+			idx := ev.Index
+			eui.SetCurrentThemeName(names[idx])
+			if err := eui.LoadTheme(eui.CurrentThemeName()); err != nil {
+				log.Printf("eui.LoadTheme error: %v", err)
+			}
+			if satSlider != nil {
+				satSlider.Value = float32(eui.AccentSaturation())
 			}
 		}
-	}()
+	}
 	mainFlow.AddItem(dd)
 
 	if len(layoutNames) > 0 {
@@ -66,17 +64,15 @@ func makeThemeSelector() *eui.WindowData {
 			}
 		}
 		ldd.HoverIndex = -1
-		go func() {
-			for ev := range lddEvents.Events {
-				if ev.Type == eui.EventDropdownSelected {
-					idx := ev.Index
-					eui.SetCurrentLayoutName(layoutNames[idx])
-					if err := eui.LoadLayout(eui.CurrentLayoutName()); err != nil {
-						log.Printf("eui.LoadLayout error: %v", err)
-					}
+		lddEvents.Handle = func(ev eui.UIEvent) {
+			if ev.Type == eui.EventDropdownSelected {
+				idx := ev.Index
+				eui.SetCurrentLayoutName(layoutNames[idx])
+				if err := eui.LoadLayout(eui.CurrentLayoutName()); err != nil {
+					log.Printf("eui.LoadLayout error: %v", err)
 				}
 			}
-		}()
+		}
 		mainFlow.AddItem(ldd)
 	}
 
@@ -91,13 +87,11 @@ func makeThemeSelector() *eui.WindowData {
 
 	satSlider, satEvents := eui.NewSlider(&eui.ItemData{Label: "Color Intensity", Size: eui.Point{X: 128, Y: 24}, MinValue: 0, MaxValue: 1, FontSize: 8})
 	satSlider.Value = float32(eui.AccentSaturation())
-	go func() {
-		for ev := range satEvents.Events {
-			if ev.Type == eui.EventSliderChanged {
-				eui.SetAccentSaturation(float64(ev.Value))
-			}
+	satEvents.Handle = func(ev eui.UIEvent) {
+		if ev.Type == eui.EventSliderChanged {
+			eui.SetAccentSaturation(float64(ev.Value))
 		}
-	}()
+	}
 	mainFlow.AddItem(satSlider)
 
 	return win
