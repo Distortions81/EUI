@@ -87,8 +87,13 @@ func makeShowcaseWindow() *eui.WindowData {
 	}
 	mainFlow.AddItem(intSlider)
 
-	input, _ := eui.NewInput(&eui.ItemData{Label: "Text Field", Text: "", Size: eui.Point{X: 180, Y: 24}, FontSize: 8})
+	input, inputEvents := eui.NewInput(&eui.ItemData{Label: "Text Field", Text: "", Size: eui.Point{X: 180, Y: 24}, FontSize: 8})
 	input.Action = func() { setStatus("Text Field focused") }
+	inputEvents.Handle = func(ev eui.UIEvent) {
+		if ev.Type == eui.EventInputChanged {
+			setStatus("Input: " + ev.Text)
+		}
+	}
 	mainFlow.AddItem(input)
 
 	dropdown, dropdownEvents := eui.NewDropdown(&eui.ItemData{Label: "Select Option", Size: eui.Point{X: 180, Y: 24}, FontSize: 8})
