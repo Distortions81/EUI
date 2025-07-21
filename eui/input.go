@@ -361,11 +361,17 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 	if click {
 		activeItem = item
 		item.Clicked = time.Now()
+		if item.ItemType == ITEM_BUTTON && item.Handler != nil {
+			item.Handler.Events <- UIEvent{Item: item, Type: EventClick}
+		}
 		item.markDirty()
 		if item.ItemType == ITEM_COLORWHEEL {
 			if col, ok := item.colorAt(mpos); ok {
 				item.WheelColor = col
 				item.markDirty()
+				if item.Handler != nil {
+					item.Handler.Events <- UIEvent{Item: item, Type: EventColorChanged, Color: col}
+				}
 				if item.OnColorChange != nil {
 					item.OnColorChange(col)
 				} else {
@@ -376,6 +382,9 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 		if item.ItemType == ITEM_CHECKBOX {
 			item.Checked = !item.Checked
 			item.markDirty()
+			if item.Handler != nil {
+				item.Handler.Events <- UIEvent{Item: item, Type: EventCheckboxChanged, Checked: item.Checked}
+			}
 		} else if item.ItemType == ITEM_RADIO {
 			item.Checked = true
 			// uncheck others in group
@@ -383,6 +392,9 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 				uncheckRadioGroup(item.Parent, item.RadioGroup, item)
 			}
 			item.markDirty()
+			if item.Handler != nil {
+				item.Handler.Events <- UIEvent{Item: item, Type: EventRadioSelected, Checked: true}
+			}
 		} else if item.ItemType == ITEM_INPUT {
 			focusedItem = item
 			item.Focused = true
@@ -403,6 +415,9 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 						item.Selected = idx
 						item.Open = false
 						item.markDirty()
+						if item.Handler != nil {
+							item.Handler.Events <- UIEvent{Item: item, Type: EventDropdownSelected, Index: idx}
+						}
 						if item.OnSelect != nil {
 							item.OnSelect(idx)
 						}
@@ -430,6 +445,9 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 			if col, ok := item.colorAt(mpos); ok {
 				item.WheelColor = col
 				item.markDirty()
+				if item.Handler != nil {
+					item.Handler.Events <- UIEvent{Item: item, Type: EventColorChanged, Color: col}
+				}
 				if item.OnColorChange != nil {
 					item.OnColorChange(col)
 				} else {
@@ -550,6 +568,9 @@ func (item *itemData) setSliderValue(mpos point) {
 		item.Value = float32(int(item.Value + 0.5))
 	}
 	item.markDirty()
+	if item.Handler != nil {
+		item.Handler.Events <- UIEvent{Item: item, Type: EventSliderChanged, Value: item.Value}
+	}
 }
 
 func (item *itemData) colorAt(mpos point) (Color, bool) {

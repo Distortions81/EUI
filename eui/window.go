@@ -147,7 +147,7 @@ func NewWindow(win *windowData) *windowData {
 }
 
 // Create a new button from the default theme
-func NewButton(item *itemData) *itemData {
+func NewButton(item *itemData) (*itemData, *EventHandler) {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
@@ -157,11 +157,13 @@ func NewButton(item *itemData) *itemData {
 	}
 	stripItemColors(&newItem)
 	newItem.Theme = currentTheme
-	return &newItem
+	h := newHandler()
+	newItem.Handler = h
+	return &newItem, h
 }
 
 // Create a new button from the default theme
-func NewCheckbox(item *itemData) *itemData {
+func NewCheckbox(item *itemData) (*itemData, *EventHandler) {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
@@ -171,11 +173,13 @@ func NewCheckbox(item *itemData) *itemData {
 	}
 	stripItemColors(&newItem)
 	newItem.Theme = currentTheme
-	return &newItem
+	h := newHandler()
+	newItem.Handler = h
+	return &newItem, h
 }
 
 // Create a new radio button from the default theme
-func NewRadio(item *itemData) *itemData {
+func NewRadio(item *itemData) (*itemData, *EventHandler) {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
@@ -185,11 +189,13 @@ func NewRadio(item *itemData) *itemData {
 	}
 	stripItemColors(&newItem)
 	newItem.Theme = currentTheme
-	return &newItem
+	h := newHandler()
+	newItem.Handler = h
+	return &newItem, h
 }
 
 // Create a new input box from the default theme
-func NewInput(item *itemData) *itemData {
+func NewInput(item *itemData) (*itemData, *EventHandler) {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
@@ -199,11 +205,13 @@ func NewInput(item *itemData) *itemData {
 	}
 	stripItemColors(&newItem)
 	newItem.Theme = currentTheme
-	return &newItem
+	h := newHandler()
+	newItem.Handler = h
+	return &newItem, h
 }
 
 // Create a new slider from the default theme
-func NewSlider(item *itemData) *itemData {
+func NewSlider(item *itemData) (*itemData, *EventHandler) {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
@@ -213,11 +221,13 @@ func NewSlider(item *itemData) *itemData {
 	}
 	stripItemColors(&newItem)
 	newItem.Theme = currentTheme
-	return &newItem
+	h := newHandler()
+	newItem.Handler = h
+	return &newItem, h
 }
 
 // Create a new dropdown from the default theme
-func NewDropdown(item *itemData) *itemData {
+func NewDropdown(item *itemData) (*itemData, *EventHandler) {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
@@ -227,11 +237,13 @@ func NewDropdown(item *itemData) *itemData {
 	}
 	stripItemColors(&newItem)
 	newItem.Theme = currentTheme
-	return &newItem
+	h := newHandler()
+	newItem.Handler = h
+	return &newItem, h
 }
 
 // Create a new color wheel from the default theme
-func NewColorWheel(item *itemData) *itemData {
+func NewColorWheel(item *itemData) (*itemData, *EventHandler) {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
@@ -244,11 +256,13 @@ func NewColorWheel(item *itemData) *itemData {
 	}
 	stripItemColors(&newItem)
 	newItem.Theme = currentTheme
-	return &newItem
+	h := newHandler()
+	newItem.Handler = h
+	return &newItem, h
 }
 
 // Create a new textbox from the default theme
-func NewText(item *itemData) *itemData {
+func NewText(item *itemData) (*itemData, *EventHandler) {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
@@ -258,7 +272,9 @@ func NewText(item *itemData) *itemData {
 	}
 	stripItemColors(&newItem)
 	newItem.Theme = currentTheme
-	return &newItem
+	h := newHandler()
+	newItem.Handler = h
+	return &newItem, h
 }
 
 // Bring a window to the front
