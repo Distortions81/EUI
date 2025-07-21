@@ -70,7 +70,7 @@ It is currently in a pre‑alpha state and the API may change at any time.
 - `Windows() []*WindowData`
 - `Overlays() []*ItemData`
 - `AddOverlayFlow(flow *ItemData)`
-- `DumpCachedImages() error` – write cached images to `./debug`
+- `DumpCachedImages() error` – write cached images to `./debug`. Requires the game to be running.
 - `SetScreenSize(w, h int)`
 - `ScreenSize() (int, int)`
 - `SetFontSource(src *text.GoTextFaceSource)`

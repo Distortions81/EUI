@@ -8,8 +8,8 @@ import (
 )
 
 // DumpCachedImages writes all cached item images and item source images
-// to the debug directory. It ensures any pending renders are generated
-// before writing the files.
+// to the debug directory. The game must be running so pixels can be read.
+// Any pending renders are generated before writing the files.
 func DumpCachedImages() error {
 	if err := os.MkdirAll("debug", 0755); err != nil {
 		return err
