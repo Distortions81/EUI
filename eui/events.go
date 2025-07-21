@@ -35,7 +35,10 @@ func (h *EventHandler) Emit(ev UIEvent) {
 		return
 	}
 	if h.Events != nil {
-		h.Events <- ev
+		select {
+		case h.Events <- ev:
+		default:
+		}
 	}
 	if h.Handle != nil {
 		h.Handle(ev)
