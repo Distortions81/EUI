@@ -27,27 +27,6 @@ building a game UI. Highlights include:
 - **Cross platform** – runs anywhere Ebiten does: desktop, web or mobile.
 - Touch controls are not yet implemented.
 
-## Getting Started
-
-The demo and tests rely on a few system packages in addition to Go. A helper script is included to install them. **The script is written for Linux distributions that use the `apt` package manager such as Ubuntu or Debian.** It performs an `apt-get` update followed by installation of the libraries required by Ebiten (`libxrandr-dev`, `libxinerama-dev`, `libxcursor-dev`, `libxi-dev`, `libxxf86vm-dev`, `libgl1-mesa-dev` and others). Run it once before building. If you are on a different operating system install equivalent packages using your distribution's package manager before continuing:
-
-```sh
-./scripts/setup.sh
-```
-
-After dependencies are installed you can vet and build the project with the standard Go tools. Running these commands ensures the library compiles correctly before you start experimenting:
-
-```sh
-go vet ./...
-go build ./...
-```
-
-Format modified Go files before committing:
-
-```sh
-gofmt -w <files>
-```
-
 ## Running the Demo
 
 The demonstration application lives under `cmd/demo`. You can run it directly using `go run` or build a binary:
@@ -80,6 +59,5 @@ See [themes/README.md](eui/themes/README.md) for a list of the bundled schemes a
 
 - `eui` – reusable library code containing windows, flows and widgets
 - `cmd/demo` – standalone example program wiring the library together
-- `scripts/setup.sh` – helper for installing build dependencies
 
 For a generated listing of all library functions see the [API reference](api.md).
