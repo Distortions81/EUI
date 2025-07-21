@@ -2,11 +2,29 @@
 
 EUI is a minimal retained‑mode UI built with the [Ebiten](https://ebiten.org/) game engine.
 It provides basic window management, flows and widgets built entirely with vector graphics.
-The project is currently in an early development and APIs will likely change.
+The project is currently in early development and APIs will likely change.
 
 ## Currently the API is not complete!
 
 ![screenshot](https://raw.githubusercontent.com/Distortions81/EUI/refs/heads/main/Screenshot.png)
+
+## Features
+
+EUI aims to stay small and easy to use while still providing the essentials for
+building a game UI. Highlights include:
+
+- **Window management** – draggable, resizable windows with optional pinning.
+- **Flow layouts** – vertical or horizontal flows for composing widgets.
+- **Overlay items** – keep controls always on screen.
+- **Palette and style themes** – JSON files define colors and spacing. Switch
+  them at runtime or reload automatically while iterating.
+- **UI scaling** – call `eui.SetUIScale()` to adapt to any resolution.
+- **Image caching** – widgets cache their drawing for better performance.
+  Enable `eui.DumpMode` to write the cached images to disk for inspection.
+- **Event system** – each widget returns an `EventHandler` that uses channels or
+  callbacks so your code can react to clicks, slider movements and text input.
+- **Debug overlays** – toggle with the `-debug` flag when running the demo.
+- **Cross platform** – runs anywhere Ebiten does: desktop, web or mobile.
 
 ## Getting Started
 
