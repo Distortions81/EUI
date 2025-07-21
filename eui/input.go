@@ -174,16 +174,19 @@ func (g *Game) Update() error {
 		for _, r := range ebiten.AppendInputChars(nil) {
 			if r >= 32 && r != 127 && r != '\r' && r != '\n' {
 				focusedItem.Text += string(r)
+				focusedItem.markDirty()
 			}
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyBackspace) {
 			runes := []rune(focusedItem.Text)
 			if len(runes) > 0 {
 				focusedItem.Text = string(runes[:len(runes)-1])
+				focusedItem.markDirty()
 			}
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 			focusedItem.Focused = false
+			focusedItem.markDirty()
 			focusedItem = nil
 		}
 	}
@@ -236,6 +239,15 @@ func (g *Game) Update() error {
 	}
 	for _, ov := range overlays {
 		ov.resizeFlow(ov.GetSize())
+	}
+
+	for _, win := range windows {
+		if win.Open {
+			clearExpiredClicks(win.Contents)
+		}
+	}
+	for _, ov := range overlays {
+		clearExpiredClicks([]*itemData{ov})
 	}
 
 	return nil
@@ -489,6 +501,23 @@ func subUncheckRadio(list []*itemData, group string, except *itemData) {
 			}
 		}
 		subUncheckRadio(it.Contents, group, except)
+	}
+}
+
+func clearExpiredClicks(list []*itemData) {
+	for _, it := range list {
+		if !it.Clicked.IsZero() && time.Since(it.Clicked) >= clickFlash {
+			it.Clicked = time.Time{}
+			it.markDirty()
+		}
+		for _, tab := range it.Tabs {
+			if !tab.Clicked.IsZero() && time.Since(tab.Clicked) >= clickFlash {
+				tab.Clicked = time.Time{}
+				tab.markDirty()
+			}
+			clearExpiredClicks(tab.Contents)
+		}
+		clearExpiredClicks(it.Contents)
 	}
 }
 

@@ -852,11 +852,6 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 			arrow,
 			style.TextColor)
 
-		if item.Open {
-			screenClip := rect{X0: 0, Y0: 0, X1: float32(screenWidth), Y1: float32(screenHeight)}
-			pendingDropdowns = append(pendingDropdowns, dropdownRender{item: item, offset: offset, clip: screenClip})
-		}
-
 	} else if item.ItemType == ITEM_COLORWHEEL {
 
 		wheelSize := maxSize.Y
@@ -978,6 +973,16 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(float64(item.DrawRect.X0), float64(item.DrawRect.Y0))
 		screen.DrawImage(sub, op)
+
+		if item.ItemType == ITEM_DROPDOWN && item.Open {
+			dropOff := offset
+			if item.Label != "" {
+				textSize := (item.FontSize * uiScale) + 2
+				dropOff.Y += textSize + currentLayout.TextPadding
+			}
+			screenClip := rect{X0: 0, Y0: 0, X1: float32(screenWidth), Y1: float32(screenHeight)}
+			pendingDropdowns = append(pendingDropdowns, dropdownRender{item: item, offset: dropOff, clip: screenClip})
+		}
 
 		if DebugMode {
 			strokeRect(screen, item.DrawRect.X0, item.DrawRect.Y0, item.DrawRect.X1-item.DrawRect.X0, item.DrawRect.Y1-item.DrawRect.Y0, 1, color.RGBA{R: 128}, false)
