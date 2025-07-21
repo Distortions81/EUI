@@ -61,23 +61,32 @@ func main() {
 		PinTo:    eui.PIN_BOTTOM_RIGHT,
 	}
 	toggleBtn, toggleEvents := eui.NewButton(&eui.ItemData{Text: "Themes", Size: eui.Point{X: 80, Y: 24}, FontSize: 8})
-	go func() {
-		for ev := range toggleEvents.Events {
-			if ev.Type == eui.EventClick {
-				if themeSel != nil {
-					if !themeSel.Open {
-						themeSel.Open = true
-						themeSel.BringForward()
-					} else {
-						themeSel.Open = false
-						themeSel.ToBack()
-					}
+	toggleEvents.Handle = func(ev eui.UIEvent) {
+		if ev.Type == eui.EventClick {
+			if themeSel != nil {
+				if !themeSel.Open {
+					themeSel.Open = true
+					themeSel.BringForward()
+				} else {
+					themeSel.Open = false
+					themeSel.ToBack()
 				}
 			}
 		}
-	}()
+	}
 	overlay.AddItem(toggleBtn)
 	eui.AddOverlayFlow(overlay)
+
+	statusOverlay := &eui.ItemData{
+		ItemType: eui.ITEM_FLOW,
+		FlowType: eui.FLOW_HORIZONTAL,
+		Size:     eui.Point{X: 320, Y: 24},
+		Position: eui.Point{X: 4, Y: 4},
+		PinTo:    eui.PIN_BOTTOM_LEFT,
+	}
+	statusText, _ = eui.NewText(&eui.ItemData{Size: eui.Point{X: 316, Y: 24}, FontSize: 8})
+	statusOverlay.AddItem(statusText)
+	eui.AddOverlayFlow(statusOverlay)
 
 	go startEbiten()
 
