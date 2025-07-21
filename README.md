@@ -42,6 +42,16 @@ go build -o demo ./cmd/demo
 go run ./cmd/demo -debug
 ```
 
+## Building for WebAssembly
+
+Compile the demo to `wasm` using the provided script:
+
+```sh
+./scripts/build_wasm.sh
+```
+
+Open `web/index.html` in a browser to run it.
+
 ## Customization
 
 The library loads the built in `AccentDark` palette, `RoundHybrid` style and a default font automatically. Additional examples live under [`eui/themes`](eui/themes). Use `eui.ListThemes()` and `eui.ListStyles()` to see the names that are available. To try a different look enable `eui.AutoReload` and load files explicitly:
