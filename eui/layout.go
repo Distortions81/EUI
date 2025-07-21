@@ -136,6 +136,7 @@ func LoadLayout(name string) error {
 	if currentTheme != nil {
 		applyLayoutToTheme(currentTheme)
 		applyThemeToAll()
+		markAllDirty()
 	}
 	refreshLayoutMod()
 	return nil
