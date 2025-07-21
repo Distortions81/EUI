@@ -174,14 +174,26 @@ func (g *Game) Update() error {
 		for _, r := range ebiten.AppendInputChars(nil) {
 			if r >= 32 && r != 127 && r != '\r' && r != '\n' {
 				focusedItem.Text += string(r)
+				if focusedItem.TextPtr != nil {
+					*focusedItem.TextPtr = focusedItem.Text
+				}
 				focusedItem.markDirty()
+				if focusedItem.Handler != nil {
+					focusedItem.Handler.Emit(UIEvent{Item: focusedItem, Type: EventInputChanged, Text: focusedItem.Text})
+				}
 			}
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyBackspace) {
 			runes := []rune(focusedItem.Text)
 			if len(runes) > 0 {
 				focusedItem.Text = string(runes[:len(runes)-1])
+				if focusedItem.TextPtr != nil {
+					*focusedItem.TextPtr = focusedItem.Text
+				}
 				focusedItem.markDirty()
+				if focusedItem.Handler != nil {
+					focusedItem.Handler.Emit(UIEvent{Item: focusedItem, Type: EventInputChanged, Text: focusedItem.Text})
+				}
 			}
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
