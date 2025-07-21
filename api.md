@@ -301,17 +301,6 @@ func (h *EventHandler) Emit(ev UIEvent)
 
 type FlowType = flowType
 
-type Game struct {
-}
-
-func NewGame() *Game
-    NewGame creates a new Game instance.
-
-func (g *Game) Draw(screen *ebiten.Image)
-
-func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int)
-
-func (g *Game) Update() error
 
 type ItemData = itemData
 

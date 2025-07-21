@@ -18,7 +18,9 @@ var (
 	activeItem *itemData
 )
 
-func (g *Game) Update() error {
+// Update processes input and updates window state.
+// Programs embedding the UI can call this from their Ebiten Update handler.
+func Update() error {
 
 	checkThemeLayoutMods()
 

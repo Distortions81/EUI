@@ -45,10 +45,9 @@ func init() {
 
 // constants moved to const.go
 
-type Game struct {
-}
-
-func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
+// Layout reports the dimensions for the game's screen.
+// Pass Ebiten's outside size values to this from your Layout function.
+func Layout(outsideWidth, outsideHeight int) (int, int) {
 	screenWidth, screenHeight = outsideWidth, outsideHeight
 	return outsideWidth, outsideHeight
 }

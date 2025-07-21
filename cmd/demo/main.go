@@ -113,6 +113,14 @@ func startEbiten() {
 	signalHandle <- syscall.SIGINT
 }
 
-func newGame() *eui.Game {
-	return eui.NewGame()
+type demoGame struct{}
+
+func (g *demoGame) Update() error             { return eui.Update() }
+func (g *demoGame) Draw(screen *ebiten.Image) { eui.Draw(screen) }
+func (g *demoGame) Layout(outsideWidth, outsideHeight int) (int, int) {
+	return eui.Layout(outsideWidth, outsideHeight)
+}
+
+func newGame() *demoGame {
+	return &demoGame{}
 }

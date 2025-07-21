@@ -70,6 +70,3 @@ func SetCurrentLayoutName(name string) { currentLayoutName = name }
 
 // AccentSaturation returns the current accent color saturation value.
 func AccentSaturation() float64 { return accentSaturation }
-
-// NewGame creates a new Game instance.
-func NewGame() *Game { return &Game{} }
