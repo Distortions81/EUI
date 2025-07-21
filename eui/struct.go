@@ -58,10 +58,8 @@ type windowData struct {
 	ShadowSize  float32
 	ShadowColor Color
 
-	// cache stores the pre-rendered window image when all items are clean.
-	cache *ebiten.Image
 	// PrevHovered stores the window hover state from the previous frame so
-	// we can detect changes and invalidate the cache only when necessary.
+	// changes can be detected between frames.
 	PrevHovered bool
 }
 
@@ -108,6 +106,8 @@ type itemData struct {
 	// wheelImg caches the generated color wheel graphic so it doesn't
 	// need to be recreated every frame.
 	wheelImg *ebiten.Image
+	// cache stores the pre-rendered item image.
+	cache *ebiten.Image
 
 	//Style
 	Padding, Margin float32
