@@ -22,6 +22,8 @@ func main() {
 	debugMode = flag.Bool("debug", false, "enable debug visuals")
 	flag.Parse()
 
+	eui.DebugMode = *debugMode
+
 	signalHandle = make(chan os.Signal, 1)
 	signal.Notify(signalHandle, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 
