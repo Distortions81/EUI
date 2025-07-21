@@ -37,7 +37,7 @@ The demonstration application lives under `cmd/demo`. You can run it directly us
 go run ./cmd/demo             # launches the showcase window
 # or
 go build -o demo ./cmd/demo
-./demo -debug                 # optional debug overlays
+./demo -debug                 # optional debug overlays and disposal logs
 # dump cached images to ./debug after one frame then exit
 ./demo -dump
 # pass -debug with go run to enable overlays
