@@ -409,8 +409,10 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 			return true
 		}
 	} else {
-		item.Hovered = true
-		item.markDirty()
+		if !item.Hovered {
+			item.Hovered = true
+			item.markDirty()
+		}
 		hoveredItem = item
 		if item.ItemType == ITEM_COLORWHEEL && ebiten.IsMouseButtonPressed(ebiten.MouseButton0) {
 			if col, ok := item.colorAt(mpos); ok {

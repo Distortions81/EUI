@@ -979,9 +979,6 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		op.GeoM.Translate(float64(item.DrawRect.X0), float64(item.DrawRect.Y0))
 		screen.DrawImage(sub, op)
 
-		if item.ItemType == ITEM_DROPDOWN && item.Open {
-			drawDropdownOptions(item, offset, clip, screen)
-		}
 		if DebugMode {
 			strokeRect(screen, item.DrawRect.X0, item.DrawRect.Y0, item.DrawRect.X1-item.DrawRect.X0, item.DrawRect.Y1-item.DrawRect.Y0, 1, color.RGBA{R: 128}, false)
 		}
