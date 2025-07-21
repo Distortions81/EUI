@@ -342,6 +342,10 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 	if item.cache == nil || item.Dirty || item.cache.Bounds().Dx() != w || item.cache.Bounds().Dy() != h {
 		item.cache = ebiten.NewImage(w, h)
 		item.renderFlows(win, parent, point{}, rect{X0: 0, Y0: 0, X1: item.GetSize().X, Y1: item.GetSize().Y}, item.cache)
+		if DebugMode {
+			item.RenderCount++
+			drawCacheCount(item.cache, item.RenderCount)
+		}
 		item.Dirty = false
 	}
 
@@ -387,6 +391,10 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 	if item.cache == nil || item.Dirty || item.cache.Bounds().Dx() != w || item.cache.Bounds().Dy() != h {
 		item.cache = ebiten.NewImage(w, h)
 		item.renderItem(parent, point{}, rect{X0: 0, Y0: 0, X1: maxSize.X, Y1: maxSize.Y}, item.cache)
+		if DebugMode {
+			item.RenderCount++
+			drawCacheCount(item.cache, item.RenderCount)
+		}
 		item.Dirty = false
 	}
 
@@ -1445,4 +1453,18 @@ func drawFPS(screen *ebiten.Image) {
 	drawFilledRect(screen, 0, 0, 180, 16, color.RGBA{R: 0, G: 0, B: 0, A: 192}, false)
 	buf := fmt.Sprintf("%4v FPS R:%5.2fms U:%5.2fms %3.0f%%", int(math.Round(ebiten.ActualFPS())), renderMS, updateMS, cpuPercent)
 	ebitenutil.DebugPrintAt(screen, buf, 0, 0)
+}
+
+func drawCacheCount(img *ebiten.Image, count int) {
+	if count <= 0 {
+		return
+	}
+	textSize := float32(8) * uiScale
+	face := textFace(textSize)
+	loo := text.LayoutOptions{PrimaryAlign: text.AlignStart, SecondaryAlign: text.AlignStart}
+	dop := ebiten.DrawImageOptions{}
+	dop.GeoM.Translate(1, float64(textSize/2))
+	top := &text.DrawOptions{DrawImageOptions: dop, LayoutOptions: loo}
+	top.ColorScale.ScaleWithColor(color.RGBA{R: 255, G: 255, B: 0, A: 255})
+	text.Draw(img, fmt.Sprintf("%d", count), face, top)
 }

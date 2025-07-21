@@ -138,6 +138,9 @@ type itemData struct {
 	// rendered.
 	DrawRect rect
 
+	// RenderCount increments each time the item's cache is regenerated.
+	RenderCount int
+
 	// Drop shadow styling
 	ShadowSize  float32
 	ShadowColor Color
