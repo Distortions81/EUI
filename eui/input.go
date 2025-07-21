@@ -22,6 +22,9 @@ func (g *Game) Update() error {
 
 	checkThemeLayoutMods()
 
+	prevHovered := hoveredItem
+	hoveredItem = nil
+
 	mx, my := ebiten.CursorPosition()
 	mpos := point{X: float32(mx), Y: float32(my)}
 
@@ -218,6 +221,13 @@ func (g *Game) Update() error {
 		}
 	}
 
+	if hoveredItem != prevHovered {
+		if prevHovered != nil {
+			prevHovered.Hovered = false
+			prevHovered.markDirty()
+		}
+	}
+
 	// Refresh flow layouts so scroll bars update when content size changes
 	for _, win := range windows {
 		if win.Open {
@@ -279,6 +289,7 @@ func (item *itemData) clickFlows(mpos point, click bool) bool {
 			tab.Hovered = false
 			if tab.DrawRect.containsPoint(mpos) {
 				tab.Hovered = true
+				hoveredItem = tab
 				if click {
 					activeItem = tab
 					tab.Clicked = time.Now()
@@ -400,6 +411,7 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 	} else {
 		item.Hovered = true
 		item.markDirty()
+		hoveredItem = item
 		if item.ItemType == ITEM_COLORWHEEL && ebiten.IsMouseButtonPressed(ebiten.MouseButton0) {
 			if col, ok := item.colorAt(mpos); ok {
 				item.WheelColor = col
