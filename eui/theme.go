@@ -112,6 +112,7 @@ func LoadTheme(name string) error {
 	currentThemeName = name
 	applyLayoutToTheme(currentTheme)
 	applyThemeToAll()
+	markAllDirty()
 	if ac, ok := namedColors["accent"]; ok {
 		accentHue, accentSaturation, accentValue, accentAlpha = rgbaToHSVA(color.RGBA(ac))
 	}
@@ -198,6 +199,7 @@ func applyAccentColor() {
 	namedColors["sliderfilled"] = col
 	applyThemeToAll()
 	updateColorWheels(col)
+	markAllDirty()
 }
 
 // applyThemeToAll updates all existing windows to use the current theme.

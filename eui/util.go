@@ -344,6 +344,30 @@ func (item *itemData) markDirty() {
 	}
 }
 
+func markItemTreeDirty(it *itemData) {
+	if it == nil {
+		return
+	}
+	it.markDirty()
+	for _, child := range it.Contents {
+		markItemTreeDirty(child)
+	}
+	for _, tab := range it.Tabs {
+		markItemTreeDirty(tab)
+	}
+}
+
+func markAllDirty() {
+	for _, win := range windows {
+		for _, it := range win.Contents {
+			markItemTreeDirty(it)
+		}
+	}
+	for _, ov := range overlays {
+		markItemTreeDirty(ov)
+	}
+}
+
 func (item *itemData) bounds(offset point) rect {
 	r := rect{
 		X0: offset.X,
