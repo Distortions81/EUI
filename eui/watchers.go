@@ -8,10 +8,10 @@ import (
 )
 
 var (
-	themeModTime  time.Time
-	layoutModTime time.Time
-	modCheckTime  time.Time
-	// AutoReload enables automatic reloading of theme and layout files
+	themeModTime time.Time
+	styleModTime time.Time
+	modCheckTime time.Time
+	// AutoReload enables automatic reloading of theme and style files
 	// when they are modified on disk, only use this for quickly iterating when designing your own themes.
 	AutoReload bool
 )
@@ -19,7 +19,7 @@ var (
 func init() {
 	modCheckTime = time.Now()
 	refreshThemeMod()
-	refreshLayoutMod()
+	refreshStyleMod()
 }
 
 func refreshThemeMod() {
@@ -31,16 +31,16 @@ func refreshThemeMod() {
 	}
 }
 
-func refreshLayoutMod() {
-	path := filepath.Join(os.Getenv("PWD"), "themes", "styles", currentLayoutName+".json")
+func refreshStyleMod() {
+	path := filepath.Join(os.Getenv("PWD"), "themes", "styles", currentStyleName+".json")
 	if info, err := os.Stat(path); err == nil {
-		layoutModTime = info.ModTime()
+		styleModTime = info.ModTime()
 	} else {
-		layoutModTime = time.Time{}
+		styleModTime = time.Time{}
 	}
 }
 
-func checkThemeLayoutMods() {
+func checkThemeStyleMods() {
 	if !AutoReload {
 		return
 	}
@@ -51,7 +51,7 @@ func checkThemeLayoutMods() {
 	path := filepath.Join(os.Getenv("PWD"), "themes", "palettes", currentThemeName+".json")
 	if info, err := os.Stat(path); err == nil {
 		if info.ModTime().After(themeModTime) {
-			log.Println("Color theme reload")
+			log.Println("Palette reload")
 			if err := LoadTheme(currentThemeName); err != nil {
 				log.Printf("Auto reload theme error: %v", err)
 			}
@@ -61,17 +61,17 @@ func checkThemeLayoutMods() {
 		log.Println("Unable to stat " + currentThemeName + ": " + err.Error())
 	}
 
-	path = filepath.Join(os.Getenv("PWD"), "themes", "styles", currentLayoutName+".json")
+	path = filepath.Join(os.Getenv("PWD"), "themes", "styles", currentStyleName+".json")
 	if info, err := os.Stat(path); err == nil {
-		if info.ModTime().After(layoutModTime) {
-			log.Println("Layout theme reload")
-			if err := LoadLayout(currentLayoutName); err != nil {
-				log.Printf("Auto reload layout error: %v", err)
+		if info.ModTime().After(styleModTime) {
+			log.Println("Style theme reload")
+			if err := LoadStyle(currentStyleName); err != nil {
+				log.Printf("Auto reload style error: %v", err)
 			}
-			layoutModTime = info.ModTime()
+			styleModTime = info.ModTime()
 		}
 	} else {
-		log.Println("Unable to stat " + currentLayoutName + ": " + err.Error())
+		log.Println("Unable to stat " + currentStyleName + ": " + err.Error())
 	}
 
 }

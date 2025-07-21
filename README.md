@@ -44,13 +44,13 @@ go run ./cmd/demo -debug
 
 ## Customization
 
-The library loads the built in `AccentDark` palette, `RoundHybrid` style and a default font automatically. Additional examples live under [`eui/themes`](eui/themes). Use `eui.ListThemes()` and `eui.ListLayouts()` to see the names that are available. To try a different look enable `eui.AutoReload` and load files explicitly:
+The library loads the built in `AccentDark` palette, `RoundHybrid` style and a default font automatically. Additional examples live under [`eui/themes`](eui/themes). Use `eui.ListThemes()` and `eui.ListStyles()` to see the names that are available. To try a different look enable `eui.AutoReload` and load files explicitly:
 
 ```go
 // var ttf []byte
 // _ = eui.EnsureFontSource(ttf)
 // _ = eui.LoadTheme("MyTheme")
-// _ = eui.LoadLayout("MyLayout")
+// _ = eui.LoadStyle("MyStyle")
 ```
 
 See [themes/README.md](eui/themes/README.md) for a list of the bundled schemes and details on creating your own.

@@ -96,5 +96,5 @@
     "OutlineColor": "outline",
     "SelectedColor": "hover"
   },
-  "RecommendedLayout": "MonoEdge"
+  "RecommendedStyle": "MonoEdge"
 }

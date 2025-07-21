@@ -96,5 +96,5 @@
     "OutlineColor": "outline",
     "SelectedColor": "hover"
   },
-  "RecommendedLayout": "MinimalFade"
+  "RecommendedStyle": "MinimalFade"
 }

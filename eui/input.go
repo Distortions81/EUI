@@ -22,7 +22,7 @@ var (
 // Programs embedding the UI can call this from their Ebiten Update handler.
 func Update() error {
 
-	checkThemeLayoutMods()
+	checkThemeStyleMods()
 
 	prevHovered := hoveredItem
 	hoveredItem = nil
@@ -564,7 +564,7 @@ func (item *itemData) setSliderValue(mpos point) {
 	maxW, _ := text.Measure(maxLabel, face, 0)
 
 	knobW := item.AuxSize.X * uiScale
-	width := item.DrawRect.X1 - item.DrawRect.X0 - knobW - currentLayout.SliderValueGap - float32(maxW)
+	width := item.DrawRect.X1 - item.DrawRect.X0 - knobW - currentStyle.SliderValueGap - float32(maxW)
 	if width <= 0 {
 		return
 	}
@@ -591,7 +591,7 @@ func (item *itemData) colorAt(mpos point) (Color, bool) {
 	size := point{X: item.Size.X * uiScale, Y: item.Size.Y * uiScale}
 	offsetY := float32(0)
 	if item.Label != "" {
-		offsetY = (item.FontSize*uiScale + 2) + currentLayout.TextPadding
+		offsetY = (item.FontSize*uiScale + 2) + currentStyle.TextPadding
 	}
 	wheelSize := size.Y
 	if wheelSize > size.X {

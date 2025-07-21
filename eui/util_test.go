@@ -122,7 +122,7 @@ func TestSetSliderValue(t *testing.T) {
 	face := textFace(textSize)
 	maxW, _ := text.Measure(maxLabel, face, 0)
 	knobW := item.AuxSize.X * uiScale
-	width := item.DrawRect.X1 - item.DrawRect.X0 - knobW - currentLayout.SliderValueGap - float32(maxW)
+	width := item.DrawRect.X1 - item.DrawRect.X0 - knobW - currentStyle.SliderValueGap - float32(maxW)
 	start := item.DrawRect.X0 + knobW/2
 	val := float32(42) - start
 	if val < 0 {
@@ -151,7 +151,7 @@ func sliderTrackWidth(item *itemData) float32 {
 	face := textFace(textSize)
 	maxW, _ := text.Measure(maxLabel, face, 0)
 	knobW := item.AuxSize.X * uiScale
-	width := maxSize.X - knobW - currentLayout.SliderValueGap - float32(maxW)
+	width := maxSize.X - knobW - currentStyle.SliderValueGap - float32(maxW)
 	if width < 0 {
 		width = 0
 	}

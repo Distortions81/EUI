@@ -29,12 +29,12 @@ func main() {
 	signalHandle = make(chan os.Signal, 1)
 	signal.Notify(signalHandle, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 
-	// Load a custom theme or layout from files if desired
+	// Load a custom theme or style from files if desired
 	// if err := eui.LoadTheme("AccentDark"); err != nil {
 	//         log.Printf("eui.LoadTheme error: %v", err)
 	// }
-	// if err := eui.LoadLayout("RoundHybrid"); err != nil {
-	//         log.Printf("eui.LoadLayout error: %v", err)
+	// if err := eui.LoadStyle("RoundHybrid"); err != nil {
+	//         log.Printf("eui.LoadStyle error: %v", err)
 	// }
 
 	// Use your own font
