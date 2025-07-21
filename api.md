@@ -127,16 +127,14 @@ The snippet below creates a simple window containing a button:
 
 ```go
 win := eui.NewWindow(&eui.WindowData{Title: "Example", Size: eui.Point{X: 200, Y: 120}})
-btn, btnEvents := eui.NewButton(&eui.ItemData{Text: "Click Me"})
+btn, handler := eui.NewButton(&eui.ItemData{Text: "Click Me"})
 win.AddItem(btn)
 win.AddWindow(false)
-go func() {
-    for ev := range btnEvents.Events {
-        if ev.Type == eui.EventClick {
-            // handle click
-        }
+handler.Handle = func(ev eui.UIEvent) {
+    if ev.Type == eui.EventClick {
+        // handle click
     }
-}()
+}
 ```
 
 To regenerate this file run:
