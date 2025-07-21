@@ -128,25 +128,7 @@ func (win *windowData) dragbarRect() rect {
 }
 
 func (win *windowData) setSize(size point) bool {
-	tooSmall := false
-
-	// Enforce minimum dimensions and prevent negatives.
-	if size.X < minWinSizeX {
-		size.X = minWinSizeX
-		tooSmall = true
-	}
-	if size.Y < minWinSizeY {
-		size.Y = minWinSizeY
-		tooSmall = true
-	}
-	if size.X < 0 {
-		size.X = minWinSizeX
-		tooSmall = true
-	}
-	if size.Y < 0 {
-		size.Y = minWinSizeY
-		tooSmall = true
-	}
+	size, tooSmall := win.clampSize(size)
 
 	xc, yc := win.itemOverlap(size)
 	if !xc {
@@ -161,137 +143,163 @@ func (win *windowData) setSize(size point) bool {
 
 	win.BringForward()
 	win.resizeFlows()
-
-	// Adjust scroll position so content never remains off screen when
-	// the window is resized larger than its contents.
-	if !win.NoScroll {
-		pad := win.Padding + win.BorderPad
-		req := win.contentBounds()
-		avail := point{
-			X: win.GetSize().X - 2*pad,
-			Y: win.GetSize().Y - win.GetTitleSize() - 2*pad,
-		}
-		if req.Y <= avail.Y {
-			win.Scroll.Y = 0
-		} else {
-			max := req.Y - avail.Y
-			if win.Scroll.Y > max {
-				win.Scroll.Y = max
-			}
-		}
-		if req.X <= avail.X {
-			win.Scroll.X = 0
-		} else {
-			max := req.X - avail.X
-			if win.Scroll.X > max {
-				win.Scroll.X = max
-			}
-		}
-	}
+	win.adjustScrollForResize()
 
 	return tooSmall
 }
 
+func (win *windowData) clampSize(size point) (point, bool) {
+	tooSmall := false
+
+	// Enforce minimum dimensions and prevent negatives.
+	if size.X < minWinSizeX || size.X < 0 {
+		size.X = minWinSizeX
+		tooSmall = true
+	}
+	if size.Y < minWinSizeY || size.Y < 0 {
+		size.Y = minWinSizeY
+		tooSmall = true
+	}
+
+	return size, tooSmall
+}
+
+func (win *windowData) adjustScrollForResize() {
+	if win.NoScroll {
+		return
+	}
+
+	pad := win.Padding + win.BorderPad
+	req := win.contentBounds()
+	avail := point{
+		X: win.GetSize().X - 2*pad,
+		Y: win.GetSize().Y - win.GetTitleSize() - 2*pad,
+	}
+	if req.Y <= avail.Y {
+		win.Scroll.Y = 0
+	} else {
+		max := req.Y - avail.Y
+		if win.Scroll.Y > max {
+			win.Scroll.Y = max
+		}
+	}
+	if req.X <= avail.X {
+		win.Scroll.X = 0
+	} else {
+		max := req.X - avail.X
+		if win.Scroll.X > max {
+			win.Scroll.X = max
+		}
+	}
+}
+
 func (win *windowData) getWindowPart(mpos point, click bool) dragType {
+	if part := win.getTitlebarPart(mpos); part != PART_NONE {
+		return part
+	}
+	if part := win.getResizePart(mpos); part != PART_NONE {
+		return part
+	}
+	return win.getScrollbarPart(mpos)
+}
 
-	//Titlebar items
-	if win.TitleHeight > 0 {
-		if win.getTitleRect().containsPoint(mpos) {
-			//Close X
-			if win.Closable {
-				if win.xRect().containsPoint(mpos) {
-					win.HoverClose = true
-					return PART_CLOSE
-				}
-			}
-			//Drag bar
-			if win.Movable {
-				if win.dragbarRect().containsPoint(mpos) {
-					win.HoverDragbar = true
-					return PART_BAR
-				}
-			}
+func (win *windowData) getTitlebarPart(mpos point) dragType {
+	if win.TitleHeight <= 0 {
+		return PART_NONE
+	}
+	if win.getTitleRect().containsPoint(mpos) {
+		if win.Closable && win.xRect().containsPoint(mpos) {
+			win.HoverClose = true
+			return PART_CLOSE
+		}
+		if win.Movable && win.dragbarRect().containsPoint(mpos) {
+			win.HoverDragbar = true
+			return PART_BAR
 		}
 	}
+	return PART_NONE
+}
 
-	if win.Resizable {
-		t := scrollTolerance * uiScale
-
-		winRect := win.getWinRect()
-
-		//Expand outer window rect
-		outRect := winRect
-		outRect.X0 -= t
-		outRect.X1 += t
-		outRect.Y0 -= t
-		outRect.Y1 += t
-
-		//Contract inner window rect
-		inRect := winRect
-		inRect.X0 += t
-		inRect.X1 -= t
-		inRect.Y0 += t
-		inRect.Y1 -= t
-
-		//If within outrect, and not within inrect it is window DRAG
-		if outRect.containsPoint(mpos) && !inRect.containsPoint(mpos) {
-			if mpos.Y < inRect.Y0 {
-				return PART_TOP
-			} else if mpos.Y > inRect.Y1 {
-				return PART_BOTTOM
-			} else if mpos.X < inRect.X0 {
-				return PART_LEFT
-			} else if mpos.X > inRect.X1 {
-				return PART_RIGHT
-			}
-		}
+func (win *windowData) getResizePart(mpos point) dragType {
+	if !win.Resizable {
+		return PART_NONE
 	}
 
-	if !win.NoScroll {
-		pad := win.Padding + win.BorderPad
-		req := win.contentBounds()
-		avail := point{
-			X: win.GetSize().X - 2*pad,
-			Y: win.GetSize().Y - win.GetTitleSize() - 2*pad,
-		}
-		if req.Y > avail.Y {
-			barH := avail.Y * avail.Y / req.Y
-			maxScroll := req.Y - avail.Y
-			pos := float32(0)
-			if maxScroll > 0 {
-				pos = (win.Scroll.Y / maxScroll) * (avail.Y - barH)
-			}
-			sbW := currentStyle.BorderPad.Slider * 2
-			r := rect{
-				X0: win.getPosition().X + win.GetSize().X - win.BorderPad - sbW,
-				Y0: win.getPosition().Y + win.GetTitleSize() + win.BorderPad + pos,
-				X1: win.getPosition().X + win.GetSize().X - win.BorderPad,
-				Y1: win.getPosition().Y + win.GetTitleSize() + win.BorderPad + pos + barH,
-			}
-			if r.containsPoint(mpos) {
-				return PART_SCROLL_V
-			}
-		}
-		if req.X > avail.X {
-			barW := avail.X * avail.X / req.X
-			maxScroll := req.X - avail.X
-			pos := float32(0)
-			if maxScroll > 0 {
-				pos = (win.Scroll.X / maxScroll) * (avail.X - barW)
-			}
-			sbW := currentStyle.BorderPad.Slider * 2
-			r := rect{
-				X0: win.getPosition().X + win.BorderPad + pos,
-				Y0: win.getPosition().Y + win.GetSize().Y - win.BorderPad - sbW,
-				X1: win.getPosition().X + win.BorderPad + pos + barW,
-				Y1: win.getPosition().Y + win.GetSize().Y - win.BorderPad,
-			}
-			if r.containsPoint(mpos) {
-				return PART_SCROLL_H
-			}
+	t := scrollTolerance * uiScale
+	winRect := win.getWinRect()
+	outRect := winRect
+	outRect.X0 -= t
+	outRect.X1 += t
+	outRect.Y0 -= t
+	outRect.Y1 += t
+
+	inRect := winRect
+	inRect.X0 += t
+	inRect.X1 -= t
+	inRect.Y0 += t
+	inRect.Y1 -= t
+
+	if outRect.containsPoint(mpos) && !inRect.containsPoint(mpos) {
+		if mpos.Y < inRect.Y0 {
+			return PART_TOP
+		} else if mpos.Y > inRect.Y1 {
+			return PART_BOTTOM
+		} else if mpos.X < inRect.X0 {
+			return PART_LEFT
+		} else if mpos.X > inRect.X1 {
+			return PART_RIGHT
 		}
 	}
+	return PART_NONE
+}
 
+func (win *windowData) getScrollbarPart(mpos point) dragType {
+	if win.NoScroll {
+		return PART_NONE
+	}
+
+	pad := win.Padding + win.BorderPad
+	req := win.contentBounds()
+	avail := point{
+		X: win.GetSize().X - 2*pad,
+		Y: win.GetSize().Y - win.GetTitleSize() - 2*pad,
+	}
+	if req.Y > avail.Y {
+		barH := avail.Y * avail.Y / req.Y
+		maxScroll := req.Y - avail.Y
+		pos := float32(0)
+		if maxScroll > 0 {
+			pos = (win.Scroll.Y / maxScroll) * (avail.Y - barH)
+		}
+		sbW := currentStyle.BorderPad.Slider * 2
+		r := rect{
+			X0: win.getPosition().X + win.GetSize().X - win.BorderPad - sbW,
+			Y0: win.getPosition().Y + win.GetTitleSize() + win.BorderPad + pos,
+			X1: win.getPosition().X + win.GetSize().X - win.BorderPad,
+			Y1: win.getPosition().Y + win.GetTitleSize() + win.BorderPad + pos + barH,
+		}
+		if r.containsPoint(mpos) {
+			return PART_SCROLL_V
+		}
+	}
+	if req.X > avail.X {
+		barW := avail.X * avail.X / req.X
+		maxScroll := req.X - avail.X
+		pos := float32(0)
+		if maxScroll > 0 {
+			pos = (win.Scroll.X / maxScroll) * (avail.X - barW)
+		}
+		sbW := currentStyle.BorderPad.Slider * 2
+		r := rect{
+			X0: win.getPosition().X + win.BorderPad + pos,
+			Y0: win.getPosition().Y + win.GetSize().Y - win.BorderPad - sbW,
+			X1: win.getPosition().X + win.BorderPad + pos + barW,
+			Y1: win.getPosition().Y + win.GetSize().Y - win.BorderPad,
+		}
+		if r.containsPoint(mpos) {
+			return PART_SCROLL_H
+		}
+	}
 	return PART_NONE
 }
 
