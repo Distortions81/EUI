@@ -107,6 +107,7 @@ func drawOverlay(item *itemData, screen *ebiten.Image) {
 	} else {
 		item.drawItem(nil, offset, clip, screen)
 	}
+	clearDirty(item)
 }
 
 func (win *windowData) Draw(screen *ebiten.Image) {
