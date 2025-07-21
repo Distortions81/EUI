@@ -338,9 +338,11 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 	if click {
 		activeItem = item
 		item.Clicked = time.Now()
+		item.markDirty()
 		if item.ItemType == ITEM_COLORWHEEL {
 			if col, ok := item.colorAt(mpos); ok {
 				item.WheelColor = col
+				item.markDirty()
 				if item.OnColorChange != nil {
 					item.OnColorChange(col)
 				} else {
@@ -350,15 +352,18 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 		}
 		if item.ItemType == ITEM_CHECKBOX {
 			item.Checked = !item.Checked
+			item.markDirty()
 		} else if item.ItemType == ITEM_RADIO {
 			item.Checked = true
 			// uncheck others in group
 			if item.RadioGroup != "" {
 				uncheckRadioGroup(item.Parent, item.RadioGroup, item)
 			}
+			item.markDirty()
 		} else if item.ItemType == ITEM_INPUT {
 			focusedItem = item
 			item.Focused = true
+			item.markDirty()
 		} else if item.ItemType == ITEM_DROPDOWN {
 			if item.Open {
 				optionH := item.GetSize().Y
@@ -374,15 +379,18 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 					if idx >= 0 && idx < len(item.Options) {
 						item.Selected = idx
 						item.Open = false
+						item.markDirty()
 						if item.OnSelect != nil {
 							item.OnSelect(idx)
 						}
 					}
 				} else {
 					item.Open = false
+					item.markDirty()
 				}
 			} else {
 				item.Open = true
+				item.markDirty()
 			}
 		}
 		if item.Action != nil {
@@ -391,9 +399,11 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 		}
 	} else {
 		item.Hovered = true
+		item.markDirty()
 		if item.ItemType == ITEM_COLORWHEEL && ebiten.IsMouseButtonPressed(ebiten.MouseButton0) {
 			if col, ok := item.colorAt(mpos); ok {
 				item.WheelColor = col
+				item.markDirty()
 				if item.OnColorChange != nil {
 					item.OnColorChange(col)
 				} else {
@@ -414,6 +424,7 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 				if idx >= 0 && idx < len(item.Options) {
 					if idx != item.HoverIndex {
 						item.HoverIndex = idx
+						item.markDirty()
 						if item.OnHover != nil {
 							item.OnHover(idx)
 						}
@@ -422,6 +433,7 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 			} else {
 				if item.HoverIndex != -1 {
 					item.HoverIndex = -1
+					item.markDirty()
 					if item.OnHover != nil {
 						item.OnHover(item.Selected)
 					}
@@ -430,6 +442,7 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 		}
 		if item.ItemType == ITEM_SLIDER && ebiten.IsMouseButtonPressed(ebiten.MouseButton0) {
 			item.setSliderValue(mpos)
+			item.markDirty()
 			if item.Action != nil {
 				item.Action()
 			}
@@ -451,7 +464,10 @@ func uncheckRadioGroup(parent *itemData, group string, except *itemData) {
 func subUncheckRadio(list []*itemData, group string, except *itemData) {
 	for _, it := range list {
 		if it.ItemType == ITEM_RADIO && it.RadioGroup == group && it != except {
-			it.Checked = false
+			if it.Checked {
+				it.Checked = false
+				it.markDirty()
+			}
 		}
 		if len(it.Tabs) > 0 {
 			for _, tab := range it.Tabs {
@@ -490,6 +506,7 @@ func (item *itemData) setSliderValue(mpos point) {
 	if item.IntOnly {
 		item.Value = float32(int(item.Value + 0.5))
 	}
+	item.markDirty()
 }
 
 func (item *itemData) colorAt(mpos point) (Color, bool) {
@@ -790,7 +807,10 @@ func dropdownOpenContainsAnywhere(mpos point) bool {
 func closeDropdowns(items []*itemData) {
 	for _, it := range items {
 		if it.ItemType == ITEM_DROPDOWN {
-			it.Open = false
+			if it.Open {
+				it.Open = false
+				it.markDirty()
+			}
 		}
 		for _, tab := range it.Tabs {
 			closeDropdowns(tab.Contents)

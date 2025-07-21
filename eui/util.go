@@ -338,6 +338,12 @@ func (item *itemData) GetPos() point {
 	return point{X: item.Position.X * uiScale, Y: item.Position.Y * uiScale}
 }
 
+func (item *itemData) markDirty() {
+	if item != nil && item.ItemType != ITEM_FLOW {
+		item.Dirty = true
+	}
+}
+
 func (item *itemData) bounds(offset point) rect {
 	r := rect{
 		X0: offset.X,
