@@ -1,0 +1,32 @@
+package eui
+
+// UIEventType defines the kind of event emitted by widgets.
+type UIEventType int
+
+const (
+	EventClick UIEventType = iota
+	EventSliderChanged
+	EventDropdownSelected
+	EventCheckboxChanged
+	EventRadioSelected
+	EventColorChanged
+)
+
+// UIEvent describes a user interaction with a widget.
+type UIEvent struct {
+	Item    *ItemData
+	Type    UIEventType
+	Value   float32
+	Index   int
+	Checked bool
+	Color   Color
+}
+
+// EventHandler holds a channel widgets use to emit events.
+type EventHandler struct {
+	Events chan UIEvent
+}
+
+func newHandler() *EventHandler {
+	return &EventHandler{Events: make(chan UIEvent, 8)}
+}

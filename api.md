@@ -94,14 +94,14 @@ It is currently in a pre‑alpha state and the API may change at any time.
 - `(g *Game) Draw(screen *ebiten.Image)`
 - `(g *Game) Layout(outsideWidth, outsideHeight int) (int, int)`
 - `NewWindow(win *WindowData) *WindowData`
-- `NewButton(item *ItemData) *ItemData`
-- `NewCheckbox(item *ItemData) *ItemData`
-- `NewRadio(item *ItemData) *ItemData`
-- `NewInput(item *ItemData) *ItemData`
-- `NewSlider(item *ItemData) *ItemData`
-- `NewDropdown(item *ItemData) *ItemData`
-- `NewColorWheel(item *ItemData) *ItemData`
-- `NewText(item *ItemData) *ItemData`
+ - `NewButton(item *ItemData) (*ItemData, *EventHandler)`
+ - `NewCheckbox(item *ItemData) (*ItemData, *EventHandler)`
+ - `NewRadio(item *ItemData) (*ItemData, *EventHandler)`
+ - `NewInput(item *ItemData) (*ItemData, *EventHandler)`
+ - `NewSlider(item *ItemData) (*ItemData, *EventHandler)`
+ - `NewDropdown(item *ItemData) (*ItemData, *EventHandler)`
+ - `NewColorWheel(item *ItemData) (*ItemData, *EventHandler)`
+ - `NewText(item *ItemData) (*ItemData, *EventHandler)`
 - `ColorWheelImage(size int) *ebiten.Image`
 - `LoadTheme(name string) error`
 - `SaveTheme(name string) error`
@@ -127,9 +127,16 @@ The snippet below creates a simple window containing a button:
 
 ```go
 win := eui.NewWindow(&eui.WindowData{Title: "Example", Size: eui.Point{X: 200, Y: 120}})
-btn := eui.NewButton(&eui.ItemData{Text: "Click Me"})
+btn, btnEvents := eui.NewButton(&eui.ItemData{Text: "Click Me"})
 win.AddItem(btn)
 win.AddWindow(false)
+go func() {
+    for ev := range btnEvents.Events {
+        if ev.Type == eui.EventClick {
+            // handle click
+        }
+    }
+}()
 ```
 
 To regenerate this file run:

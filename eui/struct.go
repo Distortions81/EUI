@@ -116,6 +116,7 @@ type itemData struct {
 	Action        func()
 	OnColorChange func(Color)
 	WheelColor    Color
+	Handler       *EventHandler
 	Contents      []*itemData
 
 	// Tabs allows a flow to contain multiple tabbed flows. Only the
