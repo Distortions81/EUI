@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-//go:embed themes/colors/*.json
+//go:embed themes/palettes/*.json
 var embeddedThemes embed.FS
 
 // Theme bundles all style information for windows and widgets.
@@ -66,10 +66,10 @@ func resolveColor(s string, colors map[string]string, seen map[string]bool) (Col
 // LoadTheme reads a theme JSON file from the themes directory and
 // sets it as the current theme without modifying existing windows.
 func LoadTheme(name string) error {
-	file := filepath.Join(os.Getenv("PWD")+"/themes", "colors", name+".json")
+	file := filepath.Join(os.Getenv("PWD")+"/themes", "palettes", name+".json")
 	data, err := os.ReadFile(file)
 	if err != nil {
-		data, err = embeddedThemes.ReadFile(filepath.Join("themes", "colors", name+".json"))
+		data, err = embeddedThemes.ReadFile(filepath.Join("themes", "palettes", name+".json"))
 		if err != nil {
 			return err
 		}
@@ -126,9 +126,9 @@ func LoadTheme(name string) error {
 
 // listThemes returns the available theme names from the themes directory
 func listThemes() ([]string, error) {
-	entries, err := fs.ReadDir(embeddedThemes, "themes/colors")
+	entries, err := fs.ReadDir(embeddedThemes, "themes/palettes")
 	if err != nil {
-		entries, err = os.ReadDir("themes/colors")
+		entries, err = os.ReadDir("themes/palettes")
 		if err != nil {
 			return nil, err
 		}
@@ -154,10 +154,10 @@ func SaveTheme(name string) error {
 	if err != nil {
 		return err
 	}
-	if err := os.MkdirAll("themes/colors", 0755); err != nil {
+	if err := os.MkdirAll("themes/palettes", 0755); err != nil {
 		return err
 	}
-	file := filepath.Join("themes", "colors", name+".json")
+	file := filepath.Join("themes", "palettes", name+".json")
 	if err := os.WriteFile(file, data, 0644); err != nil {
 		return err
 	}

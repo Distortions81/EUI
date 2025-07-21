@@ -46,7 +46,7 @@ go run ./cmd/demo -debug
 
 ## Customization
 
-The library loads the built in `AccentDark` color theme, `RoundHybrid` layout and a default font automatically. Additional examples live under [`eui/themes`](eui/themes). Use `eui.ListThemes()` and `eui.ListLayouts()` to see the names that are available. To try a different look enable `eui.AutoReload` and load files explicitly:
+The library loads the built in `AccentDark` palette, `RoundHybrid` style and a default font automatically. Additional examples live under [`eui/themes`](eui/themes). Use `eui.ListThemes()` and `eui.ListLayouts()` to see the names that are available. To try a different look enable `eui.AutoReload` and load files explicitly:
 
 ```go
 // var ttf []byte

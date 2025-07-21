@@ -53,7 +53,7 @@ func (win *WindowData) AddItem(child *ItemData) { win.addItemTo(child) }
 // ListThemes returns the available color theme names.
 func ListThemes() ([]string, error) { return listThemes() }
 
-// ListLayouts returns the available layout theme names.
+// ListLayouts returns the available style theme names.
 func ListLayouts() ([]string, error) { return listLayouts() }
 
 // CurrentThemeName returns the active theme name.

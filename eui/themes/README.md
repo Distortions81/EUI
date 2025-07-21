@@ -1,10 +1,10 @@
 # Themes
 
-This directory holds the built-in color and layout themes used by EUI. Themes are JSON files that control the appearance and spacing of all widgets. You can load them at runtime or create your own variants.
+This directory holds the built-in color palettes and style themes used by EUI. Themes are JSON files that control the appearance and spacing of all widgets. You can load them at runtime or create your own variants.
 
-## Color Themes
+## Palettes
 
-Color themes live under `themes/colors`. Each file defines a `Colors` map followed by style blocks for each widget type. Colors may be written as `#RRGGBBAA` hexadecimal strings or as HSV triples (`h,s,v`). Entries in the `Colors` map can be referenced by name in later fields.
+Color palettes live under `themes/palettes`. Each file defines a `Colors` map followed by style blocks for each widget type. Colors may be written as `#RRGGBBAA` hexadecimal strings or as HSV triples (`h,s,v`). Entries in the `Colors` map can be referenced by name in later fields.
 
 ### Structure
 
@@ -43,9 +43,9 @@ The `Window` block also supports `TitleColor`, `TitleBGColor`, `BorderColor`, `S
 
 `RecommendedLayout` hints at a layout theme that pairs well with the color scheme.
 
-## Layout Themes
+## Styles
 
-Layout themes are stored in `themes/layout`. They modify padding, border radius and other geometry.
+Style themes are stored in `themes/styles`. They modify padding, border radius and other geometry.
 
 ### Structure
 
@@ -75,17 +75,17 @@ Layout themes are stored in `themes/layout`. They modify padding, border radius 
 
 ## Built-in Themes
 
-Color themes:
+Palettes:
 `AccentDark`, `AccentLight`, `Black`, `ConcreteGray`, `CorporateBlue`, `ForestMist`, `HighContrast`, `NeonNight`, `OceanWave`, `SlateNight`, `SoftNeutral`, `SolarFlare`.
 
-Layout themes:
+Styles:
 `CleanLines`, `MinimalFade`, `MinimalPro`, `MonoEdge`, `NeoRounded`, `RoundFlat`, `RoundHybrid`, `RoundOutline`, `SharpEdge`, `SoftRound`, `SolidBlock`, `SquareFlat`, `SquareOutline`, `ThinOutline`.
 
 Use `eui.ListThemes()` and `eui.ListLayouts()` to get these names at runtime.
 
 ## Creating Your Own
 
-1. Copy an existing file from `colors` or `layout` as a starting point.
+1. Copy an existing file from `palettes` or `styles` as a starting point.
 2. Adjust the values or add new color names in the `Colors` map.
 3. Save the file under the appropriate directory with a new name.
 4. Call `eui.LoadTheme("YourTheme")` and `eui.LoadLayout("YourLayout")` to apply them. Enabling `eui.AutoReload` helps when iterating on your design.

@@ -31,7 +31,7 @@ func makeThemeSelector() *eui.WindowData {
 		log.Printf("listLayouts error: %v", lerr)
 	}
 
-	dd, ddEvents := eui.NewDropdown(&eui.ItemData{Size: eui.Point{X: 150, Y: 24}, FontSize: 8})
+	dd, ddEvents := eui.NewDropdown(&eui.ItemData{Label: "Palette", Size: eui.Point{X: 150, Y: 24}, FontSize: 8})
 	dd.Options = names
 	for i, n := range names {
 		if n == eui.CurrentThemeName() {
@@ -55,7 +55,7 @@ func makeThemeSelector() *eui.WindowData {
 	mainFlow.AddItem(dd)
 
 	if len(layoutNames) > 0 {
-		ldd, lddEvents := eui.NewDropdown(&eui.ItemData{Size: eui.Point{X: 150, Y: 24}, FontSize: 8})
+		ldd, lddEvents := eui.NewDropdown(&eui.ItemData{Label: "Style", Size: eui.Point{X: 150, Y: 24}, FontSize: 8})
 		ldd.Options = layoutNames
 		for i, n := range layoutNames {
 			if n == eui.CurrentLayoutName() {

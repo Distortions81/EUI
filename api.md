@@ -146,7 +146,7 @@ func AccentSaturation() float64
 
 func AddOverlayFlow(flow *itemData)
 func CurrentLayoutName() string
-    CurrentLayoutName returns the active layout theme name.
+    CurrentLayoutName returns the active style theme name.
 
 func CurrentThemeName() string
     CurrentThemeName returns the active theme name.
@@ -171,10 +171,10 @@ func Layout(outsideWidth, outsideHeight int) (int, int)
     size values to this from your Layout function.
 
 func ListLayouts() ([]string, error)
-    ListLayouts returns the available layout theme names.
+    ListLayouts returns the available style theme names.
 
 func ListThemes() ([]string, error)
-    ListThemes returns the available color theme names.
+    ListThemes returns the available palette names.
 
 func LoadLayout(name string) error
 func LoadTheme(name string) error
@@ -220,7 +220,7 @@ func SetAccentSaturation(s float64)
     reapplies it to the current theme.
 
 func SetCurrentLayoutName(name string)
-    SetCurrentLayoutName updates the active layout theme name.
+    SetCurrentLayoutName updates the active style theme name.
 
 func SetCurrentThemeName(name string)
     SetCurrentThemeName updates the active theme name.

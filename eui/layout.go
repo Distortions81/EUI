@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-//go:embed themes/layout/*.json
+//go:embed themes/styles/*.json
 var embeddedLayouts embed.FS
 
 // LayoutTheme controls spacing and padding used by widgets.
@@ -121,10 +121,10 @@ var (
 )
 
 func LoadLayout(name string) error {
-	file := filepath.Join(os.Getenv("PWD")+"/themes/layout", name+".json")
+	file := filepath.Join(os.Getenv("PWD")+"/themes/styles", name+".json")
 	data, err := os.ReadFile(file)
 	if err != nil {
-		data, err = embeddedLayouts.ReadFile(filepath.Join("themes/layout", name+".json"))
+		data, err = embeddedLayouts.ReadFile(filepath.Join("themes/styles", name+".json"))
 		if err != nil {
 			return err
 		}
@@ -203,9 +203,9 @@ func applyLayoutToTheme(th *Theme) {
 
 // listLayouts returns the available layout theme names from the themes directory
 func listLayouts() ([]string, error) {
-	entries, err := fs.ReadDir(embeddedLayouts, "themes/layout")
+	entries, err := fs.ReadDir(embeddedLayouts, "themes/styles")
 	if err != nil {
-		entries, err = os.ReadDir("themes/layout")
+		entries, err = os.ReadDir("themes/styles")
 		if err != nil {
 			return nil, err
 		}
