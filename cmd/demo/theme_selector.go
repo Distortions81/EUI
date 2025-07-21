@@ -81,6 +81,12 @@ func makeThemeSelector() *eui.WindowData {
 	}
 
 	cw, _ := eui.NewColorWheel(&eui.ItemData{Size: eui.Point{X: 160, Y: 128}})
+	cw.OnColorChange = func(col eui.Color) {
+		eui.SetAccentColor(col)
+		if satSlider != nil {
+			satSlider.Value = float32(eui.AccentSaturation())
+		}
+	}
 	mainFlow.AddItem(cw)
 
 	satSlider, satEvents := eui.NewSlider(&eui.ItemData{Label: "Color Intensity", Size: eui.Point{X: 128, Y: 24}, MinValue: 0, MaxValue: 1, FontSize: 8})
