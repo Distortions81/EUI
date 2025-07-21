@@ -1,3 +1,30 @@
+# EUI API Reference
+
+This document lists all exported functions, types and constants in the
+`eui` package. See the README for a short overview of the project.
+
+## Setup
+
+The demo and tests rely on a few system packages in addition to Go. Run the
+helper script once to install them (Ubuntu/Debian based distributions):
+
+```sh
+./scripts/setup.sh
+```
+
+After dependencies are installed you can vet and build the project:
+
+```sh
+go vet ./...
+go build ./...
+```
+
+Format modified Go files before committing:
+
+```sh
+gofmt -w <files>
+```
+
 package eui // import "EUI/eui"
 
 
