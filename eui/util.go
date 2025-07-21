@@ -649,6 +649,47 @@ func clearAllHover() {
 	}
 }
 
+// clearWindowHovers resets only the window Hovered flags. Item hover state is
+// managed separately so cached images don't refresh unnecessarily.
+func clearWindowHovers() {
+	for _, win := range windows {
+		win.Hovered = false
+	}
+}
+
+// unhoverItem clears the hover flag on the provided item and marks it dirty so
+// the cached image updates to the non‑hover state.
+func unhoverItem(it *itemData) {
+	if it == nil {
+		return
+	}
+	if it.Hovered {
+		it.Hovered = false
+		it.Dirty = true
+	}
+}
+
+// setHoveredItem tracks which item is currently hovered and updates hover state
+// and dirty flags appropriately.
+func setHoveredItem(it *itemData) {
+	if it == hoveredItem {
+		if !it.Hovered {
+			it.Hovered = true
+			it.Dirty = true
+		}
+		return
+	}
+	if hoveredItem != nil {
+		hoveredItem.Hovered = false
+		hoveredItem.Dirty = true
+	}
+	hoveredItem = it
+	if hoveredItem != nil {
+		hoveredItem.Hovered = true
+		hoveredItem.Dirty = true
+	}
+}
+
 // updateClickDirty marks items dirty while their click highlight is active and
 // for a brief period afterwards so the cached image updates when the highlight
 // ends.

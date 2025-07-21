@@ -22,6 +22,7 @@ var (
 	overlays         []*itemData
 	activeWindow     *windowData
 	focusedItem      *itemData
+	hoveredItem      *itemData
 	uiScale          float32 = 1.0
 	currentTheme     *Theme
 	currentThemeName string = "AccentDark"

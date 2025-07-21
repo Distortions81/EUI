@@ -26,9 +26,11 @@ func (g *Game) Update() error {
 
 	checkThemeLayoutMods()
 
-	// Record previous input state then reset hover flags for this frame.
+	// Record previous input state then reset window hover flags for this frame.
 	storePrevStates()
-	clearAllHover()
+	prevHovered := hoveredItem
+	hoveredItem = nil
+	clearWindowHovers()
 
 	mx, my := ebiten.CursorPosition()
 	mpos := point{X: float32(mx), Y: float32(my)}
@@ -227,6 +229,10 @@ func (g *Game) Update() error {
 		}
 	}
 
+	if prevHovered != hoveredItem {
+		unhoverItem(prevHovered)
+	}
+
 	// Refresh flow layouts so scroll bars update when content size changes
 	for _, win := range windows {
 		if win.Open {
@@ -293,9 +299,7 @@ func (item *itemData) clickFlows(mpos point, click bool) bool {
 		}
 		for i, tab := range item.Tabs {
 			if tab.DrawRect.containsPoint(mpos) {
-				if !tab.Hovered {
-					tab.Hovered = true
-				}
+				setHoveredItem(tab)
 				if click {
 					activeItem = tab
 					tab.Clicked = time.Now()
@@ -416,9 +420,7 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 			return true
 		}
 	} else {
-		if !item.Hovered {
-			item.Hovered = true
-		}
+		setHoveredItem(item)
 		if item.ItemType == ITEM_COLORWHEEL && ebiten.IsMouseButtonPressed(ebiten.MouseButton0) {
 			if col, ok := item.colorAt(mpos); ok {
 				item.WheelColor = col
