@@ -169,7 +169,7 @@ func (win *windowData) adjustScrollForResize() {
 		return
 	}
 
-	pad := win.Padding + win.BorderPad
+	pad := (win.Padding + win.BorderPad) * uiScale
 	req := win.contentBounds()
 	avail := point{
 		X: win.GetSize().X - 2*pad,
@@ -258,7 +258,7 @@ func (win *windowData) getScrollbarPart(mpos point) dragType {
 		return PART_NONE
 	}
 
-	pad := win.Padding + win.BorderPad
+	pad := (win.Padding + win.BorderPad) * uiScale
 	req := win.contentBounds()
 	avail := point{
 		X: win.GetSize().X - 2*pad,
@@ -471,7 +471,7 @@ func (win *windowData) contentBounds() point {
 
 func (win *windowData) updateAutoSize() {
 	req := win.contentBounds()
-	pad := win.Padding + win.BorderPad
+	pad := (win.Padding + win.BorderPad) * uiScale
 
 	size := win.GetSize()
 	needX := req.X + 2*pad
