@@ -299,6 +299,9 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 	}
 	subImg := screen.SubImage(item.DrawRect.getRectangle()).(*ebiten.Image)
 	style := item.themeStyle()
+	if style == nil {
+		style = &itemData{}
+	}
 
 	labelPad := float32(0)
 	if item.Label != "" {
@@ -322,7 +325,8 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 	if maxSize.Y < 0 {
 		maxSize.Y = 0
 	}
-	if item.Filled {
+	drawContainer := len(item.Tabs) == 0 || item.Label != "" || item.Border > 0 || item.Outlined
+	if drawContainer && item.Filled {
 		drawRoundRect(subImg, &roundRect{
 			Size:     maxSize,
 			Position: contentOff,
@@ -331,7 +335,7 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 			Color:    style.Color,
 		})
 	}
-	if item.Outlined || item.Border > 0 {
+	if drawContainer && (item.Outlined || item.Border > 0) {
 		border := item.Border * uiScale
 		if border <= 0 {
 			border = 1 * uiScale

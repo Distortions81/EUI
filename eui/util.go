@@ -414,7 +414,7 @@ func (win *windowData) GetPos() point {
 
 func (item *itemData) GetSize() point {
 	sz := point{X: item.Size.X * uiScale, Y: item.Size.Y * uiScale}
-	if item.Label != "" {
+	if item.ItemType != ITEM_FLOW && item.Label != "" {
 		textSize := (item.FontSize * uiScale) + 2
 		sz.Y += textSize + currentStyle.TextPadding*uiScale
 	}
