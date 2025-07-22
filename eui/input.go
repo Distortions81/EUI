@@ -27,10 +27,10 @@ func Update() error {
 	prevHovered := hoveredItem
 	hoveredItem = nil
 
-	mx, my := ebiten.CursorPosition()
+	mx, my := pointerPosition()
 	mpos := point{X: float32(mx), Y: float32(my)}
 
-	click := inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0)
+	click := pointerJustPressed()
 	if click {
 		if !dropdownOpenContainsAnywhere(mpos) {
 			closeAllDropdowns()
@@ -40,16 +40,16 @@ func Update() error {
 		}
 		focusedItem = nil
 	}
-	clickTime := inpututil.MouseButtonPressDuration(ebiten.MouseButton0)
+	clickTime := pointerPressDuration()
 	clickDrag := clickTime > 1
 
-	if !ebiten.IsMouseButtonPressed(ebiten.MouseButton0) {
+	if !pointerPressed() {
 		dragPart = PART_NONE
 		dragWin = nil
 		activeItem = nil
 	}
 
-	wx, wy := ebiten.Wheel()
+	wx, wy := pointerWheel()
 	wheelDelta := point{X: float32(wx), Y: float32(wy)}
 
 	posCh := pointScaleDiv(pointSub(mpos, mposOld))
@@ -353,7 +353,7 @@ func (item *itemData) clickFlows(mpos point, click bool) bool {
 }
 
 func (item *itemData) clickItem(mpos point, click bool) bool {
-	if ebiten.IsMouseButtonPressed(ebiten.MouseButton0) && activeItem != nil && activeItem != item {
+	if pointerPressed() && activeItem != nil && activeItem != item {
 		return false
 	}
 	// For dropdowns check the expanded option area as well
@@ -456,7 +456,7 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 			item.markDirty()
 		}
 		hoveredItem = item
-		if item.ItemType == ITEM_COLORWHEEL && ebiten.IsMouseButtonPressed(ebiten.MouseButton0) {
+		if item.ItemType == ITEM_COLORWHEEL && pointerPressed() {
 			if col, ok := item.colorAt(mpos); ok {
 				item.WheelColor = col
 				item.markDirty()
@@ -499,7 +499,7 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 				}
 			}
 		}
-		if item.ItemType == ITEM_SLIDER && ebiten.IsMouseButtonPressed(ebiten.MouseButton0) {
+		if item.ItemType == ITEM_SLIDER && pointerPressed() {
 			item.setSliderValue(mpos)
 			item.markDirty()
 			if item.Action != nil {
