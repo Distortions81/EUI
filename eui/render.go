@@ -1109,7 +1109,7 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 		indices  []uint16
 	)
 
-	width := float32(math.Round(float64(rrect.Border)))
+	width := float32(math.Floor(float64(rrect.Border)))
 	off := float32(0)
 	if !rrect.Filled {
 		off = pixelOffset(width)
@@ -1258,7 +1258,7 @@ func strokeTabShape(screen *ebiten.Image, pos point, size point, col Color, fill
 	)
 
 	// Align to pixel boundaries
-	border = float32(math.Round(float64(border)))
+	border = float32(math.Floor(float64(border)))
 	off := pixelOffset(border)
 	pos.X = float32(math.Round(float64(pos.X))) + off
 	pos.Y = float32(math.Round(float64(pos.Y))) + off
@@ -1306,7 +1306,7 @@ func strokeTabTop(screen *ebiten.Image, pos point, size point, col Color, fillet
 		indices  []uint16
 	)
 
-	border = float32(math.Round(float64(border)))
+	border = float32(math.Floor(float64(border)))
 	off := pixelOffset(border)
 	pos.X = float32(math.Round(float64(pos.X))) + off
 	pos.Y = float32(math.Round(float64(pos.Y))) + off
