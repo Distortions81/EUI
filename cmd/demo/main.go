@@ -60,7 +60,7 @@ func main() {
 	overlay := &eui.ItemData{
 		ItemType: eui.ITEM_FLOW,
 		FlowType: eui.FLOW_HORIZONTAL,
-		Size:     eui.Point{X: 84, Y: 32},
+		Size:     eui.Point{X: 80, Y: 24},
 		Position: eui.Point{X: 4, Y: 4},
 		PinTo:    eui.PIN_BOTTOM_RIGHT,
 	}
