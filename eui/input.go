@@ -714,7 +714,9 @@ func scrollDropdown(items []*itemData, mpos point, delta point) bool {
 				if maxScroll < 0 {
 					maxScroll = 0
 				}
-				it.Scroll.Y -= delta.Y * optionH
+				// Use the same scaling as window scrolling for a
+				// consistent feel across widgets.
+				it.Scroll.Y -= delta.Y * 16
 				if it.Scroll.Y < 0 {
 					it.Scroll.Y = 0
 				}
