@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -95,28 +96,36 @@ func main() {
 		FlowType: eui.FLOW_HORIZONTAL,
 		PinTo:    eui.PIN_BOTTOM_LEFT,
 	}
+
+	textItem, _ := eui.NewText(&eui.ItemData{FontSize: 8, Size: eui.Point{X: 80, Y: 24}})
+	textItem.Text = fmt.Sprintf("Scale: %2.2f", currentScale)
+
 	minusBtn, minusEvents := eui.NewButton(&eui.ItemData{Text: "-", Size: eui.Point{X: 24, Y: 24}, FontSize: 8})
 	minusEvents.Handle = func(ev eui.UIEvent) {
 		if ev.Type == eui.EventClick {
-			currentScale -= 0.2
-			if currentScale < 0.2 {
-				currentScale = 0.2
+			currentScale -= 0.25
+			if currentScale < 0.25 {
+				currentScale = 0.25
 			}
 			eui.SetUIScale(currentScale)
+			textItem.Text = fmt.Sprintf("Scale: %2.2f", currentScale)
 		}
 	}
 	plusBtn, plusEvents := eui.NewButton(&eui.ItemData{Text: "+", Size: eui.Point{X: 24, Y: 24}, FontSize: 8})
 	plusEvents.Handle = func(ev eui.UIEvent) {
 		if ev.Type == eui.EventClick {
-			currentScale += 0.2
+			currentScale += 0.25
+			if currentScale > 4.0 {
+				currentScale = 4
+			}
 			eui.SetUIScale(currentScale)
+			textItem.Text = fmt.Sprintf("Scale: %2.2f", currentScale)
 		}
 	}
 	scaleOverlay.AddItem(minusBtn)
 	scaleOverlay.AddItem(plusBtn)
-
-	textItem, _ := eui.NewText(&eui.ItemData{Text: "UI Scale", FontSize: 8, Size: eui.Point{X: 40, Y: 24}})
 	scaleOverlay.AddItem(textItem)
+
 	eui.AddOverlayFlow(scaleOverlay)
 
 	go startEbiten()
