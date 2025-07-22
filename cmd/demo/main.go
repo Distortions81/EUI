@@ -56,36 +56,6 @@ func main() {
 		themeSel.AddWindow(false)
 	}
 
-	// Add a small pinned button to toggle the themes window using an overlay flow
-	overlay := &eui.ItemData{
-		ItemType: eui.ITEM_FLOW,
-		FlowType: eui.FLOW_HORIZONTAL,
-		Size:     eui.Point{X: 80, Y: 24},
-		Position: eui.Point{X: 4, Y: 4},
-		PinTo:    eui.PIN_BOTTOM_RIGHT,
-	}
-	toggleBtn, toggleEvents := eui.NewButton(&eui.ItemData{Text: "Themes", Size: eui.Point{X: 80, Y: 24}, FontSize: 8})
-	toggleEvents.Handle = func(ev eui.UIEvent) {
-		if ev.Type != eui.EventClick || themeSel == nil {
-			return
-		}
-
-		wins := eui.Windows()
-		if themeSel.Open {
-			if len(wins) == 0 || wins[len(wins)-1] != themeSel {
-				themeSel.BringForward()
-				return
-			}
-			themeSel.Open = false
-			themeSel.ToBack()
-			return
-		}
-
-		themeSel.MarkOpen()
-	}
-	overlay.AddItem(toggleBtn)
-	eui.AddOverlayFlow(overlay)
-
 	statusOverlay := &eui.ItemData{
 		ItemType: eui.ITEM_FLOW,
 		FlowType: eui.FLOW_HORIZONTAL,
