@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"runtime"
 	"syscall"
+	"time"
 
 	eui "EUI/eui"
 
@@ -18,6 +20,7 @@ var (
 	themeSel     *eui.WindowData
 	signalHandle chan os.Signal
 	currentScale float32
+	onMobile     = runtime.GOOS == "android" || runtime.GOOS == "ios"
 )
 
 func main() {
@@ -159,10 +162,32 @@ func startEbiten() {
 	signalHandle <- syscall.SIGINT
 }
 
-type demoGame struct{}
+type demoGame struct {
+	lastUpdate    time.Time
+	lowFPSElapsed time.Duration
+	vsyncDisabled bool
+}
 
 func (g *demoGame) Update() error {
-	//Your input code here
+	now := time.Now()
+	if !g.lastUpdate.IsZero() {
+		delta := now.Sub(g.lastUpdate)
+		if delta < time.Second {
+			if onMobile && !g.vsyncDisabled {
+				if ebiten.ActualFPS() < 30 {
+					g.lowFPSElapsed += delta
+					if g.lowFPSElapsed >= 3*time.Second {
+						ebiten.SetVsyncEnabled(false)
+						g.vsyncDisabled = true
+						setStatus("v-sync disabled")
+					}
+				} else {
+					g.lowFPSElapsed = 0
+				}
+			}
+		}
+	}
+	g.lastUpdate = now
 	return eui.Update()
 }
 func (g *demoGame) Draw(screen *ebiten.Image) {
@@ -175,5 +200,5 @@ func (g *demoGame) Layout(outsideWidth, outsideHeight int) (int, int) {
 }
 
 func newGame() *demoGame {
-	return &demoGame{}
+	return &demoGame{lastUpdate: time.Now()}
 }
