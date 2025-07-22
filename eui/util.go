@@ -622,14 +622,14 @@ func (win *windowData) resizeFlows() {
 }
 
 func pixelOffset(width float32) float32 {
-	if int(math.Round(float64(width)))%2 == 0 {
+	if int(math.Floor(float64(width)))%2 == 0 {
 		return 0
 	}
 	return 0.5
 }
 
 func strokeLine(dst *ebiten.Image, x0, y0, x1, y1, width float32, col color.Color, aa bool) {
-	width = float32(math.Round(float64(width)))
+	width = float32(math.Floor(float64(width)))
 	off := pixelOffset(width)
 	x0 = float32(math.Round(float64(x0))) + off
 	y0 = float32(math.Round(float64(y0))) + off
@@ -639,7 +639,7 @@ func strokeLine(dst *ebiten.Image, x0, y0, x1, y1, width float32, col color.Colo
 }
 
 func strokeRect(dst *ebiten.Image, x, y, w, h, width float32, col color.Color, aa bool) {
-	width = float32(math.Round(float64(width)))
+	width = float32(math.Floor(float64(width)))
 	off := pixelOffset(width)
 	x = float32(math.Round(float64(x))) + off
 	y = float32(math.Round(float64(y))) + off
