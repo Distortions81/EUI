@@ -162,8 +162,10 @@ func Update() error {
 		// expanded dropdown. Break so windows behind don't receive the
 		// event.
 		if win.getWinRect().containsPoint(mpos) || dropdownOpenContains(win.Contents, mpos) {
-			if click && activeWindow != win {
-				win.BringForward()
+			if click {
+				if activeWindow != win || windows[len(windows)-1] != win {
+					win.BringForward()
+				}
 			}
 			break
 		}
