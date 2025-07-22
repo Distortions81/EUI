@@ -20,4 +20,9 @@ const (
 	// field of sliders. Using a constant ensures int and float sliders have
 	// identical track lengths regardless of their numeric ranges.
 	sliderMaxLabel = "100.00"
+
+	// dropdownOverlayReserve defines the number of option heights reserved
+	// at the top and bottom of the screen when positioning dropdown menus
+	// to leave room for overlay controls.
+	dropdownOverlayReserve = 1
 )
