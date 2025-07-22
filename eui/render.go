@@ -1009,6 +1009,9 @@ func drawDropdownOptions(item *itemData, offset point, clip rect, screen *ebiten
 	if visible <= 0 {
 		visible = 5
 	}
+	if visible > len(item.Options) {
+		visible = len(item.Options)
+	}
 	startY := offset.Y + maxSize.Y
 	first := int(item.Scroll.Y / optionH)
 	offY := startY - (item.Scroll.Y - float32(first)*optionH)
@@ -1053,6 +1056,20 @@ func drawDropdownOptions(item *itemData, offset point, clip rect, screen *ebiten
 		tdo := &text.DrawOptions{DrawImageOptions: td, LayoutOptions: loo}
 		tdo.ColorScale.ScaleWithColor(style.TextColor)
 		text.Draw(subImg, item.Options[i], face, tdo)
+	}
+
+	if len(item.Options) > visible {
+		openH := optionH * float32(visible)
+		totalH := optionH * float32(len(item.Options))
+		barH := openH * openH / totalH
+		maxScroll := totalH - openH
+		pos := float32(0)
+		if maxScroll > 0 {
+			pos = (item.Scroll.Y / maxScroll) * (openH - barH)
+		}
+		col := NewColor(96, 96, 96, 192)
+		sbW := currentStyle.BorderPad.Slider * 2
+		drawFilledRect(subImg, drawRect.X1-sbW, startY+pos, sbW, barH, col.ToRGBA(), false)
 	}
 }
 

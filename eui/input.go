@@ -369,6 +369,9 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 			if visible <= 0 {
 				visible = 5
 			}
+			if visible > len(item.Options) {
+				visible = len(item.Options)
+			}
 			startY := item.DrawRect.Y1
 			openHeight := optionH * float32(visible)
 			r := rect{X0: item.DrawRect.X0, Y0: startY, X1: item.DrawRect.X1, Y1: startY + openHeight}
@@ -426,6 +429,9 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 				if visible <= 0 {
 					visible = 5
 				}
+				if visible > len(item.Options) {
+					visible = len(item.Options)
+				}
 				startY := item.DrawRect.Y1
 				openHeight := optionH * float32(visible)
 				r := rect{X0: item.DrawRect.X0, Y0: startY, X1: item.DrawRect.X1, Y1: startY + openHeight}
@@ -479,6 +485,9 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 			visible := item.MaxVisible
 			if visible <= 0 {
 				visible = 5
+			}
+			if visible > len(item.Options) {
+				visible = len(item.Options)
 			}
 			startY := item.DrawRect.Y1
 			openHeight := optionH * float32(visible)
@@ -694,11 +703,17 @@ func scrollDropdown(items []*itemData, mpos point, delta point) bool {
 			if visible <= 0 {
 				visible = 5
 			}
+			if visible > len(it.Options) {
+				visible = len(it.Options)
+			}
 			startY := it.DrawRect.Y1
 			openH := optionH * float32(visible)
 			r := rect{X0: it.DrawRect.X0, Y0: startY, X1: it.DrawRect.X1, Y1: startY + openH}
 			if r.containsPoint(mpos) {
 				maxScroll := optionH*float32(len(it.Options)) - openH
+				if maxScroll < 0 {
+					maxScroll = 0
+				}
 				it.Scroll.Y -= delta.Y * optionH
 				if it.Scroll.Y < 0 {
 					it.Scroll.Y = 0
@@ -821,6 +836,9 @@ func dropdownOpenContains(items []*itemData, mpos point) bool {
 			if visible <= 0 {
 				visible = 5
 			}
+			if visible > len(it.Options) {
+				visible = len(it.Options)
+			}
 			startY := it.DrawRect.Y1
 			openH := optionH * float32(visible)
 			r := rect{X0: it.DrawRect.X0, Y0: startY, X1: it.DrawRect.X1, Y1: startY + openH}
@@ -850,6 +868,9 @@ func clickOpenDropdown(items []*itemData, mpos point, click bool) bool {
 			visible := it.MaxVisible
 			if visible <= 0 {
 				visible = 5
+			}
+			if visible > len(it.Options) {
+				visible = len(it.Options)
 			}
 			startY := it.DrawRect.Y1
 			openH := optionH * float32(visible)
