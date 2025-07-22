@@ -79,6 +79,10 @@ func pointerWheel() (float64, float64) {
 
 // pointerJustPressed reports whether the primary pointer was just pressed.
 func pointerJustPressed() bool {
+	ids := ebiten.AppendTouchIDs(nil)
+	if len(ids) > 1 {
+		return false
+	}
 	if len(inpututil.AppendJustPressedTouchIDs(nil)) > 0 {
 		return true
 	}
