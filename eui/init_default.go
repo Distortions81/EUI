@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-//go:embed fonts/NotoSans-Regular.ttf
+//go:embed fonts/NotoSans-Regular-Mini.ttf
 var defaultTTF []byte
 
 func init() {
