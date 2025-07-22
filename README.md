@@ -48,6 +48,10 @@ go build -o demo ./cmd/demo
 go run ./cmd/demo -debug
 ```
 
+The demo now calculates the initial window size using the monitor's device
+scale factor so the interface appears the same on standard and high‑DPI
+displays.
+
 ## Building for WebAssembly
 
 Compile the demo to `wasm` using the provided script. It passes size
