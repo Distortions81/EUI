@@ -320,7 +320,7 @@ func (win *windowData) SetTitleSize(size float32) {
 func SetUIScale(scale float32) {
 	uiScale = scale
 	for _, win := range windows {
-		win.resizeFlows()
+		win.updateAutoSize()
 	}
 	for _, ov := range overlays {
 		ov.resizeFlow(ov.GetSize())
