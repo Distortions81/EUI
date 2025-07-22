@@ -571,18 +571,11 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 			cThick := 2 * uiScale
 			margin := auxSize.X * 0.25
 
-			startX := offset.X + margin
-			startY := offset.Y + auxSize.Y*0.55
-			midX := offset.X + auxSize.X*0.45
-			midY := offset.Y + auxSize.Y - margin
-			endX := offset.X + auxSize.X - margin
-			endY := offset.Y + margin
+			start := point{X: offset.X + margin, Y: offset.Y + auxSize.Y*0.55}
+			mid := point{X: offset.X + auxSize.X*0.45, Y: offset.Y + auxSize.Y - margin}
+			end := point{X: offset.X + auxSize.X - margin, Y: offset.Y + margin}
 
-			strokeLine(subImg, startX, startY, midX, midY,
-				cThick, style.TextColor, true)
-
-			strokeLine(subImg, midX, midY, endX, endY,
-				cThick, style.TextColor, true)
+			drawCheckmark(subImg, start, mid, end, cThick, style.TextColor)
 		}
 
 		textSize := (item.FontSize * uiScale) + 2
@@ -1370,6 +1363,36 @@ func drawTriangle(screen *ebiten.Image, pos point, size float32, col Color) {
 	path.Close()
 
 	vertices, indices = path.AppendVerticesAndIndicesForFilling(vertices[:0], indices[:0])
+	c := col
+	for i := range vertices {
+		vertices[i].SrcX = 1
+		vertices[i].SrcY = 1
+		vertices[i].ColorR = float32(c.R) / 255
+		vertices[i].ColorG = float32(c.G) / 255
+		vertices[i].ColorB = float32(c.B) / 255
+		vertices[i].ColorA = float32(c.A) / 255
+	}
+
+	op := &ebiten.DrawTrianglesOptions{FillRule: ebiten.FillRuleNonZero, AntiAlias: true}
+	screen.DrawTriangles(vertices, indices, whiteSubImage, op)
+}
+
+func drawCheckmark(screen *ebiten.Image, start, mid, end point, width float32, col Color) {
+	var (
+		path     vector.Path
+		vertices []ebiten.Vertex
+		indices  []uint16
+	)
+
+	width = float32(math.Round(float64(width)))
+	off := pixelOffset(width)
+
+	path.MoveTo(float32(math.Round(float64(start.X)))+off, float32(math.Round(float64(start.Y)))+off)
+	path.LineTo(float32(math.Round(float64(mid.X)))+off, float32(math.Round(float64(mid.Y)))+off)
+	path.LineTo(float32(math.Round(float64(end.X)))+off, float32(math.Round(float64(end.Y)))+off)
+
+	opv := &vector.StrokeOptions{Width: width, LineJoin: vector.LineJoinRound, LineCap: vector.LineCapRound}
+	vertices, indices = path.AppendVerticesAndIndicesForStroke(vertices[:0], indices[:0], opv)
 	c := col
 	for i := range vertices {
 		vertices[i].SrcX = 1
