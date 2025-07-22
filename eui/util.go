@@ -250,7 +250,21 @@ func (win *windowData) getResizePart(mpos point) dragType {
 	}
 
 	t := scrollTolerance * uiScale
+	ct := cornerTolerance * uiScale
 	winRect := win.getWinRect()
+	// Check enlarged corner areas first
+	if mpos.X >= winRect.X0-ct && mpos.X <= winRect.X0+ct && mpos.Y >= winRect.Y0-ct && mpos.Y <= winRect.Y0+ct {
+		return PART_TOP_LEFT
+	}
+	if mpos.X >= winRect.X1-ct && mpos.X <= winRect.X1+ct && mpos.Y >= winRect.Y0-ct && mpos.Y <= winRect.Y0+ct {
+		return PART_TOP_RIGHT
+	}
+	if mpos.X >= winRect.X0-ct && mpos.X <= winRect.X0+ct && mpos.Y >= winRect.Y1-ct && mpos.Y <= winRect.Y1+ct {
+		return PART_BOTTOM_LEFT
+	}
+	if mpos.X >= winRect.X1-ct && mpos.X <= winRect.X1+ct && mpos.Y >= winRect.Y1-ct && mpos.Y <= winRect.Y1+ct {
+		return PART_BOTTOM_RIGHT
+	}
 	outRect := winRect
 	outRect.X0 -= t
 	outRect.X1 += t
