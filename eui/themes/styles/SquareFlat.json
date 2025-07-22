@@ -42,7 +42,7 @@
     "Checkbox": true,
     "Radio": true,
     "Input": true,
-    "Slider": true,
+    "Slider": false,
     "Dropdown": true,
     "Tab": true
   },

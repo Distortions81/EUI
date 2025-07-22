@@ -38,11 +38,11 @@
   "Filled": {
     "Window": true,
     "Button": true,
-    "Text": true,
+    "Text": false,
     "Checkbox": true,
     "Radio": true,
     "Input": true,
-    "Slider": true,
+    "Slider": false,
     "Dropdown": true,
     "Tab": true
   },
@@ -53,7 +53,7 @@
     "Checkbox": true,
     "Radio": true,
     "Input": true,
-    "Slider": true,
+    "Slider": false,
     "Dropdown": true,
     "Tab": true
   },
