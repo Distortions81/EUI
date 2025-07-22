@@ -103,6 +103,7 @@ func main() {
 	minusBtn, minusEvents := eui.NewButton(&eui.ItemData{Text: "-", Size: eui.Point{X: 24, Y: 24}, FontSize: 8})
 	minusEvents.Handle = func(ev eui.UIEvent) {
 		if ev.Type == eui.EventClick {
+			currentScale = eui.UIScale()
 			currentScale -= 0.25
 			if currentScale < 0.25 {
 				currentScale = 0.25
@@ -114,6 +115,7 @@ func main() {
 	plusBtn, plusEvents := eui.NewButton(&eui.ItemData{Text: "+", Size: eui.Point{X: 24, Y: 24}, FontSize: 8})
 	plusEvents.Handle = func(ev eui.UIEvent) {
 		if ev.Type == eui.EventClick {
+			currentScale = eui.UIScale()
 			currentScale += 0.25
 			if currentScale > 4.0 {
 				currentScale = 4

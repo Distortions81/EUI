@@ -22,7 +22,9 @@ building a game UI. Highlights include:
   them at runtime or reload automatically while iterating.
 - **UI scaling** – call `eui.SetUIScale()` to adapt to any resolution or
   `eui.UIScale()` to read the current value. Windows using `AutoSize` adjust
-  their dimensions automatically when the scale changes.
+  their dimensions automatically when the scale changes. When HiDPI scaling is
+  enabled the effective scale may change on the first layout pass. Call
+  `eui.UIScale()` after `eui.Layout` to obtain the final value.
 - **HiDPI support** – automatically adjusts the UI scale and screen resolution
   to match the device scale factor. Disable by setting `eui.AutoHiDPI = false`.
 - **Image caching** – widgets cache their drawing for better performance.

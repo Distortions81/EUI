@@ -167,7 +167,9 @@ var (
 
        // AutoHiDPI enables automatic scaling when the device scale factor changes.
        // The active UI scale is adjusted so the interface keeps the same size on screen.
-       // This defaults to true and can be disabled if necessary.
+       // This defaults to true and can be disabled if necessary. Applications
+       // that track their own scaling variables should call `UIScale()` after
+       // `Layout` to read the updated value.
        AutoHiDPI bool
 )
 
@@ -268,7 +270,8 @@ func SetUIScale(scale float32)
     SetUIScale updates layout metrics for the given scale and resizes
     windows created with AutoSize.
 func UIScale() float32
-    UIScale returns the current UI scale factor.
+    UIScale returns the current UI scale factor. When `AutoHiDPI` is enabled
+    the value may change after `Layout` applies the device scale factor.
 func SyncHiDPIScale()
     SyncHiDPIScale adjusts the UI scale automatically when the device scale
     factor changes.
