@@ -413,6 +413,12 @@ func (win *windowData) SetTitleSize(size float32) {
 }
 
 func SetUIScale(scale float32) {
+	if scale < 0.5 {
+		scale = 0.5
+	}
+	if scale > 2.5 {
+		scale = 2.5
+	}
 	uiScale = scale
 	for _, win := range windows {
 		if win.AutoSize {

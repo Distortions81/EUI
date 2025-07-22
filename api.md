@@ -269,7 +269,8 @@ func SetScreenSize(w, h int)
 
 func SetUIScale(scale float32)
     SetUIScale updates layout metrics for the given scale and resizes
-    windows created with AutoSize.
+    windows created with AutoSize. The value is clamped to the range
+    0.5–2.5.
 func UIScale() float32
     UIScale returns the current UI scale factor. When `AutoHiDPI` is enabled
     the value may change after `Layout` applies the device scale factor.
