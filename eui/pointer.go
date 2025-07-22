@@ -6,6 +6,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"golang.org/x/time/rate"
 )
 
 var (
@@ -13,6 +14,7 @@ var (
 	isWasm         = runtime.GOOS == "js" && runtime.GOARCH == "wasm"
 	touchScrolling bool
 	prevTouchAvg   = point{}
+	wheelLimiter   = rate.NewLimiter(rate.Every(125*time.Millisecond), 1)
 )
 
 const touchScrollScale = 0.05
@@ -59,16 +61,20 @@ func pointerWheel() (float64, float64) {
 		now := time.Now()
 		lastWheelTime = now
 
-		// Limit scroll events to +/-1 for a consistent feel in browsers
+		if !wheelLimiter.Allow() {
+			return 0, 0
+		}
+
+		// Limit scroll events to +/-3 for a consistent feel in browsers
 		if wx > 0 {
-			wx = 1
+			wx = 3
 		} else if wx < 0 {
-			wx = -1
+			wx = -3
 		}
 		if wy > 0 {
-			wy = 1
+			wy = 3
 		} else if wy < 0 {
-			wy = -1
+			wy = -3
 		}
 	}
 	return wx, wy
