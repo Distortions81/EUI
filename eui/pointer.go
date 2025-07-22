@@ -57,9 +57,6 @@ func pointerWheel() (float64, float64) {
 	wx, wy := ebiten.Wheel()
 	if isWasm {
 		now := time.Now()
-		if now.Sub(lastWheelTime) < time.Second/10 {
-			return 0, 0
-		}
 		lastWheelTime = now
 
 		// Limit scroll events to +/-1 for a consistent feel in browsers
