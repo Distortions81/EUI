@@ -16,6 +16,7 @@ var (
 	dumpMode     *bool
 	themeSel     *eui.WindowData
 	signalHandle chan os.Signal
+	currentScale float32
 )
 
 func main() {
@@ -42,7 +43,8 @@ func main() {
 	//         log.Fatal(err)
 	// }
 
-	eui.SetUIScale(1.5)
+	currentScale = 1.5
+	eui.SetUIScale(currentScale)
 
 	showcase := makeShowcaseWindow()
 	showcase.AddWindow(false)
@@ -87,6 +89,34 @@ func main() {
 	statusText, _ = eui.NewText(&eui.ItemData{Size: eui.Point{X: 316, Y: 24}, FontSize: 8})
 	statusOverlay.AddItem(statusText)
 	eui.AddOverlayFlow(statusOverlay)
+
+	scaleOverlay := &eui.ItemData{
+		ItemType: eui.ITEM_FLOW,
+		FlowType: eui.FLOW_HORIZONTAL,
+		Size:     eui.Point{X: 56, Y: 24},
+		Position: eui.Point{X: 4, Y: 32},
+		PinTo:    eui.PIN_BOTTOM_LEFT,
+	}
+	minusBtn, minusEvents := eui.NewButton(&eui.ItemData{Text: "-", Size: eui.Point{X: 24, Y: 24}, FontSize: 8})
+	minusEvents.Handle = func(ev eui.UIEvent) {
+		if ev.Type == eui.EventClick {
+			currentScale -= 0.2
+			if currentScale < 0.2 {
+				currentScale = 0.2
+			}
+			eui.SetUIScale(currentScale)
+		}
+	}
+	plusBtn, plusEvents := eui.NewButton(&eui.ItemData{Text: "+", Size: eui.Point{X: 24, Y: 24}, FontSize: 8})
+	plusEvents.Handle = func(ev eui.UIEvent) {
+		if ev.Type == eui.EventClick {
+			currentScale += 0.2
+			eui.SetUIScale(currentScale)
+		}
+	}
+	scaleOverlay.AddItem(minusBtn)
+	scaleOverlay.AddItem(plusBtn)
+	eui.AddOverlayFlow(scaleOverlay)
 
 	go startEbiten()
 

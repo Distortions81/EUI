@@ -259,6 +259,9 @@ func SetScreenSize(w, h int)
     SetScreenSize sets the current screen size used for layout calculations.
 
 func SetUIScale(scale float32)
+
+func UIScale() float32
+    UIScale returns the current UI scale factor.
 func Update() error
     Update processes input and updates window state. Programs embedding the UI
     can call this from their Ebiten Update handler.

@@ -319,7 +319,16 @@ func (win *windowData) SetTitleSize(size float32) {
 
 func SetUIScale(scale float32) {
 	uiScale = scale
+	for _, win := range windows {
+		win.resizeFlows()
+	}
+	for _, ov := range overlays {
+		ov.resizeFlow(ov.GetSize())
+	}
+	markAllDirty()
 }
+
+func UIScale() float32 { return uiScale }
 
 func (win *windowData) GetTitleSize() float32 {
 	return win.TitleHeight * uiScale
