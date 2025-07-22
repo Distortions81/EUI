@@ -337,7 +337,7 @@ func SyncHiDPIScale() {
 		ds = 1
 	}
 	if ds != lastDeviceScale {
-		SetUIScale(1 * float32(ds/lastDeviceScale))
+		SetUIScale(uiScale * float32(ds/lastDeviceScale))
 		lastDeviceScale = ds
 	}
 }
