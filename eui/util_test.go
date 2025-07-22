@@ -373,3 +373,14 @@ func TestStrokeRectParams(t *testing.T) {
 		t.Errorf("rect even width params %v %v %v", x, y, bw)
 	}
 }
+
+func TestClampToScreen(t *testing.T) {
+	screenWidth = 200
+	screenHeight = 150
+	win := &windowData{Size: point{X: 100, Y: 50}, Position: point{X: 120, Y: 110}}
+	win.clampToScreen()
+	pos := win.getPosition()
+	if pos.X+win.GetSize().X > float32(screenWidth) || pos.Y+win.GetSize().Y > float32(screenHeight) {
+		t.Errorf("window not clamped: %+v", pos)
+	}
+}

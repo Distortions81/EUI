@@ -150,6 +150,7 @@ func Update() error {
 				case PART_SCROLL_H:
 					dragWindowScroll(win, mpos, false)
 				}
+				win.clampToScreen()
 				break
 			}
 		}
