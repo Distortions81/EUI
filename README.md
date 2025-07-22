@@ -31,7 +31,8 @@ building a game UI. Highlights include:
   callbacks so your code can react to clicks, slider movements and text input.
 - **Debug overlays** – toggle with the `-debug` flag when running the demo.
 - **Cross platform** – runs anywhere Ebiten does: desktop, web or mobile.
-- Touch controls are not yet implemented.
+- Basic touch support with two‑finger scrolling.
+  Mouse scrolling is rate‑limited to 6 events per second on WebAssembly.
 
 ## Running the Demo
 
