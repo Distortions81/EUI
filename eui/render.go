@@ -417,11 +417,7 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 			} else {
 				objOff := flowOff
 				if parent != nil && parent.ItemType == ITEM_FLOW {
-					if parent.FlowType == FLOW_HORIZONTAL {
-						objOff = pointAdd(objOff, point{X: subItem.GetPos().X})
-					} else if parent.FlowType == FLOW_VERTICAL {
-						objOff = pointAdd(objOff, point{Y: subItem.GetPos().Y})
-					}
+					objOff = pointAdd(objOff, subItem.GetPos())
 				}
 				subItem.drawItem(item, objOff, item.DrawRect, screen)
 			}
