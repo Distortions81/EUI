@@ -16,7 +16,7 @@ func makeThemeSelector() *eui.WindowData {
 	}
 	win := eui.NewWindow(&eui.WindowData{
 		Title:     "Themes",
-		Resizable: false,
+		Resizable: true,
 		Closable:  false,
 		PinTo:     eui.PIN_TOP_RIGHT,
 		AutoSize:  true,

@@ -84,10 +84,10 @@ func main() {
 		ItemType: eui.ITEM_FLOW,
 		FlowType: eui.FLOW_HORIZONTAL,
 		Size:     eui.Point{X: 320, Y: 24},
-		Position: eui.Point{X: 125, Y: 0},
+		Position: eui.Point{X: 110, Y: 0},
 		PinTo:    eui.PIN_BOTTOM_LEFT,
 	}
-	statusText, _ = eui.NewText(&eui.ItemData{Size: eui.Point{X: 316, Y: 24}, FontSize: 8})
+	statusText, _ = eui.NewText(&eui.ItemData{Size: eui.Point{X: 300, Y: 24}, FontSize: 8})
 	statusOverlay.AddItem(statusText)
 	eui.AddOverlayFlow(statusOverlay)
 
