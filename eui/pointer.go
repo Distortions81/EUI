@@ -43,8 +43,11 @@ func pointerWheel() (float64, float64) {
 			return 0, 0
 		}
 
-		dx := (avgX - float64(prevTouchAvg.X)) * -touchScrollScale
-		dy := (avgY - float64(prevTouchAvg.Y)) * -touchScrollScale
+		// Reverse the scroll direction so dragging two fingers up moves
+		// content up just like a mouse wheel. This provides a more
+		// natural feel on touch devices.
+		dx := (avgX - float64(prevTouchAvg.X)) * touchScrollScale
+		dy := (avgY - float64(prevTouchAvg.Y)) * touchScrollScale
 		prevTouchAvg = point{X: float32(avgX), Y: float32(avgY)}
 		return dx, dy
 	}
@@ -58,6 +61,18 @@ func pointerWheel() (float64, float64) {
 			return 0, 0
 		}
 		lastWheelTime = now
+
+		// Limit scroll events to +/-1 for a consistent feel in browsers
+		if wx > 0 {
+			wx = 1
+		} else if wx < 0 {
+			wx = -1
+		}
+		if wy > 0 {
+			wy = 1
+		} else if wy < 0 {
+			wy = -1
+		}
 	}
 	return wx, wy
 }
