@@ -529,8 +529,8 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 			top.ColorScale.ScaleWithColor(style.TextColor)
 		}
 		text.Draw(subImg, item.Label, face, top)
-		offset.Y += textSize + currentStyle.TextPadding
-		maxSize.Y -= textSize + currentStyle.TextPadding
+		offset.Y += textSize + currentStyle.TextPadding*uiScale
+		maxSize.Y -= textSize + currentStyle.TextPadding*uiScale
 		if maxSize.Y < 0 {
 			maxSize.Y = 0
 		}
@@ -730,7 +730,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		}
 		tdop := ebiten.DrawImageOptions{}
 		tdop.GeoM.Translate(
-			float64(offset.X+item.BorderPad+item.Padding+currentStyle.TextPadding),
+			float64(offset.X+item.BorderPad+item.Padding+currentStyle.TextPadding*uiScale),
 			float64(offset.Y+((maxSize.Y)/2)),
 		)
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
@@ -739,7 +739,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 
 		if item.Focused {
 			width, _ := text.Measure(item.Text, face, 0)
-			cx := offset.X + item.BorderPad + item.Padding + currentStyle.TextPadding + float32(width)
+			cx := offset.X + item.BorderPad + item.Padding + currentStyle.TextPadding*uiScale + float32(width)
 			strokeLine(subImg,
 				cx, offset.Y+2,
 				cx, offset.Y+maxSize.Y-2,
@@ -848,7 +848,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		face := textFace(textSize)
 		loo := text.LayoutOptions{PrimaryAlign: text.AlignStart, SecondaryAlign: text.AlignCenter}
 		tdop := ebiten.DrawImageOptions{}
-		tdop.GeoM.Translate(float64(offset.X+item.BorderPad+item.Padding+currentStyle.TextPadding), float64(offset.Y+maxSize.Y/2))
+		tdop.GeoM.Translate(float64(offset.X+item.BorderPad+item.Padding+currentStyle.TextPadding*uiScale), float64(offset.Y+maxSize.Y/2))
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 		top.ColorScale.ScaleWithColor(style.TextColor)
 		label := item.Text
@@ -994,7 +994,7 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 			dropOff := offset
 			if item.Label != "" {
 				textSize := (item.FontSize * uiScale) + 2
-				dropOff.Y += textSize + currentStyle.TextPadding
+				dropOff.Y += textSize + currentStyle.TextPadding*uiScale
 			}
 			screenClip := rect{X0: 0, Y0: 0, X1: float32(screenWidth), Y1: float32(screenHeight)}
 			pendingDropdowns = append(pendingDropdowns, dropdownRender{item: item, offset: dropOff, clip: screenClip})
@@ -1056,7 +1056,7 @@ func drawDropdownOptions(item *itemData, offset point, clip rect, screen *ebiten
 			drawRoundRect(subImg, &roundRect{Size: maxSize, Position: point{X: offset.X, Y: y}, Fillet: item.Fillet, Filled: true, Color: col})
 		}
 		td := ebiten.DrawImageOptions{}
-		td.GeoM.Translate(float64(offset.X+item.BorderPad+item.Padding+currentStyle.TextPadding), float64(y+optionH/2))
+		td.GeoM.Translate(float64(offset.X+item.BorderPad+item.Padding+currentStyle.TextPadding*uiScale), float64(y+optionH/2))
 		tdo := &text.DrawOptions{DrawImageOptions: td, LayoutOptions: loo}
 		tdo.ColorScale.ScaleWithColor(style.TextColor)
 		text.Draw(subImg, item.Options[i], face, tdo)
