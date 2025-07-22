@@ -56,6 +56,13 @@ func Update() error {
 	sizeCh := pointScaleMul(point{X: posCh.X / uiScale, Y: posCh.Y / uiScale})
 	c := ebiten.CursorShapeDefault
 
+	//Check overlays before windows so clicks aren't stolen by windows below
+	for i := len(overlays) - 1; i >= 0; i-- {
+		if clickOverlay(overlays[i], mpos, click) {
+			break
+		}
+	}
+
 	//Check all windows
 	for i := len(windows) - 1; i >= 0; i-- {
 		win := windows[i]
@@ -157,12 +164,6 @@ func Update() error {
 			if click && activeWindow != win {
 				win.BringForward()
 			}
-			break
-		}
-	}
-
-	for i := len(overlays) - 1; i >= 0; i-- {
-		if clickOverlay(overlays[i], mpos, click) {
 			break
 		}
 	}
