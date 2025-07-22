@@ -67,6 +67,16 @@ optimization flags to `go build` and also creates a Brotli compressed
 
 Open `web/index.html` in a browser to run it.
 
+### WCAG adjustments
+
+The `scripts/wcag_adjust.py` helper rewrites all palette and style files so text
+and accents meet the WCAG 2 contrast recommendations. Run it whenever you tweak
+the theme JSON files:
+
+```sh
+python3 scripts/wcag_adjust.py
+```
+
 ## Customization
 
 The library loads the built in `AccentDark` palette, `RoundHybrid` style and a default font automatically. Additional examples live under [`eui/themes`](eui/themes). Use `eui.ListThemes()` and `eui.ListStyles()` to see the names that are available. To try a different look enable `eui.AutoReload` and load files explicitly:

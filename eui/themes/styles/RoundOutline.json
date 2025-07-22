@@ -20,7 +20,7 @@
     "Checkbox": 1,
     "Radio": 1,
     "Input": 1,
-    "Slider": 0,
+    "Slider": 1,
     "Dropdown": 1,
     "Tab": 1
   },

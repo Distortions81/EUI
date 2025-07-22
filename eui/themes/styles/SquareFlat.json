@@ -14,15 +14,15 @@
     "Tab": 0
   },
   "Border": {
-    "Window": 0,
-    "Button": 0,
-    "Text": 0,
-    "Checkbox": 0,
-    "Radio": 0,
-    "Input": 0,
-    "Slider": 0,
-    "Dropdown": 0,
-    "Tab": 0
+    "Window": 1,
+    "Button": 1,
+    "Text": 1,
+    "Checkbox": 1,
+    "Radio": 1,
+    "Input": 1,
+    "Slider": 1,
+    "Dropdown": 1,
+    "Tab": 1
   },
   "BorderPad": {
     "Window": 0,
