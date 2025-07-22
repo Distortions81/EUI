@@ -141,7 +141,11 @@ func startEbiten() {
 
 	/* Set up our window */
 	w, h := eui.ScreenSize()
-	ebiten.SetWindowSize(w, h)
+	scale := ebiten.Monitor().DeviceScaleFactor()
+	if scale <= 0 {
+		scale = 1
+	}
+	ebiten.SetWindowSize(int(float64(w)/scale), int(float64(h)/scale))
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 
 	ebiten.SetWindowTitle("EUI Prototype")
