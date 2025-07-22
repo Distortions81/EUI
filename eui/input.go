@@ -364,17 +364,7 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 	// For dropdowns check the expanded option area as well
 	if !item.DrawRect.containsPoint(mpos) {
 		if !(item.ItemType == ITEM_DROPDOWN && item.Open && func() bool {
-			optionH := item.GetSize().Y
-			visible := item.MaxVisible
-			if visible <= 0 {
-				visible = 5
-			}
-			if visible > len(item.Options) {
-				visible = len(item.Options)
-			}
-			startY := item.DrawRect.Y1
-			openHeight := optionH * float32(visible)
-			r := rect{X0: item.DrawRect.X0, Y0: startY, X1: item.DrawRect.X1, Y1: startY + openHeight}
+			r, _ := dropdownOpenRect(item, point{X: item.DrawRect.X0, Y: item.DrawRect.Y0})
 			return r.containsPoint(mpos)
 		}()) {
 			return false
@@ -425,16 +415,8 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 		} else if item.ItemType == ITEM_DROPDOWN {
 			if item.Open {
 				optionH := item.GetSize().Y
-				visible := item.MaxVisible
-				if visible <= 0 {
-					visible = 5
-				}
-				if visible > len(item.Options) {
-					visible = len(item.Options)
-				}
-				startY := item.DrawRect.Y1
-				openHeight := optionH * float32(visible)
-				r := rect{X0: item.DrawRect.X0, Y0: startY, X1: item.DrawRect.X1, Y1: startY + openHeight}
+				r, _ := dropdownOpenRect(item, point{X: item.DrawRect.X0, Y: item.DrawRect.Y0})
+				startY := r.Y0
 				if r.containsPoint(mpos) {
 					idx := int((mpos.Y - startY + item.Scroll.Y) / optionH)
 					if idx >= 0 && idx < len(item.Options) {
@@ -482,16 +464,8 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 			}
 		} else if item.ItemType == ITEM_DROPDOWN && item.Open {
 			optionH := item.GetSize().Y
-			visible := item.MaxVisible
-			if visible <= 0 {
-				visible = 5
-			}
-			if visible > len(item.Options) {
-				visible = len(item.Options)
-			}
-			startY := item.DrawRect.Y1
-			openHeight := optionH * float32(visible)
-			r := rect{X0: item.DrawRect.X0, Y0: startY, X1: item.DrawRect.X1, Y1: startY + openHeight}
+			r, _ := dropdownOpenRect(item, point{X: item.DrawRect.X0, Y: item.DrawRect.Y0})
+			startY := r.Y0
 			if r.containsPoint(mpos) {
 				idx := int((mpos.Y - startY + item.Scroll.Y) / optionH)
 				if idx >= 0 && idx < len(item.Options) {
@@ -699,16 +673,8 @@ func scrollDropdown(items []*itemData, mpos point, delta point) bool {
 	for _, it := range items {
 		if it.ItemType == ITEM_DROPDOWN && it.Open {
 			optionH := it.GetSize().Y
-			visible := it.MaxVisible
-			if visible <= 0 {
-				visible = 5
-			}
-			if visible > len(it.Options) {
-				visible = len(it.Options)
-			}
-			startY := it.DrawRect.Y1
-			openH := optionH * float32(visible)
-			r := rect{X0: it.DrawRect.X0, Y0: startY, X1: it.DrawRect.X1, Y1: startY + openH}
+			r, _ := dropdownOpenRect(it, point{X: it.DrawRect.X0, Y: it.DrawRect.Y0})
+			openH := r.Y1 - r.Y0
 			if r.containsPoint(mpos) {
 				maxScroll := optionH*float32(len(it.Options)) - openH
 				if maxScroll < 0 {
@@ -833,17 +799,7 @@ func dragWindowScroll(win *windowData, mpos point, vert bool) {
 func dropdownOpenContains(items []*itemData, mpos point) bool {
 	for _, it := range items {
 		if it.ItemType == ITEM_DROPDOWN && it.Open {
-			optionH := it.GetSize().Y
-			visible := it.MaxVisible
-			if visible <= 0 {
-				visible = 5
-			}
-			if visible > len(it.Options) {
-				visible = len(it.Options)
-			}
-			startY := it.DrawRect.Y1
-			openH := optionH * float32(visible)
-			r := rect{X0: it.DrawRect.X0, Y0: startY, X1: it.DrawRect.X1, Y1: startY + openH}
+			r, _ := dropdownOpenRect(it, point{X: it.DrawRect.X0, Y: it.DrawRect.Y0})
 			if r.containsPoint(mpos) {
 				return true
 			}
@@ -866,17 +822,7 @@ func dropdownOpenContains(items []*itemData, mpos point) bool {
 func clickOpenDropdown(items []*itemData, mpos point, click bool) bool {
 	for _, it := range items {
 		if it.ItemType == ITEM_DROPDOWN && it.Open {
-			optionH := it.GetSize().Y
-			visible := it.MaxVisible
-			if visible <= 0 {
-				visible = 5
-			}
-			if visible > len(it.Options) {
-				visible = len(it.Options)
-			}
-			startY := it.DrawRect.Y1
-			openH := optionH * float32(visible)
-			r := rect{X0: it.DrawRect.X0, Y0: startY, X1: it.DrawRect.X1, Y1: startY + openH}
+			r, _ := dropdownOpenRect(it, point{X: it.DrawRect.X0, Y: it.DrawRect.Y0})
 			if r.containsPoint(mpos) {
 				it.clickItem(mpos, click)
 				return true

@@ -1005,20 +1005,13 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 func drawDropdownOptions(item *itemData, offset point, clip rect, screen *ebiten.Image) {
 	maxSize := item.GetSize()
 	optionH := maxSize.Y
-	visible := item.MaxVisible
-	if visible <= 0 {
-		visible = 5
-	}
-	if visible > len(item.Options) {
-		visible = len(item.Options)
-	}
-	startY := offset.Y + maxSize.Y
+	drawRect, visible := dropdownOpenRect(item, offset)
+	startY := drawRect.Y0
 	first := int(item.Scroll.Y / optionH)
 	offY := startY - (item.Scroll.Y - float32(first)*optionH)
 	textSize := (item.FontSize * uiScale) + 2
 	face := textFace(textSize)
 	loo := text.LayoutOptions{PrimaryAlign: text.AlignStart, SecondaryAlign: text.AlignCenter}
-	drawRect := rect{X0: offset.X, Y0: startY, X1: offset.X + maxSize.X, Y1: startY + optionH*float32(visible)}
 
 	if item.ShadowSize > 0 && item.ShadowColor.A > 0 {
 		rr := roundRect{

@@ -217,6 +217,49 @@ func (win *windowData) clampToScreen() {
 	}
 }
 
+// dropdownOpenRect returns the rectangle used for drawing and input handling of
+// an open dropdown menu. The rectangle is adjusted so it never extends off the
+// screen while leaving room for overlay controls at the top and bottom equal to
+// one option height.
+func dropdownOpenRect(item *itemData, offset point) (rect, int) {
+	maxSize := item.GetSize()
+	optionH := maxSize.Y
+	visible := item.MaxVisible
+	if visible <= 0 {
+		visible = 5
+	}
+	if visible > len(item.Options) {
+		visible = len(item.Options)
+	}
+
+	maxVisible := int((float32(screenHeight) - optionH*dropdownOverlayReserve*2) / optionH)
+	if maxVisible < 1 {
+		maxVisible = 1
+	}
+	if visible > maxVisible {
+		visible = maxVisible
+	}
+
+	startY := offset.Y + maxSize.Y
+	openH := optionH * float32(visible)
+	r := rect{X0: offset.X, Y0: startY, X1: offset.X + maxSize.X, Y1: startY + openH}
+
+	bottomLimit := float32(screenHeight) - optionH*dropdownOverlayReserve
+	if r.Y1 > bottomLimit {
+		diff := r.Y1 - bottomLimit
+		r.Y0 -= diff
+		r.Y1 -= diff
+	}
+	topLimit := optionH * dropdownOverlayReserve
+	if r.Y0 < topLimit {
+		diff := topLimit - r.Y0
+		r.Y0 += diff
+		r.Y1 += diff
+	}
+
+	return r, visible
+}
+
 func (win *windowData) getWindowPart(mpos point, click bool) dragType {
 	if part := win.getTitlebarPart(mpos); part != PART_NONE {
 		return part
