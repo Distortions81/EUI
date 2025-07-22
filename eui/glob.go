@@ -37,6 +37,11 @@ var (
 
 	whiteImage    = ebiten.NewImage(3, 3)
 	whiteSubImage = whiteImage.SubImage(image.Rect(1, 1, 2, 2)).(*ebiten.Image)
+
+	// AutoHiDPI enables automatic scaling when the device scale factor
+	// changes, keeping the UI size consistent on HiDPI displays.
+	AutoHiDPI       bool
+	lastDeviceScale float64 = 1.0
 )
 
 func init() {
@@ -49,5 +54,8 @@ func init() {
 // Pass Ebiten's outside size values to this from your Layout function.
 func Layout(outsideWidth, outsideHeight int) (int, int) {
 	screenWidth, screenHeight = outsideWidth, outsideHeight
+	if AutoHiDPI {
+		SyncHiDPIScale()
+	}
 	return outsideWidth, outsideHeight
 }

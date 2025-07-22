@@ -161,9 +161,13 @@ var (
 )
 var (
 
-	// AutoReload enables automatic reloading of theme and layout files
-	// when they are modified on disk, only use this for quickly iterating when designing your own themes.
-	AutoReload bool
+        // AutoReload enables automatic reloading of theme and layout files
+        // when they are modified on disk, only use this for quickly iterating when designing your own themes.
+        AutoReload bool
+
+       // AutoHiDPI enables automatic scaling when the device scale factor changes.
+       // The active UI scale is adjusted so the interface keeps the same size on screen.
+       AutoHiDPI bool
 )
 
 FUNCTIONS
@@ -263,6 +267,9 @@ func SetUIScale(scale float32)
     windows created with AutoSize.
 func UIScale() float32
     UIScale returns the current UI scale factor.
+func SyncHiDPIScale()
+    SyncHiDPIScale adjusts the UI scale automatically when the device scale
+    factor changes.
 func Update() error
     Update processes input and updates window state. Programs embedding the UI
     can call this from their Ebiten Update handler.
