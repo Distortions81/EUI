@@ -144,6 +144,7 @@ func (win *windowData) setSize(size point) bool {
 	win.BringForward()
 	win.resizeFlows()
 	win.adjustScrollForResize()
+	win.clampToScreen()
 
 	return tooSmall
 }
@@ -190,6 +191,29 @@ func (win *windowData) adjustScrollForResize() {
 		if win.Scroll.X > max {
 			win.Scroll.X = max
 		}
+	}
+}
+
+func (win *windowData) clampToScreen() {
+	pos := win.getPosition()
+	size := win.GetSize()
+
+	if pos.X < 0 {
+		win.Position.X -= pos.X / uiScale
+		pos.X = 0
+	}
+	if pos.Y < 0 {
+		win.Position.Y -= pos.Y / uiScale
+		pos.Y = 0
+	}
+
+	overX := pos.X + size.X - float32(screenWidth)
+	if overX > 0 {
+		win.Position.X -= overX / uiScale
+	}
+	overY := pos.Y + size.Y - float32(screenHeight)
+	if overY > 0 {
+		win.Position.Y -= overY / uiScale
 	}
 }
 
@@ -320,7 +344,11 @@ func (win *windowData) SetTitleSize(size float32) {
 func SetUIScale(scale float32) {
 	uiScale = scale
 	for _, win := range windows {
-		win.updateAutoSize()
+		if win.AutoSize {
+			win.updateAutoSize()
+		} else {
+			win.resizeFlows()
+		}
 	}
 	for _, ov := range overlays {
 		ov.resizeFlow(ov.GetSize())
@@ -503,6 +531,7 @@ func (win *windowData) updateAutoSize() {
 	}
 	win.Size = point{X: size.X / uiScale, Y: size.Y / uiScale}
 	win.resizeFlows()
+	win.clampToScreen()
 }
 
 func (item *itemData) contentBounds() point {

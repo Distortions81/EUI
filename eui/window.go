@@ -97,6 +97,8 @@ func (target *windowData) AddWindow(toBack bool) {
 		target.AutoSize = false
 	}
 
+	target.clampToScreen()
+
 	if currentTheme != nil {
 		applyThemeToWindow(target)
 	}
