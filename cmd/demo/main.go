@@ -93,8 +93,6 @@ func main() {
 	scaleOverlay := &eui.ItemData{
 		ItemType: eui.ITEM_FLOW,
 		FlowType: eui.FLOW_HORIZONTAL,
-		Size:     eui.Point{X: 56, Y: 24},
-		Position: eui.Point{X: 4, Y: 32},
 		PinTo:    eui.PIN_BOTTOM_LEFT,
 	}
 	minusBtn, minusEvents := eui.NewButton(&eui.ItemData{Text: "-", Size: eui.Point{X: 24, Y: 24}, FontSize: 8})
@@ -116,6 +114,9 @@ func main() {
 	}
 	scaleOverlay.AddItem(minusBtn)
 	scaleOverlay.AddItem(plusBtn)
+
+	textItem, _ := eui.NewText(&eui.ItemData{Text: "UI Scale", FontSize: 8, Size: eui.Point{X: 40, Y: 24}})
+	scaleOverlay.AddItem(textItem)
 	eui.AddOverlayFlow(scaleOverlay)
 
 	go startEbiten()
