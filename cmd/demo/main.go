@@ -164,7 +164,9 @@ func startEbiten() {
 
 type demoGame struct {
 	lastUpdate    time.Time
-	lowFPSElapsed time.Duration
+	tickAccum     time.Duration
+	lowFPSTime    time.Duration
+	highFPSTime   time.Duration
 	vsyncDisabled bool
 }
 
@@ -173,18 +175,39 @@ func (g *demoGame) Update() error {
 	if !g.lastUpdate.IsZero() {
 		delta := now.Sub(g.lastUpdate)
 		if delta < time.Second {
-			if onMobile && !g.vsyncDisabled {
-				if ebiten.ActualFPS() < 30 {
-					g.lowFPSElapsed += delta
-					if g.lowFPSElapsed >= 3*time.Second {
+			g.tickAccum += delta
+			for g.tickAccum >= time.Second {
+				g.tickAccum -= time.Second
+				fps := ebiten.ActualFPS()
+				if onMobile {
+					if fps < 30 {
+						g.lowFPSTime += time.Second
+						g.highFPSTime = 0
+					} else if fps > 50 {
+						g.highFPSTime += time.Second
+						g.lowFPSTime = 0
+					} else {
+						g.lowFPSTime = 0
+						g.highFPSTime = 0
+					}
+
+					if !g.vsyncDisabled && g.lowFPSTime >= 3*time.Second {
 						ebiten.SetVsyncEnabled(false)
 						g.vsyncDisabled = true
 						setStatus("v-sync disabled")
 					}
-				} else {
-					g.lowFPSElapsed = 0
+
+					if g.vsyncDisabled && g.highFPSTime >= 10*time.Second {
+						ebiten.SetVsyncEnabled(true)
+						g.vsyncDisabled = false
+						setStatus("v-sync enabled")
+					}
 				}
 			}
+		} else {
+			g.tickAccum = 0
+			g.lowFPSTime = 0
+			g.highFPSTime = 0
 		}
 	}
 	g.lastUpdate = now
