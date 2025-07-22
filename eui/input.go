@@ -723,7 +723,7 @@ func scrollWindow(win *windowData, delta point) bool {
 	if win.NoScroll {
 		return false
 	}
-	pad := win.Padding + win.BorderPad
+	pad := (win.Padding + win.BorderPad) * uiScale
 	req := win.contentBounds()
 	avail := point{
 		X: win.GetSize().X - 2*pad,
@@ -763,7 +763,7 @@ func dragWindowScroll(win *windowData, mpos point, vert bool) {
 	if win.NoScroll {
 		return
 	}
-	pad := win.Padding + win.BorderPad
+	pad := (win.Padding + win.BorderPad) * uiScale
 	req := win.contentBounds()
 	avail := point{
 		X: win.GetSize().X - 2*pad,

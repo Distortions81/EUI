@@ -227,7 +227,7 @@ func (win *windowData) drawScrollbars(screen *ebiten.Image) {
 	if win.NoScroll {
 		return
 	}
-	pad := win.Padding + win.BorderPad
+	pad := (win.Padding + win.BorderPad) * uiScale
 	req := win.contentBounds()
 	avail := point{
 		X: win.GetSize().X - 2*pad,
@@ -268,7 +268,7 @@ func (win *windowData) drawScrollbars(screen *ebiten.Image) {
 }
 
 func (win *windowData) drawItems(screen *ebiten.Image) {
-	pad := win.Padding + win.BorderPad
+	pad := (win.Padding + win.BorderPad) * uiScale
 	winPos := pointAdd(win.getPosition(), point{X: pad, Y: win.GetTitleSize() + pad})
 	winPos = pointSub(winPos, win.Scroll)
 	clip := win.getMainRect()
@@ -409,7 +409,7 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 			flowOff := pointAdd(drawOffset, flowOffset)
 
 			if subItem.PinTo != PIN_TOP_LEFT {
-				pad := win.Padding + win.BorderPad
+				pad := (win.Padding + win.BorderPad) * uiScale
 				objOff := pointAdd(win.getPosition(), point{X: pad, Y: win.GetTitleSize() + pad})
 				objOff = pointSub(objOff, win.Scroll)
 				objOff = pointAdd(objOff, subItem.getPosition(win))
