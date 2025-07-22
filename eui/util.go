@@ -264,13 +264,27 @@ func (win *windowData) getResizePart(mpos point) dragType {
 	inRect.Y1 -= t
 
 	if outRect.containsPoint(mpos) && !inRect.containsPoint(mpos) {
-		if mpos.Y < inRect.Y0 {
+		top := mpos.Y < inRect.Y0
+		bottom := mpos.Y > inRect.Y1
+		left := mpos.X < inRect.X0
+		right := mpos.X > inRect.X1
+
+		switch {
+		case top && left:
+			return PART_TOP_LEFT
+		case top && right:
+			return PART_TOP_RIGHT
+		case bottom && left:
+			return PART_BOTTOM_LEFT
+		case bottom && right:
+			return PART_BOTTOM_RIGHT
+		case top:
 			return PART_TOP
-		} else if mpos.Y > inRect.Y1 {
+		case bottom:
 			return PART_BOTTOM
-		} else if mpos.X < inRect.X0 {
+		case left:
 			return PART_LEFT
-		} else if mpos.X > inRect.X1 {
+		case right:
 			return PART_RIGHT
 		}
 	}
