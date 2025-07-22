@@ -167,6 +167,7 @@ var (
 
        // AutoHiDPI enables automatic scaling when the device scale factor changes.
        // The active UI scale is adjusted so the interface keeps the same size on screen.
+       // This defaults to true and can be disabled if necessary.
        AutoHiDPI bool
 )
 
@@ -198,8 +199,9 @@ func FontSource() *text.GoTextFaceSource
     FontSource returns the current text face source.
 
 func Layout(outsideWidth, outsideHeight int) (int, int)
-    Layout reports the dimensions for the game's screen. Pass Ebiten's outside
-    size values to this from your Layout function.
+    Layout reports the screen dimensions and scales the resolution using the
+    device scale factor. Pass Ebiten's outside size values to this from your
+    Layout function. Disable this behavior by setting `AutoHiDPI` to false.
 
 func ListStyles() ([]string, error)
     ListStyles returns the available style theme names.
