@@ -84,7 +84,7 @@ func main() {
 		ItemType: eui.ITEM_FLOW,
 		FlowType: eui.FLOW_HORIZONTAL,
 		Size:     eui.Point{X: 320, Y: 24},
-		Position: eui.Point{X: 4, Y: 4},
+		Position: eui.Point{X: 125, Y: 0},
 		PinTo:    eui.PIN_BOTTOM_LEFT,
 	}
 	statusText, _ = eui.NewText(&eui.ItemData{Size: eui.Point{X: 316, Y: 24}, FontSize: 8})
