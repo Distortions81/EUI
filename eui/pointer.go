@@ -57,7 +57,7 @@ func pointerWheel() (float64, float64) {
 	wx, wy := ebiten.Wheel()
 	if isWasm {
 		now := time.Now()
-		if now.Sub(lastWheelTime) < time.Second/6 {
+		if now.Sub(lastWheelTime) < time.Second/10 {
 			return 0, 0
 		}
 		lastWheelTime = now
