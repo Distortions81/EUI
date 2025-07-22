@@ -64,6 +64,6 @@ func Layout(outsideWidth, outsideHeight int) (int, int) {
 	}
 	scaledW := int(float64(outsideWidth) * scale)
 	scaledH := int(float64(outsideHeight) * scale)
-	screenWidth, screenHeight = scaledW, scaledH
+	SetScreenSize(scaledW, scaledH)
 	return scaledW, scaledH
 }

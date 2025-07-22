@@ -16,6 +16,23 @@ func Overlays() []*ItemData { return overlays }
 func SetScreenSize(w, h int) {
 	screenWidth = w
 	screenHeight = h
+	for _, win := range windows {
+		size := win.GetSize()
+		resized := false
+		if size.X > float32(screenWidth) {
+			win.Size.X = float32(screenWidth) / uiScale
+			resized = true
+		}
+		if size.Y > float32(screenHeight) {
+			win.Size.Y = float32(screenHeight) / uiScale
+			resized = true
+		}
+		if resized {
+			win.resizeFlows()
+			win.adjustScrollForResize()
+		}
+		win.clampToScreen()
+	}
 }
 
 // ScreenSize returns the current screen size.

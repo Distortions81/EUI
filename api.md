@@ -264,7 +264,8 @@ func SetFontSource(src *text.GoTextFaceSource)
     SetFontSource sets the text face source used when rendering text.
 
 func SetScreenSize(w, h int)
-    SetScreenSize sets the current screen size used for layout calculations.
+    SetScreenSize sets the current screen size used for layout calculations
+    and clamps existing windows to the new bounds.
 
 func SetUIScale(scale float32)
     SetUIScale updates layout metrics for the given scale and resizes
