@@ -26,10 +26,9 @@ gofmt -w <files>
 ```
 
 package eui // import "EUI/eui"
-
+```
 
 CONSTANTS
-
 const (
 	FLOW_HORIZONTAL = iota
 	FLOW_VERTICAL
@@ -224,7 +223,6 @@ func Update() error
 func NewWindow(win *windowData) *windowData
     Create a new window from the default theme
 
-
 TYPES
 
 type AlignType = alignType
@@ -359,4 +357,4 @@ func Windows() []*WindowData
 
 func (win *WindowData) AddItem(child *ItemData)
     AddItem appends a child item to the window.
-
+```
