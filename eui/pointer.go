@@ -91,7 +91,11 @@ func pointerJustPressed() bool {
 
 // pointerPressed reports whether the primary pointer is currently pressed.
 func pointerPressed() bool {
-	if len(ebiten.AppendTouchIDs(nil)) > 0 {
+	ids := ebiten.AppendTouchIDs(nil)
+	if len(ids) > 1 {
+		return false
+	}
+	if len(ids) == 1 {
 		return true
 	}
 	return ebiten.IsMouseButtonPressed(ebiten.MouseButton0)
@@ -100,7 +104,10 @@ func pointerPressed() bool {
 // pointerPressDuration returns how long the primary pointer has been pressed.
 func pointerPressDuration() int {
 	ids := ebiten.AppendTouchIDs(nil)
-	if len(ids) > 0 {
+	if len(ids) > 1 {
+		return 0
+	}
+	if len(ids) == 1 {
 		return inpututil.TouchPressDuration(ids[0])
 	}
 	return inpututil.MouseButtonPressDuration(ebiten.MouseButton0)
