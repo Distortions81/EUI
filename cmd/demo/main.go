@@ -84,7 +84,6 @@ func main() {
 		themeSel.MarkOpen()
 	}
 	overlay.AddItem(toggleBtn)
-	eui.AddOverlayFlow(overlay)
 
 	statusOverlay := &eui.ItemData{
 		ItemType: eui.ITEM_FLOW,
@@ -135,6 +134,8 @@ func main() {
 	scaleOverlay.AddItem(textItem)
 
 	eui.AddOverlayFlow(scaleOverlay)
+	// Add the theme toggle overlay last so it stays on top
+	eui.AddOverlayFlow(overlay)
 
 	go startEbiten()
 
