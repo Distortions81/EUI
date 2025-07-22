@@ -250,7 +250,7 @@ func TestPixelOffset(t *testing.T) {
 }
 
 func roundRectKeyPoints(rrect *roundRect) []point {
-	width := float32(math.Floor(float64(rrect.Border)))
+	width := float32(math.Round(float64(rrect.Border)))
 	off := float32(0)
 	if !rrect.Filled {
 		off = pixelOffset(width)
