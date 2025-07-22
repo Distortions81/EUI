@@ -300,8 +300,53 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 	subImg := screen.SubImage(item.DrawRect.getRectangle()).(*ebiten.Image)
 	style := item.themeStyle()
 
+	labelPad := float32(0)
+	if item.Label != "" {
+		textSize := (item.FontSize * uiScale) + 2
+		face := textFace(textSize)
+		loo := text.LayoutOptions{PrimaryAlign: text.AlignStart, SecondaryAlign: text.AlignCenter}
+		tdop := ebiten.DrawImageOptions{}
+		tdop.GeoM.Translate(float64(offset.X), float64(offset.Y+textSize/2))
+		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+		if style != nil {
+			top.ColorScale.ScaleWithColor(style.TextColor)
+		}
+		text.Draw(subImg, item.Label, face, top)
+		labelPad = textSize + currentStyle.TextPadding*uiScale
+	}
+
+	contentOff := point{X: offset.X, Y: offset.Y + labelPad}
+	drawOffset := pointSub(contentOff, item.Scroll)
+
+	maxSize := point{X: item.GetSize().X, Y: item.GetSize().Y - labelPad}
+	if maxSize.Y < 0 {
+		maxSize.Y = 0
+	}
+	if item.Filled {
+		drawRoundRect(subImg, &roundRect{
+			Size:     maxSize,
+			Position: contentOff,
+			Fillet:   item.Fillet * uiScale,
+			Filled:   true,
+			Color:    style.Color,
+		})
+	}
+	if item.Outlined || item.Border > 0 {
+		border := item.Border * uiScale
+		if border <= 0 {
+			border = 1 * uiScale
+		}
+		drawRoundRect(subImg, &roundRect{
+			Size:     maxSize,
+			Position: contentOff,
+			Fillet:   item.Fillet * uiScale,
+			Filled:   false,
+			Border:   border,
+			Color:    style.OutlineColor,
+		})
+	}
+
 	var activeContents []*itemData
-	drawOffset := pointSub(offset, item.Scroll)
 
 	if len(item.Tabs) > 0 {
 		if item.ActiveTab >= len(item.Tabs) {
@@ -313,7 +358,7 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 			tabHeight = th
 		}
 		textSize := (item.FontSize * uiScale) + 2
-		x := offset.X
+		x := contentOff.X
 		spacing := float32(4) * uiScale
 		for i, tab := range item.Tabs {
 			face := textFace(textSize)
@@ -335,7 +380,7 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 			tab.Hovered = false
 			if item.Filled {
 				drawTabShape(subImg,
-					point{X: x, Y: offset.Y},
+					point{X: x, Y: contentOff.Y},
 					point{X: w, Y: tabHeight},
 					col,
 					item.Fillet*uiScale,
@@ -348,7 +393,7 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 					border = 1 * uiScale
 				}
 				strokeTabShape(subImg,
-					point{X: x, Y: offset.Y},
+					point{X: x, Y: contentOff.Y},
 					point{X: w, Y: tabHeight},
 					style.OutlineColor,
 					item.Fillet*uiScale,
@@ -358,7 +403,7 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 			}
 			if item.ActiveOutline && i == item.ActiveTab {
 				strokeTabTop(subImg,
-					point{X: x, Y: offset.Y},
+					point{X: x, Y: contentOff.Y},
 					point{X: w, Y: tabHeight},
 					style.ClickColor,
 					item.Fillet*uiScale,
@@ -368,24 +413,24 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 			}
 			loo := text.LayoutOptions{PrimaryAlign: text.AlignCenter, SecondaryAlign: text.AlignCenter}
 			dop := ebiten.DrawImageOptions{}
-			dop.GeoM.Translate(float64(x+w/2), float64(offset.Y+tabHeight/2))
+			dop.GeoM.Translate(float64(x+w/2), float64(contentOff.Y+tabHeight/2))
 			dto := &text.DrawOptions{DrawImageOptions: dop, LayoutOptions: loo}
 			dto.ColorScale.ScaleWithColor(style.TextColor)
 			text.Draw(subImg, tab.Name, face, dto)
-			tab.DrawRect = rect{X0: x, Y0: offset.Y, X1: x + w, Y1: offset.Y + tabHeight}
+			tab.DrawRect = rect{X0: x, Y0: contentOff.Y, X1: x + w, Y1: contentOff.Y + tabHeight}
 			x += w + spacing
 		}
 		drawOffset = pointAdd(drawOffset, point{Y: tabHeight})
 		drawFilledRect(subImg,
-			offset.X,
-			offset.Y+tabHeight-3*uiScale,
+			contentOff.X,
+			contentOff.Y+tabHeight-3*uiScale,
 			item.GetSize().X,
 			3*uiScale,
 			style.SelectedColor,
 			false)
 		strokeRect(subImg,
-			offset.X,
-			offset.Y+tabHeight,
+			contentOff.X,
+			contentOff.Y+tabHeight,
 			item.GetSize().X,
 			item.GetSize().Y-tabHeight,
 			1,

@@ -16,7 +16,8 @@ EUI aims to stay small and easy to use while still providing the essentials for
 building a game UI. Highlights include:
 
 - **Window management** – draggable, resizable windows with optional pinning.
-- **Flow layouts** – vertical or horizontal flows for composing widgets.
+ - **Flow layouts** – vertical or horizontal flows for composing widgets. Flows
+   can optionally draw labels and borders to visually group content.
 - **Overlay items** – keep controls always on screen.
 - **Palette and style themes** – JSON files define colors and spacing. Switch
   them at runtime or reload automatically while iterating.

@@ -570,8 +570,12 @@ func (item *itemData) contentBounds() point {
 		}
 		list = item.Tabs[item.ActiveTab].Contents
 	}
+	labelPad := float32(0)
+	if item.ItemType == ITEM_FLOW && item.Label != "" {
+		labelPad = (item.FontSize*uiScale + 2) + currentStyle.TextPadding*uiScale
+	}
 	if len(list) == 0 {
-		return point{}
+		return point{Y: labelPad}
 	}
 
 	base := point{}
@@ -609,9 +613,13 @@ func (item *itemData) contentBounds() point {
 	}
 
 	if first {
-		return point{}
+		return point{Y: labelPad}
 	}
-	return point{X: b.X1 - base.X, Y: b.Y1 - base.Y}
+	size := point{X: b.X1 - base.X, Y: b.Y1 - base.Y}
+	if item.ItemType == ITEM_FLOW {
+		size.Y += labelPad
+	}
+	return size
 }
 
 func (item *itemData) resizeFlow(parentSize point) {
