@@ -20,7 +20,8 @@ building a game UI. Highlights include:
 - **Overlay items** – keep controls always on screen.
 - **Palette and style themes** – JSON files define colors and spacing. Switch
   them at runtime or reload automatically while iterating.
-- **UI scaling** – call `eui.SetUIScale()` to adapt to any resolution.
+- **UI scaling** – call `eui.SetUIScale()` to adapt to any resolution or
+  `eui.UIScale()` to read the current value.
 - **Image caching** – widgets cache their drawing for better performance.
   Enable `eui.DumpMode` to write the cached images to disk for inspection.
 - **Event system** – each widget returns an `EventHandler` that uses channels or
