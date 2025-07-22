@@ -66,17 +66,22 @@ func main() {
 	}
 	toggleBtn, toggleEvents := eui.NewButton(&eui.ItemData{Text: "Themes", Size: eui.Point{X: 80, Y: 24}, FontSize: 8})
 	toggleEvents.Handle = func(ev eui.UIEvent) {
-		if ev.Type == eui.EventClick {
-			if themeSel != nil {
-				if !themeSel.Open {
-					themeSel.Open = true
-					themeSel.BringForward()
-				} else {
-					themeSel.Open = false
-					themeSel.ToBack()
-				}
-			}
+		if ev.Type != eui.EventClick || themeSel == nil {
+			return
 		}
+
+		wins := eui.Windows()
+		if themeSel.Open {
+			if len(wins) == 0 || wins[len(wins)-1] != themeSel {
+				themeSel.BringForward()
+				return
+			}
+			themeSel.Open = false
+			themeSel.ToBack()
+			return
+		}
+
+		themeSel.MarkOpen()
 	}
 	overlay.AddItem(toggleBtn)
 	eui.AddOverlayFlow(overlay)
