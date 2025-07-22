@@ -23,6 +23,8 @@ building a game UI. Highlights include:
 - **UI scaling** – call `eui.SetUIScale()` to adapt to any resolution or
   `eui.UIScale()` to read the current value. Windows using `AutoSize` adjust
   their dimensions automatically when the scale changes.
+- **HiDPI support** – enable `eui.AutoHiDPI` or call `eui.SyncHiDPIScale()`
+  to match the device scale factor when moving between monitors.
 - **Image caching** – widgets cache their drawing for better performance.
   Enable `eui.DumpMode` to write the cached images to disk for inspection.
 - **Event system** – each widget returns an `EventHandler` that uses channels or
@@ -68,6 +70,7 @@ The library loads the built in `AccentDark` palette, `RoundHybrid` style and a d
 // _ = eui.LoadTheme("MyTheme")
 // _ = eui.LoadStyle("MyStyle")
 ```
+Set `eui.AutoHiDPI = true` to keep the UI size consistent when switching between standard and high‑DPI displays.
 
 See [themes/README.md](eui/themes/README.md) for a list of the bundled schemes and details on creating your own.
 
