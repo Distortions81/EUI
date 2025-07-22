@@ -183,7 +183,7 @@ func (g *demoGame) Update() error {
 					if fps < 30 {
 						g.lowFPSTime += time.Second
 						g.highFPSTime = 0
-					} else if fps > 50 {
+					} else if fps > 61 {
 						g.highFPSTime += time.Second
 						g.lowFPSTime = 0
 					} else {
