@@ -34,16 +34,27 @@ func main() {
 	currentScale = 1.5
 	eui.SetUIScale(currentScale)
 
-	settingsWindow := eui.NewWindow(&eui.WindowData{
+	win := eui.NewWindow(&eui.WindowData{
 		Open: true, Resizable: true,
 		Closable: true, Title: "Settings",
 		AutoSize: true, Movable: true,
 	})
 
-	b1, _ := eui.NewButton(&eui.ItemData{Text: "Setting A", Size: eui.Point{X: 100, Y: 24}})
-	settingsWindow.AddItem(b1)
+	mainFlow := &eui.ItemData{
+		ItemType: eui.ITEM_FLOW,
+		Size:     win.Size,
+		FlowType: eui.FLOW_HORIZONTAL,
+	}
+	win.AddItem(mainFlow)
 
-	settingsWindow.AddWindow(false)
+	b1, _ := eui.NewButton(&eui.ItemData{Text: "Setting A", Size: eui.Point{X: 100, Y: 24}})
+	mainFlow.AddItem(b1)
+	b2, _ := eui.NewButton(&eui.ItemData{Text: "Setting B", Size: eui.Point{X: 100, Y: 24}})
+	mainFlow.AddItem(b2)
+	b3, _ := eui.NewButton(&eui.ItemData{Text: "Setting C", Size: eui.Point{X: 100, Y: 24}})
+	mainFlow.AddItem(b3)
+
+	win.AddWindow(false)
 	go startEbiten()
 
 	<-signalHandle
