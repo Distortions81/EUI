@@ -57,6 +57,13 @@ func Draw(screen *ebiten.Image) {
 		dumpDone = true
 		os.Exit(0)
 	}
+	if TreeMode && !dumpDone {
+		if err := DumpTree(); err != nil {
+			panic(err)
+		}
+		dumpDone = true
+		os.Exit(0)
+	}
 }
 
 func drawOverlay(item *itemData, screen *ebiten.Image) {

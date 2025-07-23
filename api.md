@@ -94,9 +94,13 @@ var (
 	// DebugMode enables rendering of debug outlines.
 	DebugMode bool
 
-	// DumpMode causes the library to write cached images to disk
-	// before exiting when enabled.
-	DumpMode bool
+        // DumpMode causes the library to write cached images to disk
+        // before exiting when enabled.
+        DumpMode bool
+
+        // TreeMode dumps the window hierarchy to debug/tree.json
+        // before exiting when enabled.
+        TreeMode bool
 )
 var (
 
@@ -132,6 +136,9 @@ func DumpCachedImages() error
     DumpCachedImages writes all cached item images and item source images to the
     debug directory. The game must be running so pixels can be read. Any pending
     renders are generated before writing the files.
+
+func DumpTree() error
+    DumpTree writes the window and overlay hierarchy to debug/tree.json.
 
 func EnsureFontSource(ttf []byte) error
     EnsureFontSource initializes the font source from ttf data if needed.

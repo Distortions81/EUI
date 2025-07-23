@@ -16,6 +16,7 @@ import (
 var (
 	debugMode    *bool
 	dumpMode     *bool
+	treeMode     *bool
 	signalHandle chan os.Signal
 	currentScale float32
 )
@@ -24,9 +25,11 @@ func main() {
 
 	debugMode = flag.Bool("debug", false, "enable debug visuals")
 	dumpMode = flag.Bool("dump", false, "dump cached images and exit")
+	treeMode = flag.Bool("tree", false, "dump window tree and exit")
 	flag.Parse()
 	eui.DebugMode = *debugMode
 	eui.DumpMode = *dumpMode
+	eui.TreeMode = *treeMode
 
 	signalHandle = make(chan os.Signal, 1)
 	signal.Notify(signalHandle, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)

@@ -35,6 +35,10 @@ var (
 	// before exiting when enabled.
 	DumpMode bool
 
+	// TreeMode dumps the window hierarchy to debug/tree.json
+	// before exiting when enabled.
+	TreeMode bool
+
 	whiteImage    = ebiten.NewImage(3, 3)
 	whiteSubImage = whiteImage.SubImage(image.Rect(1, 1, 2, 2)).(*ebiten.Image)
 
