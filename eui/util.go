@@ -73,6 +73,7 @@ func (parent *windowData) addItemTo(item *itemData) {
 		applyThemeToItem(item)
 	}
 	parent.Contents = append(parent.Contents, item)
+	item.resizeFlow(parent.GetSize())
 }
 
 func (win *windowData) getMainRect() rect {
