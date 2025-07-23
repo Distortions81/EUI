@@ -66,6 +66,9 @@ func (parent *itemData) addItemTo(item *itemData) {
 		applyThemeToItem(item)
 	}
 	parent.Contents = append(parent.Contents, item)
+	if parent.ItemType == ITEM_FLOW {
+		parent.resizeFlow(parent.GetSize())
+	}
 }
 
 func (parent *windowData) addItemTo(item *itemData) {
