@@ -45,10 +45,8 @@ func main() {
 
 	mainFlow := &eui.ItemData{
 		ItemType: eui.ITEM_FLOW,
-		Size:     win.Size,
 		FlowType: eui.FLOW_VERTICAL,
 	}
-	win.AddItem(mainFlow)
 
 	b1, _ := eui.NewCheckbox(&eui.ItemData{Text: "Show Item Names", Size: eui.Point{X: 150, Y: 24}})
 	mainFlow.AddItem(b1)
@@ -58,36 +56,28 @@ func main() {
 	mainFlow.AddItem(b3)
 
 	IconFlow := &eui.ItemData{
-		ItemType:   eui.ITEM_FLOW,
-		Size:       eui.Point{X: 150, Y: 24},
-		FlowType:   eui.FLOW_HORIZONTAL,
-		Fixed:      true,
-		Scrollable: false,
+		ItemType: eui.ITEM_FLOW,
+		FlowType: eui.FLOW_HORIZONTAL,
 	}
-	mainFlow.AddItem(IconFlow)
-
 	t1, _ := eui.NewText(&eui.ItemData{Text: "Icon Size:", FontSize: 9, Size: eui.Point{X: 50, Y: 24}})
 	IconFlow.AddItem(t1)
 	t2, _ := eui.NewButton(&eui.ItemData{Text: "-", Size: eui.Point{X: 16, Y: 16}})
 	IconFlow.AddItem(t2)
 	t3, _ := eui.NewButton(&eui.ItemData{Text: "+", Size: eui.Point{X: 16, Y: 16}})
 	IconFlow.AddItem(t3)
+	mainFlow.AddItem(IconFlow)
 
 	ScaleFlow := &eui.ItemData{
-		ItemType:   eui.ITEM_FLOW,
-		Size:       eui.Point{X: 150, Y: 24},
-		FlowType:   eui.FLOW_HORIZONTAL,
-		Fixed:      true,
-		Scrollable: false,
+		ItemType: eui.ITEM_FLOW,
+		FlowType: eui.FLOW_HORIZONTAL,
 	}
-	mainFlow.AddItem(ScaleFlow)
-
 	u1, _ := eui.NewText(&eui.ItemData{Text: "UI Scale:", FontSize: 9, Size: eui.Point{X: 50, Y: 24}})
 	ScaleFlow.AddItem(u1)
 	u2, _ := eui.NewButton(&eui.ItemData{Text: "-", Size: eui.Point{X: 16, Y: 16}})
 	ScaleFlow.AddItem(u2)
 	u3, _ := eui.NewButton(&eui.ItemData{Text: "+", Size: eui.Point{X: 16, Y: 16}})
 	ScaleFlow.AddItem(u3)
+	mainFlow.AddItem(ScaleFlow)
 
 	c1, _ := eui.NewCheckbox(&eui.ItemData{Text: "Textures", Size: eui.Point{X: 150, Y: 24}})
 	mainFlow.AddItem(c1)
@@ -108,6 +98,7 @@ func main() {
 	tt2, _ := eui.NewText(&eui.ItemData{Text: vers, FontSize: 9, Size: eui.Point{X: 150, Y: 12}})
 	mainFlow.AddItem(tt2)
 
+	win.AddItem(mainFlow)
 	win.AddWindow(false)
 	go startEbiten()
 
