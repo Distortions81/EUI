@@ -1,0 +1,250 @@
+{
+  "windows": [
+    {
+      "title": "Settings",
+      "position": {
+        "X": 0,
+        "Y": -4
+      },
+      "size": {
+        "X": 170,
+        "Y": 682.6667
+      },
+      "pin_to": 0,
+      "items": [
+        {
+          "type": "flow",
+          "position": {
+            "X": 0,
+            "Y": 0
+          },
+          "size": {
+            "X": 170,
+            "Y": 98322580000000000000
+          },
+          "items": [
+            {
+              "text": "Show Item Names",
+              "type": "checkbox",
+              "position": {
+                "X": 4,
+                "Y": 2
+              },
+              "size": {
+                "X": 150,
+                "Y": 24
+              }
+            },
+            {
+              "text": "Show Legends",
+              "type": "checkbox",
+              "position": {
+                "X": 4,
+                "Y": 2
+              },
+              "size": {
+                "X": 150,
+                "Y": 24
+              }
+            },
+            {
+              "text": "Use Item Numbers",
+              "type": "checkbox",
+              "position": {
+                "X": 4,
+                "Y": 2
+              },
+              "size": {
+                "X": 150,
+                "Y": 24
+              }
+            },
+            {
+              "type": "flow",
+              "position": {
+                "X": 0,
+                "Y": 0
+              },
+              "size": {
+                "X": 170,
+                "Y": 98322580000000000000
+              },
+              "items": [
+                {
+                  "text": "Icon Size:",
+                  "type": "text",
+                  "position": {
+                    "X": 4,
+                    "Y": 4
+                  },
+                  "size": {
+                    "X": 50,
+                    "Y": 24
+                  }
+                },
+                {
+                  "text": "-",
+                  "type": "button",
+                  "position": {
+                    "X": 4,
+                    "Y": 4
+                  },
+                  "size": {
+                    "X": 16,
+                    "Y": 16
+                  }
+                },
+                {
+                  "text": "+",
+                  "type": "button",
+                  "position": {
+                    "X": 4,
+                    "Y": 4
+                  },
+                  "size": {
+                    "X": 16,
+                    "Y": 16
+                  }
+                }
+              ]
+            },
+            {
+              "type": "flow",
+              "position": {
+                "X": 0,
+                "Y": 0
+              },
+              "size": {
+                "X": 170,
+                "Y": 98322580000000000000
+              },
+              "items": [
+                {
+                  "text": "UI Scale:",
+                  "type": "text",
+                  "position": {
+                    "X": 4,
+                    "Y": 4
+                  },
+                  "size": {
+                    "X": 50,
+                    "Y": 24
+                  }
+                },
+                {
+                  "text": "-",
+                  "type": "button",
+                  "position": {
+                    "X": 4,
+                    "Y": 4
+                  },
+                  "size": {
+                    "X": 16,
+                    "Y": 16
+                  }
+                },
+                {
+                  "text": "+",
+                  "type": "button",
+                  "position": {
+                    "X": 4,
+                    "Y": 4
+                  },
+                  "size": {
+                    "X": 16,
+                    "Y": 16
+                  }
+                }
+              ]
+            },
+            {
+              "text": "Textures",
+              "type": "checkbox",
+              "position": {
+                "X": 4,
+                "Y": 2
+              },
+              "size": {
+                "X": 150,
+                "Y": 24
+              }
+            },
+            {
+              "text": "VSync",
+              "type": "checkbox",
+              "position": {
+                "X": 4,
+                "Y": 2
+              },
+              "size": {
+                "X": 150,
+                "Y": 24
+              }
+            },
+            {
+              "text": "Power Saver",
+              "type": "checkbox",
+              "position": {
+                "X": 4,
+                "Y": 2
+              },
+              "size": {
+                "X": 150,
+                "Y": 24
+              }
+            },
+            {
+              "text": "Linear Filtering",
+              "type": "checkbox",
+              "position": {
+                "X": 4,
+                "Y": 2
+              },
+              "size": {
+                "X": 150,
+                "Y": 24
+              }
+            },
+            {
+              "text": "HiDPI",
+              "type": "checkbox",
+              "position": {
+                "X": 4,
+                "Y": 2
+              },
+              "size": {
+                "X": 150,
+                "Y": 24
+              }
+            },
+            {
+              "text": "FPS: 0.00",
+              "type": "text",
+              "position": {
+                "X": 4,
+                "Y": 4
+              },
+              "size": {
+                "X": 150,
+                "Y": 12
+              }
+            },
+            {
+              "text": "Version: v0.0.9-012345",
+              "type": "text",
+              "position": {
+                "X": 4,
+                "Y": 4
+              },
+              "size": {
+                "X": 150,
+                "Y": 12
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "overlays": null
+}
