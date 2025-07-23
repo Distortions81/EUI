@@ -509,11 +509,17 @@ func markAllDirty() {
 }
 
 func (item *itemData) bounds(offset point) rect {
-	r := rect{
-		X0: offset.X,
-		Y0: offset.Y,
-		X1: offset.X + item.GetSize().X,
-		Y1: offset.Y + item.GetSize().Y,
+	var r rect
+	if item.ItemType == ITEM_FLOW && !item.Fixed {
+		// Unfixed flows should report bounds based solely on their content
+		r = rect{X0: offset.X, Y0: offset.Y, X1: offset.X, Y1: offset.Y}
+	} else {
+		r = rect{
+			X0: offset.X,
+			Y0: offset.Y,
+			X1: offset.X + item.GetSize().X,
+			Y1: offset.Y + item.GetSize().Y,
+		}
 	}
 	if item.ItemType == ITEM_FLOW {
 		var flowOffset point
