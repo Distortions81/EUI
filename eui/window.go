@@ -34,10 +34,13 @@ func mergeData(original interface{}, updates interface{}) interface{} {
 			continue
 		}
 
-		// Booleans need to be copied even when false so themes can
-		// explicitly disable features like outlines or drag bars.
+		// Booleans default to the theme value when false so callers
+		// can omit them without overwriting defaults. Explicit true
+		// values are still applied.
 		if updField.Kind() == reflect.Bool {
-			origField.Set(updField)
+			if updField.Bool() {
+				origField.Set(updField)
+			}
 			continue
 		}
 
