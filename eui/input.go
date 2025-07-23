@@ -24,6 +24,11 @@ func Update() error {
 
 	checkThemeStyleMods()
 
+	if inpututil.IsKeyJustPressed(ebiten.KeyGraveAccent) &&
+		(ebiten.IsKeyPressed(ebiten.KeyShift) || ebiten.IsKeyPressed(ebiten.KeyShiftLeft) || ebiten.IsKeyPressed(ebiten.KeyShiftRight)) {
+		_ = DumpTree()
+	}
+
 	prevHovered := hoveredItem
 	hoveredItem = nil
 

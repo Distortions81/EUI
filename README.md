@@ -30,6 +30,8 @@ building a game UI. Highlights include:
   to match the device scale factor. Disable by setting `eui.AutoHiDPI = false`.
 - **Image caching** – widgets cache their drawing for better performance.
   Enable `eui.DumpMode` to write the cached images to disk for inspection.
+- **Tree dump** – press <kbd>Shift</kbd>+<kbd>`</kbd> or run the demo with
+  `-tree` to save the window hierarchy as JSON.
 - **Event system** – each widget returns an `EventHandler` that uses channels or
   callbacks so your code can react to clicks, slider movements and text input.
 - **Debug overlays** – toggle with the `-debug` flag when running the demo.
@@ -48,6 +50,8 @@ go build -o demo ./cmd/demo
 ./demo -debug                 # optional debug overlays and disposal logs
 # dump cached images to ./debug after one frame then exit
 ./demo -dump
+# dump the window tree to ./debug/tree.json then exit
+./demo -tree
 # pass -debug with go run to enable overlays
 go run ./cmd/demo -debug
 ```
