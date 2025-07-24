@@ -680,8 +680,13 @@ func (item *itemData) resizeFlow(parentSize point) {
 		size := available
 		if item.Fixed {
 			size = item.GetSize()
+		} else if !item.Scrollable {
+			// Unfixed, non-scrollable flows should size to their content
+			size = item.contentBounds()
 		}
+
 		if !item.Scrollable {
+			// Ensure the flow is large enough to contain its children
 			req := item.contentBounds()
 			if req.X > size.X {
 				size.X = req.X
@@ -690,6 +695,7 @@ func (item *itemData) resizeFlow(parentSize point) {
 				size.Y = req.Y
 			}
 		}
+
 		item.Size = point{X: size.X / uiScale, Y: size.Y / uiScale}
 		available = item.GetSize()
 	} else {
