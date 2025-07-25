@@ -256,15 +256,11 @@ func Update() error {
 		}
 	}
 
-	// Refresh flow layouts so scroll bars update when content size changes
-	for _, win := range windows {
-		if win.Open {
-			win.resizeFlows()
-		}
-	}
-	for _, ov := range overlays {
-		ov.resizeFlow(ov.GetSize())
-	}
+	// Refresh flow layouts only when needed. Constantly recalculating
+	// layouts is expensive and can noticeably slow down the WebAssembly
+	// build, especially on HiDPI screens. Windows and overlays handle their
+	// own layout updates whenever sizes change, so avoid doing it every
+	// frame here.
 
 	for _, win := range windows {
 		if win.Open {
