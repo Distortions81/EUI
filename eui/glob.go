@@ -64,10 +64,16 @@ func Layout(outsideWidth, outsideHeight int) (int, int) {
 		if scale <= 0 {
 			scale = 1
 		}
-		SyncHiDPIScale()
+		if scale != lastDeviceScale {
+			SetUIScale(uiScale * float32(scale/lastDeviceScale))
+			lastDeviceScale = scale
+		}
 	}
+
 	scaledW := int(float64(outsideWidth) * scale)
 	scaledH := int(float64(outsideHeight) * scale)
-	SetScreenSize(scaledW, scaledH)
+	if scaledW != screenWidth || scaledH != screenHeight {
+		SetScreenSize(scaledW, scaledH)
+	}
 	return scaledW, scaledH
 }
