@@ -1,4 +1,4 @@
-module EUI
+module github.com/Distortions81/EUI
 
 go 1.23.2
 
