@@ -103,7 +103,8 @@ func Update() error {
 
 			if click && dragPart == PART_NONE {
 				if part == PART_CLOSE {
-					win.RemoveWindow()
+					win.Open = false
+					//win.RemoveWindow()
 					continue
 				}
 				dragPart = part
