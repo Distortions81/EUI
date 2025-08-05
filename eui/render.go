@@ -48,7 +48,7 @@ func Draw(screen *ebiten.Image) {
 		drawDropdownOptions(dr.item, dr.offset, dr.clip, screen)
 	}
 
-	drawFPS(screen)
+	// drawFPS(screen)
 
 	if DumpMode && !dumpDone {
 		if err := DumpCachedImages(); err != nil {
