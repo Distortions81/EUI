@@ -525,3 +525,9 @@ func (win windowData) itemOverlap(size point) (bool, bool) {
 
 	return xc, yc
 }
+
+// Refresh forces the window to recalculate layout and scrolling after modifying contents.
+func (win *windowData) Refresh() {
+	win.resizeFlows()
+	win.adjustScrollForResize()
+}

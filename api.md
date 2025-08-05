@@ -373,4 +373,7 @@ func Windows() []*WindowData
 
 func (win *WindowData) AddItem(child *ItemData)
     AddItem appends a child item to the window.
+
+func (win *WindowData) Refresh()
+    Refresh forces the window to recalculate layout and scrolling after modifying contents.
 ```
