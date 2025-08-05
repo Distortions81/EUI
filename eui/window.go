@@ -143,11 +143,13 @@ func NewWindow(win *windowData) *windowData {
 		currentTheme = baseTheme
 	}
 	newWindow := currentTheme.Window
+	stripWindowColors(&newWindow)
 	if win != nil {
 		mergeData(&newWindow, win)
 	}
-	stripWindowColors(&newWindow)
-	newWindow.Theme = currentTheme
+	if newWindow.Theme == nil {
+		newWindow.Theme = currentTheme
+	}
 	return &newWindow
 }
 
@@ -157,27 +159,33 @@ func NewButton(item *itemData) (*itemData, *EventHandler) {
 		currentTheme = baseTheme
 	}
 	newItem := currentTheme.Button
+	stripItemColors(&newItem)
 	if item != nil {
 		mergeData(&newItem, item)
 	}
-	stripItemColors(&newItem)
-	newItem.Theme = currentTheme
+	if newItem.Theme == nil {
+		newItem.Theme = currentTheme
+	}
+	newItem.ItemType = ITEM_BUTTON
 	h := newHandler()
 	newItem.Handler = h
 	return &newItem, h
 }
 
-// Create a new button from the default theme
+// Create a new checkbox from the default theme
 func NewCheckbox(item *itemData) (*itemData, *EventHandler) {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
 	newItem := currentTheme.Checkbox
+	stripItemColors(&newItem)
 	if item != nil {
 		mergeData(&newItem, item)
 	}
-	stripItemColors(&newItem)
-	newItem.Theme = currentTheme
+	if newItem.Theme == nil {
+		newItem.Theme = currentTheme
+	}
+	newItem.ItemType = ITEM_CHECKBOX
 	h := newHandler()
 	newItem.Handler = h
 	return &newItem, h
@@ -189,11 +197,14 @@ func NewRadio(item *itemData) (*itemData, *EventHandler) {
 		currentTheme = baseTheme
 	}
 	newItem := currentTheme.Radio
+	stripItemColors(&newItem)
 	if item != nil {
 		mergeData(&newItem, item)
 	}
-	stripItemColors(&newItem)
-	newItem.Theme = currentTheme
+	if newItem.Theme == nil {
+		newItem.Theme = currentTheme
+	}
+	newItem.ItemType = ITEM_RADIO
 	h := newHandler()
 	newItem.Handler = h
 	return &newItem, h
@@ -205,11 +216,14 @@ func NewInput(item *itemData) (*itemData, *EventHandler) {
 		currentTheme = baseTheme
 	}
 	newItem := currentTheme.Input
+	stripItemColors(&newItem)
 	if item != nil {
 		mergeData(&newItem, item)
 	}
-	stripItemColors(&newItem)
-	newItem.Theme = currentTheme
+	if newItem.Theme == nil {
+		newItem.Theme = currentTheme
+	}
+	newItem.ItemType = ITEM_INPUT
 	if newItem.TextPtr == nil {
 		newItem.TextPtr = &newItem.Text
 	} else {
@@ -226,11 +240,14 @@ func NewSlider(item *itemData) (*itemData, *EventHandler) {
 		currentTheme = baseTheme
 	}
 	newItem := currentTheme.Slider
+	stripItemColors(&newItem)
 	if item != nil {
 		mergeData(&newItem, item)
 	}
-	stripItemColors(&newItem)
-	newItem.Theme = currentTheme
+	if newItem.Theme == nil {
+		newItem.Theme = currentTheme
+	}
+	newItem.ItemType = ITEM_SLIDER
 	h := newHandler()
 	newItem.Handler = h
 	return &newItem, h
@@ -242,11 +259,14 @@ func NewDropdown(item *itemData) (*itemData, *EventHandler) {
 		currentTheme = baseTheme
 	}
 	newItem := currentTheme.Dropdown
+	stripItemColors(&newItem)
 	if item != nil {
 		mergeData(&newItem, item)
 	}
-	stripItemColors(&newItem)
-	newItem.Theme = currentTheme
+	if newItem.Theme == nil {
+		newItem.Theme = currentTheme
+	}
+	newItem.ItemType = ITEM_DROPDOWN
 	h := newHandler()
 	newItem.Handler = h
 	return &newItem, h
@@ -258,14 +278,17 @@ func NewColorWheel(item *itemData) (*itemData, *EventHandler) {
 		currentTheme = baseTheme
 	}
 	newItem := baseColorWheel
+	stripItemColors(&newItem)
 	if item != nil {
 		mergeData(&newItem, item)
 	}
 	if ac, ok := namedColors["accent"]; ok && newItem.WheelColor == (Color{}) {
 		newItem.WheelColor = ac
 	}
-	stripItemColors(&newItem)
-	newItem.Theme = currentTheme
+	if newItem.Theme == nil {
+		newItem.Theme = currentTheme
+	}
+	newItem.ItemType = ITEM_COLORWHEEL
 	h := newHandler()
 	newItem.Handler = h
 	return &newItem, h
@@ -277,11 +300,14 @@ func NewText(item *itemData) (*itemData, *EventHandler) {
 		currentTheme = baseTheme
 	}
 	newItem := currentTheme.Text
+	stripItemColors(&newItem)
 	if item != nil {
 		mergeData(&newItem, item)
 	}
-	stripItemColors(&newItem)
-	newItem.Theme = currentTheme
+	if newItem.Theme == nil {
+		newItem.Theme = currentTheme
+	}
+	newItem.ItemType = ITEM_TEXT
 	h := newHandler()
 	newItem.Handler = h
 	return &newItem, h
