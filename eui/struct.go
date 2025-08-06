@@ -65,6 +65,7 @@ type itemData struct {
 	Name           string
 	Text           string
 	Label          string
+	Tooltip        string
 	LabelImageName string
 	LabelImage     *ebiten.Image
 	LabelImageSize point
