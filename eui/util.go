@@ -467,7 +467,9 @@ func (win *windowData) GetPos() point {
 
 func (item *itemData) GetSize() point {
 	sz := point{X: item.Size.X * uiScale, Y: item.Size.Y * uiScale}
-	if item.Label != "" {
+	if item.LabelImage != nil {
+		sz.Y += float32(item.LabelImage.Bounds().Dy())*uiScale + currentStyle.TextPadding*uiScale
+	} else if item.Label != "" {
 		textSize := (item.FontSize * uiScale) + 2
 		sz.Y += textSize + currentStyle.TextPadding*uiScale
 	}

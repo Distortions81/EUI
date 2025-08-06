@@ -62,16 +62,18 @@ type windowData struct {
 type itemData struct {
 	Parent *itemData
 	// Name is used when the item is part of a tabbed flow
-	Name      string
-	Text      string
-	Label     string
-	Position  point
-	Size      point
-	Alignment alignType
-	PinTo     pinType
-	FontSize  float32
-	LineSpace float32 //Multiplier, 1.0 = no gap between lines
-	ItemType  itemTypeData
+	Name           string
+	Text           string
+	Label          string
+	LabelImageName string
+	LabelImage     *ebiten.Image
+	Position       point
+	Size           point
+	Alignment      alignType
+	PinTo          pinType
+	FontSize       float32
+	LineSpace      float32 //Multiplier, 1.0 = no gap between lines
+	ItemType       itemTypeData
 
 	Value      float32
 	MinValue   float32
