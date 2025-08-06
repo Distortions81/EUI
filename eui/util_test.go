@@ -237,6 +237,27 @@ func TestFlowContentBounds(t *testing.T) {
 	}
 }
 
+func TestWindowRefreshRecalculatesFlow(t *testing.T) {
+	uiScale = 1
+
+	win := &windowData{AutoSize: true, TitleHeight: 0}
+	flow := &itemData{ItemType: ITEM_FLOW, FlowType: FLOW_VERTICAL}
+	win.addItemTo(flow)
+	flow.addItemTo(&itemData{ItemType: ITEM_BUTTON, Size: point{X: 10, Y: 20}})
+	flow.addItemTo(&itemData{ItemType: ITEM_BUTTON, Size: point{X: 10, Y: 20}})
+
+	win.Refresh()
+	if got := win.GetSize().Y; got != 40 {
+		t.Fatalf("initial window height got %v want %v", got, 40)
+	}
+
+	flow.Contents = flow.Contents[1:]
+	win.Refresh()
+	if got := win.GetSize().Y; got != 20 {
+		t.Fatalf("refreshed window height got %v want %v", got, 20)
+	}
+}
+
 func TestPixelOffset(t *testing.T) {
 	if off := pixelOffset(1); off != 0.5 {
 		t.Errorf("odd width offset got %v", off)

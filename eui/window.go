@@ -555,6 +555,7 @@ func (win windowData) itemOverlap(size point) (bool, bool) {
 // Refresh forces the window to recalculate layout, resize to its contents,
 // and adjust scrolling after modifying contents.
 func (win *windowData) Refresh() {
+	win.resizeFlows()
 	win.updateAutoSize()
 	win.adjustScrollForResize()
 	for _, it := range win.Contents {
