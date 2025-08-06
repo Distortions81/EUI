@@ -68,6 +68,7 @@ type itemData struct {
 	Tooltip        string
 	LabelImageName string
 	LabelImage     *ebiten.Image
+	LabelImageSize point
 	Position       point
 	Size           point
 	Alignment      alignType
