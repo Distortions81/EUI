@@ -522,11 +522,21 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 	style := item.themeStyle()
 
 	if item.LabelImage != nil {
+		bw := float32(item.LabelImage.Bounds().Dx())
+		bh := float32(item.LabelImage.Bounds().Dy())
+		dw := bw
+		dh := bh
+		if item.LabelImageSize.X > 0 {
+			dw = item.LabelImageSize.X
+		}
+		if item.LabelImageSize.Y > 0 {
+			dh = item.LabelImageSize.Y
+		}
 		sop := &ebiten.DrawImageOptions{}
-		sop.GeoM.Scale(float64(uiScale), float64(uiScale))
+		sop.GeoM.Scale(float64(dw/bw*uiScale), float64(dh/bh*uiScale))
 		sop.GeoM.Translate(float64(offset.X), float64(offset.Y))
 		subImg.DrawImage(item.LabelImage, sop)
-		h := float32(item.LabelImage.Bounds().Dy())*uiScale + currentStyle.TextPadding*uiScale
+		h := dh*uiScale + currentStyle.TextPadding*uiScale
 		offset.Y += h
 		maxSize.Y -= h
 		if maxSize.Y < 0 {
@@ -1000,7 +1010,11 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 		if item.ItemType == ITEM_DROPDOWN && item.Open {
 			dropOff := offset
 			if item.LabelImage != nil {
-				dropOff.Y += float32(item.LabelImage.Bounds().Dy())*uiScale + currentStyle.TextPadding*uiScale
+				h := float32(item.LabelImage.Bounds().Dy())
+				if item.LabelImageSize.Y > 0 {
+					h = item.LabelImageSize.Y
+				}
+				dropOff.Y += h*uiScale + currentStyle.TextPadding*uiScale
 			} else if item.Label != "" {
 				textSize := (item.FontSize * uiScale) + 2
 				dropOff.Y += textSize + currentStyle.TextPadding*uiScale

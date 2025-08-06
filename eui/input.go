@@ -582,7 +582,11 @@ func (item *itemData) colorAt(mpos point) (Color, bool) {
 	size := point{X: item.Size.X * uiScale, Y: item.Size.Y * uiScale}
 	offsetY := float32(0)
 	if item.LabelImage != nil {
-		offsetY = float32(item.LabelImage.Bounds().Dy())*uiScale + currentStyle.TextPadding*uiScale
+		h := float32(item.LabelImage.Bounds().Dy())
+		if item.LabelImageSize.Y > 0 {
+			h = item.LabelImageSize.Y
+		}
+		offsetY = h*uiScale + currentStyle.TextPadding*uiScale
 	} else if item.Label != "" {
 		offsetY = (item.FontSize*uiScale + 2) + currentStyle.TextPadding*uiScale
 	}
