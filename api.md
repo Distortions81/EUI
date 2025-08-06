@@ -275,6 +275,8 @@ type FlowType = flowType
 
 
 type ItemData = itemData
+    ItemData represents a widget. Set LabelImage to supply an image label for
+    buttons, checkboxes, radios, sliders and dropdowns.
 
 func Overlays() []*ItemData
     Overlays returns the list of active overlays.

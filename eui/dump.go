@@ -45,6 +45,13 @@ func dumpItemImages(items []*itemData, prefix string) {
 					f.Close()
 				}
 			}
+			if it.LabelImage != nil {
+				fn := filepath.Join("debug", name+"_label.png")
+				if f, err := os.Create(fn); err == nil {
+					png.Encode(f, it.LabelImage)
+					f.Close()
+				}
+			}
 		}
 		if len(it.Contents) > 0 {
 			dumpItemImages(it.Contents, name)

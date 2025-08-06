@@ -18,6 +18,13 @@ func (item *itemData) disposeImages() {
 		item.Image.Dispose()
 		item.Image = nil
 	}
+	if item.LabelImage != nil {
+		if DebugMode {
+			log.Printf("disposing label image for item %p", item)
+		}
+		item.LabelImage.Dispose()
+		item.LabelImage = nil
+	}
 	for _, child := range item.Contents {
 		if child != nil {
 			child.disposeImages()
