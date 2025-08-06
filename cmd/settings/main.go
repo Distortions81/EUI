@@ -8,7 +8,7 @@ import (
 	"syscall"
 	"time"
 
-	eui "EUI/eui"
+	"github.com/Distortions81/EUI/eui"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )

@@ -1,8 +1,9 @@
 package main
 
 import (
-	eui "EUI/eui"
 	"log"
+
+	"github.com/Distortions81/EUI/eui"
 )
 
 func makeThemeSelector() *eui.WindowData {

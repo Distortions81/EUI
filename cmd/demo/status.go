@@ -1,6 +1,6 @@
 package main
 
-import eui "EUI/eui"
+import "github.com/Distortions81/EUI/eui"
 
 var statusText *eui.ItemData
 
