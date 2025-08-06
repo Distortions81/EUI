@@ -52,6 +52,7 @@ type treeItem struct {
 	Type     string     `json:"type"`
 	Position point      `json:"position"`
 	Size     point      `json:"size"`
+	Tooltip  string     `json:"tooltip,omitempty"`
 	Items    []treeItem `json:"items,omitempty"`
 }
 
@@ -62,6 +63,7 @@ func makeTreeItem(it *itemData) treeItem {
 		Type:     itemTypeName(it.ItemType),
 		Position: it.Position,
 		Size:     it.Size,
+		Tooltip:  it.Tooltip,
 	}
 	for _, c := range it.Contents {
 		ti.Items = append(ti.Items, makeTreeItem(c))

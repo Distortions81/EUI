@@ -48,6 +48,8 @@ func Draw(screen *ebiten.Image) {
 		drawDropdownOptions(dr.item, dr.offset, dr.clip, screen)
 	}
 
+	drawHoveredTooltip(screen)
+
 	// drawFPS(screen)
 
 	if DumpMode && !dumpDone {
@@ -77,6 +79,63 @@ func drawOverlay(item *itemData, screen *ebiten.Image) {
 	} else {
 		item.drawItem(nil, offset, clip, screen)
 	}
+}
+
+func drawHoveredTooltip(screen *ebiten.Image) {
+	if hoveredItem == nil || hoveredItem.ItemType == ITEM_FLOW || hoveredItem.Tooltip == "" {
+		return
+	}
+
+	mx, my := pointerPosition()
+	mpos := point{X: float32(mx), Y: float32(my)}
+
+	textSize := hoveredItem.FontSize
+	if textSize <= 0 {
+		textSize = 12
+	}
+	textSize *= uiScale
+	face := textFace(textSize)
+	tw, th := text.Measure(hoveredItem.Tooltip, face, 0)
+	pad := 4 * uiScale
+	x := mpos.X + 8*uiScale
+	y := mpos.Y + 16*uiScale
+	w := float32(tw) + pad*2
+	h := float32(th) + pad*2
+
+	if x+w > float32(screenWidth) {
+		x = float32(screenWidth) - w
+	}
+	if y+h > float32(screenHeight) {
+		y = float32(screenHeight) - h
+	}
+	if x < 0 {
+		x = 0
+	}
+	if y < 0 {
+		y = 0
+	}
+
+	bg := hoveredItem.Theme.Window.HoverColor
+	fg := hoveredItem.Theme.Window.TitleTextColor
+
+	drawRoundRect(screen, &roundRect{
+		Size:     point{X: w, Y: h},
+		Position: point{X: x, Y: y},
+		Fillet:   4 * uiScale,
+		Filled:   true,
+		Color:    bg,
+	})
+
+	loo := text.LayoutOptions{
+		LineSpacing:    float64(textSize) * 1.2,
+		PrimaryAlign:   text.AlignStart,
+		SecondaryAlign: text.AlignStart,
+	}
+	tdop := ebiten.DrawImageOptions{}
+	tdop.GeoM.Translate(float64(x+pad), float64(y+pad))
+	top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+	top.ColorScale.ScaleWithColor(fg)
+	text.Draw(screen, hoveredItem.Tooltip, face, top)
 }
 
 func (win *windowData) Draw(screen *ebiten.Image) {
