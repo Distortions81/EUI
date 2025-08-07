@@ -197,6 +197,14 @@ func Update() error {
 				}
 			}
 		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeyKPEnter) {
+			if focusedItem.OnEnter != nil {
+				focusedItem.OnEnter(focusedItem.Text)
+			}
+			if focusedItem.Handler != nil {
+				focusedItem.Handler.Emit(UIEvent{Item: focusedItem, Type: EventInputSubmit, Text: focusedItem.Text})
+			}
+		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyBackspace) {
 			runes := []rune(focusedItem.Text)
 			if len(runes) > 0 {
@@ -215,6 +223,10 @@ func Update() error {
 			focusedItem.markDirty()
 			focusedItem = nil
 		}
+	}
+
+	if inpututil.IsKeyJustPressed(ebiten.KeyTab) {
+		focusNextInput()
 	}
 
 	mposOld = mpos
@@ -889,4 +901,60 @@ func closeAllDropdowns() {
 	for _, ov := range overlays {
 		closeDropdowns([]*itemData{ov})
 	}
+}
+
+func collectInputItems(items []*itemData, list []*itemData) []*itemData {
+	for _, it := range items {
+		if it.ItemType == ITEM_INPUT && !it.Disabled && !it.Invisible {
+			list = append(list, it)
+		}
+		if len(it.Tabs) > 0 {
+			if it.ActiveTab >= len(it.Tabs) {
+				it.ActiveTab = 0
+			}
+			list = collectInputItems(it.Tabs[it.ActiveTab].Contents, list)
+		}
+		list = collectInputItems(it.Contents, list)
+	}
+	return list
+}
+
+func gatherAllInputItems() []*itemData {
+	var list []*itemData
+	for _, win := range windows {
+		if win.Open {
+			list = collectInputItems(win.Contents, list)
+		}
+	}
+	for _, ov := range overlays {
+		list = collectInputItems([]*itemData{ov}, list)
+	}
+	return list
+}
+
+func focusNextInput() {
+	inputs := gatherAllInputItems()
+	if len(inputs) == 0 {
+		return
+	}
+	if focusedItem == nil {
+		focusedItem = inputs[0]
+		focusedItem.Focused = true
+		focusedItem.markDirty()
+		return
+	}
+	for i, it := range inputs {
+		if it == focusedItem {
+			focusedItem.Focused = false
+			focusedItem.markDirty()
+			next := inputs[(i+1)%len(inputs)]
+			focusedItem = next
+			focusedItem.Focused = true
+			focusedItem.markDirty()
+			return
+		}
+	}
+	focusedItem = inputs[0]
+	focusedItem.Focused = true
+	focusedItem.markDirty()
 }

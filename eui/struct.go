@@ -101,6 +101,7 @@ type itemData struct {
 
 	OnSelect func(int)
 	OnHover  func(int)
+	OnEnter  func(string)
 
 	Fixed, Scrollable bool
 
