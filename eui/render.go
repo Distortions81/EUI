@@ -36,7 +36,12 @@ func Draw(screen *ebiten.Image) {
 		if !win.Open {
 			continue
 		}
-
+		if win.Dirty {
+			for _, it := range win.Contents {
+				markItemTreeDirty(it)
+			}
+			win.Dirty = false
+		}
 		win.Draw(screen)
 	}
 

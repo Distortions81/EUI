@@ -561,4 +561,5 @@ func (win *windowData) Refresh() {
 	for _, it := range win.Contents {
 		markItemTreeDirty(it)
 	}
+	win.Dirty = true
 }

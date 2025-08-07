@@ -57,6 +57,9 @@ type windowData struct {
 	// Drop shadow styling
 	ShadowSize  float32
 	ShadowColor Color
+
+	// Dirty marks the window for re-rendering when its contents change.
+	Dirty bool
 }
 
 type itemData struct {
