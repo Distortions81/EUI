@@ -423,6 +423,27 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 				item.Handler.Emit(UIEvent{Item: item, Type: EventRadioSelected, Checked: true})
 			}
 		} else if item.ItemType == ITEM_INPUT {
+			if item.Hide {
+				lh := item.labelHeight()
+				if lh > 0 {
+					lh += currentStyle.TextPadding * uiScale
+				}
+				contentH := item.Size.Y * uiScale
+				eyeSize := contentH - (item.BorderPad+item.Padding)*2
+				if eyeSize < 0 {
+					eyeSize = 0
+				}
+				eyeRect := rect{
+					X0: item.DrawRect.X0 + item.Size.X*uiScale - eyeSize - item.BorderPad - item.Padding,
+					Y0: item.DrawRect.Y0 + lh + (contentH-eyeSize)/2,
+					X1: item.DrawRect.X0 + item.Size.X*uiScale - item.BorderPad - item.Padding,
+					Y1: item.DrawRect.Y0 + lh + (contentH-eyeSize)/2 + eyeSize,
+				}
+				if eyeRect.containsPoint(mpos) {
+					item.markDirty()
+					return true
+				}
+			}
 			focusedItem = item
 			item.Focused = true
 			item.markDirty()
@@ -592,15 +613,9 @@ func (item *itemData) setSliderValue(mpos point) {
 
 func (item *itemData) colorAt(mpos point) (Color, bool) {
 	size := point{X: item.Size.X * uiScale, Y: item.Size.Y * uiScale}
-	offsetY := float32(0)
-	if item.LabelImage != nil {
-		h := float32(item.LabelImage.Bounds().Dy())
-		if item.LabelImageSize.Y > 0 {
-			h = item.LabelImageSize.Y
-		}
-		offsetY = h*uiScale + currentStyle.TextPadding*uiScale
-	} else if item.Label != "" {
-		offsetY = (item.FontSize*uiScale + 2) + currentStyle.TextPadding*uiScale
+	offsetY := item.labelHeight()
+	if offsetY > 0 {
+		offsetY += currentStyle.TextPadding * uiScale
 	}
 	wheelSize := size.Y
 	if wheelSize > size.X {

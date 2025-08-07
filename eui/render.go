@@ -8,6 +8,7 @@ import (
 	"os"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -585,6 +586,8 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 	subImg := screen.SubImage(item.DrawRect.getRectangle()).(*ebiten.Image)
 	style := item.themeStyle()
 
+	labelH := item.labelHeight()
+	var labelW float32
 	if item.LabelImage != nil {
 		bw := float32(item.LabelImage.Bounds().Dx())
 		bh := float32(item.LabelImage.Bounds().Dy())
@@ -598,27 +601,25 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		}
 		sop := &ebiten.DrawImageOptions{}
 		sop.GeoM.Scale(float64(dw/bw*uiScale), float64(dh/bh*uiScale))
-		sop.GeoM.Translate(float64(offset.X), float64(offset.Y))
+		sop.GeoM.Translate(float64(offset.X), float64(offset.Y+(labelH-dh*uiScale)/2))
 		subImg.DrawImage(item.LabelImage, sop)
-		h := dh*uiScale + currentStyle.TextPadding*uiScale
-		offset.Y += h
-		maxSize.Y -= h
-		if maxSize.Y < 0 {
-			maxSize.Y = 0
-		}
-	} else if item.Label != "" {
+		labelW = dw * uiScale
+	}
+	if item.Label != "" {
 		textSize := (item.FontSize * uiScale) + 2
 		face := textFace(textSize)
 		loo := text.LayoutOptions{PrimaryAlign: text.AlignStart, SecondaryAlign: text.AlignCenter}
 		tdop := ebiten.DrawImageOptions{}
-		tdop.GeoM.Translate(float64(offset.X), float64(offset.Y+textSize/2))
+		tdop.GeoM.Translate(float64(offset.X+labelW+currentStyle.TextPadding*uiScale), float64(offset.Y+labelH/2))
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 		if style != nil {
 			top.ColorScale.ScaleWithColor(style.TextColor)
 		}
 		text.Draw(subImg, item.Label, face, top)
-		offset.Y += textSize + currentStyle.TextPadding*uiScale
-		maxSize.Y -= textSize + currentStyle.TextPadding*uiScale
+	}
+	if labelH > 0 {
+		offset.Y += labelH + currentStyle.TextPadding*uiScale
+		maxSize.Y -= labelH + currentStyle.TextPadding*uiScale
 		if maxSize.Y < 0 {
 			maxSize.Y = 0
 		}
@@ -802,6 +803,32 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 			})
 		}
 
+		eyeSize := maxSize.Y - (item.BorderPad+item.Padding)*2
+		if eyeSize < 0 {
+			eyeSize = 0
+		}
+		eyeRect := rect{
+			X0: offset.X + maxSize.X - eyeSize - item.BorderPad - item.Padding,
+			Y0: offset.Y + (maxSize.Y-eyeSize)/2,
+			X1: offset.X + maxSize.X - item.BorderPad - item.Padding,
+			Y1: offset.Y + (maxSize.Y-eyeSize)/2 + eyeSize,
+		}
+
+		show := !item.Hide
+		if item.Hide {
+			mx, my := pointerPosition()
+			mpos := point{X: float32(mx), Y: float32(my)}
+			if pointerPressed() && eyeRect.containsPoint(mpos) {
+				show = true
+			}
+		}
+
+		disp := item.Text
+		if item.Hide && !show {
+			n := utf8.RuneCountInString(item.Text)
+			disp = strings.Repeat("•", n)
+		}
+
 		textSize := (item.FontSize * uiScale) + 2
 		face := textFace(textSize)
 		loo := text.LayoutOptions{
@@ -816,10 +843,12 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		)
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 		top.ColorScale.ScaleWithColor(style.TextColor)
-		text.Draw(subImg, item.Text, face, top)
+		text.Draw(subImg, disp, face, top)
+
+		drawEye(subImg, eyeRect, style.TextColor)
 
 		if item.Focused {
-			width, _ := text.Measure(item.Text, face, 0)
+			width, _ := text.Measure(disp, face, 0)
 			cx := offset.X + item.BorderPad + item.Padding + currentStyle.TextPadding*uiScale + float32(width)
 			strokeLine(subImg,
 				cx, offset.Y+2,
@@ -1028,6 +1057,9 @@ func (item *itemData) ensureRender() {
 		item.Render = ebiten.NewImage(w, h)
 		item.Dirty = true
 	}
+	if item.ItemType == ITEM_INPUT && item.Hide {
+		item.Dirty = true
+	}
 	if !item.Dirty {
 		return
 	}
@@ -1073,15 +1105,9 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 
 		if item.ItemType == ITEM_DROPDOWN && item.Open {
 			dropOff := offset
-			if item.LabelImage != nil {
-				h := float32(item.LabelImage.Bounds().Dy())
-				if item.LabelImageSize.Y > 0 {
-					h = item.LabelImageSize.Y
-				}
-				dropOff.Y += h*uiScale + currentStyle.TextPadding*uiScale
-			} else if item.Label != "" {
-				textSize := (item.FontSize * uiScale) + 2
-				dropOff.Y += textSize + currentStyle.TextPadding*uiScale
+			lh := item.labelHeight()
+			if lh > 0 {
+				dropOff.Y += lh + currentStyle.TextPadding*uiScale
 			}
 			screenClip := rect{X0: 0, Y0: 0, X1: float32(screenWidth), Y1: float32(screenHeight)}
 			pendingDropdowns = append(pendingDropdowns, dropdownRender{item: item, offset: dropOff, clip: screenClip})
@@ -1479,6 +1505,27 @@ func drawTriangle(screen *ebiten.Image, pos point, size float32, col Color) {
 
 	op := &ebiten.DrawTrianglesOptions{FillRule: ebiten.FillRuleNonZero, AntiAlias: true}
 	screen.DrawTriangles(vertices, indices, whiteSubImage, op)
+}
+
+func drawEye(screen *ebiten.Image, r rect, col Color) {
+	w := r.X1 - r.X0
+	h := r.Y1 - r.Y0
+	drawRoundRect(screen, &roundRect{
+		Size:     point{X: w, Y: h},
+		Position: point{X: r.X0, Y: r.Y0},
+		Fillet:   h / 2,
+		Filled:   false,
+		Color:    col,
+		Border:   1 * uiScale,
+	})
+	pupil := h / 2
+	drawRoundRect(screen, &roundRect{
+		Size:     point{X: pupil, Y: pupil},
+		Position: point{X: r.X0 + w/2 - pupil/2, Y: r.Y0 + h/2 - pupil/2},
+		Fillet:   pupil / 2,
+		Filled:   true,
+		Color:    col,
+	})
 }
 
 func drawCheckmark(screen *ebiten.Image, start, mid, end point, width float32, col Color) {
