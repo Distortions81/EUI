@@ -11,6 +11,7 @@ const (
 	EventRadioSelected
 	EventColorChanged
 	EventInputChanged
+	EventInputSubmit
 )
 
 // UIEvent describes a user interaction with a widget.

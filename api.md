@@ -276,9 +276,9 @@ type FlowType = flowType
 
 type ItemData = itemData
     ItemData represents a widget. Set Tooltip to display a floating hint when
-    hovering over the item (empty string disables it). Widgets can display both
-    an image and text label with the image drawn before the text. Text inputs
-    set Hide to mask their contents until the eye icon is pressed.
+    hovering over the item (empty string disables it). Set LabelImage to supply
+    an image label for buttons, checkboxes, radios, sliders and dropdowns. For
+    text inputs, assign OnEnter to run a function when the user presses Enter.
 
 func Overlays() []*ItemData
     Overlays returns the list of active overlays.
@@ -362,13 +362,14 @@ type UIEventType int
     UIEventType defines the kind of event emitted by widgets.
 
 const (
-	EventClick UIEventType = iota
-	EventSliderChanged
-	EventDropdownSelected
-	EventCheckboxChanged
-	EventRadioSelected
-	EventColorChanged
-	EventInputChanged
+        EventClick UIEventType = iota
+        EventSliderChanged
+        EventDropdownSelected
+        EventCheckboxChanged
+        EventRadioSelected
+        EventColorChanged
+        EventInputChanged
+        EventInputSubmit
 )
 type WindowData = windowData
 
