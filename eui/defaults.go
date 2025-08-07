@@ -60,6 +60,7 @@ var defaultText = &itemData{
 	LineSpace: 1.2,
 	Padding:   0,
 	Margin:    2,
+	Hide:      false,
 	TextColor: NewColor(255, 255, 255, 255),
 }
 

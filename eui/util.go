@@ -465,17 +465,29 @@ func (win *windowData) GetPos() point {
 	return point{X: win.Position.X * uiScale, Y: win.Position.Y * uiScale}
 }
 
-func (item *itemData) GetSize() point {
-	sz := point{X: item.Size.X * uiScale, Y: item.Size.Y * uiScale}
+func (item *itemData) labelHeight() float32 {
+	var imgH, textH float32
 	if item.LabelImage != nil {
 		h := float32(item.LabelImage.Bounds().Dy())
 		if item.LabelImageSize.Y > 0 {
 			h = item.LabelImageSize.Y
 		}
-		sz.Y += h*uiScale + currentStyle.TextPadding*uiScale
-	} else if item.Label != "" {
-		textSize := (item.FontSize * uiScale) + 2
-		sz.Y += textSize + currentStyle.TextPadding*uiScale
+		imgH = h * uiScale
+	}
+	if item.Label != "" {
+		textH = (item.FontSize * uiScale) + 2
+	}
+	if imgH < textH {
+		imgH = textH
+	}
+	return imgH
+}
+
+func (item *itemData) GetSize() point {
+	sz := point{X: item.Size.X * uiScale, Y: item.Size.Y * uiScale}
+	lh := item.labelHeight()
+	if lh > 0 {
+		sz.Y += lh + currentStyle.TextPadding*uiScale
 	}
 	return sz
 }

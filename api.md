@@ -276,8 +276,9 @@ type FlowType = flowType
 
 type ItemData = itemData
     ItemData represents a widget. Set Tooltip to display a floating hint when
-    hovering over the item (empty string disables it). Set LabelImage to supply
-    an image label for buttons, checkboxes, radios, sliders and dropdowns.
+    hovering over the item (empty string disables it). Widgets can display both
+    an image and text label with the image drawn before the text. Text inputs
+    set Hide to mask their contents until the eye icon is pressed.
 
 func Overlays() []*ItemData
     Overlays returns the list of active overlays.

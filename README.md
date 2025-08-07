@@ -38,7 +38,8 @@ building a game UI. Highlights include:
 - **Cross platform** – runs anywhere Ebiten does: desktop, web or mobile.
 - **Basic touch support** – with two‑finger scrolling (drag up to scroll up).
   Mouse scrolling is clamped to +/-3 and rate-limited to 4 events per half-second on WebAssembly.
-- **Image labels** – buttons, sliders, checkboxes, radios and dropdowns can use an image instead of text for their labels, with optional custom sizing.
+- **Image labels** – buttons, sliders, checkboxes, radios and dropdowns can combine image and text labels, with the image drawn before the text and optional custom sizing.
+- **Hidden inputs** – text fields can mask their contents and reveal them while the eye icon is pressed.
 - **Tooltips** – optional text hints appear when hovering over any item except flows.
 
 

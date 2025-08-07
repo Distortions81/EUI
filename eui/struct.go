@@ -85,6 +85,7 @@ type itemData struct {
 	MaxValue   float32
 	IntOnly    bool
 	RadioGroup string
+	Hide       bool
 
 	Hovered, Checked, Focused,
 	Disabled, Invisible bool
