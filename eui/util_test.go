@@ -66,7 +66,7 @@ func TestMergeData(t *testing.T) {
 	if res.Size != (point{X: 20, Y: 30}) {
 		t.Errorf("Size=%v", res.Size)
 	}
-	if res.TitleHeight != 5 {
+	if res.TitleHeight != 0 {
 		t.Errorf("TitleHeight=%v", res.TitleHeight)
 	}
 }

@@ -62,7 +62,7 @@ func (item *itemData) getItemRect(win *windowData) rect {
 
 func (parent *itemData) addItemTo(item *itemData) {
 	item.Parent = parent
-	if currentTheme != nil {
+	if currentTheme != nil && item.Theme != currentTheme {
 		applyThemeToItem(item)
 	}
 	parent.Contents = append(parent.Contents, item)
@@ -72,7 +72,7 @@ func (parent *itemData) addItemTo(item *itemData) {
 }
 
 func (parent *windowData) addItemTo(item *itemData) {
-	if currentTheme != nil {
+	if currentTheme != nil && item.Theme != currentTheme {
 		applyThemeToItem(item)
 	}
 	parent.Contents = append(parent.Contents, item)

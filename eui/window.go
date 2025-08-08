@@ -25,7 +25,9 @@ func mergeData(original interface{}, updates interface{}) interface{} {
 		panic("Both original and updates must be structs")
 	}
 
-	// Iterate through the fields of the updates struct
+	// Iterate through the fields of the updates struct and copy them
+	// directly onto the original, allowing zero values to override the
+	// theme defaults.
 	for i := 0; i < updVal.NumField(); i++ {
 		origField := origVal.Field(i)
 		updField := updVal.Field(i)
@@ -34,28 +36,10 @@ func mergeData(original interface{}, updates interface{}) interface{} {
 			continue
 		}
 
-		// Booleans default to the theme value when false so callers
-		// can omit them without overwriting defaults. Explicit true
-		// values are still applied.
-		if updField.Kind() == reflect.Bool {
-			if updField.Bool() {
-				origField.Set(updField)
-			}
-			continue
-		}
-
-		// Check if the update field has a non-zero value
-		if !isZeroValue(updField) {
-			// Set the original field to the update field's value
-			origField.Set(updField)
-		}
+		origField.Set(updField)
 	}
 
 	return original
-}
-
-func isZeroValue(value reflect.Value) bool {
-	return reflect.DeepEqual(value.Interface(), reflect.Zero(value.Type()).Interface())
 }
 
 func stripWindowColors(w *windowData) {
@@ -106,7 +90,7 @@ func (target *windowData) AddWindow(toBack bool) {
 
 	target.clampToScreen()
 
-	if currentTheme != nil {
+	if currentTheme != nil && target.Theme != currentTheme {
 		applyThemeToWindow(target)
 	}
 

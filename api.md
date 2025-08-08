@@ -163,36 +163,44 @@ func LoadTheme(name string) error
     the current theme without modifying existing windows.
 
 func NewButton(item *itemData) (*itemData, *EventHandler)
-    Create a new button from the default theme. Unspecified fields
-    inherit their values from the theme.
+    Create a new button from the default theme. Values provided in item
+    overwrite the theme defaults, including zero values. Pass nil to use
+    the theme values without overrides.
 
 func NewCheckbox(item *itemData) (*itemData, *EventHandler)
-    Create a new button from the default theme. Unspecified fields
-    inherit their values from the theme.
+    Create a new button from the default theme. Values provided in item
+    overwrite the theme defaults, including zero values. Pass nil to use
+    the theme values without overrides.
 
 func NewColorWheel(item *itemData) (*itemData, *EventHandler)
-    Create a new color wheel from the default theme. Unspecified fields
-    inherit their values from the theme.
+    Create a new color wheel from the default theme. Values provided in item
+    overwrite the theme defaults, including zero values. Pass nil to use
+    the theme values without overrides.
 
 func NewDropdown(item *itemData) (*itemData, *EventHandler)
-    Create a new dropdown from the default theme. Unspecified fields
-    inherit their values from the theme.
+    Create a new dropdown from the default theme. Values provided in item
+    overwrite the theme defaults, including zero values. Pass nil to use
+    the theme values without overrides.
 
 func NewInput(item *itemData) (*itemData, *EventHandler)
-    Create a new input box from the default theme. Unspecified fields
-    inherit their values from the theme.
+    Create a new input box from the default theme. Values provided in item
+    overwrite the theme defaults, including zero values. Pass nil to use
+    the theme values without overrides.
 
 func NewRadio(item *itemData) (*itemData, *EventHandler)
-    Create a new radio button from the default theme. Unspecified fields
-    inherit their values from the theme.
+    Create a new radio button from the default theme. Values provided in item
+    overwrite the theme defaults, including zero values. Pass nil to use
+    the theme values without overrides.
 
 func NewSlider(item *itemData) (*itemData, *EventHandler)
-    Create a new slider from the default theme. Unspecified fields
-    inherit their values from the theme.
+    Create a new slider from the default theme. Values provided in item
+    overwrite the theme defaults, including zero values. Pass nil to use
+    the theme values without overrides.
 
 func NewText(item *itemData) (*itemData, *EventHandler)
-    Create a new textbox from the default theme. Unspecified fields
-    inherit their values from the theme.
+    Create a new textbox from the default theme. Values provided in item
+    overwrite the theme defaults, including zero values. Pass nil to use
+    the theme values without overrides.
 
 func SaveTheme(name string) error
     SaveTheme writes the current theme to a JSON file with the given name.
@@ -236,8 +244,9 @@ func Update() error
     can call this from their Ebiten Update handler.
 
 func NewWindow(win *windowData) *windowData
-    Create a new window from the default theme. Unspecified fields
-    inherit their values from the theme.
+    Create a new window from the default theme. Values provided in win
+    overwrite the theme defaults, including zero values. Pass nil to use
+    the theme values without overrides.
 
 TYPES
 

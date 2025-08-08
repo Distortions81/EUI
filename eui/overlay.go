@@ -9,7 +9,7 @@ func AddOverlayFlow(flow *itemData) {
 			return
 		}
 	}
-	if currentTheme != nil {
+	if currentTheme != nil && flow.Theme != currentTheme {
 		applyThemeToItem(flow)
 	}
 	overlays = append(overlays, flow)
