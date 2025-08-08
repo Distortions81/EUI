@@ -20,6 +20,8 @@ type windowData struct {
 	Title    string
 	Position point
 	Size     point
+	AspectA  float32
+	AspectB  float32
 	PinTo    pinType
 
 	Padding   float32
@@ -32,7 +34,7 @@ type windowData struct {
 	Open, Hovered, Flow,
 	Closable, Movable, Resizable,
 	HoverClose, HoverDragbar,
-	AutoSize bool
+	AutoSize, FixedRatio bool
 
 	// MainPortal renders the window before others, blacks out the area
 	// outside it and skips drawing the background so underlying content can

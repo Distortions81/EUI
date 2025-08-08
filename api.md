@@ -374,7 +374,8 @@ const (
 type WindowData = windowData
 Setting MainPortal to true renders the window before others, blacks out the
 screen outside it and omits the window background so underlying content
-shows through.
+shows through. Setting FixedRatio enforces an AspectA:AspectB window size during
+resizing.
 
 func Windows() []*WindowData
     Windows returns the list of active windows.
