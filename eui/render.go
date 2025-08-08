@@ -33,8 +33,24 @@ func Draw(screen *ebiten.Image) {
 
 	pendingDropdowns = pendingDropdowns[:0]
 
+	// Draw main portal windows first so game content can render beneath
+	// other UI elements.
 	for _, win := range windows {
-		if !win.Open {
+		if !win.Open || !win.MainPortal {
+			continue
+		}
+		if win.Dirty {
+			for _, it := range win.Contents {
+				markItemTreeDirty(it)
+			}
+			win.Dirty = false
+		}
+		win.Draw(screen)
+	}
+
+	// Draw the remaining windows on top.
+	for _, win := range windows {
+		if !win.Open || win.MainPortal {
 			continue
 		}
 		if win.Dirty {
@@ -145,7 +161,11 @@ func drawHoveredTooltip(screen *ebiten.Image) {
 }
 
 func (win *windowData) Draw(screen *ebiten.Image) {
-	win.drawBG(screen)
+	if win.MainPortal {
+		win.drawPortalMask(screen)
+	} else {
+		win.drawBG(screen)
+	}
 	win.drawItems(screen)
 	win.drawScrollbars(screen)
 	titleArea := screen.SubImage(win.getTitleRect().getRectangle()).(*ebiten.Image)
@@ -153,6 +173,25 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 	windowArea := screen.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
 	win.drawBorder(windowArea)
 	win.drawDebug(screen)
+}
+
+func (win *windowData) drawPortalMask(screen *ebiten.Image) {
+	r := win.getWinRect()
+	w := float32(screenWidth)
+	h := float32(screenHeight)
+
+	if r.Y0 > 0 {
+		screen.SubImage((rect{X0: 0, Y0: 0, X1: w, Y1: r.Y0}).getRectangle()).(*ebiten.Image).Fill(color.Black)
+	}
+	if r.Y1 < h {
+		screen.SubImage((rect{X0: 0, Y0: r.Y1, X1: w, Y1: h}).getRectangle()).(*ebiten.Image).Fill(color.Black)
+	}
+	if r.X0 > 0 {
+		screen.SubImage((rect{X0: 0, Y0: r.Y0, X1: r.X0, Y1: r.Y1}).getRectangle()).(*ebiten.Image).Fill(color.Black)
+	}
+	if r.X1 < w {
+		screen.SubImage((rect{X0: r.X1, Y0: r.Y0, X1: w, Y1: r.Y1}).getRectangle()).(*ebiten.Image).Fill(color.Black)
+	}
 }
 
 func (win *windowData) drawBG(screen *ebiten.Image) {

@@ -372,6 +372,9 @@ const (
         EventInputSubmit
 )
 type WindowData = windowData
+Setting MainPortal to true renders the window before others, blacks out the
+screen outside it and omits the window background so underlying content
+shows through.
 
 func Windows() []*WindowData
     Windows returns the list of active windows.
