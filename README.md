@@ -16,6 +16,8 @@ EUI aims to stay small and easy to use while still providing the essentials for
 building a game UI. Highlights include:
 
 - **Window management** – draggable, resizable windows with optional pinning.
+- **Main portal windows** – draw before other UI, black out the rest of the
+  screen and leave the window background transparent for game content.
 - **Flow layouts** – vertical or horizontal flows for composing widgets.
 - **Overlay items** – keep controls always on screen.
 - **Palette and style themes** – JSON files define colors and spacing. Switch
