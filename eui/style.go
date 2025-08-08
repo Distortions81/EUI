@@ -121,10 +121,10 @@ var (
 )
 
 func LoadStyle(name string) error {
-	file := filepath.Join(os.Getenv("PWD")+"/themes/styles", name+".json")
+	file := filepath.Join(os.Getenv("PWD"), "themes", "styles", name+".json")
 	data, err := os.ReadFile(file)
 	if err != nil {
-		data, err = embeddedStyles.ReadFile(filepath.Join("themes/styles", name+".json"))
+		data, err = embeddedStyles.ReadFile(filepath.Join("themes", "styles", name+".json"))
 		if err != nil {
 			return err
 		}
