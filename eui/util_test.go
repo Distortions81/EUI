@@ -239,6 +239,23 @@ func TestSetSizeClampAndScroll(t *testing.T) {
 	}
 }
 
+func TestFixedAspectRatio(t *testing.T) {
+	win := &windowData{Size: point{X: 100, Y: 50}, AspectA: 16, AspectB: 9, FixedRatio: true}
+
+	win.setSize(point{X: 160, Y: 100})
+	want := point{X: 160, Y: 90}
+	if win.Size != want {
+		t.Errorf("resize by width got %+v want %+v", win.Size, want)
+	}
+
+	win.Size = point{X: 100, Y: 50}
+	win.setSize(point{X: 120, Y: 120})
+	want = point{X: 213.33333, Y: 120}
+	if math.Abs(float64(win.Size.X-want.X)) > 0.01 || math.Abs(float64(win.Size.Y-want.Y)) > 0.01 {
+		t.Errorf("resize by height got %+v want %+v", win.Size, want)
+	}
+}
+
 func TestFlowContentBounds(t *testing.T) {
 	uiScale = 1
 

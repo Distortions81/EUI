@@ -132,7 +132,11 @@ func (win *windowData) dragbarRect() rect {
 }
 
 func (win *windowData) setSize(size point) bool {
+	size = win.applyAspect(size, true)
 	size, tooSmall := win.clampSize(size)
+	size = win.applyAspect(size, false)
+	size, tooSmall2 := win.clampSize(size)
+	tooSmall = tooSmall || tooSmall2
 
 	xc, yc := win.itemOverlap(size)
 	if !xc {
@@ -167,6 +171,25 @@ func (win *windowData) clampSize(size point) (point, bool) {
 	}
 
 	return size, tooSmall
+}
+
+func (win *windowData) applyAspect(size point, useDelta bool) point {
+	if !win.FixedRatio || win.AspectA <= 0 || win.AspectB <= 0 {
+		return size
+	}
+	aspect := win.AspectA / win.AspectB
+	if useDelta {
+		dx := math.Abs(float64(size.X - win.Size.X))
+		dy := math.Abs(float64(size.Y - win.Size.Y))
+		if dx >= dy {
+			size.Y = size.X / aspect
+		} else {
+			size.X = size.Y * aspect
+		}
+	} else {
+		size.Y = size.X / aspect
+	}
+	return size
 }
 
 func (win *windowData) adjustScrollForResize() {
@@ -628,6 +651,7 @@ func (win *windowData) updateAutoSize() {
 
 	// Always include the titlebar height in the calculated size
 	size.Y = req.Y + win.GetTitleSize() + 2*pad
+	size = win.applyAspect(size, false)
 	if size.X > float32(screenWidth) {
 		size.X = float32(screenWidth)
 	}

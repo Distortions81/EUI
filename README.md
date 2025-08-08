@@ -15,7 +15,7 @@ The project is currently in early development and APIs will likely change.
 EUI aims to stay small and easy to use while still providing the essentials for
 building a game UI. Highlights include:
 
-- **Window management** – draggable, resizable windows with optional pinning.
+- **Window management** – draggable, resizable windows with optional pinning and fixed aspect ratios.
 - **Main portal windows** – draw before other UI, black out the rest of the
   screen and leave the window background transparent for game content.
 - **Flow layouts** – vertical or horizontal flows for composing widgets.

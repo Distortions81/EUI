@@ -26,6 +26,7 @@ var defaultTheme = &windowData{
 	ShadowColor: NewColor(0, 0, 0, 160),
 
 	Movable: true, Closable: true, Resizable: true, Open: true, AutoSize: false,
+	FixedRatio: false, AspectA: 0, AspectB: 0,
 }
 
 var defaultButton = &itemData{
