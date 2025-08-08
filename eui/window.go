@@ -86,7 +86,11 @@ func stripItemColors(it *itemData) {
 func (target *windowData) AddWindow(toBack bool) {
 	for _, win := range windows {
 		if win == target {
-			log.Println("Window already exists")
+			if toBack {
+				target.ToBack()
+			} else {
+				target.BringForward()
+			}
 			return
 		}
 	}
@@ -320,6 +324,7 @@ func (target *windowData) BringForward() {
 			windows = append(windows[:w], windows[w+1:]...)
 			windows = append(windows, target)
 			activeWindow = target
+			return
 		}
 	}
 }
@@ -347,12 +352,13 @@ func (target *windowData) ToBack() {
 		if win == target {
 			windows = append(windows[:w], windows[w+1:]...)
 			windows = append([]*windowData{target}, windows...)
-		}
-	}
-	if activeWindow == target {
-		numWindows := len(windows)
-		if numWindows > 0 {
-			activeWindow = windows[numWindows-1]
+			if activeWindow == target {
+				numWindows := len(windows)
+				if numWindows > 0 {
+					activeWindow = windows[numWindows-1]
+				}
+			}
+			return
 		}
 	}
 }

@@ -196,6 +196,28 @@ func TestMarkOpen(t *testing.T) {
 		t.Errorf("window order incorrect: %v", windows)
 	}
 }
+
+func TestAddWindowReorders(t *testing.T) {
+	win1 := &windowData{Title: "win1", Open: true}
+	win2 := &windowData{Title: "win2", Open: true}
+	windows = nil
+
+	win1.AddWindow(false)
+	win2.AddWindow(false)
+	if len(windows) != 2 || windows[1] != win2 {
+		t.Fatalf("expected win2 at front: %v", windows)
+	}
+
+	win1.AddWindow(false)
+	if windows[1] != win1 {
+		t.Errorf("expected win1 brought forward: %v", windows)
+	}
+
+	win1.AddWindow(true)
+	if windows[0] != win1 {
+		t.Errorf("expected win1 moved to back: %v", windows)
+	}
+}
 func TestSetSizeClampAndScroll(t *testing.T) {
 	win := &windowData{
 		Size:        point{X: 100, Y: 100},
