@@ -37,12 +37,26 @@ func mergeData(original interface{}, updates interface{}) interface{} {
 		}
 		updField := updVal.Field(i)
 
-		// Booleans default to the theme value when false so callers
-		// can omit them without overwriting defaults. Explicit true
-		// values are still applied.
+		// Boolean handling: detect whether the field was explicitly
+		// provided so callers can set values to false. Two mechanisms
+		// are supported:
+		//   1. Pointer-to-bool fields. A nil pointer means the field
+		//      was omitted. A non-nil pointer is dereferenced and the
+		//      value applied regardless of true/false.
+		//   2. A companion "FieldNameSet" bool field. When present and
+		//      true, the associated bool field is applied even if the
+		//      value is false.
+		if updField.Kind() == reflect.Ptr && updField.Type().Elem().Kind() == reflect.Bool {
+			if !updField.IsNil() && origField.Kind() == reflect.Bool {
+				origField.SetBool(updField.Elem().Bool())
+			}
+			continue
+		}
 		if updField.Kind() == reflect.Bool {
-			if updField.Bool() {
-				origField.Set(updField)
+			setField := updVal.FieldByName(field.Name + "Set")
+			set := setField.IsValid() && setField.Kind() == reflect.Bool && setField.Bool()
+			if set || updField.Bool() {
+				origField.SetBool(updField.Bool())
 			}
 			continue
 		}
