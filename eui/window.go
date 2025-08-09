@@ -134,6 +134,15 @@ func (target *windowData) RemoveWindow() {
 			win.disposeImages()
 			windows = append(windows[:i], windows[i+1:]...)
 			win.Open = false
+			if activeWindow == target {
+				activeWindow = nil
+				for j := len(windows) - 1; j >= 0; j-- {
+					if windows[j].Open {
+						activeWindow = windows[j]
+						break
+					}
+				}
+			}
 			return
 		}
 	}
