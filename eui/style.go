@@ -133,6 +133,9 @@ func LoadStyle(name string) error {
 			return err
 		}
 	}
+
+	style := *defaultStyle
+	currentStyle = &style
 	if err := json.Unmarshal(data, currentStyle); err != nil {
 		return err
 	}
