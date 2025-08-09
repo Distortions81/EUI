@@ -25,14 +25,17 @@ func mergeData(original interface{}, updates interface{}) interface{} {
 		panic("Both original and updates must be structs")
 	}
 
-	// Iterate through the fields of the updates struct
+	// Iterate through the fields of the updates struct by name so that
+	// structs with mismatched layouts can be merged safely.
 	for i := 0; i < updVal.NumField(); i++ {
-		origField := origVal.Field(i)
-		updField := updVal.Field(i)
-
-		if !origField.CanSet() {
+		field := updVal.Type().Field(i)
+		origField := origVal.FieldByName(field.Name)
+		if !origField.IsValid() || !origField.CanSet() {
+			// Skip fields that don't exist in the original struct
+			// or can't be set instead of panicking.
 			continue
 		}
+		updField := updVal.Field(i)
 
 		// Booleans default to the theme value when false so callers
 		// can omit them without overwriting defaults. Explicit true

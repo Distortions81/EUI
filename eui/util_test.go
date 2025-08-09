@@ -71,6 +71,27 @@ func TestMergeData(t *testing.T) {
 	}
 }
 
+func TestMergeDataMismatchedStructs(t *testing.T) {
+	type origStruct struct {
+		A int
+		B int
+	}
+	type updStruct struct {
+		B int
+		C int
+	}
+
+	orig := &origStruct{A: 1, B: 2}
+	upd := &updStruct{B: 3, C: 4}
+	res := mergeData(orig, upd).(*origStruct)
+	if res.A != 1 {
+		t.Errorf("A=%v", res.A)
+	}
+	if res.B != 3 {
+		t.Errorf("B=%v", res.B)
+	}
+}
+
 func TestPinPositions(t *testing.T) {
 	screenWidth = 800
 	screenHeight = 600
