@@ -68,11 +68,12 @@ func Update() error {
 		}
 	}
 
-	//Check all windows
-	for i := len(windows) - 1; i >= 0; i-- {
-		win := windows[i]
+	// Process windows with MainPortal flag last so other windows on top
+	// receive input first.
+	handled := false
+	handleWindow := func(win *windowData) bool {
 		if !win.Open {
-			continue
+			return false
 		}
 
 		var part dragType
@@ -105,7 +106,7 @@ func Update() error {
 				if part == PART_CLOSE {
 					win.Open = false
 					win.RemoveWindow()
-					continue
+					return false
 				}
 				dragPart = part
 				dragWin = win
@@ -159,7 +160,7 @@ func Update() error {
 					dragWindowScroll(win, mpos, false)
 				}
 				win.clampToScreen()
-				break
+				return true
 			}
 		}
 
@@ -175,7 +176,30 @@ func Update() error {
 					win.BringForward()
 				}
 			}
+			return true
+		}
+		return false
+	}
+
+	for i := len(windows) - 1; i >= 0; i-- {
+		win := windows[i]
+		if !win.Open || win.MainPortal {
+			continue
+		}
+		if handleWindow(win) {
+			handled = true
 			break
+		}
+	}
+	if !handled {
+		for i := len(windows) - 1; i >= 0; i-- {
+			win := windows[i]
+			if !win.Open || !win.MainPortal {
+				continue
+			}
+			if handleWindow(win) {
+				break
+			}
 		}
 	}
 
