@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -131,11 +132,13 @@ func startEbiten() {
 
 	ebiten.SetWindowTitle("EUI Prototype")
 
-	if err := ebiten.RunGameWithOptions(newGame(), &ebiten.RunGameOptions{}); err != nil {
-		return
-	}
+	defer func() {
+		signalHandle <- syscall.SIGINT
+	}()
 
-	signalHandle <- syscall.SIGINT
+	if err := ebiten.RunGameWithOptions(newGame(), &ebiten.RunGameOptions{}); err != nil {
+		log.Printf("ebiten.RunGameWithOptions error: %v", err)
+	}
 }
 
 type demoGame struct {
