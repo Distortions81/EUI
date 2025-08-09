@@ -464,6 +464,7 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 					Y1: item.DrawRect.Y0 + lh + (contentH-eyeSize)/2 + eyeSize,
 				}
 				if eyeRect.containsPoint(mpos) {
+					item.Reveal = !item.Reveal
 					item.markDirty()
 					return true
 				}

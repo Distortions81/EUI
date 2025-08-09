@@ -93,6 +93,7 @@ type itemData struct {
 	IntOnly    bool
 	RadioGroup string
 	Hide       bool
+	Reveal     bool
 
 	Hovered, Checked, Focused,
 	Disabled, Invisible bool
