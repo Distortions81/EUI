@@ -24,8 +24,16 @@ type dropdownRender struct {
 	clip   rect
 }
 
-var pendingDropdowns []dropdownRender
-var dumpDone bool
+var (
+	pendingDropdowns []dropdownRender
+	dumpDone         bool
+	// blackPixel is a reusable 1x1 black pixel.
+	blackPixel = func() *ebiten.Image {
+		img := ebiten.NewImage(1, 1)
+		img.Fill(color.Black)
+		return img
+	}()
+)
 
 // Draw renders the UI to the provided screen image.
 // Call this from your Ebiten Draw function.
@@ -180,17 +188,30 @@ func (win *windowData) drawPortalMask(screen *ebiten.Image) {
 	w := float32(screenWidth)
 	h := float32(screenHeight)
 
+	op := ebiten.DrawImageOptions{CompositeMode: ebiten.CompositeModeCopy}
+
 	if r.Y0 > 0 {
-		screen.SubImage((rect{X0: 0, Y0: 0, X1: w, Y1: r.Y0}).getRectangle()).(*ebiten.Image).Clear()
+		op.GeoM.Reset()
+		op.GeoM.Scale(float64(w), float64(r.Y0))
+		screen.DrawImage(blackPixel, &op)
 	}
 	if r.Y1 < h {
-		screen.SubImage((rect{X0: 0, Y0: r.Y1, X1: w, Y1: h}).getRectangle()).(*ebiten.Image).Clear()
+		op.GeoM.Reset()
+		op.GeoM.Scale(float64(w), float64(h-r.Y1))
+		op.GeoM.Translate(0, float64(r.Y1))
+		screen.DrawImage(blackPixel, &op)
 	}
 	if r.X0 > 0 {
-		screen.SubImage((rect{X0: 0, Y0: r.Y0, X1: r.X0, Y1: r.Y1}).getRectangle()).(*ebiten.Image).Clear()
+		op.GeoM.Reset()
+		op.GeoM.Scale(float64(r.X0), float64(r.Y1-r.Y0))
+		op.GeoM.Translate(0, float64(r.Y0))
+		screen.DrawImage(blackPixel, &op)
 	}
 	if r.X1 < w {
-		screen.SubImage((rect{X0: r.X1, Y0: r.Y0, X1: w, Y1: r.Y1}).getRectangle()).(*ebiten.Image).Clear()
+		op.GeoM.Reset()
+		op.GeoM.Scale(float64(w-r.X1), float64(r.Y1-r.Y0))
+		op.GeoM.Translate(float64(r.X1), float64(r.Y0))
+		screen.DrawImage(blackPixel, &op)
 	}
 }
 

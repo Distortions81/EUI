@@ -372,9 +372,9 @@ const (
         EventInputSubmit
 )
 type WindowData = windowData
-Setting MainPortal to true renders the window before others, clears the
-screen outside it and omits the window background so underlying content shows
-through. MainPortal windows are processed after other windows so they don't
+Setting MainPortal to true renders the window before others, draws a 1×1 black
+pixel scaled over the screen outside it and omits the window background so
+underlying content shows through. MainPortal windows are processed after other windows so they don't
 steal clicks when overlapped. Setting FixedRatio enforces an AspectA:AspectB
 content area during resizing and accounts for the title bar height.
 
