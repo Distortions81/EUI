@@ -178,16 +178,24 @@ func (win *windowData) applyAspect(size point, useDelta bool) point {
 		return size
 	}
 	aspect := win.AspectA / win.AspectB
+	title := win.TitleHeight
 	if useDelta {
 		dx := math.Abs(float64(size.X - win.Size.X))
 		dy := math.Abs(float64(size.Y - win.Size.Y))
 		if dx >= dy {
-			size.Y = size.X / aspect
+			contentH := size.X / aspect
+			size.Y = contentH + title
 		} else {
-			size.X = size.Y * aspect
+			contentH := size.Y - title
+			if contentH < 0 {
+				contentH = 0
+			}
+			size.X = contentH * aspect
+			size.Y = contentH + title
 		}
 	} else {
-		size.Y = size.X / aspect
+		contentH := size.X / aspect
+		size.Y = contentH + title
 	}
 	return size
 }
