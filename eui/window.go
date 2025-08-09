@@ -562,7 +562,11 @@ func (win windowData) itemOverlap(size point) (bool, bool) {
 // and adjust scrolling after modifying contents.
 func (win *windowData) Refresh() {
 	win.resizeFlows()
-	win.updateAutoSize()
+	if win.AutoSize {
+		win.updateAutoSize()
+	} else {
+		win.clampToScreen()
+	}
 	win.adjustScrollForResize()
 	for _, it := range win.Contents {
 		markItemTreeDirty(it)
