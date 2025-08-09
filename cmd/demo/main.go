@@ -84,10 +84,8 @@ func main() {
 		if ev.Type == eui.EventClick {
 			currentScale = eui.UIScale()
 			currentScale -= 0.25
-			if currentScale < 0.25 {
-				currentScale = 0.25
-			}
 			eui.SetUIScale(currentScale)
+			currentScale = eui.UIScale()
 			textItem.Text = fmt.Sprintf("Scale: %2.2f", currentScale)
 		}
 	}
@@ -96,10 +94,8 @@ func main() {
 		if ev.Type == eui.EventClick {
 			currentScale = eui.UIScale()
 			currentScale += 0.25
-			if currentScale > 4.0 {
-				currentScale = 4
-			}
 			eui.SetUIScale(currentScale)
+			currentScale = eui.UIScale()
 			textItem.Text = fmt.Sprintf("Scale: %2.2f", currentScale)
 		}
 	}
