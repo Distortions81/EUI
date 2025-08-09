@@ -2,6 +2,7 @@ package eui
 
 import (
 	"fmt"
+	"image"
 	"image/png"
 	"os"
 	"path/filepath"
@@ -33,23 +34,20 @@ func dumpItemImages(items []*itemData, prefix string) {
 			it.ensureRender()
 			if it.Render != nil {
 				fn := filepath.Join("debug", name+".png")
-				if f, err := os.Create(fn); err == nil {
-					png.Encode(f, it.Render)
-					f.Close()
+				if err := saveImage(fn, it.Render); err != nil {
+					fmt.Printf("failed to save %s: %v\n", fn, err)
 				}
 			}
 			if it.Image != nil {
 				fn := filepath.Join("debug", name+"_src.png")
-				if f, err := os.Create(fn); err == nil {
-					png.Encode(f, it.Image)
-					f.Close()
+				if err := saveImage(fn, it.Image); err != nil {
+					fmt.Printf("failed to save %s: %v\n", fn, err)
 				}
 			}
 			if it.LabelImage != nil {
 				fn := filepath.Join("debug", name+"_label.png")
-				if f, err := os.Create(fn); err == nil {
-					png.Encode(f, it.LabelImage)
-					f.Close()
+				if err := saveImage(fn, it.LabelImage); err != nil {
+					fmt.Printf("failed to save %s: %v\n", fn, err)
 				}
 			}
 		}
@@ -60,4 +58,16 @@ func dumpItemImages(items []*itemData, prefix string) {
 			dumpItemImages(it.Tabs, name+"_tab")
 		}
 	}
+}
+
+func saveImage(fn string, img image.Image) error {
+	f, err := os.Create(fn)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	if err := png.Encode(f, img); err != nil {
+		return err
+	}
+	return nil
 }
