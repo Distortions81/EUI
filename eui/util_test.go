@@ -71,6 +71,35 @@ func TestMergeData(t *testing.T) {
 	}
 }
 
+func TestMergeDataBoolHandling(t *testing.T) {
+	type origStruct struct {
+		A bool
+		B bool
+		C bool
+	}
+	type updStruct struct {
+		A    bool
+		ASet bool
+		B    *bool
+		C    bool
+	}
+
+	orig := &origStruct{A: true, B: true, C: true}
+	bFalse := false
+	upd := &updStruct{A: false, ASet: true, B: &bFalse, C: false}
+	res := mergeData(orig, upd).(*origStruct)
+
+	if res.A {
+		t.Errorf("A=%v want false", res.A)
+	}
+	if res.B {
+		t.Errorf("B=%v want false", res.B)
+	}
+	if !res.C {
+		t.Errorf("C=%v want true", res.C)
+	}
+}
+
 func TestMergeDataMismatchedStructs(t *testing.T) {
 	type origStruct struct {
 		A int
