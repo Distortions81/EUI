@@ -94,6 +94,9 @@ type itemData struct {
 	RadioGroup string
 	Hide       bool
 	Reveal     bool
+	prevHide   bool
+	prevReveal bool
+	prevText   string
 
 	Hovered, Checked, Focused,
 	Disabled, Invisible bool

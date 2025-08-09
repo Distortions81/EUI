@@ -1092,8 +1092,13 @@ func (item *itemData) ensureRender() {
 		item.Render = ebiten.NewImage(w, h)
 		item.Dirty = true
 	}
-	if item.ItemType == ITEM_INPUT && item.Hide {
-		item.Dirty = true
+	if item.ItemType == ITEM_INPUT {
+		if item.Hide != item.prevHide || item.Reveal != item.prevReveal || item.Text != item.prevText {
+			item.Dirty = true
+		}
+		item.prevHide = item.Hide
+		item.prevReveal = item.Reveal
+		item.prevText = item.Text
 	}
 	if !item.Dirty {
 		return

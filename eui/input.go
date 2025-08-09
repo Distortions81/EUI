@@ -464,8 +464,7 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 					Y1: item.DrawRect.Y0 + lh + (contentH-eyeSize)/2 + eyeSize,
 				}
 				if eyeRect.containsPoint(mpos) {
-					item.Reveal = !item.Reveal
-					item.markDirty()
+					item.toggleReveal()
 					return true
 				}
 			}
@@ -634,6 +633,16 @@ func (item *itemData) setSliderValue(mpos point) {
 	if item.Handler != nil {
 		item.Handler.Emit(UIEvent{Item: item, Type: EventSliderChanged, Value: item.Value})
 	}
+}
+
+func (item *itemData) toggleHide() {
+	item.Hide = !item.Hide
+	item.markDirty()
+}
+
+func (item *itemData) toggleReveal() {
+	item.Reveal = !item.Reveal
+	item.markDirty()
 }
 
 func (item *itemData) colorAt(mpos point) (Color, bool) {
