@@ -376,7 +376,7 @@ Setting MainPortal to true renders the window before others, clears the
 screen outside it and omits the window background so underlying content shows
 through. MainPortal windows are processed after other windows so they don't
 steal clicks when overlapped. Setting FixedRatio enforces an AspectA:AspectB
-window size during resizing.
+content area during resizing and accounts for the title bar height.
 
 func Windows() []*WindowData
     Windows returns the list of active windows.
