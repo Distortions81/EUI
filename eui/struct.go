@@ -36,7 +36,7 @@ type windowData struct {
 	HoverClose, HoverDragbar,
 	AutoSize, FixedRatio bool
 
-	// MainPortal renders the window before others, blacks out the area
+	// MainPortal renders the window before others, clears the area
 	// outside it and skips drawing the background so underlying content can
 	// show through.
 	MainPortal bool

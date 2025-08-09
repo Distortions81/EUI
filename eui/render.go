@@ -181,16 +181,16 @@ func (win *windowData) drawPortalMask(screen *ebiten.Image) {
 	h := float32(screenHeight)
 
 	if r.Y0 > 0 {
-		screen.SubImage((rect{X0: 0, Y0: 0, X1: w, Y1: r.Y0}).getRectangle()).(*ebiten.Image).Fill(color.Black)
+		screen.SubImage((rect{X0: 0, Y0: 0, X1: w, Y1: r.Y0}).getRectangle()).(*ebiten.Image).Clear()
 	}
 	if r.Y1 < h {
-		screen.SubImage((rect{X0: 0, Y0: r.Y1, X1: w, Y1: h}).getRectangle()).(*ebiten.Image).Fill(color.Black)
+		screen.SubImage((rect{X0: 0, Y0: r.Y1, X1: w, Y1: h}).getRectangle()).(*ebiten.Image).Clear()
 	}
 	if r.X0 > 0 {
-		screen.SubImage((rect{X0: 0, Y0: r.Y0, X1: r.X0, Y1: r.Y1}).getRectangle()).(*ebiten.Image).Fill(color.Black)
+		screen.SubImage((rect{X0: 0, Y0: r.Y0, X1: r.X0, Y1: r.Y1}).getRectangle()).(*ebiten.Image).Clear()
 	}
 	if r.X1 < w {
-		screen.SubImage((rect{X0: r.X1, Y0: r.Y0, X1: w, Y1: r.Y1}).getRectangle()).(*ebiten.Image).Fill(color.Black)
+		screen.SubImage((rect{X0: r.X1, Y0: r.Y0, X1: w, Y1: r.Y1}).getRectangle()).(*ebiten.Image).Clear()
 	}
 }
 
