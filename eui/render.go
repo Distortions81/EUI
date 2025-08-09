@@ -842,30 +842,24 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 			})
 		}
 
-		eyeSize := maxSize.Y - (item.BorderPad+item.Padding)*2
-		if eyeSize < 0 {
-			eyeSize = 0
-		}
-		eyeRect := rect{
-			X0: offset.X + maxSize.X - eyeSize - item.BorderPad - item.Padding,
-			Y0: offset.Y + (maxSize.Y-eyeSize)/2,
-			X1: offset.X + maxSize.X - item.BorderPad - item.Padding,
-			Y1: offset.Y + (maxSize.Y-eyeSize)/2 + eyeSize,
-		}
-
-		show := !item.Hide
+		var eyeRect rect
 		if item.Hide {
-			mx, my := pointerPosition()
-			mpos := point{X: float32(mx), Y: float32(my)}
-			if pointerPressed() && eyeRect.containsPoint(mpos) {
-				show = true
+			eyeSize := maxSize.Y - (item.BorderPad+item.Padding)*2
+			if eyeSize < 0 {
+				eyeSize = 0
+			}
+			eyeRect = rect{
+				X0: offset.X + maxSize.X - eyeSize - item.BorderPad - item.Padding,
+				Y0: offset.Y + (maxSize.Y-eyeSize)/2,
+				X1: offset.X + maxSize.X - item.BorderPad - item.Padding,
+				Y1: offset.Y + (maxSize.Y-eyeSize)/2 + eyeSize,
 			}
 		}
 
 		disp := item.Text
-		if item.Hide && !show {
+		if item.Hide && !item.Reveal {
 			n := utf8.RuneCountInString(item.Text)
-			disp = strings.Repeat("•", n)
+			disp = strings.Repeat("*", n)
 		}
 
 		textSize := (item.FontSize * uiScale) + 2
@@ -884,7 +878,9 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		top.ColorScale.ScaleWithColor(style.TextColor)
 		text.Draw(subImg, disp, face, top)
 
-		drawEye(subImg, eyeRect, style.TextColor)
+		if item.Hide {
+			drawEye(subImg, eyeRect, style.TextColor)
+		}
 
 		if item.Focused {
 			width, _ := text.Measure(disp, face, 0)
