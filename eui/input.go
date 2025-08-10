@@ -16,7 +16,17 @@ var (
 	dragPart   dragType
 	dragWin    *windowData
 	activeItem *itemData
+
+	activeClicks []*itemData
 )
+
+func registerClick(it *itemData) {
+	if it.Clicked.IsZero() {
+		activeClicks = append(activeClicks, it)
+	}
+	it.Clicked = time.Now()
+	it.markDirty()
+}
 
 // Update processes input and updates window state.
 // Programs embedding the UI can call this from their Ebiten Update handler.
@@ -299,14 +309,7 @@ func Update() error {
 	// own layout updates whenever sizes change, so avoid doing it every
 	// frame here.
 
-	for _, win := range windows {
-		if win.Open {
-			clearExpiredClicks(win.Contents)
-		}
-	}
-	for _, ov := range overlays {
-		clearExpiredClicks([]*itemData{ov})
-	}
+	clearExpiredClicks()
 
 	return nil
 }
@@ -362,7 +365,7 @@ func (item *itemData) clickFlows(mpos point, click bool) bool {
 				hoveredItem = tab
 				if click {
 					activeItem = tab
-					tab.Clicked = time.Now()
+					registerClick(tab)
 					item.ActiveTab = i
 				}
 				return true
@@ -411,11 +414,10 @@ func (item *itemData) clickItem(mpos point, click bool) bool {
 
 	if click {
 		activeItem = item
-		item.Clicked = time.Now()
+		registerClick(item)
 		if item.ItemType == ITEM_BUTTON && item.Handler != nil {
 			item.Handler.Emit(UIEvent{Item: item, Type: EventClick})
 		}
-		item.markDirty()
 		if item.ItemType == ITEM_COLORWHEEL {
 			if col, ok := item.colorAt(mpos); ok {
 				item.WheelColor = col
@@ -584,21 +586,22 @@ func subUncheckRadio(list []*itemData, group string, except *itemData) {
 	}
 }
 
-func clearExpiredClicks(list []*itemData) {
-	for _, it := range list {
-		if !it.Clicked.IsZero() && time.Since(it.Clicked) >= clickFlash {
+func clearExpiredClicks() {
+	now := time.Now()
+	n := 0
+	for _, it := range activeClicks {
+		if it.Clicked.IsZero() {
+			continue
+		}
+		if now.Sub(it.Clicked) >= clickFlash {
 			it.Clicked = time.Time{}
 			it.markDirty()
+			continue
 		}
-		for _, tab := range it.Tabs {
-			if !tab.Clicked.IsZero() && time.Since(tab.Clicked) >= clickFlash {
-				tab.Clicked = time.Time{}
-				tab.markDirty()
-			}
-			clearExpiredClicks(tab.Contents)
-		}
-		clearExpiredClicks(it.Contents)
+		activeClicks[n] = it
+		n++
 	}
+	activeClicks = activeClicks[:n]
 }
 
 func (item *itemData) setSliderValue(mpos point) {
