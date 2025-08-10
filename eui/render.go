@@ -1409,8 +1409,8 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 		inset := width / 2
 		x += inset
 		y += inset
-		w -= width
-		h -= width
+		w -= width + 1
+		h -= width + 1
 		if w < 0 {
 			w = 0
 		}
