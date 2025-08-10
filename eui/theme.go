@@ -69,7 +69,8 @@ func LoadTheme(name string) error {
 	file := filepath.Join("themes", "palettes", name+".json")
 	data, err := os.ReadFile(file)
 	if err != nil {
-		data, err = embeddedThemes.ReadFile(filepath.Join("themes", "palettes", name+".json"))
+		embeddedPath := filepath.ToSlash(file)
+		data, err = embeddedThemes.ReadFile(embeddedPath)
 		if err != nil {
 			return err
 		}
