@@ -9,6 +9,8 @@ import (
 	"golang.org/x/time/rate"
 )
 
+var touchIDs []ebiten.TouchID
+
 var (
 	isWasm         = runtime.GOOS == "js" && runtime.GOARCH == "wasm"
 	touchScrolling bool
@@ -21,20 +23,20 @@ const touchScrollScale = 0.05
 // pointerPosition returns the current pointer position.
 // If a touch is active, the first touch is used. Otherwise the mouse cursor position is returned.
 func pointerPosition() (int, int) {
-	ids := ebiten.AppendTouchIDs(nil)
-	if len(ids) > 0 {
-		return ebiten.TouchPosition(ids[0])
+	touchIDs = ebiten.AppendTouchIDs(touchIDs[:0])
+	if len(touchIDs) > 0 {
+		return ebiten.TouchPosition(touchIDs[0])
 	}
 	return ebiten.CursorPosition()
 }
 
 // pointerWheel returns the wheel delta for mouse or two-finger touch scrolling.
 func pointerWheel() (float64, float64) {
-	ids := ebiten.AppendTouchIDs(nil)
-	if len(ids) >= 2 {
+	touchIDs = ebiten.AppendTouchIDs(touchIDs[:0])
+	if len(touchIDs) >= 2 {
 		// Average the first two touches to emulate wheel scrolling.
-		x0, y0 := ebiten.TouchPosition(ids[0])
-		x1, y1 := ebiten.TouchPosition(ids[1])
+		x0, y0 := ebiten.TouchPosition(touchIDs[0])
+		x1, y1 := ebiten.TouchPosition(touchIDs[1])
 		avgX := float64(x0+x1) / 2
 		avgY := float64(y0+y1) / 2
 
@@ -78,8 +80,8 @@ func pointerWheel() (float64, float64) {
 
 // pointerJustPressed reports whether the primary pointer was just pressed.
 func pointerJustPressed() bool {
-	ids := ebiten.AppendTouchIDs(nil)
-	if len(ids) > 1 {
+	touchIDs = ebiten.AppendTouchIDs(touchIDs[:0])
+	if len(touchIDs) > 1 {
 		return false
 	}
 	if len(inpututil.AppendJustPressedTouchIDs(nil)) > 0 {
@@ -90,11 +92,11 @@ func pointerJustPressed() bool {
 
 // pointerPressed reports whether the primary pointer is currently pressed.
 func pointerPressed() bool {
-	ids := ebiten.AppendTouchIDs(nil)
-	if len(ids) > 1 {
+	touchIDs = ebiten.AppendTouchIDs(touchIDs[:0])
+	if len(touchIDs) > 1 {
 		return false
 	}
-	if len(ids) == 1 {
+	if len(touchIDs) == 1 {
 		return true
 	}
 	return ebiten.IsMouseButtonPressed(ebiten.MouseButton0)
@@ -102,12 +104,12 @@ func pointerPressed() bool {
 
 // pointerPressDuration returns how long the primary pointer has been pressed.
 func pointerPressDuration() int {
-	ids := ebiten.AppendTouchIDs(nil)
-	if len(ids) > 1 {
+	touchIDs = ebiten.AppendTouchIDs(touchIDs[:0])
+	if len(touchIDs) > 1 {
 		return 0
 	}
-	if len(ids) == 1 {
-		return inpututil.TouchPressDuration(ids[0])
+	if len(touchIDs) == 1 {
+		return inpututil.TouchPressDuration(touchIDs[0])
 	}
 	return inpututil.MouseButtonPressDuration(ebiten.MouseButton0)
 }
