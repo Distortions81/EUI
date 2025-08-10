@@ -344,6 +344,23 @@ func (target *windowData) MarkOpen() {
 	} else {
 		target.BringForward()
 	}
+	if target.Dirty {
+		target.Refresh()
+	}
+}
+
+// MarkClosed marks the window as closed and updates the active window.
+func (target *windowData) MarkClosed() {
+	target.open = false
+	if activeWindow == target {
+		activeWindow = nil
+		for j := len(windows) - 1; j >= 0; j-- {
+			if windows[j].open {
+				activeWindow = windows[j]
+				break
+			}
+		}
+	}
 }
 
 // Send a window to the back
@@ -561,6 +578,13 @@ func (win windowData) itemOverlap(size point) (bool, bool) {
 // Refresh forces the window to recalculate layout, resize to its contents,
 // and adjust scrolling after modifying contents.
 func (win *windowData) Refresh() {
+	if !win.open {
+		for _, it := range win.Contents {
+			markItemTreeDirty(it)
+		}
+		win.Dirty = true
+		return
+	}
 	win.resizeFlows()
 	if win.AutoSize {
 		win.updateAutoSize()
