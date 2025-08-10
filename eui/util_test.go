@@ -317,8 +317,8 @@ func TestVerticalSliderTrackLengthMatch(t *testing.T) {
 }
 
 func TestMarkOpen(t *testing.T) {
-	win1 := &windowData{Title: "win1", open: true}
-	win2 := &windowData{Title: "win2", open: false}
+	win1 := &windowData{Title: "win1", open: true, Size: point{X: 100, Y: 100}}
+	win2 := &windowData{Title: "win2", open: false, Size: point{X: 100, Y: 100}}
 	windows = []*windowData{win2, win1}
 	activeWindow = win1
 	win2.MarkOpen()
@@ -334,8 +334,8 @@ func TestMarkOpen(t *testing.T) {
 }
 
 func TestAddWindowReorders(t *testing.T) {
-	win1 := &windowData{Title: "win1", open: true}
-	win2 := &windowData{Title: "win2", open: true}
+	win1 := &windowData{Title: "win1", open: true, Size: point{X: 100, Y: 100}}
+	win2 := &windowData{Title: "win2", open: true, Size: point{X: 100, Y: 100}}
 	windows = nil
 
 	win1.AddWindow(false)
@@ -352,6 +352,29 @@ func TestAddWindowReorders(t *testing.T) {
 	win1.AddWindow(true)
 	if windows[0] != win1 {
 		t.Errorf("expected win1 moved to back: %v", windows)
+	}
+}
+
+func TestAddWindowRejectsInvalidSize(t *testing.T) {
+	windows = nil
+
+	win := &windowData{Title: "bad", Size: point{X: 0, Y: 50}}
+	win.AddWindow(false)
+	if len(windows) != 0 {
+		t.Fatalf("expected window with zero width rejected, got %d", len(windows))
+	}
+
+	win.Size = point{X: 50, Y: -10}
+	win.AddWindow(false)
+	if len(windows) != 0 {
+		t.Fatalf("expected window with negative height rejected, got %d", len(windows))
+	}
+
+	var nilWin *windowData
+	// Ensure nil windows are ignored without panic
+	nilWin.AddWindow(false)
+	if len(windows) != 0 {
+		t.Fatalf("expected nil window ignored, got %d", len(windows))
 	}
 }
 func TestSetSizeClampAndScroll(t *testing.T) {
