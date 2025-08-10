@@ -3,6 +3,11 @@
 This document lists all exported functions, types and constants in the
 `eui` package. See the README for a short overview of the project.
 
+## Table of Contents
+
+- [Setup](#setup)
+- [Pinning Windows and Items](#pinning-windows-and-items)
+
 ## Setup
 
 The demo and tests rely on a few system packages in addition to Go. Run the
@@ -25,6 +30,37 @@ Format modified Go files before committing:
 gofmt -w <files>
 ```
 
+
+## Pinning Windows and Items
+
+Windows and items can be anchored to specific corners or edges by setting
+the `PinTo` field. When a value other than `PIN_TOP_LEFT` is used, the
+position is calculated relative to that anchor instead of the top-left
+origin.
+
+Available anchors:
+
+- `PIN_TOP_LEFT`
+- `PIN_TOP_CENTER`
+- `PIN_TOP_RIGHT`
+- `PIN_MID_LEFT`
+- `PIN_MID_CENTER`
+- `PIN_MID_RIGHT`
+- `PIN_BOTTOM_LEFT`
+- `PIN_BOTTOM_CENTER`
+- `PIN_BOTTOM_RIGHT`
+
+Example anchoring a window to the bottom-right of the screen:
+
+```go
+win := &eui.WindowData{
+    Title: "Stats",
+    Size:  eui.Point{X: 200, Y: 100},
+    PinTo: eui.PIN_BOTTOM_RIGHT,
+}
+
+win.Open()
+```
 
 ```
 package eui // import "github.com/Distortions81/EUI/eui"
