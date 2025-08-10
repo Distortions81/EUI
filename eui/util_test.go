@@ -693,13 +693,40 @@ func TestStrokeRectParams(t *testing.T) {
 }
 
 func TestClampToScreen(t *testing.T) {
+	oldW, oldH := screenWidth, screenHeight
+	defer func() { screenWidth, screenHeight = oldW, oldH }()
 	screenWidth = 200
 	screenHeight = 150
-	win := &windowData{Size: point{X: 100, Y: 50}, Position: point{X: 120, Y: 110}}
-	win.clampToScreen()
-	pos := win.getPosition()
-	if pos.X+win.GetSize().X > float32(screenWidth) || pos.Y+win.GetSize().Y > float32(screenHeight) {
-		t.Errorf("window not clamped: %+v", pos)
+
+	pins := []pinType{
+		PIN_TOP_LEFT, PIN_TOP_CENTER, PIN_TOP_RIGHT,
+		PIN_MID_LEFT, PIN_MID_CENTER, PIN_MID_RIGHT,
+		PIN_BOTTOM_LEFT, PIN_BOTTOM_CENTER, PIN_BOTTOM_RIGHT,
+	}
+
+	for _, pin := range pins {
+		win := &windowData{
+			Size:     point{X: 100, Y: 50},
+			Position: point{X: -200, Y: -200},
+			PinTo:    pin,
+		}
+		win.clampToScreen()
+		pos := win.getPosition()
+		if pos.X < 0 || pos.Y < 0 || pos.X+win.GetSize().X > float32(screenWidth) || pos.Y+win.GetSize().Y > float32(screenHeight) {
+			t.Errorf("pin %v not clamped: pos=%+v size=%+v", pin, pos, win.GetSize())
+		}
+		switch pin {
+		case PIN_TOP_RIGHT, PIN_MID_RIGHT, PIN_BOTTOM_RIGHT:
+			if win.Position.X != 0 {
+				t.Errorf("pin %v X offset %v not clamped to 0", pin, win.Position.X)
+			}
+		}
+		switch pin {
+		case PIN_BOTTOM_LEFT, PIN_BOTTOM_CENTER, PIN_BOTTOM_RIGHT:
+			if win.Position.Y != 0 {
+				t.Errorf("pin %v Y offset %v not clamped to 0", pin, win.Position.Y)
+			}
+		}
 	}
 }
 
