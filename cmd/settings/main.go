@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/signal"
 	"syscall"
 	"time"
 
@@ -32,14 +31,10 @@ func main() {
 	eui.DumpMode = *dumpMode
 	eui.TreeMode = *treeMode
 
-	signalHandle = make(chan os.Signal, 1)
-	signal.Notify(signalHandle, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
-
 	currentScale = 1.5
 	eui.SetUIScale(currentScale)
 
 	win := eui.NewWindow()
-	win.Open()
 	win.Resizable = true
 	win.Closable = true
 	win.Title = "Settings"
@@ -138,9 +133,8 @@ func main() {
 	mainFlow.AddItem(tt2)
 
 	win.AddItem(mainFlow)
-	go startEbiten()
-
-	<-signalHandle
+	win.Open()
+	startEbiten()
 }
 
 func startEbiten() {
