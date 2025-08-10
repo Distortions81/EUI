@@ -454,6 +454,7 @@ func (win *windowData) SetTitleSize(size float32) {
 	win.TitleHeight = size / uiScale
 	win.invalidateTitleCache()
 	win.Dirty = true
+	win.resizeFlows()
 }
 
 func (win *windowData) SetTitle(title string) {
@@ -461,6 +462,7 @@ func (win *windowData) SetTitle(title string) {
 		win.Title = title
 		win.invalidateTitleCache()
 		win.Dirty = true
+		win.resizeFlows()
 	}
 }
 

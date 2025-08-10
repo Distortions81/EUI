@@ -36,3 +36,27 @@ func TestWindowRefreshRerenders(t *testing.T) {
 		t.Fatalf("expected render count to increase after Refresh")
 	}
 }
+
+func TestWindowRefreshTitleUpdates(t *testing.T) {
+	DebugMode = true
+	defer func() { DebugMode = false }()
+
+	win := *defaultTheme
+	win.Theme = baseTheme
+	win.Open = true
+	win.SetTitle("short")
+
+	windows = []*windowData{&win}
+	screen := ebiten.NewImage(200, 200)
+
+	win.Dirty = true
+	Draw(screen)
+	w0 := win.titleTextW
+
+	win.SetTitle("a much longer title")
+	Draw(screen)
+
+	if win.titleTextW <= w0 {
+		t.Fatalf("expected title width to increase after title update")
+	}
+}
