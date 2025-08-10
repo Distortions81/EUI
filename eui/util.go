@@ -133,6 +133,8 @@ func (win *windowData) dragbarRect() rect {
 }
 
 func (win *windowData) setSize(size point) bool {
+	orig := win.Size
+
 	size = win.applyAspect(size, true)
 	size, tooSmall := win.clampSize(size)
 	size = win.applyAspect(size, false)
@@ -154,6 +156,10 @@ func (win *windowData) setSize(size point) bool {
 	win.resizeFlows()
 	win.adjustScrollForResize()
 	win.clampToScreen()
+
+	if win.Size != orig {
+		win.Dirty = true
+	}
 
 	return tooSmall
 }

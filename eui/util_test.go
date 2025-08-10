@@ -398,6 +398,14 @@ func TestSetSizeClampAndScroll(t *testing.T) {
 	}
 }
 
+func TestResizeMarksDirty(t *testing.T) {
+	win := &windowData{Size: point{X: 100, Y: 100}}
+	win.setSize(point{X: 150, Y: 150})
+	if !win.Dirty {
+		t.Fatalf("expected window marked dirty after resize")
+	}
+}
+
 func TestFixedAspectRatio(t *testing.T) {
 	win := &windowData{Size: point{X: 100, Y: 50}, TitleHeight: 10, AspectA: 16, AspectB: 9, FixedRatio: true}
 
