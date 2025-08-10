@@ -4,6 +4,7 @@ package eui
 
 import (
 	"bytes"
+	"image"
 	"image/color"
 	"math"
 	"testing"
@@ -662,5 +663,44 @@ func TestAutoSizeWindowResizesWithScale(t *testing.T) {
 	SetUIScale(2)
 	if got := win.GetSize().X; got != float32(screenWidth) {
 		t.Fatalf("scaled window width got %v want %v", got, screenWidth)
+	}
+}
+
+func TestStrokeRectBorderRendering(t *testing.T) {
+	img := image.NewNRGBA(image.Rect(0, 0, 10, 10))
+	strokeRectFn = func(_ *ebiten.Image, x, y, w, h, width float32, col color.Color, aa bool) {
+		c := color.NRGBAModel.Convert(col).(color.NRGBA)
+		ix, iy := int(x), int(y)
+		iw, ih := int(w), int(h)
+
+		for dx := 0; dx < iw; dx++ {
+			img.SetNRGBA(ix+dx, iy, c)
+			img.SetNRGBA(ix+dx, iy+ih-1, c)
+		}
+		for dy := 0; dy < ih; dy++ {
+			img.SetNRGBA(ix, iy+dy, c)
+			img.SetNRGBA(ix+iw-1, iy+dy, c)
+		}
+	}
+	defer func() { strokeRectFn = vector.StrokeRect }()
+
+	strokeRect(nil, 0, 0, 10, 10, 1, color.White, false)
+
+	for x := 0; x < 10; x++ {
+		if img.NRGBAAt(x, 0).A == 0 {
+			t.Fatalf("top edge pixel (%d,0) is transparent", x)
+		}
+		if img.NRGBAAt(x, 9).A == 0 {
+			t.Fatalf("bottom edge pixel (%d,9) is transparent", x)
+		}
+	}
+
+	for y := 0; y < 10; y++ {
+		if img.NRGBAAt(0, y).A == 0 {
+			t.Fatalf("left edge pixel (0,%d) is transparent", y)
+		}
+		if img.NRGBAAt(9, y).A == 0 {
+			t.Fatalf("right edge pixel (9,%d) is transparent", y)
+		}
 	}
 }
