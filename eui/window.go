@@ -148,7 +148,7 @@ func (target *windowData) AddWindow(toBack bool) {
 func (target *windowData) RemoveWindow() {
 	for i, win := range windows {
 		if win == target { // Compare pointers
-			win.disposeImages()
+			win.deallocImages()
 			windows = append(windows[:i], windows[i+1:]...)
 			win.Open = false
 			if activeWindow == target {
