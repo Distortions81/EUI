@@ -211,15 +211,23 @@ func TestSetSliderValue(t *testing.T) {
 	}
 }
 
-func sliderTrackWidth(item *itemData) float32 {
+func sliderTrackLength(item *itemData) float32 {
 	maxSize := item.GetSize()
-	// Use a fixed label width when measuring so sliders with
+	// Use a fixed label size when measuring so sliders with
 	// different ranges have equal track lengths.
 	maxLabel := sliderMaxLabel
 	textSize := (item.FontSize * uiScale) + 2
 	face := textFace(textSize)
-	maxW, _ := text.Measure(maxLabel, face, 0)
+	maxW, maxH := text.Measure(maxLabel, face, 0)
 	knobW := item.AuxSize.X * uiScale
+	knobH := item.AuxSize.Y * uiScale
+	if item.Vertical {
+		height := maxSize.Y - knobH - currentStyle.SliderValueGap - float32(maxH)
+		if height < 0 {
+			height = 0
+		}
+		return height
+	}
 	width := maxSize.X - knobW - currentStyle.SliderValueGap - float32(maxW)
 	if width < 0 {
 		width = 0
@@ -237,15 +245,73 @@ func TestSliderTrackLengthMatch(t *testing.T) {
 	}
 
 	base := &itemData{Size: point{X: 180, Y: 24}, AuxSize: point{X: 8, Y: 16}, FontSize: 12, MaxValue: 100}
-	floatTrack := sliderTrackWidth(base)
+	floatTrack := sliderTrackLength(base)
 
 	intSlider := *base
 	intSlider.MaxValue = 10
 	intSlider.IntOnly = true
-	intTrack := sliderTrackWidth(&intSlider)
+	intTrack := sliderTrackLength(&intSlider)
 
 	if math.Abs(float64(floatTrack-intTrack)) > 0.001 {
-		t.Errorf("track width mismatch: float %v int %v", floatTrack, intTrack)
+		t.Errorf("track length mismatch: float %v int %v", floatTrack, intTrack)
+	}
+}
+
+func TestSetSliderValueVertical(t *testing.T) {
+	if mplusFaceSource == nil {
+		s, err := text.NewGoTextFaceSource(bytes.NewReader(notoTTF))
+		if err != nil {
+			t.Fatalf("font init: %v", err)
+		}
+		mplusFaceSource = s
+	}
+	item := &itemData{MinValue: 0, MaxValue: 10, AuxSize: point{X: 16, Y: 8}, AuxSpace: 4, Vertical: true}
+	item.DrawRect = rect{X0: 0, Y0: 0, X1: 20, Y1: 100}
+	item.setSliderValue(point{Y: 58})
+	maxLabel := sliderMaxLabel
+	textSize := (item.FontSize * uiScale) + 2
+	face := textFace(textSize)
+	_, maxH := text.Measure(maxLabel, face, 0)
+	knobH := item.AuxSize.Y * uiScale
+	height := item.DrawRect.Y1 - item.DrawRect.Y0 - knobH - currentStyle.SliderValueGap - float32(maxH)
+	start := item.DrawRect.Y0 + knobH/2
+	val := float32(58) - start
+	if val < 0 {
+		val = 0
+	}
+	if val > height {
+		val = height
+	}
+	want := item.MaxValue - (val/height)*(item.MaxValue-item.MinValue)
+	if math.Abs(float64(item.Value-want)) > 0.001 {
+		t.Errorf("vertical slider value got %v want %v", item.Value, want)
+	}
+	item.IntOnly = true
+	item.setSliderValue(point{Y: 58})
+	if item.Value != float32(int(want+0.5)) {
+		t.Errorf("vertical int slider got %v want %v", item.Value, float32(int(want+0.5)))
+	}
+}
+
+func TestVerticalSliderTrackLengthMatch(t *testing.T) {
+	if mplusFaceSource == nil {
+		s, err := text.NewGoTextFaceSource(bytes.NewReader(notoTTF))
+		if err != nil {
+			t.Fatalf("font init: %v", err)
+		}
+		mplusFaceSource = s
+	}
+
+	base := &itemData{Size: point{X: 24, Y: 180}, AuxSize: point{X: 16, Y: 8}, FontSize: 12, MaxValue: 100, Vertical: true}
+	floatTrack := sliderTrackLength(base)
+
+	intSlider := *base
+	intSlider.MaxValue = 10
+	intSlider.IntOnly = true
+	intTrack := sliderTrackLength(&intSlider)
+
+	if math.Abs(float64(floatTrack-intTrack)) > 0.001 {
+		t.Errorf("vertical track length mismatch: float %v int %v", floatTrack, intTrack)
 	}
 }
 
