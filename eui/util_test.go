@@ -529,3 +529,25 @@ func TestSetScreenSizeClamps(t *testing.T) {
 		t.Errorf("window not clamped after SetScreenSize: %+v", pos)
 	}
 }
+
+func TestAutoSizeWindowResizesWithScale(t *testing.T) {
+	uiScale = 1
+	oldW, oldH := screenWidth, screenHeight
+	windows = nil
+	overlays = nil
+	screenWidth, screenHeight = 210, 200
+	defer func() {
+		screenWidth, screenHeight = oldW, oldH
+		uiScale = 1
+		windows = nil
+	}()
+
+	win := &windowData{AutoSize: true, TitleHeight: 0, Padding: 10}
+	win.addItemTo(&itemData{ItemType: ITEM_BUTTON, Size: point{X: 100, Y: 50}})
+	win.AddWindow(false)
+
+	SetUIScale(2)
+	if got := win.GetSize().X; got != float32(screenWidth) {
+		t.Fatalf("scaled window width got %v want %v", got, screenWidth)
+	}
+}

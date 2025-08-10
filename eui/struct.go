@@ -34,7 +34,7 @@ type windowData struct {
 	Open, Hovered, Flow,
 	Closable, Movable, Resizable,
 	HoverClose, HoverDragbar,
-	AutoSize, FixedRatio bool
+	AutoSize, AutoSizeOnScale, FixedRatio bool
 
 	// MainPortal renders the window before others, draws a scaled black
 	// pixel over the area outside it and skips drawing the background so
