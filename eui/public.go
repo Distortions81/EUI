@@ -15,8 +15,8 @@ func Overlays() []*ItemData { return overlays }
 // Open sets the window as open and adds it to the window list if needed.
 func (win *WindowData) Open() { win.MarkOpen() }
 
-// Close removes the window from the window list and marks it closed.
-func (win *WindowData) Close() { win.RemoveWindow() }
+// Close marks the window closed without removing it from the window list.
+func (win *WindowData) Close() { win.MarkClosed() }
 
 // Destroy closes the window and releases any cached resources.
 func (win *WindowData) Destroy() {
