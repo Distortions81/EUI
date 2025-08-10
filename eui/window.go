@@ -101,6 +101,11 @@ func stripItemColors(it *itemData) {
 
 // Add window to window list
 func (target *windowData) AddWindow(toBack bool) {
+	if target == nil {
+		log.Println("AddWindow: target is nil")
+		return
+	}
+
 	for _, win := range windows {
 		if win == target {
 			if toBack {
@@ -120,6 +125,11 @@ func (target *windowData) AddWindow(toBack bool) {
 		target.updateAutoSize()
 		target.AutoSizeOnScale = true
 		target.AutoSize = false
+	}
+
+	if target.Size.X <= 0 || target.Size.Y <= 0 {
+		log.Printf("AddWindow: rejecting window with non-positive size: %+v", target.Size)
+		return
 	}
 
 	target.clampToScreen()
@@ -147,6 +157,11 @@ func (target *windowData) AddWindow(toBack bool) {
 // RemoveWindow removes a window from the active list. Any cached images
 // belonging to the window are disposed and pointers cleared.
 func (target *windowData) RemoveWindow() {
+	if target == nil {
+		log.Println("RemoveWindow: target is nil")
+		return
+	}
+
 	for i, win := range windows {
 		if win == target { // Compare pointers
 			win.deallocImages()

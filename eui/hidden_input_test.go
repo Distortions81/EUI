@@ -19,6 +19,7 @@ func TestHiddenInputCached(t *testing.T) {
 
 	win := *defaultTheme
 	win.Theme = baseTheme
+	win.Size = point{X: 100, Y: 100}
 	win.Contents = []*itemData{&input}
 
 	windows = nil

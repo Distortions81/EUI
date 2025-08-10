@@ -33,6 +33,7 @@ var textDrawOptionsPool = sync.Pool{
 
 func acquireTextDrawOptions() *text.DrawOptions {
 	op := textDrawOptionsPool.Get().(*text.DrawOptions)
+	op.DrawImageOptions = ebiten.DrawImageOptions{}
 	op.DrawImageOptions.GeoM.Reset()
 	op.DrawImageOptions.ColorScale.Reset()
 	op.LayoutOptions = text.LayoutOptions{}
