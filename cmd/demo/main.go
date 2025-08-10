@@ -67,7 +67,9 @@ func main() {
 		Position: eui.Point{X: 110, Y: 0},
 		PinTo:    eui.PIN_BOTTOM_LEFT,
 	}
-	statusText, _ = eui.NewText(&eui.ItemData{Size: eui.Point{X: 300, Y: 24}, FontSize: 8})
+	statusText, _ = eui.NewText()
+	statusText.Size = eui.Point{X: 300, Y: 24}
+	statusText.FontSize = 8
 	statusOverlay.AddItem(statusText)
 	eui.AddOverlayFlow(statusOverlay)
 
@@ -77,10 +79,15 @@ func main() {
 		PinTo:    eui.PIN_BOTTOM_LEFT,
 	}
 
-	textItem, _ := eui.NewText(&eui.ItemData{FontSize: 8, Size: eui.Point{X: 80, Y: 24}})
+	textItem, _ := eui.NewText()
+	textItem.FontSize = 8
+	textItem.Size = eui.Point{X: 80, Y: 24}
 	textItem.Text = fmt.Sprintf("Scale: %2.2f", currentScale)
 
-	minusBtn, minusEvents := eui.NewButton(&eui.ItemData{Text: "-", Size: eui.Point{X: 24, Y: 24}, FontSize: 8})
+	minusBtn, minusEvents := eui.NewButton()
+	minusBtn.Text = "-"
+	minusBtn.Size = eui.Point{X: 24, Y: 24}
+	minusBtn.FontSize = 8
 	minusEvents.Handle = func(ev eui.UIEvent) {
 		if ev.Type == eui.EventClick {
 			currentScale = eui.UIScale()
@@ -90,7 +97,10 @@ func main() {
 			textItem.Text = fmt.Sprintf("Scale: %2.2f", currentScale)
 		}
 	}
-	plusBtn, plusEvents := eui.NewButton(&eui.ItemData{Text: "+", Size: eui.Point{X: 24, Y: 24}, FontSize: 8})
+	plusBtn, plusEvents := eui.NewButton()
+	plusBtn.Text = "+"
+	plusBtn.Size = eui.Point{X: 24, Y: 24}
+	plusBtn.FontSize = 8
 	plusEvents.Handle = func(ev eui.UIEvent) {
 		if ev.Type == eui.EventClick {
 			currentScale = eui.UIScale()

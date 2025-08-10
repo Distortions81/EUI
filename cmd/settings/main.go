@@ -38,33 +38,48 @@ func main() {
 	currentScale = 1.5
 	eui.SetUIScale(currentScale)
 
-	win := eui.NewWindow(&eui.WindowData{
-		Open: true, Resizable: true,
-		Closable: true, Title: "Settings",
-		AutoSize: true, Movable: true,
-	})
+	win := eui.NewWindow()
+	win.Open = true
+	win.Resizable = true
+	win.Closable = true
+	win.Title = "Settings"
+	win.AutoSize = true
+	win.Movable = true
 
 	mainFlow := &eui.ItemData{
 		ItemType: eui.ITEM_FLOW,
 		FlowType: eui.FLOW_VERTICAL,
 	}
 
-	b1, _ := eui.NewCheckbox(&eui.ItemData{Text: "Show Item Names", Size: eui.Point{X: 150, Y: 24}})
+	b1, _ := eui.NewCheckbox()
+	b1.Text = "Show Item Names"
+	b1.Size = eui.Point{X: 150, Y: 24}
 	mainFlow.AddItem(b1)
-	b2, _ := eui.NewCheckbox(&eui.ItemData{Text: "Show Legends", Size: eui.Point{X: 150, Y: 24}})
+	b2, _ := eui.NewCheckbox()
+	b2.Text = "Show Legends"
+	b2.Size = eui.Point{X: 150, Y: 24}
 	mainFlow.AddItem(b2)
-	b3, _ := eui.NewCheckbox(&eui.ItemData{Text: "Use Item Numbers", Size: eui.Point{X: 150, Y: 24}})
+	b3, _ := eui.NewCheckbox()
+	b3.Text = "Use Item Numbers"
+	b3.Size = eui.Point{X: 150, Y: 24}
 	mainFlow.AddItem(b3)
 
 	IconFlow := &eui.ItemData{
 		ItemType: eui.ITEM_FLOW,
 		FlowType: eui.FLOW_HORIZONTAL,
 	}
-	t1, _ := eui.NewText(&eui.ItemData{Text: "Icon Size:", FontSize: 9, Size: eui.Point{X: 50, Y: 24}})
+	t1, _ := eui.NewText()
+	t1.Text = "Icon Size:"
+	t1.FontSize = 9
+	t1.Size = eui.Point{X: 50, Y: 24}
 	IconFlow.AddItem(t1)
-	t2, _ := eui.NewButton(&eui.ItemData{Text: "-", Size: eui.Point{X: 16, Y: 16}})
+	t2, _ := eui.NewButton()
+	t2.Text = "-"
+	t2.Size = eui.Point{X: 16, Y: 16}
 	IconFlow.AddItem(t2)
-	t3, _ := eui.NewButton(&eui.ItemData{Text: "+", Size: eui.Point{X: 16, Y: 16}})
+	t3, _ := eui.NewButton()
+	t3.Text = "+"
+	t3.Size = eui.Point{X: 16, Y: 16}
 	IconFlow.AddItem(t3)
 	mainFlow.AddItem(IconFlow)
 
@@ -72,31 +87,54 @@ func main() {
 		ItemType: eui.ITEM_FLOW,
 		FlowType: eui.FLOW_HORIZONTAL,
 	}
-	u1, _ := eui.NewText(&eui.ItemData{Text: "UI Scale:", FontSize: 9, Size: eui.Point{X: 50, Y: 24}})
+	u1, _ := eui.NewText()
+	u1.Text = "UI Scale:"
+	u1.FontSize = 9
+	u1.Size = eui.Point{X: 50, Y: 24}
 	ScaleFlow.AddItem(u1)
-	u2, _ := eui.NewButton(&eui.ItemData{Text: "-", Size: eui.Point{X: 16, Y: 16}})
+	u2, _ := eui.NewButton()
+	u2.Text = "-"
+	u2.Size = eui.Point{X: 16, Y: 16}
 	ScaleFlow.AddItem(u2)
-	u3, _ := eui.NewButton(&eui.ItemData{Text: "+", Size: eui.Point{X: 16, Y: 16}})
+	u3, _ := eui.NewButton()
+	u3.Text = "+"
+	u3.Size = eui.Point{X: 16, Y: 16}
 	ScaleFlow.AddItem(u3)
 	mainFlow.AddItem(ScaleFlow)
 
-	c1, _ := eui.NewCheckbox(&eui.ItemData{Text: "Textures", Size: eui.Point{X: 150, Y: 24}})
+	c1, _ := eui.NewCheckbox()
+	c1.Text = "Textures"
+	c1.Size = eui.Point{X: 150, Y: 24}
 	mainFlow.AddItem(c1)
-	c2, _ := eui.NewCheckbox(&eui.ItemData{Text: "VSync", Size: eui.Point{X: 150, Y: 24}})
+	c2, _ := eui.NewCheckbox()
+	c2.Text = "VSync"
+	c2.Size = eui.Point{X: 150, Y: 24}
 	mainFlow.AddItem(c2)
-	c3, _ := eui.NewCheckbox(&eui.ItemData{Text: "Power Saver", Size: eui.Point{X: 150, Y: 24}})
+	c3, _ := eui.NewCheckbox()
+	c3.Text = "Power Saver"
+	c3.Size = eui.Point{X: 150, Y: 24}
 	mainFlow.AddItem(c3)
-	c4, _ := eui.NewCheckbox(&eui.ItemData{Text: "Linear Filtering", Size: eui.Point{X: 150, Y: 24}})
+	c4, _ := eui.NewCheckbox()
+	c4.Text = "Linear Filtering"
+	c4.Size = eui.Point{X: 150, Y: 24}
 	mainFlow.AddItem(c4)
-	c5, _ := eui.NewCheckbox(&eui.ItemData{Text: "HiDPI", Size: eui.Point{X: 150, Y: 24}})
+	c5, _ := eui.NewCheckbox()
+	c5.Text = "HiDPI"
+	c5.Size = eui.Point{X: 150, Y: 24}
 	mainFlow.AddItem(c5)
 
 	cFPS := fmt.Sprintf("FPS: %2.2f", ebiten.ActualFPS())
-	tt1, _ := eui.NewText(&eui.ItemData{Text: cFPS, FontSize: 9, Size: eui.Point{X: 150, Y: 12}})
+	tt1, _ := eui.NewText()
+	tt1.Text = cFPS
+	tt1.FontSize = 9
+	tt1.Size = eui.Point{X: 150, Y: 12}
 	mainFlow.AddItem(tt1)
 
 	vers := fmt.Sprintf("Version: %v", "v0.0.9-012345")
-	tt2, _ := eui.NewText(&eui.ItemData{Text: vers, FontSize: 9, Size: eui.Point{X: 150, Y: 12}})
+	tt2, _ := eui.NewText()
+	tt2.Text = vers
+	tt2.FontSize = 9
+	tt2.Size = eui.Point{X: 150, Y: 12}
 	mainFlow.AddItem(tt2)
 
 	win.AddItem(mainFlow)

@@ -89,10 +89,10 @@ func TestTextDrawOptionsPoolResets(t *testing.T) {
 	op := acquireTextDrawOptions()
 	op.DrawImageOptions.GeoM.Translate(1, 1)
 	op.DrawImageOptions.ColorScale.Scale(0.5, 0.25, 0.75, 0.5)
-	op.LayoutOptions = etext.LayoutOptions{
+	op.LayoutOptions = text.LayoutOptions{
 		LineSpacing:    1,
-		PrimaryAlign:   etext.AlignCenter,
-		SecondaryAlign: etext.AlignEnd,
+		PrimaryAlign:   text.AlignCenter,
+		SecondaryAlign: text.AlignEnd,
 	}
 	op.ColorScale.Scale(0.5, 0.5, 0.5, 0.5)
 	releaseTextDrawOptions(op)
@@ -104,7 +104,7 @@ func TestTextDrawOptionsPoolResets(t *testing.T) {
 	if op.ColorScale.R() != 1 || op.ColorScale.G() != 1 || op.ColorScale.B() != 1 || op.ColorScale.A() != 1 {
 		t.Fatalf("ColorScale not reset: %v", op.ColorScale)
 	}
-	if op.LayoutOptions != (etext.LayoutOptions{}) {
+	if op.LayoutOptions != (text.LayoutOptions{}) {
 		t.Fatalf("LayoutOptions not reset: %#v", op.LayoutOptions)
 	}
 	releaseTextDrawOptions(op)
