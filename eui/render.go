@@ -449,12 +449,33 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 			tabHeight = th
 		}
 		textSize := (item.FontSize * uiScale) + 2
+		face := textFace(textSize)
 		x := offset.X
 		spacing := float32(4) * uiScale
 		for i, tab := range item.Tabs {
-			face := textFace(textSize)
-			tw, _ := text.Measure(tab.Name, face, 0)
-			w := float32(tw) + 8
+			if tab.nameImage == nil || tab.prevName != tab.Name || tab.nameFontSize != textSize {
+				tw, th := text.Measure(tab.Name, face, 0)
+				tab.nameWidth = float32(tw)
+				tab.nameHeight = float32(th)
+				iw := int(math.Ceil(float64(tab.nameWidth)))
+				ih := int(math.Ceil(float64(tab.nameHeight)))
+				if iw <= 0 {
+					iw = 1
+				}
+				if ih <= 0 {
+					ih = 1
+				}
+				if tab.nameImage != nil {
+					tab.nameImage.Deallocate()
+				}
+				tab.nameImage = ebiten.NewImage(iw, ih)
+				dto := &text.DrawOptions{}
+				dto.ColorScale.ScaleWithColor(color.White)
+				text.Draw(tab.nameImage, tab.Name, face, dto)
+				tab.prevName = tab.Name
+				tab.nameFontSize = textSize
+			}
+			w := tab.nameWidth + 8
 			if w < float32(defaultTabWidth)*uiScale {
 				w = float32(defaultTabWidth) * uiScale
 			}
@@ -502,12 +523,12 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 					3*uiScale,
 				)
 			}
-			loo := text.LayoutOptions{PrimaryAlign: text.AlignCenter, SecondaryAlign: text.AlignCenter}
-			dop := ebiten.DrawImageOptions{}
-			dop.GeoM.Translate(float64(x+w/2), float64(offset.Y+tabHeight/2))
-			dto := &text.DrawOptions{DrawImageOptions: dop, LayoutOptions: loo}
-			dto.ColorScale.ScaleWithColor(style.TextColor)
-			text.Draw(screen, tab.Name, face, dto)
+			tx := x + (w-tab.nameWidth)/2
+			ty := offset.Y + (tabHeight-tab.nameHeight)/2
+			sop := ebiten.DrawImageOptions{}
+			sop.GeoM.Translate(float64(tx), float64(ty))
+			sop.ColorScale.ScaleWithColor(style.TextColor)
+			screen.DrawImage(tab.nameImage, &sop)
 			tab.DrawRect = rect{X0: x, Y0: offset.Y, X1: x + w, Y1: offset.Y + tabHeight}
 			x += w + spacing
 		}

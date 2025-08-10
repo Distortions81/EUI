@@ -25,6 +25,13 @@ func (item *itemData) deallocImages() {
 		item.LabelImage.Deallocate()
 		item.LabelImage = nil
 	}
+	if item.nameImage != nil {
+		if DebugMode {
+			log.Printf("disposing name image for item %p", item)
+		}
+		item.nameImage.Deallocate()
+		item.nameImage = nil
+	}
 	for _, child := range item.Contents {
 		if child != nil {
 			child.deallocImages()
