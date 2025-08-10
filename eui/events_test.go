@@ -6,9 +6,10 @@ import (
 	"bytes"
 	"log"
 	"testing"
+	"time"
 )
 
-func TestEmitLogsWhenChannelFull(t *testing.T) {
+func TestEmitDeliversWhenChannelFull(t *testing.T) {
 	var buf bytes.Buffer
 	orig := log.Writer()
 	log.SetOutput(&buf)
@@ -17,9 +18,27 @@ func TestEmitLogsWhenChannelFull(t *testing.T) {
 	h := &EventHandler{Events: make(chan UIEvent, 1)}
 	h.Events <- UIEvent{Type: EventClick}
 
-	h.Emit(UIEvent{Type: EventSliderChanged})
+	done := make(chan struct{})
+	go func() {
+		h.Emit(UIEvent{Type: EventSliderChanged})
+		close(done)
+	}()
 
-	if buf.Len() == 0 {
-		t.Fatal("expected log output when event dropped, got none")
+	time.Sleep(10 * time.Millisecond)
+	<-h.Events
+
+	select {
+	case <-done:
+	case <-time.After(time.Second):
+		t.Fatal("emit did not complete")
+	}
+
+	ev := <-h.Events
+	if ev.Type != EventSliderChanged {
+		t.Fatalf("expected EventSliderChanged, got %v", ev.Type)
+	}
+
+	if buf.Len() != 0 {
+		t.Fatalf("unexpected log output: %s", buf.String())
 	}
 }
