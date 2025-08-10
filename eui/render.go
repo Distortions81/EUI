@@ -169,6 +169,7 @@ func drawHoveredTooltip(screen *ebiten.Image) {
 
 func (win *windowData) Draw(screen *ebiten.Image) {
 	pos := win.getPosition()
+	localPos := point{X: win.Margin * uiScale, Y: win.Margin * uiScale}
 
 	if win.Render == nil || win.Dirty || win.itemsDirty() {
 		size := win.GetSize()
@@ -183,6 +184,7 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 		}
 		origPos := win.Position
 		win.Position = point{}
+		localPos = win.getPosition()
 		if !win.MainPortal {
 			win.drawBG(win.Render)
 		}
@@ -192,15 +194,18 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 		win.drawBorder(win.Render, win.getWinRect())
 		win.drawDebug(win.Render)
 		win.Position = origPos
+		shift := pointSub(pos, localPos)
+		shiftDrawRects(win, shift)
 		win.Dirty = false
 	}
 
+	shift := pointSub(pos, localPos)
 	if win.MainPortal {
 		win.drawPortalMask(screen)
 	}
 	if win.Render != nil {
 		op := ebiten.DrawImageOptions{}
-		op.GeoM.Translate(float64(pos.X), float64(pos.Y))
+		op.GeoM.Translate(float64(shift.X), float64(shift.Y))
 		screen.DrawImage(win.Render, &op)
 	}
 }
@@ -444,6 +449,25 @@ func (win *windowData) drawItems(screen *ebiten.Image) {
 		} else {
 			item.drawItem(nil, itemPos, clip, screen)
 		}
+	}
+}
+
+func shiftItemRects(item *itemData, delta point) {
+	item.DrawRect.X0 += delta.X
+	item.DrawRect.X1 += delta.X
+	item.DrawRect.Y0 += delta.Y
+	item.DrawRect.Y1 += delta.Y
+	for _, child := range item.Contents {
+		shiftItemRects(child, delta)
+	}
+	for _, tab := range item.Tabs {
+		shiftItemRects(tab, delta)
+	}
+}
+
+func shiftDrawRects(win *windowData, delta point) {
+	for _, item := range win.Contents {
+		shiftItemRects(item, delta)
 	}
 }
 
