@@ -624,16 +624,17 @@ func (win *windowData) itemsDirty() bool {
 }
 
 func (item *itemData) bounds(offset point) rect {
+	m := item.Margin * uiScale
 	var r rect
 	if item.ItemType == ITEM_FLOW && !item.Fixed {
 		// Unfixed flows should report bounds based solely on their content
-		r = rect{X0: offset.X, Y0: offset.Y, X1: offset.X, Y1: offset.Y}
+		r = rect{X0: offset.X, Y0: offset.Y, X1: offset.X + m, Y1: offset.Y + m}
 	} else {
 		r = rect{
 			X0: offset.X,
 			Y0: offset.Y,
-			X1: offset.X + item.GetSize().X,
-			Y1: offset.Y + item.GetSize().Y,
+			X1: offset.X + item.GetSize().X + m,
+			Y1: offset.Y + item.GetSize().Y + m,
 		}
 	}
 	if item.ItemType == ITEM_FLOW {
@@ -648,25 +649,27 @@ func (item *itemData) bounds(offset point) rect {
 			subItems = item.Contents
 		}
 		for _, sub := range subItems {
+			sm := sub.Margin * uiScale
 			var off point
 			if item.FlowType == FLOW_HORIZONTAL {
-				off = pointAdd(offset, point{X: flowOffset.X + sub.GetPos().X, Y: sub.GetPos().Y})
+				off = pointAdd(offset, point{X: flowOffset.X + sub.GetPos().X + sm, Y: sub.GetPos().Y + sm})
 			} else if item.FlowType == FLOW_VERTICAL {
-				off = pointAdd(offset, point{X: sub.GetPos().X, Y: flowOffset.Y + sub.GetPos().Y})
+				off = pointAdd(offset, point{X: sub.GetPos().X + sm, Y: flowOffset.Y + sub.GetPos().Y + sm})
 			} else {
-				off = pointAdd(offset, pointAdd(flowOffset, sub.GetPos()))
+				off = pointAdd(offset, pointAdd(flowOffset, point{X: sub.GetPos().X + sm, Y: sub.GetPos().Y + sm}))
 			}
 			sr := sub.bounds(off)
 			r = unionRect(r, sr)
 			if item.FlowType == FLOW_HORIZONTAL {
-				flowOffset.X += sub.GetSize().X + sub.GetPos().X
+				flowOffset.X += sub.GetSize().X + sub.GetPos().X + sm
 			} else if item.FlowType == FLOW_VERTICAL {
-				flowOffset.Y += sub.GetSize().Y + sub.GetPos().Y
+				flowOffset.Y += sub.GetSize().Y + sub.GetPos().Y + sm
 			}
 		}
 	} else {
 		for _, sub := range item.Contents {
-			off := pointAdd(offset, sub.GetPos())
+			sm := sub.Margin * uiScale
+			off := pointAdd(offset, point{X: sub.GetPos().X + sm, Y: sub.GetPos().Y + sm})
 			r = unionRect(r, sub.bounds(off))
 		}
 	}
@@ -684,16 +687,18 @@ func (win *windowData) contentBounds() point {
 
 	for _, item := range win.Contents {
 		var r rect
+		m := item.Margin * uiScale
 		if item.ItemType == ITEM_FLOW {
 			cb := item.contentBounds()
 			r = rect{
-				X0: base.X + item.GetPos().X,
-				Y0: base.Y + item.GetPos().Y,
-				X1: base.X + item.GetPos().X + cb.X,
-				Y1: base.Y + item.GetPos().Y + cb.Y,
+				X0: base.X + item.GetPos().X + m,
+				Y0: base.Y + item.GetPos().Y + m,
+				X1: base.X + item.GetPos().X + cb.X + m,
+				Y1: base.Y + item.GetPos().Y + cb.Y + m,
 			}
 		} else {
-			r = item.bounds(pointAdd(base, item.GetPos()))
+			off := pointAdd(base, point{X: item.GetPos().X + m, Y: item.GetPos().Y + m})
+			r = item.bounds(off)
 		}
 		if first {
 			b = r
@@ -751,14 +756,15 @@ func (item *itemData) contentBounds() point {
 	var flowOffset point
 
 	for _, sub := range list {
-		off := pointAdd(base, sub.GetPos())
+		sm := sub.Margin * uiScale
+		off := pointAdd(base, point{X: sub.GetPos().X + sm, Y: sub.GetPos().Y + sm})
 		if item.ItemType == ITEM_FLOW {
 			if item.FlowType == FLOW_HORIZONTAL {
-				off = pointAdd(base, point{X: flowOffset.X + sub.GetPos().X, Y: sub.GetPos().Y})
+				off = pointAdd(base, point{X: flowOffset.X + sub.GetPos().X + sm, Y: sub.GetPos().Y + sm})
 			} else if item.FlowType == FLOW_VERTICAL {
-				off = pointAdd(base, point{X: sub.GetPos().X, Y: flowOffset.Y + sub.GetPos().Y})
+				off = pointAdd(base, point{X: sub.GetPos().X + sm, Y: flowOffset.Y + sub.GetPos().Y + sm})
 			} else {
-				off = pointAdd(base, pointAdd(flowOffset, sub.GetPos()))
+				off = pointAdd(base, pointAdd(flowOffset, point{X: sub.GetPos().X + sm, Y: sub.GetPos().Y + sm}))
 			}
 		}
 
@@ -772,9 +778,9 @@ func (item *itemData) contentBounds() point {
 
 		if item.ItemType == ITEM_FLOW {
 			if item.FlowType == FLOW_HORIZONTAL {
-				flowOffset.X += sub.GetSize().X + sub.GetPos().X
+				flowOffset.X += sub.GetSize().X + sub.GetPos().X + sm
 			} else if item.FlowType == FLOW_VERTICAL {
-				flowOffset.Y += sub.GetSize().Y + sub.GetPos().Y
+				flowOffset.Y += sub.GetSize().Y + sub.GetPos().Y + sm
 			}
 		}
 	}
