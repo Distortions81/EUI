@@ -9,9 +9,6 @@ func AddOverlayFlow(flow *itemData) {
 			return
 		}
 	}
-	if currentTheme != nil {
-		applyThemeToItem(flow)
-	}
 	overlays = append(overlays, flow)
 	flow.resizeFlow(flow.GetSize())
 }

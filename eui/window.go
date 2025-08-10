@@ -124,10 +124,6 @@ func (target *windowData) AddWindow(toBack bool) {
 
 	target.clampToScreen()
 
-	if currentTheme != nil {
-		applyThemeToWindow(target)
-	}
-
 	// Closed windows shouldn't steal focus, so add them to the back by
 	// default and don't update the active window.
 	if !target.open {

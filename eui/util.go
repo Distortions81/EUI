@@ -64,9 +64,6 @@ func (item *itemData) getItemRect(win *windowData) rect {
 func (parent *itemData) addItemTo(item *itemData) {
 	item.Parent = parent
 	item.win = parent.win
-	if currentTheme != nil {
-		applyThemeToItem(item)
-	}
 	parent.Contents = append(parent.Contents, item)
 	if parent.ItemType == ITEM_FLOW {
 		parent.resizeFlow(parent.GetSize())
@@ -77,9 +74,6 @@ func (parent *itemData) addItemTo(item *itemData) {
 }
 
 func (parent *windowData) addItemTo(item *itemData) {
-	if currentTheme != nil {
-		applyThemeToItem(item)
-	}
 	parent.Contents = append(parent.Contents, item)
 	item.win = parent
 	item.resizeFlow(parent.GetSize())
