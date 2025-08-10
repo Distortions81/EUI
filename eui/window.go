@@ -72,7 +72,7 @@ func mergeData(original interface{}, updates interface{}) interface{} {
 }
 
 func isZeroValue(value reflect.Value) bool {
-	return reflect.DeepEqual(value.Interface(), reflect.Zero(value.Type()).Interface())
+	return value.IsZero()
 }
 
 func stripWindowColors(w *windowData) {
