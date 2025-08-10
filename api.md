@@ -284,7 +284,8 @@ func Update() error
     can call this from their Ebiten Update handler.
 
 func NewWindow() *windowData
-    Create a new window from the default theme
+    Create a new window from the default theme. Windows start closed; call
+    Open to display them.
 
 
 TYPES
