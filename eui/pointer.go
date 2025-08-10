@@ -24,10 +24,18 @@ const touchScrollScale = 0.05
 // If a touch is active, the first touch is used. Otherwise the mouse cursor position is returned.
 func pointerPosition() (int, int) {
 	touchIDs = ebiten.AppendTouchIDs(touchIDs[:0])
+	var x, y int
 	if len(touchIDs) > 0 {
-		return ebiten.TouchPosition(touchIDs[0])
+		x, y = ebiten.TouchPosition(touchIDs[0])
+	} else {
+		x, y = ebiten.CursorPosition()
 	}
-	return ebiten.CursorPosition()
+	if AutoHiDPI {
+		scale := lastDeviceScale
+		x = int(float64(x) * scale)
+		y = int(float64(y) * scale)
+	}
+	return x, y
 }
 
 // pointerWheel returns the wheel delta for mouse or two-finger touch scrolling.
