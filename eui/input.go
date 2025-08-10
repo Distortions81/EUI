@@ -604,30 +604,49 @@ func clearExpiredClicks() {
 }
 
 func (item *itemData) setSliderValue(mpos point) {
-	// Determine the width of the slider track accounting for the
-	// displayed value text to the right of the knob.
-	// Measure against a consistent label width so sliders with
-	// different ranges have identical track lengths.
+	// Determine the length of the slider track accounting for the
+	// displayed value text adjacent to the knob. Measure against a
+	// consistent label so sliders with different ranges have
+	// identical track lengths.
 	maxLabel := sliderMaxLabel
 	textSize := (item.FontSize * uiScale) + 2
 	face := textFace(textSize)
-	maxW, _ := text.Measure(maxLabel, face, 0)
+	maxW, maxH := text.Measure(maxLabel, face, 0)
 
 	knobW := item.AuxSize.X * uiScale
-	width := item.DrawRect.X1 - item.DrawRect.X0 - knobW - currentStyle.SliderValueGap - float32(maxW)
-	if width <= 0 {
-		return
+	knobH := item.AuxSize.Y * uiScale
+
+	if item.Vertical {
+		height := item.DrawRect.Y1 - item.DrawRect.Y0 - knobH - currentStyle.SliderValueGap - float32(maxH)
+		if height <= 0 {
+			return
+		}
+		start := item.DrawRect.Y0 + knobH/2
+		val := mpos.Y - start
+		if val < 0 {
+			val = 0
+		}
+		if val > height {
+			val = height
+		}
+		ratio := val / height
+		item.Value = item.MaxValue - ratio*(item.MaxValue-item.MinValue)
+	} else {
+		width := item.DrawRect.X1 - item.DrawRect.X0 - knobW - currentStyle.SliderValueGap - float32(maxW)
+		if width <= 0 {
+			return
+		}
+		start := item.DrawRect.X0 + knobW/2
+		val := mpos.X - start
+		if val < 0 {
+			val = 0
+		}
+		if val > width {
+			val = width
+		}
+		ratio := val / width
+		item.Value = item.MinValue + ratio*(item.MaxValue-item.MinValue)
 	}
-	start := item.DrawRect.X0 + knobW/2
-	val := (mpos.X - start)
-	if val < 0 {
-		val = 0
-	}
-	if val > width {
-		val = width
-	}
-	ratio := val / width
-	item.Value = item.MinValue + ratio*(item.MaxValue-item.MinValue)
 	if item.IntOnly {
 		item.Value = float32(int(item.Value + 0.5))
 	}

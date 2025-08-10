@@ -238,6 +238,8 @@ func NewRadio() (*itemData, *EventHandler)
 
 func NewSlider() (*itemData, *EventHandler)
     Create a new slider from the default theme
+    The returned slider supports horizontal or vertical orientation via the
+    Vertical field.
 
 func NewText() (*itemData, *EventHandler)
     Create a new textbox from the default theme

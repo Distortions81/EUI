@@ -102,6 +102,7 @@ type itemData struct {
 	MinValue   float32
 	MaxValue   float32
 	IntOnly    bool
+	Vertical   bool
 	RadioGroup string
 	Hide       bool
 	Reveal     bool

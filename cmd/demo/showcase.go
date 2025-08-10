@@ -110,6 +110,21 @@ func makeShowcaseWindow() *eui.WindowData {
 	}
 	mainFlow.AddItem(intSlider)
 
+	vertSlider, vertEvents := eui.NewSlider()
+	vertSlider.Label = "Vertical Slider"
+	vertSlider.Size = eui.Point{X: 24, Y: 180}
+	vertSlider.MinValue = 0
+	vertSlider.MaxValue = 100
+	vertSlider.Vertical = true
+	vertSlider.FontSize = 8
+	vertSlider.Value = 20
+	vertEvents.Handle = func(ev eui.UIEvent) {
+		if ev.Type == eui.EventSliderChanged {
+			setStatus(fmt.Sprintf("Vertical Slider changed: %.0f", ev.Value))
+		}
+	}
+	mainFlow.AddItem(vertSlider)
+
 	input, inputEvents := eui.NewInput()
 	input.Label = "Text Field"
 	input.Text = "Text Text!"
