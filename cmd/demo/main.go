@@ -52,13 +52,9 @@ func main() {
 	currentScale = 1.5
 	eui.SetUIScale(currentScale)
 
-	showcase := makeShowcaseWindow()
-	showcase.AddWindow(false)
+	makeShowcaseWindow()
 
 	themeSel = makeThemeSelector()
-	if themeSel != nil {
-		themeSel.AddWindow(false)
-	}
 
 	statusOverlay := &eui.ItemData{
 		ItemType: eui.ITEM_FLOW,

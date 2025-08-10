@@ -82,7 +82,7 @@ func Update() error {
 	// receive input first.
 	handled := false
 	handleWindow := func(win *windowData) bool {
-		if !win.Open {
+		if !win.open {
 			return false
 		}
 
@@ -114,8 +114,7 @@ func Update() error {
 
 			if click && dragPart == PART_NONE {
 				if part == PART_CLOSE {
-					win.Open = false
-					win.RemoveWindow()
+					win.Close()
 					return false
 				}
 				dragPart = part
@@ -193,7 +192,7 @@ func Update() error {
 
 	for i := len(windows) - 1; i >= 0; i-- {
 		win := windows[i]
-		if !win.Open || win.MainPortal {
+		if !win.open || win.MainPortal {
 			continue
 		}
 		if handleWindow(win) {
@@ -204,7 +203,7 @@ func Update() error {
 	if !handled {
 		for i := len(windows) - 1; i >= 0; i-- {
 			win := windows[i]
-			if !win.Open || !win.MainPortal {
+			if !win.open || !win.MainPortal {
 				continue
 			}
 			if handleWindow(win) {
@@ -268,7 +267,7 @@ func Update() error {
 	if wheelDelta.X != 0 || wheelDelta.Y != 0 {
 		for i := len(windows) - 1; i >= 0; i-- {
 			win := windows[i]
-			if !win.Open {
+			if !win.open {
 				continue
 			}
 			if win.getMainRect().containsPoint(mpos) || dropdownOpenContains(win.Contents, mpos) {
@@ -912,7 +911,7 @@ func clickOpenDropdown(items []*itemData, mpos point, click bool) bool {
 
 func dropdownOpenContainsAnywhere(mpos point) bool {
 	for _, win := range windows {
-		if win.Open && dropdownOpenContains(win.Contents, mpos) {
+		if win.open && dropdownOpenContains(win.Contents, mpos) {
 			return true
 		}
 	}
@@ -941,7 +940,7 @@ func closeDropdowns(items []*itemData) {
 
 func closeAllDropdowns() {
 	for _, win := range windows {
-		if win.Open {
+		if win.open {
 			closeDropdowns(win.Contents)
 		}
 	}
@@ -969,7 +968,7 @@ func collectInputItems(items []*itemData, list []*itemData) []*itemData {
 func gatherAllInputItems() []*itemData {
 	var list []*itemData
 	for _, win := range windows {
-		if win.Open {
+		if win.open {
 			list = collectInputItems(win.Contents, list)
 		}
 	}

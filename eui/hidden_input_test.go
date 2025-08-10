@@ -20,9 +20,9 @@ func TestHiddenInputCached(t *testing.T) {
 	win := *defaultTheme
 	win.Theme = baseTheme
 	win.Contents = []*itemData{&input}
-	win.Open = true
 
-	windows = []*windowData{&win}
+	windows = nil
+	win.Open()
 	screen := ebiten.NewImage(200, 200)
 
 	win.Dirty = true

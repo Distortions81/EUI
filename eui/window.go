@@ -130,7 +130,7 @@ func (target *windowData) AddWindow(toBack bool) {
 
 	// Closed windows shouldn't steal focus, so add them to the back by
 	// default and don't update the active window.
-	if !target.Open {
+	if !target.open {
 		toBack = true
 	}
 
@@ -151,11 +151,11 @@ func (target *windowData) RemoveWindow() {
 		if win == target { // Compare pointers
 			win.deallocImages()
 			windows = append(windows[:i], windows[i+1:]...)
-			win.Open = false
+			win.open = false
 			if activeWindow == target {
 				activeWindow = nil
 				for j := len(windows) - 1; j >= 0; j-- {
-					if windows[j].Open {
+					if windows[j].open {
 						activeWindow = windows[j]
 						break
 					}
@@ -331,7 +331,7 @@ func (target *windowData) BringForward() {
 
 // MarkOpen sets the window to open and brings it forward if necessary.
 func (target *windowData) MarkOpen() {
-	target.Open = true
+	target.open = true
 	found := false
 	for _, win := range windows {
 		if win == target {

@@ -44,7 +44,7 @@ func Draw(screen *ebiten.Image) {
 	// Draw main portal windows first so game content can render beneath
 	// other UI elements.
 	for _, win := range windows {
-		if !win.Open || !win.MainPortal {
+		if !win.open || !win.MainPortal {
 			continue
 		}
 		if win.Dirty {
@@ -57,7 +57,7 @@ func Draw(screen *ebiten.Image) {
 
 	// Draw the remaining windows on top.
 	for _, win := range windows {
-		if !win.Open || win.MainPortal {
+		if !win.open || win.MainPortal {
 			continue
 		}
 		if win.Dirty {

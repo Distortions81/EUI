@@ -250,12 +250,12 @@ func TestSliderTrackLengthMatch(t *testing.T) {
 }
 
 func TestMarkOpen(t *testing.T) {
-	win1 := &windowData{Title: "win1", Open: true}
-	win2 := &windowData{Title: "win2", Open: false}
+	win1 := &windowData{Title: "win1", open: true}
+	win2 := &windowData{Title: "win2", open: false}
 	windows = []*windowData{win2, win1}
 	activeWindow = win1
 	win2.MarkOpen()
-	if !win2.Open {
+	if !win2.IsOpen() {
 		t.Errorf("expected window to be open")
 	}
 	if activeWindow != win2 {
@@ -267,8 +267,8 @@ func TestMarkOpen(t *testing.T) {
 }
 
 func TestAddWindowReorders(t *testing.T) {
-	win1 := &windowData{Title: "win1", Open: true}
-	win2 := &windowData{Title: "win2", Open: true}
+	win1 := &windowData{Title: "win1", open: true}
+	win2 := &windowData{Title: "win2", open: true}
 	windows = nil
 
 	win1.AddWindow(false)

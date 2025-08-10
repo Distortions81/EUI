@@ -12,6 +12,31 @@ func Windows() []*WindowData { return windows }
 // Overlays returns the list of active overlays.
 func Overlays() []*ItemData { return overlays }
 
+// Open sets the window as open and adds it to the window list if needed.
+func (win *WindowData) Open() { win.MarkOpen() }
+
+// Close removes the window from the window list and marks it closed.
+func (win *WindowData) Close() { win.RemoveWindow() }
+
+// Destroy closes the window and releases any cached resources.
+func (win *WindowData) Destroy() {
+	win.deallocImages()
+	win.RemoveWindow()
+	win.Contents = nil
+}
+
+// Toggle opens the window if closed, or closes it if open.
+func (win *WindowData) Toggle() {
+	if win.IsOpen() {
+		win.Close()
+	} else {
+		win.Open()
+	}
+}
+
+// IsOpen reports whether the window is currently open.
+func (win *WindowData) IsOpen() bool { return win.open }
+
 // SetScreenSize sets the current screen size used for layout calculations.
 func SetScreenSize(w, h int) {
 	screenWidth = w
