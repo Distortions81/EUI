@@ -159,11 +159,12 @@ func drawHoveredTooltip(screen *ebiten.Image) {
 		PrimaryAlign:   text.AlignStart,
 		SecondaryAlign: text.AlignStart,
 	}
-	tdop := ebiten.DrawImageOptions{}
-	tdop.GeoM.Translate(float64(x+pad), float64(y+pad))
-	top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+	top := acquireTextDrawOptions()
+	top.DrawImageOptions.GeoM.Translate(float64(x+pad), float64(y+pad))
+	top.LayoutOptions = loo
 	top.ColorScale.ScaleWithColor(fg)
 	text.Draw(screen, hoveredItem.Tooltip, face, top)
+	releaseTextDrawOptions(top)
 }
 
 func (win *windowData) Draw(screen *ebiten.Image) {
@@ -209,31 +210,32 @@ func (win *windowData) drawPortalMask(screen *ebiten.Image) {
 	w := float32(screenWidth)
 	h := float32(screenHeight)
 
-	op := ebiten.DrawImageOptions{}
+	op := acquireDrawImageOptions()
 
 	if r.Y0 > 0 {
 		op.GeoM.Reset()
 		op.GeoM.Scale(float64(w), float64(r.Y0))
-		screen.DrawImage(blackPixel, &op)
+		screen.DrawImage(blackPixel, op)
 	}
 	if r.Y1 < h {
 		op.GeoM.Reset()
 		op.GeoM.Scale(float64(w), float64(h-r.Y1))
 		op.GeoM.Translate(0, float64(r.Y1))
-		screen.DrawImage(blackPixel, &op)
+		screen.DrawImage(blackPixel, op)
 	}
 	if r.X0 > 0 {
 		op.GeoM.Reset()
 		op.GeoM.Scale(float64(r.X0), float64(r.Y1-r.Y0))
 		op.GeoM.Translate(0, float64(r.Y0))
-		screen.DrawImage(blackPixel, &op)
+		screen.DrawImage(blackPixel, op)
 	}
 	if r.X1 < w {
 		op.GeoM.Reset()
 		op.GeoM.Scale(float64(w-r.X1), float64(r.Y1-r.Y0))
 		op.GeoM.Translate(float64(r.X1), float64(r.Y0))
-		screen.DrawImage(blackPixel, &op)
+		screen.DrawImage(blackPixel, op)
 	}
+	releaseDrawImageOptions(op)
 }
 
 func (win *windowData) drawBG(screen *ebiten.Image) {
@@ -285,14 +287,16 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image, r rect) {
 				PrimaryAlign:   text.AlignStart,
 				SecondaryAlign: text.AlignCenter,
 			}
-			tdop := ebiten.DrawImageOptions{}
-			tdop.GeoM.Translate(float64(r.X0+((win.GetTitleSize())/4)),
+			top := acquireTextDrawOptions()
+			top.DrawImageOptions.GeoM.Translate(float64(r.X0+((win.GetTitleSize())/4)),
 				float64(r.Y0+((win.GetTitleSize())/2)))
-
-			top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+			top.LayoutOptions = loo
 
 			top.ColorScale.ScaleWithColor(win.Theme.Window.TitleTextColor)
-			text.Draw(screen, win.titleText, face, top)
+			buf := strings.ReplaceAll(win.Title, "\n", "") //Remove newline
+			buf = strings.ReplaceAll(buf, "\r", "")        //Remove return
+			text.Draw(screen, buf, face, top)
+			releaseTextDrawOptions(top)
 		} else {
 			textWidth = 0
 		}
@@ -545,12 +549,13 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 					3*uiScale,
 				)
 			}
-			tx := x + (w-tab.nameWidth)/2
-			ty := offset.Y + (tabHeight-tab.nameHeight)/2
-			sop := ebiten.DrawImageOptions{}
-			sop.GeoM.Translate(float64(tx), float64(ty))
-			sop.ColorScale.ScaleWithColor(style.TextColor)
-			screen.DrawImage(tab.nameImage, &sop)
+			loo := text.LayoutOptions{PrimaryAlign: text.AlignCenter, SecondaryAlign: text.AlignCenter}
+			dto := acquireTextDrawOptions()
+			dto.DrawImageOptions.GeoM.Translate(float64(x+w/2), float64(offset.Y+tabHeight/2))
+			dto.LayoutOptions = loo
+			dto.ColorScale.ScaleWithColor(style.TextColor)
+			text.Draw(screen, tab.Name, face, dto)
+			releaseTextDrawOptions(dto)
 			tab.DrawRect = rect{X0: x, Y0: offset.Y, X1: x + w, Y1: offset.Y + tabHeight}
 			x += w + spacing
 		}
@@ -705,23 +710,25 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		if item.LabelImageSize.Y > 0 {
 			dh = item.LabelImageSize.Y
 		}
-		sop := &ebiten.DrawImageOptions{}
+		sop := acquireDrawImageOptions()
 		sop.GeoM.Scale(float64(dw/bw*uiScale), float64(dh/bh*uiScale))
 		sop.GeoM.Translate(float64(offset.X), float64(offset.Y+(labelH-dh*uiScale)/2))
 		screen.DrawImage(item.LabelImage, sop)
+		releaseDrawImageOptions(sop)
 		labelW = dw * uiScale
 	}
 	if item.Label != "" {
 		textSize := (item.FontSize * uiScale) + 2
 		face := textFace(textSize)
 		loo := text.LayoutOptions{PrimaryAlign: text.AlignStart, SecondaryAlign: text.AlignCenter}
-		tdop := ebiten.DrawImageOptions{}
-		tdop.GeoM.Translate(float64(offset.X+labelW+currentStyle.TextPadding*uiScale), float64(offset.Y+labelH/2))
-		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+		top := acquireTextDrawOptions()
+		top.DrawImageOptions.GeoM.Translate(float64(offset.X+labelW+currentStyle.TextPadding*uiScale), float64(offset.Y+labelH/2))
+		top.LayoutOptions = loo
 		if style != nil {
 			top.ColorScale.ScaleWithColor(style.TextColor)
 		}
 		text.Draw(screen, item.Label, face, top)
+		releaseTextDrawOptions(top)
 	}
 	if labelH > 0 {
 		offset.Y += labelH + currentStyle.TextPadding*uiScale
@@ -780,14 +787,15 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 			PrimaryAlign:   text.AlignStart,
 			SecondaryAlign: text.AlignCenter,
 		}
-		tdop := ebiten.DrawImageOptions{}
-		tdop.GeoM.Translate(
+		top := acquireTextDrawOptions()
+		top.DrawImageOptions.GeoM.Translate(
 			float64(offset.X+auxSize.X+item.AuxSpace),
 			float64(offset.Y+(auxSize.Y/2)),
 		)
-		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+		top.LayoutOptions = loo
 		top.ColorScale.ScaleWithColor(style.TextColor)
 		text.Draw(screen, item.Text, face, top)
+		releaseTextDrawOptions(top)
 
 	} else if item.ItemType == ITEM_RADIO {
 
@@ -837,23 +845,25 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 			PrimaryAlign:   text.AlignStart,
 			SecondaryAlign: text.AlignCenter,
 		}
-		tdop := ebiten.DrawImageOptions{}
-		tdop.GeoM.Translate(
+		top := acquireTextDrawOptions()
+		top.DrawImageOptions.GeoM.Translate(
 			float64(offset.X+auxSize.X+item.AuxSpace),
 			float64(offset.Y+(auxSize.Y/2)),
 		)
-		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+		top.LayoutOptions = loo
 		top.ColorScale.ScaleWithColor(style.TextColor)
 		text.Draw(screen, item.Text, face, top)
+		releaseTextDrawOptions(top)
 
 	} else if item.ItemType == ITEM_BUTTON {
 
 		if item.Image != nil {
-			sop := &ebiten.DrawImageOptions{}
+			sop := acquireDrawImageOptions()
 			sop.GeoM.Scale(float64(maxSize.X)/float64(item.Image.Bounds().Dx()),
 				float64(maxSize.Y)/float64(item.Image.Bounds().Dy()))
 			sop.GeoM.Translate(float64(offset.X), float64(offset.Y))
 			screen.DrawImage(item.Image, sop)
+			releaseDrawImageOptions(sop)
 		} else {
 			itemColor := style.Color
 			if time.Since(item.Clicked) < clickFlash {
@@ -880,13 +890,14 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 			PrimaryAlign:   text.AlignCenter,
 			SecondaryAlign: text.AlignCenter,
 		}
-		tdop := ebiten.DrawImageOptions{}
-		tdop.GeoM.Translate(
+		top := acquireTextDrawOptions()
+		top.DrawImageOptions.GeoM.Translate(
 			float64(offset.X+((maxSize.X)/2)),
 			float64(offset.Y+((maxSize.Y)/2)))
-		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+		top.LayoutOptions = loo
 		top.ColorScale.ScaleWithColor(style.TextColor)
 		text.Draw(screen, item.Text, face, top)
+		releaseTextDrawOptions(top)
 
 		//Text
 	} else if item.ItemType == ITEM_INPUT {
@@ -936,14 +947,15 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 			PrimaryAlign:   text.AlignStart,
 			SecondaryAlign: text.AlignCenter,
 		}
-		tdop := ebiten.DrawImageOptions{}
-		tdop.GeoM.Translate(
+		top := acquireTextDrawOptions()
+		top.DrawImageOptions.GeoM.Translate(
 			float64(offset.X+item.BorderPad+item.Padding+currentStyle.TextPadding*uiScale),
 			float64(offset.Y+((maxSize.Y)/2)),
 		)
-		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+		top.LayoutOptions = loo
 		top.ColorScale.ScaleWithColor(style.TextColor)
 		text.Draw(screen, disp, face, top)
+		releaseTextDrawOptions(top)
 
 		if item.Hide {
 			drawEye(screen, eyeRect, style.TextColor)
@@ -1027,14 +1039,15 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 
 		// value text drawn to the right of the slider track
 		loo := text.LayoutOptions{LineSpacing: 1.2, PrimaryAlign: text.AlignStart, SecondaryAlign: text.AlignCenter}
-		tdop := ebiten.DrawImageOptions{}
-		tdop.GeoM.Translate(
+		top := acquireTextDrawOptions()
+		top.DrawImageOptions.GeoM.Translate(
 			float64(trackStart+trackWidth+gap),
 			float64(offset.Y+(maxSize.Y/2)),
 		)
-		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+		top.LayoutOptions = loo
 		top.ColorScale.ScaleWithColor(style.TextColor)
 		text.Draw(screen, valueText, face, top)
+		releaseTextDrawOptions(top)
 
 	} else if item.ItemType == ITEM_DROPDOWN {
 
@@ -1059,15 +1072,16 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		textSize := (item.FontSize * uiScale) + 2
 		face := textFace(textSize)
 		loo := text.LayoutOptions{PrimaryAlign: text.AlignStart, SecondaryAlign: text.AlignCenter}
-		tdop := ebiten.DrawImageOptions{}
-		tdop.GeoM.Translate(float64(offset.X+item.BorderPad+item.Padding+currentStyle.TextPadding*uiScale), float64(offset.Y+maxSize.Y/2))
-		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+		top := acquireTextDrawOptions()
+		top.DrawImageOptions.GeoM.Translate(float64(offset.X+item.BorderPad+item.Padding+currentStyle.TextPadding*uiScale), float64(offset.Y+maxSize.Y/2))
+		top.LayoutOptions = loo
 		top.ColorScale.ScaleWithColor(style.TextColor)
 		label := item.Text
 		if item.Selected >= 0 && item.Selected < len(item.Options) {
 			label = item.Options[item.Selected]
 		}
 		text.Draw(screen, label, face, top)
+		releaseTextDrawOptions(top)
 
 		arrow := maxSize.Y * 0.4
 		drawTriangle(screen,
@@ -1086,9 +1100,10 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		if item.Image == nil || item.Image.Bounds().Dx() != int(wheelSize) {
 			item.Image = colorWheelImage(int(wheelSize))
 		}
-		op := &ebiten.DrawImageOptions{}
+		op := acquireDrawImageOptions()
 		op.GeoM.Translate(float64(offset.X), float64(offset.Y))
 		screen.DrawImage(item.Image, op)
+		releaseDrawImageOptions(op)
 
 		h, _, v, _ := rgbaToHSVA(color.RGBA(item.WheelColor))
 		radius := wheelSize / 2
@@ -1117,14 +1132,15 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 			PrimaryAlign:   text.AlignStart,
 			SecondaryAlign: text.AlignStart,
 		}
-		tdop := ebiten.DrawImageOptions{}
-		tdop.GeoM.Translate(
+		top := acquireTextDrawOptions()
+		top.DrawImageOptions.GeoM.Translate(
 			float64(offset.X),
 			float64(offset.Y))
 
-		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
+		top.LayoutOptions = loo
 		top.ColorScale.ScaleWithColor(style.TextColor)
 		text.Draw(screen, item.Text, face, top)
+		releaseTextDrawOptions(top)
 	}
 
 	if item.Outlined && item.Border > 0 && item.ItemType != ITEM_CHECKBOX && item.ItemType != ITEM_RADIO {
@@ -1206,9 +1222,10 @@ func (item *itemData) drawItem(parent *itemData, offset point, clip rect, screen
 
 		src := image.Rect(int(item.DrawRect.X0-offset.X), int(item.DrawRect.Y0-offset.Y), int(item.DrawRect.X1-offset.X), int(item.DrawRect.Y1-offset.Y))
 		sub := item.Render.SubImage(src).(*ebiten.Image)
-		op := &ebiten.DrawImageOptions{}
+		op := acquireDrawImageOptions()
 		op.GeoM.Translate(float64(item.DrawRect.X0), float64(item.DrawRect.Y0))
 		screen.DrawImage(sub, op)
+		releaseDrawImageOptions(op)
 
 		if item.ItemType == ITEM_DROPDOWN && item.Open {
 			dropOff := offset
@@ -1270,11 +1287,12 @@ func drawDropdownOptions(item *itemData, offset point, clip rect, screen *ebiten
 			}
 			drawRoundRect(screen, &roundRect{Size: maxSize, Position: point{X: offset.X, Y: y}, Fillet: item.Fillet, Filled: true, Color: col})
 		}
-		td := ebiten.DrawImageOptions{}
-		td.GeoM.Translate(float64(offset.X+item.BorderPad+item.Padding+currentStyle.TextPadding*uiScale), float64(y+optionH/2))
-		tdo := &text.DrawOptions{DrawImageOptions: td, LayoutOptions: loo}
+		tdo := acquireTextDrawOptions()
+		tdo.DrawImageOptions.GeoM.Translate(float64(offset.X+item.BorderPad+item.Padding+currentStyle.TextPadding*uiScale), float64(y+optionH/2))
+		tdo.LayoutOptions = loo
 		tdo.ColorScale.ScaleWithColor(style.TextColor)
 		text.Draw(screen, item.Options[i], face, tdo)
+		releaseTextDrawOptions(tdo)
 	}
 
 	if len(item.Options) > visible {
