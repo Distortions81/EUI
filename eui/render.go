@@ -282,8 +282,16 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image, r rect) {
 			color := win.Theme.Window.TitleColor
 			// fill background for close area if configured
 			if win.Theme.Window.CloseBGColor.A > 0 {
-				xr := win.xRect()
-				drawFilledRect(screen, xr.X0, xr.Y0, xr.X1-xr.X0, xr.Y1-xr.Y0, win.Theme.Window.CloseBGColor, false)
+				r := win.xRect()
+				drawFilledRect(
+					screen,
+					r.X0,
+					r.Y0,
+					r.X1-r.X0,
+					r.Y1-r.Y0,
+					win.Theme.Window.CloseBGColor,
+					false,
+				)
 			}
 			xThick := 1 * uiScale
 			if win.HoverClose {
