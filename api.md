@@ -25,10 +25,13 @@ Format modified Go files before committing:
 gofmt -w <files>
 ```
 
-package eui // import "EUI/eui"
+
 ```
+package eui // import "github.com/Distortions81/EUI/eui"
+
 
 CONSTANTS
+
 const (
 	FLOW_HORIZONTAL = iota
 	FLOW_VERTICAL
@@ -90,30 +93,88 @@ const (
 VARIABLES
 
 var (
+	ColorWhite   = NewColor(255, 255, 255, 255)
+	ColorBlack   = NewColor(0, 0, 0, 255)
+	ColorRed     = NewColor(203, 67, 53, 255)
+	ColorGreen   = NewColor(40, 180, 99, 255)
+	ColorBlue    = NewColor(41, 128, 185, 255)
+	ColorYellow  = NewColor(244, 208, 63, 255)
+	ColorGray    = NewColor(128, 128, 128, 255)
+	ColorOrange  = NewColor(243, 156, 18, 255)
+	ColorPink    = NewColor(255, 151, 197, 255)
+	ColorPurple  = NewColor(165, 105, 189, 255)
+	ColorSilver  = NewColor(209, 209, 209, 255)
+	ColorTeal    = NewColor(64, 199, 178, 255)
+	ColorMaroon  = NewColor(199, 54, 103, 255)
+	ColorNavy    = NewColor(99, 114, 166, 255)
+	ColorOlive   = NewColor(134, 166, 99, 255)
+	ColorLime    = NewColor(206, 231, 114, 255)
+	ColorFuchsia = NewColor(209, 114, 231, 255)
+	ColorAqua    = NewColor(114, 228, 231, 255)
+	ColorBrown   = NewColor(176, 116, 78, 255)
+	ColorRust    = NewColor(210, 113, 52, 255)
+
+	ColorLightRed     = NewColor(255, 83, 83, 255)
+	ColorLightGreen   = NewColor(170, 255, 159, 255)
+	ColorLightBlue    = NewColor(159, 186, 255, 255)
+	ColorLightYellow  = NewColor(255, 251, 159, 255)
+	ColorLightGray    = NewColor(236, 236, 236, 255)
+	ColorLightOrange  = NewColor(252, 213, 134, 255)
+	ColorLightPink    = NewColor(254, 163, 182, 255)
+	ColorLightPurple  = NewColor(254, 163, 245, 255)
+	ColorLightSilver  = NewColor(228, 228, 228, 255)
+	ColorLightTeal    = NewColor(152, 221, 210, 255)
+	ColorLightMaroon  = NewColor(215, 124, 143, 255)
+	ColorLightNavy    = NewColor(128, 152, 197, 255)
+	ColorLightOlive   = NewColor(186, 228, 144, 255)
+	ColorLightLime    = NewColor(219, 243, 153, 255)
+	ColorLightFuchsia = NewColor(239, 196, 253, 255)
+	ColorLightAqua    = NewColor(196, 246, 253, 255)
+
+	ColorDarkRed      = NewColor(146, 22, 22, 255)
+	ColorDarkGreen    = NewColor(22, 146, 24, 255)
+	ColorDarkBlue     = NewColor(22, 98, 146, 255)
+	ColorDarkYellow   = NewColor(139, 146, 22, 255)
+	ColorDarkGray     = NewColor(111, 111, 111, 255)
+	ColorCharcoal     = NewColor(16, 16, 16, 255)
+	ColorCharcoalSemi = NewColor(16, 16, 16, 128)
+	ColorDarkOrange   = NewColor(175, 117, 32, 255)
+	ColorDarkPink     = NewColor(128, 64, 64, 255)
+	ColorDarkPurple   = NewColor(137, 32, 175, 255)
+	ColorDarkSilver   = NewColor(162, 162, 162, 255)
+	ColorDarkTeal     = NewColor(27, 110, 86, 255)
+	ColorDarkMaroon   = NewColor(110, 27, 55, 255)
+	ColorDarkNavy     = NewColor(16, 46, 85, 255)
+	ColorDarkOlive    = NewColor(60, 101, 19, 255)
+	ColorDarkLime     = NewColor(122, 154, 45, 255)
+	ColorDarkFuchsia  = NewColor(154, 45, 141, 255)
+	ColorDarkAqua     = NewColor(45, 154, 154, 255)
+
+	ColorVeryDarkGray = NewColor(64, 64, 64, 255)
+)
+var (
 
 	// DebugMode enables rendering of debug outlines.
 	DebugMode bool
 
-        // DumpMode causes the library to write cached images to disk
-        // before exiting when enabled.
-        DumpMode bool
+	// DumpMode causes the library to write cached images to disk
+	// before exiting when enabled.
+	DumpMode bool
 
-        // TreeMode dumps the window hierarchy to debug/tree.json
-        // before exiting when enabled.
-        TreeMode bool
+	// TreeMode dumps the window hierarchy to debug/tree.json
+	// before exiting when enabled.
+	TreeMode bool
+
+	// AutoHiDPI enables automatic scaling when the device scale factor
+	// changes, keeping the UI size consistent on HiDPI displays. It is
+	// enabled by default and can be disabled if needed.
+	AutoHiDPI bool = true
 )
 var (
 
-        // AutoReload enables automatic reloading of theme and layout files
-        // when they are modified on disk, only use this for quickly iterating when designing your own themes.
-        AutoReload bool
-
-       // AutoHiDPI enables automatic scaling when the device scale factor changes.
-       // The active UI scale is adjusted so the interface keeps the same size on screen.
-       // This defaults to true and can be disabled if necessary. Applications
-       // that track their own scaling variables should call `UIScale()` after
-       // `Layout` to read the updated value.
-       AutoHiDPI bool
+	// AutoReload enables automatic reloading of theme and style files
+	// when they are modified on disk, only use this for quickly iterating when designing your own themes.
+	AutoReload bool
 )
 
 FUNCTIONS
@@ -147,9 +208,8 @@ func FontSource() *text.GoTextFaceSource
     FontSource returns the current text face source.
 
 func Layout(outsideWidth, outsideHeight int) (int, int)
-    Layout reports the screen dimensions and scales the resolution using the
-    device scale factor. Pass Ebiten's outside size values to this from your
-    Layout function. Disable this behavior by setting `AutoHiDPI` to false.
+    Layout reports the dimensions for the game's screen. Pass Ebiten's outside
+    size values to this from your Layout function.
 
 func ListStyles() ([]string, error)
     ListStyles returns the available style theme names.
@@ -163,36 +223,28 @@ func LoadTheme(name string) error
     the current theme without modifying existing windows.
 
 func NewButton(item *itemData) (*itemData, *EventHandler)
-    Create a new button from the default theme. Unspecified fields
-    inherit their values from the theme.
+    Create a new button from the default theme
 
 func NewCheckbox(item *itemData) (*itemData, *EventHandler)
-    Create a new button from the default theme. Unspecified fields
-    inherit their values from the theme.
+    Create a new checkbox from the default theme
 
 func NewColorWheel(item *itemData) (*itemData, *EventHandler)
-    Create a new color wheel from the default theme. Unspecified fields
-    inherit their values from the theme.
+    Create a new color wheel from the default theme
 
 func NewDropdown(item *itemData) (*itemData, *EventHandler)
-    Create a new dropdown from the default theme. Unspecified fields
-    inherit their values from the theme.
+    Create a new dropdown from the default theme
 
 func NewInput(item *itemData) (*itemData, *EventHandler)
-    Create a new input box from the default theme. Unspecified fields
-    inherit their values from the theme.
+    Create a new input box from the default theme
 
 func NewRadio(item *itemData) (*itemData, *EventHandler)
-    Create a new radio button from the default theme. Unspecified fields
-    inherit their values from the theme.
+    Create a new radio button from the default theme
 
 func NewSlider(item *itemData) (*itemData, *EventHandler)
-    Create a new slider from the default theme. Unspecified fields
-    inherit their values from the theme.
+    Create a new slider from the default theme
 
 func NewText(item *itemData) (*itemData, *EventHandler)
-    Create a new textbox from the default theme. Unspecified fields
-    inherit their values from the theme.
+    Create a new textbox from the default theme
 
 func SaveTheme(name string) error
     SaveTheme writes the current theme to a JSON file with the given name.
@@ -218,26 +270,22 @@ func SetFontSource(src *text.GoTextFaceSource)
     SetFontSource sets the text face source used when rendering text.
 
 func SetScreenSize(w, h int)
-    SetScreenSize sets the current screen size used for layout calculations
-    and clamps existing windows to the new bounds.
+    SetScreenSize sets the current screen size used for layout calculations.
 
 func SetUIScale(scale float32)
-    SetUIScale updates layout metrics for the given scale and resizes
-    windows created with AutoSize. The value is clamped to the range
-    0.5–2.5.
-func UIScale() float32
-    UIScale returns the current UI scale factor. When `AutoHiDPI` is enabled
-    the value may change after `Layout` applies the device scale factor.
 func SyncHiDPIScale()
-    SyncHiDPIScale adjusts the UI scale automatically when the device scale
-    factor changes.
+    SyncHiDPIScale adjusts the UI scale when the device scale factor changes.
+    It preserves the current UI scale relative to the previous factor so the
+    interface keeps the same on-screen size.
+
+func UIScale() float32
 func Update() error
     Update processes input and updates window state. Programs embedding the UI
     can call this from their Ebiten Update handler.
 
 func NewWindow(win *windowData) *windowData
-    Create a new window from the default theme. Unspecified fields
-    inherit their values from the theme.
+    Create a new window from the default theme
+
 
 TYPES
 
@@ -273,12 +321,7 @@ func (h *EventHandler) Emit(ev UIEvent)
 
 type FlowType = flowType
 
-
 type ItemData = itemData
-    ItemData represents a widget. Set Tooltip to display a floating hint when
-    hovering over the item (empty string disables it). Set LabelImage to supply
-    an image label for buttons, checkboxes, radios, sliders and dropdowns. For
-    text inputs, assign OnEnter to run a function when the user presses Enter.
 
 func Overlays() []*ItemData
     Overlays returns the list of active overlays.
@@ -287,6 +330,14 @@ func (parent *ItemData) AddItem(child *ItemData)
     AddItem appends a child item to the parent item.
 
 type ItemTypeData = itemTypeData
+
+type PinType = pinType
+
+type Point = point
+
+type Rect = rect
+
+type RoundRect = roundRect
 
 type StyleBools struct {
 	Window   bool
@@ -318,21 +369,13 @@ type StyleTheme struct {
 	DropdownArrowPad float32
 	TextPadding      float32
 
-        Fillet        StyleNumbers
-        Border        StyleNumbers
-        BorderPad     StyleNumbers
-        Filled        StyleBools
-        Outlined      StyleBools
-        ActiveOutline StyleBools
+	Fillet        StyleNumbers
+	Border        StyleNumbers
+	BorderPad     StyleNumbers
+	Filled        StyleBools
+	Outlined      StyleBools
+	ActiveOutline StyleBools
 }
-
-type PinType = pinType
-
-type Point = point
-
-type Rect = rect
-
-type RoundRect = roundRect
 
 type Theme struct {
 	Window   windowData
@@ -362,21 +405,16 @@ type UIEventType int
     UIEventType defines the kind of event emitted by widgets.
 
 const (
-        EventClick UIEventType = iota
-        EventSliderChanged
-        EventDropdownSelected
-        EventCheckboxChanged
-        EventRadioSelected
-        EventColorChanged
-        EventInputChanged
-        EventInputSubmit
+	EventClick UIEventType = iota
+	EventSliderChanged
+	EventDropdownSelected
+	EventCheckboxChanged
+	EventRadioSelected
+	EventColorChanged
+	EventInputChanged
+	EventInputSubmit
 )
 type WindowData = windowData
-Setting MainPortal to true renders the window before others, draws a 1×1 black
-pixel scaled over the screen outside it and omits the window background so
-underlying content shows through. MainPortal windows are processed after other windows so they don't
-steal clicks when overlapped. Setting FixedRatio enforces an AspectA:AspectB
-content area during resizing and accounts for the title bar height.
 
 func Windows() []*WindowData
     Windows returns the list of active windows.
@@ -384,7 +422,4 @@ func Windows() []*WindowData
 func (win *WindowData) AddItem(child *ItemData)
     AddItem appends a child item to the window.
 
-func (win *WindowData) Refresh()
-    Refresh forces the window to recalculate layout, resize to its contents and
-    adjust scrolling after modifying contents.
 ```
