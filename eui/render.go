@@ -246,9 +246,10 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image, r rect) {
 
 		textSize := ((win.GetTitleSize()) / 2)
 		face := textFace(textSize)
+		win.updateTitleCache(face, textSize)
 
 		skipTitleText := false
-		textWidth, textHeight := text.Measure(win.Title, face, 0)
+		textWidth, textHeight := win.titleTextW, win.titleTextH
 		if textWidth > float64(win.GetSize().X) ||
 			textHeight > float64(win.GetTitleSize()) {
 			skipTitleText = true
@@ -268,9 +269,7 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image, r rect) {
 			top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 
 			top.ColorScale.ScaleWithColor(win.Theme.Window.TitleTextColor)
-			buf := strings.ReplaceAll(win.Title, "\n", "") //Remove newline
-			buf = strings.ReplaceAll(buf, "\r", "")        //Remove return
-			text.Draw(screen, buf, face, top)
+			text.Draw(screen, win.titleText, face, top)
 		} else {
 			textWidth = 0
 		}

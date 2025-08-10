@@ -3,6 +3,7 @@ package eui
 import (
 	"image/color"
 	"math"
+	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
@@ -437,14 +438,37 @@ func (win *windowData) titleTextWidth() point {
 	if win.TitleHeight <= 0 {
 		return point{}
 	}
-	textSize := ((win.GetTitleSize()) / 1.5)
-	face := textFace(textSize)
-	textWidth, textHeight := text.Measure(win.Title, face, 0)
-	return point{X: float32(textWidth), Y: float32(textHeight)}
+	size := (win.GetTitleSize()) / 2
+	face := textFace(size)
+	win.updateTitleCache(face, size)
+	return point{X: float32(win.titleTextW), Y: float32(win.titleTextH)}
 }
 
 func (win *windowData) SetTitleSize(size float32) {
 	win.TitleHeight = size / uiScale
+	win.invalidateTitleCache()
+}
+
+func (win *windowData) SetTitle(title string) {
+	if win.Title != title {
+		win.Title = title
+		win.invalidateTitleCache()
+	}
+}
+
+func (win *windowData) invalidateTitleCache() {
+	win.titleRaw = ""
+}
+
+func (win *windowData) updateTitleCache(face text.Face, size float32) {
+	if win.titleRaw != win.Title || win.titleTextSize != size {
+		buf := strings.ReplaceAll(win.Title, "\n", "")
+		buf = strings.ReplaceAll(buf, "\r", "")
+		win.titleRaw = win.Title
+		win.titleText = buf
+		win.titleTextSize = size
+		win.titleTextW, win.titleTextH = text.Measure(buf, face, 0)
+	}
 }
 
 func SetUIScale(scale float32) {

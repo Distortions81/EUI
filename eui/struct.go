@@ -47,6 +47,13 @@ type windowData struct {
 
 	TitleHeight float32
 
+	// cached title text metrics
+	titleRaw      string
+	titleText     string
+	titleTextW    float64
+	titleTextH    float64
+	titleTextSize float32
+
 	// Visual customization
 	BGColor, TitleBGColor, TitleColor, TitleTextColor, BorderColor,
 	SizeTabColor, DragbarColor, CloseBGColor Color
