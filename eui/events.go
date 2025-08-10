@@ -1,7 +1,5 @@
 package eui
 
-import "log"
-
 // UIEventType defines the kind of event emitted by widgets.
 type UIEventType int
 
@@ -40,11 +38,7 @@ func (h *EventHandler) Emit(ev UIEvent) {
 		return
 	}
 	if h.Events != nil {
-		select {
-		case h.Events <- ev:
-		default:
-			log.Printf("Event channel full, dropping event: %+v", ev)
-		}
+		h.Events <- ev
 	}
 	if h.Handle != nil {
 		h.Handle(ev)
@@ -52,5 +46,5 @@ func (h *EventHandler) Emit(ev UIEvent) {
 }
 
 func newHandler() *EventHandler {
-	return &EventHandler{Events: make(chan UIEvent, 8)}
+	return &EventHandler{Events: make(chan UIEvent, 64)}
 }
