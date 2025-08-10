@@ -140,6 +140,25 @@ func TestPinPositions(t *testing.T) {
 	}
 }
 
+func TestCenterPinOddScreenDimensions(t *testing.T) {
+	oldW, oldH := screenWidth, screenHeight
+	defer func() {
+		screenWidth = oldW
+		screenHeight = oldH
+	}()
+
+	screenWidth = 801
+	screenHeight = 601
+	win := &windowData{Position: point{X: 0, Y: 0}, Size: point{X: 100, Y: 80}}
+	var pin pinType = PIN_MID_CENTER
+	pos := pin.getWinPosition(win)
+	exp := point{X: float32(screenWidth)/2 - win.GetSize().X/2 + win.GetPos().X,
+		Y: float32(screenHeight)/2 - win.GetSize().Y/2 + win.GetPos().Y}
+	if pos != exp {
+		t.Errorf("mid center got %+v want %+v", pos, exp)
+	}
+}
+
 func TestItemOverlap(t *testing.T) {
 	win := &windowData{Size: point{X: 100, Y: 100}, Position: point{X: 0, Y: 0}}
 	a := &itemData{Position: point{X: 0, Y: 0}, Size: point{X: 60, Y: 60}}
