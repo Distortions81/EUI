@@ -377,6 +377,18 @@ func TestAddWindowRejectsInvalidSize(t *testing.T) {
 		t.Fatalf("expected nil window ignored, got %d", len(windows))
 	}
 }
+
+func TestAddWindowNoTitle(t *testing.T) {
+	windows = nil
+	prevTheme := currentTheme
+	currentTheme = &Theme{Window: windowData{TitleHeight: 24}}
+	win := &windowData{Title: "win", Size: point{X: 100, Y: 100}, NoTitle: true}
+	win.AddWindow(false)
+	if win.TitleHeight != 0 {
+		t.Fatalf("expected TitleHeight 0, got %v", win.TitleHeight)
+	}
+	currentTheme = prevTheme
+}
 func TestSetSizeClampAndScroll(t *testing.T) {
 	win := &windowData{
 		Size:        point{X: 100, Y: 100},

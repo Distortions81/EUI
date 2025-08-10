@@ -45,6 +45,7 @@ type windowData struct {
 	// Scroll position and behavior
 	Scroll   point
 	NoScroll bool
+	NoTitle  bool
 
 	TitleHeight float32
 
