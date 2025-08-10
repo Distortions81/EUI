@@ -429,7 +429,6 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 	if item.DrawRect.X1 <= item.DrawRect.X0 || item.DrawRect.Y1 <= item.DrawRect.Y0 {
 		return
 	}
-	subImg := screen.SubImage(item.DrawRect.getRectangle()).(*ebiten.Image)
 	style := item.themeStyle()
 
 	var activeContents []*itemData
@@ -466,7 +465,7 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 			}
 			tab.Hovered = false
 			if item.Filled {
-				drawTabShape(subImg,
+				drawTabShape(screen,
 					point{X: x, Y: offset.Y},
 					point{X: w, Y: tabHeight},
 					col,
@@ -479,7 +478,7 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 				if border <= 0 {
 					border = 1 * uiScale
 				}
-				strokeTabShape(subImg,
+				strokeTabShape(screen,
 					point{X: x, Y: offset.Y},
 					point{X: w, Y: tabHeight},
 					style.OutlineColor,
@@ -489,7 +488,7 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 				)
 			}
 			if item.ActiveOutline && i == item.ActiveTab {
-				strokeTabTop(subImg,
+				strokeTabTop(screen,
 					point{X: x, Y: offset.Y},
 					point{X: w, Y: tabHeight},
 					style.ClickColor,
@@ -503,19 +502,19 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 			dop.GeoM.Translate(float64(x+w/2), float64(offset.Y+tabHeight/2))
 			dto := &text.DrawOptions{DrawImageOptions: dop, LayoutOptions: loo}
 			dto.ColorScale.ScaleWithColor(style.TextColor)
-			text.Draw(subImg, tab.Name, face, dto)
+			text.Draw(screen, tab.Name, face, dto)
 			tab.DrawRect = rect{X0: x, Y0: offset.Y, X1: x + w, Y1: offset.Y + tabHeight}
 			x += w + spacing
 		}
 		drawOffset = pointAdd(drawOffset, point{Y: tabHeight})
-		drawFilledRect(subImg,
+		drawFilledRect(screen,
 			offset.X,
 			offset.Y+tabHeight-3*uiScale,
 			item.GetSize().X,
 			3*uiScale,
 			style.SelectedColor,
 			false)
-		strokeRect(subImg,
+		strokeRect(screen,
 			offset.X,
 			offset.Y+tabHeight,
 			item.GetSize().X,
@@ -578,7 +577,7 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 			}
 			col := NewColor(96, 96, 96, 192)
 			sbW := currentStyle.BorderPad.Slider * 2
-			drawFilledRect(subImg, item.DrawRect.X1-sbW, item.DrawRect.Y0+pos, sbW, barH, col.ToRGBA(), false)
+			drawFilledRect(screen, item.DrawRect.X1-sbW, item.DrawRect.Y0+pos, sbW, barH, col.ToRGBA(), false)
 		} else if item.FlowType == FLOW_HORIZONTAL && req.X > size.X {
 			barW := size.X * size.X / req.X
 			maxScroll := req.X - size.X
@@ -588,12 +587,12 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 			}
 			col := NewColor(96, 96, 96, 192)
 			sbW := currentStyle.BorderPad.Slider * 2
-			drawFilledRect(subImg, item.DrawRect.X0+pos, item.DrawRect.Y1-sbW, barW, sbW, col.ToRGBA(), false)
+			drawFilledRect(screen, item.DrawRect.X0+pos, item.DrawRect.Y1-sbW, barW, sbW, col.ToRGBA(), false)
 		}
 	}
 
 	if DebugMode {
-		strokeRect(subImg,
+		strokeRect(screen,
 			item.DrawRect.X0,
 			item.DrawRect.Y0,
 			item.DrawRect.X1-item.DrawRect.X0,
@@ -609,13 +608,13 @@ func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point,
 
 		switch item.FlowType {
 		case FLOW_HORIZONTAL:
-			drawArrow(subImg, item.DrawRect.X0+margin, midY, item.DrawRect.X1-margin, midY, 1, col)
+			drawArrow(screen, item.DrawRect.X0+margin, midY, item.DrawRect.X1-margin, midY, 1, col)
 		case FLOW_VERTICAL:
-			drawArrow(subImg, midX, item.DrawRect.Y0+margin, midX, item.DrawRect.Y1-margin, 1, col)
+			drawArrow(screen, midX, item.DrawRect.Y0+margin, midX, item.DrawRect.Y1-margin, 1, col)
 		case FLOW_HORIZONTAL_REV:
-			drawArrow(subImg, item.DrawRect.X1-margin, midY, item.DrawRect.X0+margin, midY, 1, col)
+			drawArrow(screen, item.DrawRect.X1-margin, midY, item.DrawRect.X0+margin, midY, 1, col)
 		case FLOW_VERTICAL_REV:
-			drawArrow(subImg, midX, item.DrawRect.Y1-margin, midX, item.DrawRect.Y0+margin, 1, col)
+			drawArrow(screen, midX, item.DrawRect.Y1-margin, midX, item.DrawRect.Y0+margin, 1, col)
 		}
 	}
 }
@@ -643,7 +642,6 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 	if item.DrawRect.X1 <= item.DrawRect.X0 || item.DrawRect.Y1 <= item.DrawRect.Y0 {
 		return
 	}
-	subImg := screen.SubImage(item.DrawRect.getRectangle()).(*ebiten.Image)
 	style := item.themeStyle()
 
 	labelH := item.labelHeight()
@@ -662,7 +660,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		sop := &ebiten.DrawImageOptions{}
 		sop.GeoM.Scale(float64(dw/bw*uiScale), float64(dh/bh*uiScale))
 		sop.GeoM.Translate(float64(offset.X), float64(offset.Y+(labelH-dh*uiScale)/2))
-		subImg.DrawImage(item.LabelImage, sop)
+		screen.DrawImage(item.LabelImage, sop)
 		labelW = dw * uiScale
 	}
 	if item.Label != "" {
@@ -675,7 +673,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		if style != nil {
 			top.ColorScale.ScaleWithColor(style.TextColor)
 		}
-		text.Draw(subImg, item.Label, face, top)
+		text.Draw(screen, item.Label, face, top)
 	}
 	if labelH > 0 {
 		offset.Y += labelH + currentStyle.TextPadding*uiScale
@@ -699,7 +697,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		}
 		auxSize := pointScaleMul(item.AuxSize)
 		if item.Filled {
-			drawRoundRect(subImg, &roundRect{
+			drawRoundRect(screen, &roundRect{
 				Size:     auxSize,
 				Position: offset,
 				Fillet:   item.Fillet,
@@ -707,7 +705,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 				Color:    itemColor,
 			})
 		}
-		drawRoundRect(subImg, &roundRect{
+		drawRoundRect(screen, &roundRect{
 			Size:     auxSize,
 			Position: offset,
 			Fillet:   item.Fillet,
@@ -724,7 +722,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 			mid := point{X: offset.X + auxSize.X*0.45, Y: offset.Y + auxSize.Y - margin}
 			end := point{X: offset.X + auxSize.X - margin, Y: offset.Y + margin}
 
-			drawCheckmark(subImg, start, mid, end, cThick, style.TextColor)
+			drawCheckmark(screen, start, mid, end, cThick, style.TextColor)
 		}
 
 		textSize := (item.FontSize * uiScale) + 2
@@ -741,7 +739,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		)
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 		top.ColorScale.ScaleWithColor(style.TextColor)
-		text.Draw(subImg, item.Text, face, top)
+		text.Draw(screen, item.Text, face, top)
 
 	} else if item.ItemType == ITEM_RADIO {
 
@@ -757,7 +755,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		}
 		auxSize := pointScaleMul(item.AuxSize)
 		if item.Filled {
-			drawRoundRect(subImg, &roundRect{
+			drawRoundRect(screen, &roundRect{
 				Size:     auxSize,
 				Position: offset,
 				Fillet:   auxSize.X / 2,
@@ -765,7 +763,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 				Color:    itemColor,
 			})
 		}
-		drawRoundRect(subImg, &roundRect{
+		drawRoundRect(screen, &roundRect{
 			Size:     auxSize,
 			Position: offset,
 			Fillet:   auxSize.X / 2,
@@ -775,7 +773,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		})
 		if item.Checked {
 			inner := auxSize.X / 2.5
-			drawRoundRect(subImg, &roundRect{
+			drawRoundRect(screen, &roundRect{
 				Size:     point{X: inner, Y: inner},
 				Position: point{X: offset.X + (auxSize.X-inner)/2, Y: offset.Y + (auxSize.Y-inner)/2},
 				Fillet:   inner / 2,
@@ -798,7 +796,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		)
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 		top.ColorScale.ScaleWithColor(style.TextColor)
-		text.Draw(subImg, item.Text, face, top)
+		text.Draw(screen, item.Text, face, top)
 
 	} else if item.ItemType == ITEM_BUTTON {
 
@@ -807,7 +805,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 			sop.GeoM.Scale(float64(maxSize.X)/float64(item.Image.Bounds().Dx()),
 				float64(maxSize.Y)/float64(item.Image.Bounds().Dy()))
 			sop.GeoM.Translate(float64(offset.X), float64(offset.Y))
-			subImg.DrawImage(item.Image, sop)
+			screen.DrawImage(item.Image, sop)
 		} else {
 			itemColor := style.Color
 			if time.Since(item.Clicked) < clickFlash {
@@ -817,7 +815,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 				itemColor = style.HoverColor
 			}
 			if item.Filled {
-				drawRoundRect(subImg, &roundRect{
+				drawRoundRect(screen, &roundRect{
 					Size:     maxSize,
 					Position: offset,
 					Fillet:   item.Fillet,
@@ -840,7 +838,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 			float64(offset.Y+((maxSize.Y)/2)))
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 		top.ColorScale.ScaleWithColor(style.TextColor)
-		text.Draw(subImg, item.Text, face, top)
+		text.Draw(screen, item.Text, face, top)
 
 		//Text
 	} else if item.ItemType == ITEM_INPUT {
@@ -854,7 +852,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		}
 
 		if item.Filled {
-			drawRoundRect(subImg, &roundRect{
+			drawRoundRect(screen, &roundRect{
 				Size:     maxSize,
 				Position: offset,
 				Fillet:   item.Fillet,
@@ -897,16 +895,16 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		)
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 		top.ColorScale.ScaleWithColor(style.TextColor)
-		text.Draw(subImg, disp, face, top)
+		text.Draw(screen, disp, face, top)
 
 		if item.Hide {
-			drawEye(subImg, eyeRect, style.TextColor)
+			drawEye(screen, eyeRect, style.TextColor)
 		}
 
 		if item.Focused {
 			width, _ := text.Measure(disp, face, 0)
 			cx := offset.X + item.BorderPad + item.Padding + currentStyle.TextPadding*uiScale + float32(width)
-			strokeLine(subImg,
+			strokeLine(screen,
 				cx, offset.Y+2,
 				cx, offset.Y+maxSize.Y-2,
 				1, style.TextColor, false)
@@ -960,17 +958,17 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		}
 		knobCenter := trackStart + float32(ratio)*trackWidth
 		filledCol := style.SelectedColor
-		strokeLine(subImg, trackStart, trackY, knobCenter, trackY, 2*uiScale, filledCol, true)
-		strokeLine(subImg, knobCenter, trackY, trackStart+trackWidth, trackY, 2*uiScale, itemColor, true)
+		strokeLine(screen, trackStart, trackY, knobCenter, trackY, 2*uiScale, filledCol, true)
+		strokeLine(screen, knobCenter, trackY, trackStart+trackWidth, trackY, 2*uiScale, itemColor, true)
 		knobRect := point{X: knobCenter - knobW/2, Y: offset.Y + (maxSize.Y-knobH)/2}
-		drawRoundRect(subImg, &roundRect{
+		drawRoundRect(screen, &roundRect{
 			Size:     pointScaleMul(item.AuxSize),
 			Position: knobRect,
 			Fillet:   item.Fillet,
 			Filled:   true,
 			Color:    style.Color,
 		})
-		drawRoundRect(subImg, &roundRect{
+		drawRoundRect(screen, &roundRect{
 			Size:     pointScaleMul(item.AuxSize),
 			Position: knobRect,
 			Fillet:   item.Fillet,
@@ -988,7 +986,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		)
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 		top.ColorScale.ScaleWithColor(style.TextColor)
-		text.Draw(subImg, valueText, face, top)
+		text.Draw(screen, valueText, face, top)
 
 	} else if item.ItemType == ITEM_DROPDOWN {
 
@@ -1001,7 +999,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		}
 
 		if item.Filled {
-			drawRoundRect(subImg, &roundRect{
+			drawRoundRect(screen, &roundRect{
 				Size:     maxSize,
 				Position: offset,
 				Fillet:   item.Fillet,
@@ -1021,10 +1019,10 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		if item.Selected >= 0 && item.Selected < len(item.Options) {
 			label = item.Options[item.Selected]
 		}
-		text.Draw(subImg, label, face, top)
+		text.Draw(screen, label, face, top)
 
 		arrow := maxSize.Y * 0.4
-		drawTriangle(subImg,
+		drawTriangle(screen,
 			point{X: offset.X + maxSize.X - arrow - item.BorderPad - item.Padding - currentStyle.DropdownArrowPad,
 				Y: offset.Y + (maxSize.Y-arrow)/2},
 			arrow,
@@ -1042,7 +1040,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		}
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(float64(offset.X), float64(offset.Y))
-		subImg.DrawImage(item.Image, op)
+		screen.DrawImage(item.Image, op)
 
 		h, _, v, _ := rgbaToHSVA(color.RGBA(item.WheelColor))
 		radius := wheelSize / 2
@@ -1050,8 +1048,8 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		cy := offset.Y + radius
 		px := cx + float32(math.Cos(h*math.Pi/180))*radius*float32(v)
 		py := cy + float32(math.Sin(h*math.Pi/180))*radius*float32(v)
-		vector.DrawFilledCircle(subImg, px, py, 4*uiScale, color.Black, true)
-		vector.DrawFilledCircle(subImg, px, py, 2*uiScale, color.White, true)
+		vector.DrawFilledCircle(screen, px, py, 4*uiScale, color.Black, true)
+		vector.DrawFilledCircle(screen, px, py, 2*uiScale, color.White, true)
 
 		sw := wheelSize / 5
 		if sw < 10*uiScale {
@@ -1059,8 +1057,8 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		}
 		sx := offset.X + wheelSize + 4*uiScale
 		sy := offset.Y + maxSize.Y - sw - 4*uiScale
-		drawFilledRect(subImg, sx, sy, sw, sw, color.RGBA(item.WheelColor), true)
-		strokeRect(subImg, sx, sy, sw, sw, 1, color.Black, true)
+		drawFilledRect(screen, sx, sy, sw, sw, color.RGBA(item.WheelColor), true)
+		strokeRect(screen, sx, sy, sw, sw, 1, color.Black, true)
 
 	} else if item.ItemType == ITEM_TEXT {
 
@@ -1078,11 +1076,11 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 
 		top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 		top.ColorScale.ScaleWithColor(style.TextColor)
-		text.Draw(subImg, item.Text, face, top)
+		text.Draw(screen, item.Text, face, top)
 	}
 
 	if item.Outlined && item.Border > 0 && item.ItemType != ITEM_CHECKBOX && item.ItemType != ITEM_RADIO {
-		drawRoundRect(subImg, &roundRect{
+		drawRoundRect(screen, &roundRect{
 			Size:     maxSize,
 			Position: offset,
 			Fillet:   item.Fillet,
@@ -1093,7 +1091,7 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 	}
 
 	if DebugMode {
-		strokeRect(subImg,
+		strokeRect(screen,
 			item.DrawRect.X0,
 			item.DrawRect.Y0,
 			item.DrawRect.X1-item.DrawRect.X0,
@@ -1208,9 +1206,8 @@ func drawDropdownOptions(item *itemData, offset point, clip rect, screen *ebiten
 	if visibleRect.X1 <= visibleRect.X0 || visibleRect.Y1 <= visibleRect.Y0 {
 		return
 	}
-	subImg := screen.SubImage(visibleRect.getRectangle()).(*ebiten.Image)
 	style := item.themeStyle()
-	drawFilledRect(subImg,
+	drawFilledRect(screen,
 		visibleRect.X0,
 		visibleRect.Y0,
 		visibleRect.X1-visibleRect.X0,
@@ -1223,13 +1220,13 @@ func drawDropdownOptions(item *itemData, offset point, clip rect, screen *ebiten
 			if i == item.HoverIndex && i != item.Selected {
 				col = style.HoverColor
 			}
-			drawRoundRect(subImg, &roundRect{Size: maxSize, Position: point{X: offset.X, Y: y}, Fillet: item.Fillet, Filled: true, Color: col})
+			drawRoundRect(screen, &roundRect{Size: maxSize, Position: point{X: offset.X, Y: y}, Fillet: item.Fillet, Filled: true, Color: col})
 		}
 		td := ebiten.DrawImageOptions{}
 		td.GeoM.Translate(float64(offset.X+item.BorderPad+item.Padding+currentStyle.TextPadding*uiScale), float64(y+optionH/2))
 		tdo := &text.DrawOptions{DrawImageOptions: td, LayoutOptions: loo}
 		tdo.ColorScale.ScaleWithColor(style.TextColor)
-		text.Draw(subImg, item.Options[i], face, tdo)
+		text.Draw(screen, item.Options[i], face, tdo)
 	}
 
 	if len(item.Options) > visible {
@@ -1243,7 +1240,7 @@ func drawDropdownOptions(item *itemData, offset point, clip rect, screen *ebiten
 		}
 		col := NewColor(96, 96, 96, 192)
 		sbW := currentStyle.BorderPad.Slider * 2
-		drawFilledRect(subImg, drawRect.X1-sbW, startY+pos, sbW, barH, col.ToRGBA(), false)
+		drawFilledRect(screen, drawRect.X1-sbW, startY+pos, sbW, barH, col.ToRGBA(), false)
 	}
 }
 
