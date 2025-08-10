@@ -47,6 +47,13 @@ type windowData struct {
 
 	TitleHeight float32
 
+	// cached title text metrics
+	titleRaw      string
+	titleText     string
+	titleTextW    float64
+	titleTextH    float64
+	titleTextSize float32
+
 	// Visual customization
 	BGColor, TitleBGColor, TitleColor, TitleTextColor, BorderColor,
 	SizeTabColor, DragbarColor, CloseBGColor Color
@@ -67,10 +74,13 @@ type windowData struct {
 
 	// Dirty marks the window for re-rendering when its contents change.
 	Dirty bool
+	// Render caches the pre-rendered image for this window when Dirty is false.
+	Render *ebiten.Image
 }
 
 type itemData struct {
 	Parent *itemData
+	win    *windowData
 	// Name is used when the item is part of a tabbed flow
 	Name           string
 	Text           string
@@ -97,6 +107,12 @@ type itemData struct {
 	prevHide   bool
 	prevReveal bool
 	prevText   string
+
+	// Cached metrics and image for tab labels (Name)
+	nameWidth, nameHeight float32
+	nameImage             *ebiten.Image
+	nameFontSize          float32
+	prevName              string
 
 	Hovered, Checked, Focused,
 	Disabled, Invisible bool
