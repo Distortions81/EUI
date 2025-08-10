@@ -98,6 +98,12 @@ type itemData struct {
 	prevReveal bool
 	prevText   string
 
+	// Cached metrics and image for tab labels (Name)
+	nameWidth, nameHeight float32
+	nameImage             *ebiten.Image
+	nameFontSize          float32
+	prevName              string
+
 	Hovered, Checked, Focused,
 	Disabled, Invisible bool
 	Clicked  time.Time
