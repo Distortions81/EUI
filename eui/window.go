@@ -169,15 +169,12 @@ func (target *windowData) RemoveWindow() {
 }
 
 // Create a new window from the default theme
-func NewWindow(win *windowData) *windowData {
+func NewWindow() *windowData {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
 	newWindow := currentTheme.Window
 	stripWindowColors(&newWindow)
-	if win != nil {
-		mergeData(&newWindow, win)
-	}
 	if newWindow.Theme == nil {
 		newWindow.Theme = currentTheme
 	}
@@ -185,15 +182,12 @@ func NewWindow(win *windowData) *windowData {
 }
 
 // Create a new button from the default theme
-func NewButton(item *itemData) (*itemData, *EventHandler) {
+func NewButton() (*itemData, *EventHandler) {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
 	newItem := currentTheme.Button
 	stripItemColors(&newItem)
-	if item != nil {
-		mergeData(&newItem, item)
-	}
 	if newItem.Theme == nil {
 		newItem.Theme = currentTheme
 	}
@@ -204,15 +198,12 @@ func NewButton(item *itemData) (*itemData, *EventHandler) {
 }
 
 // Create a new checkbox from the default theme
-func NewCheckbox(item *itemData) (*itemData, *EventHandler) {
+func NewCheckbox() (*itemData, *EventHandler) {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
 	newItem := currentTheme.Checkbox
 	stripItemColors(&newItem)
-	if item != nil {
-		mergeData(&newItem, item)
-	}
 	if newItem.Theme == nil {
 		newItem.Theme = currentTheme
 	}
@@ -223,15 +214,12 @@ func NewCheckbox(item *itemData) (*itemData, *EventHandler) {
 }
 
 // Create a new radio button from the default theme
-func NewRadio(item *itemData) (*itemData, *EventHandler) {
+func NewRadio() (*itemData, *EventHandler) {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
 	newItem := currentTheme.Radio
 	stripItemColors(&newItem)
-	if item != nil {
-		mergeData(&newItem, item)
-	}
 	if newItem.Theme == nil {
 		newItem.Theme = currentTheme
 	}
@@ -242,15 +230,12 @@ func NewRadio(item *itemData) (*itemData, *EventHandler) {
 }
 
 // Create a new input box from the default theme
-func NewInput(item *itemData) (*itemData, *EventHandler) {
+func NewInput() (*itemData, *EventHandler) {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
 	newItem := currentTheme.Input
 	stripItemColors(&newItem)
-	if item != nil {
-		mergeData(&newItem, item)
-	}
 	if newItem.Theme == nil {
 		newItem.Theme = currentTheme
 	}
@@ -266,15 +251,12 @@ func NewInput(item *itemData) (*itemData, *EventHandler) {
 }
 
 // Create a new slider from the default theme
-func NewSlider(item *itemData) (*itemData, *EventHandler) {
+func NewSlider() (*itemData, *EventHandler) {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
 	newItem := currentTheme.Slider
 	stripItemColors(&newItem)
-	if item != nil {
-		mergeData(&newItem, item)
-	}
 	if newItem.Theme == nil {
 		newItem.Theme = currentTheme
 	}
@@ -285,15 +267,12 @@ func NewSlider(item *itemData) (*itemData, *EventHandler) {
 }
 
 // Create a new dropdown from the default theme
-func NewDropdown(item *itemData) (*itemData, *EventHandler) {
+func NewDropdown() (*itemData, *EventHandler) {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
 	newItem := currentTheme.Dropdown
 	stripItemColors(&newItem)
-	if item != nil {
-		mergeData(&newItem, item)
-	}
 	if newItem.Theme == nil {
 		newItem.Theme = currentTheme
 	}
@@ -304,15 +283,12 @@ func NewDropdown(item *itemData) (*itemData, *EventHandler) {
 }
 
 // Create a new color wheel from the default theme
-func NewColorWheel(item *itemData) (*itemData, *EventHandler) {
+func NewColorWheel() (*itemData, *EventHandler) {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
 	newItem := baseColorWheel
 	stripItemColors(&newItem)
-	if item != nil {
-		mergeData(&newItem, item)
-	}
 	if ac, ok := namedColors["accent"]; ok && newItem.WheelColor == (Color{}) {
 		newItem.WheelColor = ac
 	}
@@ -326,15 +302,12 @@ func NewColorWheel(item *itemData) (*itemData, *EventHandler) {
 }
 
 // Create a new textbox from the default theme
-func NewText(item *itemData) (*itemData, *EventHandler) {
+func NewText() (*itemData, *EventHandler) {
 	if currentTheme == nil {
 		currentTheme = baseTheme
 	}
 	newItem := currentTheme.Text
 	stripItemColors(&newItem)
-	if item != nil {
-		mergeData(&newItem, item)
-	}
 	if newItem.Theme == nil {
 		newItem.Theme = currentTheme
 	}

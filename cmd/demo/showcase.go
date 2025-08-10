@@ -8,16 +8,15 @@ import (
 
 // makeShowcaseWindow creates a window demonstrating most widget types.
 func makeShowcaseWindow() *eui.WindowData {
-	win := eui.NewWindow(&eui.WindowData{
-		Title:     "Showcase",
-		Size:      eui.Point{X: 400, Y: 420},
-		Position:  eui.Point{X: 8, Y: 8},
-		AutoSize:  true,
-		Open:      true,
-		Movable:   true,
-		Resizable: true,
-		Closable:  false,
-	})
+	win := eui.NewWindow()
+	win.Title = "Showcase"
+	win.Size = eui.Point{X: 400, Y: 420}
+	win.Position = eui.Point{X: 8, Y: 8}
+	win.AutoSize = true
+	win.Open = true
+	win.Movable = true
+	win.Resizable = true
+	win.Closable = false
 
 	mainFlow := &eui.ItemData{
 		ItemType: eui.ITEM_FLOW,
@@ -26,10 +25,16 @@ func makeShowcaseWindow() *eui.WindowData {
 	}
 	win.AddItem(mainFlow)
 
-	titleText, _ := eui.NewText(&eui.ItemData{Text: "Demonstration of widgets", Size: eui.Point{X: 380, Y: 32}, FontSize: 10})
+	titleText, _ := eui.NewText()
+	titleText.Text = "Demonstration of widgets"
+	titleText.Size = eui.Point{X: 380, Y: 32}
+	titleText.FontSize = 10
 	mainFlow.AddItem(titleText)
 
-	btnText, btnTextEvents := eui.NewButton(&eui.ItemData{Text: "Text Button", Size: eui.Point{X: 100, Y: 24}, FontSize: 8})
+	btnText, btnTextEvents := eui.NewButton()
+	btnText.Text = "Text Button"
+	btnText.Size = eui.Point{X: 100, Y: 24}
+	btnText.FontSize = 8
 	btnTextEvents.Handle = func(ev eui.UIEvent) {
 		if ev.Type == eui.EventClick {
 			setStatus("Text Button clicked")
@@ -37,7 +42,11 @@ func makeShowcaseWindow() *eui.WindowData {
 	}
 	mainFlow.AddItem(btnText)
 
-	chk, chkEvents := eui.NewCheckbox(&eui.ItemData{Text: "Enable option", Size: eui.Point{X: 140, Y: 24}, FontSize: 8, Checked: true})
+	chk, chkEvents := eui.NewCheckbox()
+	chk.Text = "Enable option"
+	chk.Size = eui.Point{X: 140, Y: 24}
+	chk.FontSize = 8
+	chk.Checked = true
 	chkEvents.Handle = func(ev eui.UIEvent) {
 		if ev.Type == eui.EventCheckboxChanged {
 			if ev.Checked {
@@ -49,13 +58,22 @@ func makeShowcaseWindow() *eui.WindowData {
 	}
 	mainFlow.AddItem(chk)
 
-	radioA, radioAEvents := eui.NewRadio(&eui.ItemData{Text: "Choice A", RadioGroup: "grp1", Size: eui.Point{X: 140, Y: 24}, FontSize: 8, Checked: true})
+	radioA, radioAEvents := eui.NewRadio()
+	radioA.Text = "Choice A"
+	radioA.RadioGroup = "grp1"
+	radioA.Size = eui.Point{X: 140, Y: 24}
+	radioA.FontSize = 8
+	radioA.Checked = true
 	radioAEvents.Handle = func(ev eui.UIEvent) {
 		if ev.Type == eui.EventRadioSelected {
 			setStatus("Selected Choice A")
 		}
 	}
-	radioB, radioBEvents := eui.NewRadio(&eui.ItemData{Text: "Choice B", RadioGroup: "grp1", Size: eui.Point{X: 140, Y: 24}, FontSize: 8})
+	radioB, radioBEvents := eui.NewRadio()
+	radioB.Text = "Choice B"
+	radioB.RadioGroup = "grp1"
+	radioB.Size = eui.Point{X: 140, Y: 24}
+	radioB.FontSize = 8
 	radioBEvents.Handle = func(ev eui.UIEvent) {
 		if ev.Type == eui.EventRadioSelected {
 			setStatus("Selected Choice B")
@@ -64,7 +82,14 @@ func makeShowcaseWindow() *eui.WindowData {
 	mainFlow.AddItem(radioA)
 	mainFlow.AddItem(radioB)
 
-	slider, sliderEvents := eui.NewSlider(&eui.ItemData{Label: "Float Slider", Size: eui.Point{X: 180, Y: 24}, MinValue: 0, MaxValue: 100, IntOnly: false, FontSize: 8, Value: 46.2})
+	slider, sliderEvents := eui.NewSlider()
+	slider.Label = "Float Slider"
+	slider.Size = eui.Point{X: 180, Y: 24}
+	slider.MinValue = 0
+	slider.MaxValue = 100
+	slider.IntOnly = false
+	slider.FontSize = 8
+	slider.Value = 46.2
 	sliderEvents.Handle = func(ev eui.UIEvent) {
 		if ev.Type == eui.EventSliderChanged {
 			setStatus(fmt.Sprintf("Float Slider changed: %.2f", ev.Value))
@@ -72,7 +97,14 @@ func makeShowcaseWindow() *eui.WindowData {
 	}
 	mainFlow.AddItem(slider)
 
-	intSlider, intSliderEvents := eui.NewSlider(&eui.ItemData{Label: "Int Slider", Size: eui.Point{X: 180, Y: 24}, MinValue: 0, MaxValue: 10, IntOnly: true, FontSize: 8, Value: 3})
+	intSlider, intSliderEvents := eui.NewSlider()
+	intSlider.Label = "Int Slider"
+	intSlider.Size = eui.Point{X: 180, Y: 24}
+	intSlider.MinValue = 0
+	intSlider.MaxValue = 10
+	intSlider.IntOnly = true
+	intSlider.FontSize = 8
+	intSlider.Value = 3
 	intSliderEvents.Handle = func(ev eui.UIEvent) {
 		if ev.Type == eui.EventSliderChanged {
 			setStatus(fmt.Sprintf("Int Slider changed: %.0f", ev.Value))
@@ -80,7 +112,11 @@ func makeShowcaseWindow() *eui.WindowData {
 	}
 	mainFlow.AddItem(intSlider)
 
-	input, inputEvents := eui.NewInput(&eui.ItemData{Label: "Text Field", Text: "Text Text!", Size: eui.Point{X: 180, Y: 24}, FontSize: 8})
+	input, inputEvents := eui.NewInput()
+	input.Label = "Text Field"
+	input.Text = "Text Text!"
+	input.Size = eui.Point{X: 180, Y: 24}
+	input.FontSize = 8
 	input.Action = func() { setStatus("Text Field focused") }
 	inputEvents.Handle = func(ev eui.UIEvent) {
 		if ev.Type == eui.EventInputChanged {
@@ -89,7 +125,10 @@ func makeShowcaseWindow() *eui.WindowData {
 	}
 	mainFlow.AddItem(input)
 
-	dropdown, dropdownEvents := eui.NewDropdown(&eui.ItemData{Label: "Select Option", Size: eui.Point{X: 180, Y: 24}, FontSize: 8})
+	dropdown, dropdownEvents := eui.NewDropdown()
+	dropdown.Label = "Select Option"
+	dropdown.Size = eui.Point{X: 180, Y: 24}
+	dropdown.FontSize = 8
 	dropdown.Options = []string{"First", "Second", "Third", "Fourth"}
 	dropdown.HoverIndex = -1
 	dropdownEvents.Handle = func(ev eui.UIEvent) {
@@ -109,7 +148,10 @@ func makeShowcaseWindow() *eui.WindowData {
 		Scrollable: true,
 	}
 	mainFlow.AddItem(hFlow)
-	if btn, ev := eui.NewButton(&eui.ItemData{Text: "One", Size: eui.Point{X: 60, Y: 24}, FontSize: 8}); btn != nil {
+	if btn, ev := eui.NewButton(); btn != nil {
+		btn.Text = "One"
+		btn.Size = eui.Point{X: 60, Y: 24}
+		btn.FontSize = 8
 		ev.Handle = func(ev eui.UIEvent) {
 			if ev.Type == eui.EventClick {
 				setStatus("Button One clicked")
@@ -117,7 +159,10 @@ func makeShowcaseWindow() *eui.WindowData {
 		}
 		hFlow.AddItem(btn)
 	}
-	if btn, ev := eui.NewButton(&eui.ItemData{Text: "Two", Size: eui.Point{X: 60, Y: 24}, FontSize: 8}); btn != nil {
+	if btn, ev := eui.NewButton(); btn != nil {
+		btn.Text = "Two"
+		btn.Size = eui.Point{X: 60, Y: 24}
+		btn.FontSize = 8
 		ev.Handle = func(ev eui.UIEvent) {
 			if ev.Type == eui.EventClick {
 				setStatus("Button Two clicked")
@@ -125,7 +170,10 @@ func makeShowcaseWindow() *eui.WindowData {
 		}
 		hFlow.AddItem(btn)
 	}
-	if btn, ev := eui.NewButton(&eui.ItemData{Text: "Three", Size: eui.Point{X: 60, Y: 24}, FontSize: 8}); btn != nil {
+	if btn, ev := eui.NewButton(); btn != nil {
+		btn.Text = "Three"
+		btn.Size = eui.Point{X: 60, Y: 24}
+		btn.FontSize = 8
 		ev.Handle = func(ev eui.UIEvent) {
 			if ev.Type == eui.EventClick {
 				setStatus("Button Three clicked")
@@ -133,7 +181,10 @@ func makeShowcaseWindow() *eui.WindowData {
 		}
 		hFlow.AddItem(btn)
 	}
-	if btn, ev := eui.NewButton(&eui.ItemData{Text: "Four", Size: eui.Point{X: 60, Y: 24}, FontSize: 8}); btn != nil {
+	if btn, ev := eui.NewButton(); btn != nil {
+		btn.Text = "Four"
+		btn.Size = eui.Point{X: 60, Y: 24}
+		btn.FontSize = 8
 		ev.Handle = func(ev eui.UIEvent) {
 			if ev.Type == eui.EventClick {
 				setStatus("Button Four clicked")
@@ -156,10 +207,16 @@ func makeShowcaseWindow() *eui.WindowData {
 		},
 	}
 	mainFlow.AddItem(tabFlow)
-	if txt, _ := eui.NewText(&eui.ItemData{Text: "Tab 1 content", Size: eui.Point{X: 100, Y: 32}, FontSize: 8}); txt != nil {
+	if txt, _ := eui.NewText(); txt != nil {
+		txt.Text = "Tab 1 content"
+		txt.Size = eui.Point{X: 100, Y: 32}
+		txt.FontSize = 8
 		tabFlow.Tabs[0].AddItem(txt)
 	}
-	if txt, _ := eui.NewText(&eui.ItemData{Text: "Tab 2 content", Size: eui.Point{X: 100, Y: 32}, FontSize: 8}); txt != nil {
+	if txt, _ := eui.NewText(); txt != nil {
+		txt.Text = "Tab 2 content"
+		txt.Size = eui.Point{X: 100, Y: 32}
+		txt.FontSize = 8
 		tabFlow.Tabs[1].AddItem(txt)
 	}
 

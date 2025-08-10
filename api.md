@@ -222,28 +222,28 @@ func LoadTheme(name string) error
     LoadTheme reads a theme JSON file from the themes directory and sets it as
     the current theme without modifying existing windows.
 
-func NewButton(item *itemData) (*itemData, *EventHandler)
+func NewButton() (*itemData, *EventHandler)
     Create a new button from the default theme
 
-func NewCheckbox(item *itemData) (*itemData, *EventHandler)
+func NewCheckbox() (*itemData, *EventHandler)
     Create a new checkbox from the default theme
 
-func NewColorWheel(item *itemData) (*itemData, *EventHandler)
+func NewColorWheel() (*itemData, *EventHandler)
     Create a new color wheel from the default theme
 
-func NewDropdown(item *itemData) (*itemData, *EventHandler)
+func NewDropdown() (*itemData, *EventHandler)
     Create a new dropdown from the default theme
 
-func NewInput(item *itemData) (*itemData, *EventHandler)
+func NewInput() (*itemData, *EventHandler)
     Create a new input box from the default theme
 
-func NewRadio(item *itemData) (*itemData, *EventHandler)
+func NewRadio() (*itemData, *EventHandler)
     Create a new radio button from the default theme
 
-func NewSlider(item *itemData) (*itemData, *EventHandler)
+func NewSlider() (*itemData, *EventHandler)
     Create a new slider from the default theme
 
-func NewText(item *itemData) (*itemData, *EventHandler)
+func NewText() (*itemData, *EventHandler)
     Create a new textbox from the default theme
 
 func SaveTheme(name string) error
@@ -283,7 +283,7 @@ func Update() error
     Update processes input and updates window state. Programs embedding the UI
     can call this from their Ebiten Update handler.
 
-func NewWindow(win *windowData) *windowData
+func NewWindow() *windowData
     Create a new window from the default theme
 
 

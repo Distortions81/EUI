@@ -15,14 +15,13 @@ func makeThemeSelector() *eui.WindowData {
 	if eui.CurrentThemeName() == "" {
 		eui.SetCurrentThemeName(names[0])
 	}
-	win := eui.NewWindow(&eui.WindowData{
-		Title:     "Themes",
-		Resizable: true,
-		Closable:  false,
-		PinTo:     eui.PIN_TOP_RIGHT,
-		AutoSize:  true,
-		Open:      true,
-	})
+	win := eui.NewWindow()
+	win.Title = "Themes"
+	win.Resizable = true
+	win.Closable = false
+	win.PinTo = eui.PIN_TOP_RIGHT
+	win.AutoSize = true
+	win.Open = true
 	mainFlow := &eui.ItemData{ItemType: eui.ITEM_FLOW, Size: win.Size, FlowType: eui.FLOW_VERTICAL}
 	win.AddItem(mainFlow)
 
@@ -32,7 +31,10 @@ func makeThemeSelector() *eui.WindowData {
 		log.Printf("listStyles error: %v", serr)
 	}
 
-	dd, ddEvents := eui.NewDropdown(&eui.ItemData{Label: "Palette", Size: eui.Point{X: 150, Y: 24}, FontSize: 8})
+	dd, ddEvents := eui.NewDropdown()
+	dd.Label = "Palette"
+	dd.Size = eui.Point{X: 150, Y: 24}
+	dd.FontSize = 8
 	dd.Options = names
 	for i, n := range names {
 		if n == eui.CurrentThemeName() {
@@ -56,7 +58,10 @@ func makeThemeSelector() *eui.WindowData {
 	mainFlow.AddItem(dd)
 
 	if len(styleNames) > 0 {
-		ldd, lddEvents := eui.NewDropdown(&eui.ItemData{Label: "Style", Size: eui.Point{X: 150, Y: 24}, FontSize: 8})
+		ldd, lddEvents := eui.NewDropdown()
+		ldd.Label = "Style"
+		ldd.Size = eui.Point{X: 150, Y: 24}
+		ldd.FontSize = 8
 		ldd.Options = styleNames
 		for i, n := range styleNames {
 			if n == eui.CurrentStyleName() {
@@ -77,7 +82,8 @@ func makeThemeSelector() *eui.WindowData {
 		mainFlow.AddItem(ldd)
 	}
 
-	cw, _ := eui.NewColorWheel(&eui.ItemData{Size: eui.Point{X: 160, Y: 128}})
+	cw, _ := eui.NewColorWheel()
+	cw.Size = eui.Point{X: 160, Y: 128}
 	cw.OnColorChange = func(col eui.Color) {
 		eui.SetAccentColor(col)
 		if satSlider != nil {
@@ -86,7 +92,12 @@ func makeThemeSelector() *eui.WindowData {
 	}
 	mainFlow.AddItem(cw)
 
-	satSlider, satEvents := eui.NewSlider(&eui.ItemData{Label: "Color Intensity", Size: eui.Point{X: 128, Y: 24}, MinValue: 0, MaxValue: 1, FontSize: 8})
+	satSlider, satEvents := eui.NewSlider()
+	satSlider.Label = "Color Intensity"
+	satSlider.Size = eui.Point{X: 128, Y: 24}
+	satSlider.MinValue = 0
+	satSlider.MaxValue = 1
+	satSlider.FontSize = 8
 	satSlider.Value = float32(eui.AccentSaturation())
 	satEvents.Handle = func(ev eui.UIEvent) {
 		if ev.Type == eui.EventSliderChanged {
