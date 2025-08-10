@@ -296,7 +296,8 @@ func (win *windowData) clampToScreen() {
 // dropdownOpenRect returns the rectangle used for drawing and input handling of
 // an open dropdown menu. The rectangle is adjusted so it never extends off the
 // screen while leaving room for overlay controls at the top and bottom equal to
-// one option height.
+// one option height. If there isn't enough room below the dropdown, the menu
+// will open upward so it doesn't cover the button.
 func dropdownOpenRect(item *itemData, offset point) (rect, int) {
 	maxSize := item.GetSize()
 	optionH := maxSize.Y
@@ -316,23 +317,47 @@ func dropdownOpenRect(item *itemData, offset point) (rect, int) {
 		visible = maxVisible
 	}
 
-	startY := offset.Y + maxSize.Y
-	openH := optionH * float32(visible)
-	r := rect{X0: offset.X, Y0: startY, X1: offset.X + maxSize.X, Y1: startY + openH}
-
 	bottomLimit := float32(screenHeight) - optionH*dropdownOverlayReserve
-	if r.Y1 > bottomLimit {
-		diff := r.Y1 - bottomLimit
-		r.Y0 -= diff
-		r.Y1 -= diff
-	}
 	topLimit := optionH * dropdownOverlayReserve
-	if r.Y0 < topLimit {
-		diff := topLimit - r.Y0
-		r.Y0 += diff
-		r.Y1 += diff
+	startDown := offset.Y + maxSize.Y
+	spaceBelow := bottomLimit - startDown
+	spaceAbove := offset.Y - topLimit
+
+	openH := optionH * float32(visible)
+
+	if openH <= spaceBelow {
+		r := rect{X0: offset.X, Y0: startDown, X1: offset.X + maxSize.X, Y1: startDown + openH}
+		return r, visible
+	}
+	if openH <= spaceAbove {
+		startUp := offset.Y - openH
+		r := rect{X0: offset.X, Y0: startUp, X1: offset.X + maxSize.X, Y1: offset.Y}
+		return r, visible
 	}
 
+	if spaceBelow >= spaceAbove {
+		maxVis := int(spaceBelow / optionH)
+		if maxVis < 1 {
+			maxVis = 1
+		}
+		if visible > maxVis {
+			visible = maxVis
+			openH = optionH * float32(visible)
+		}
+		r := rect{X0: offset.X, Y0: startDown, X1: offset.X + maxSize.X, Y1: startDown + openH}
+		return r, visible
+	}
+
+	maxVis := int(spaceAbove / optionH)
+	if maxVis < 1 {
+		maxVis = 1
+	}
+	if visible > maxVis {
+		visible = maxVis
+		openH = optionH * float32(visible)
+	}
+	startUp := offset.Y - openH
+	r := rect{X0: offset.X, Y0: startUp, X1: offset.X + maxSize.X, Y1: offset.Y}
 	return r, visible
 }
 
