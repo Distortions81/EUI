@@ -108,3 +108,11 @@ See [themes/README.md](eui/themes/README.md) for a list of the bundled schemes a
 - `cmd/demo` – standalone example program wiring the library together
 
 For a generated listing of all library functions see the [API reference](api.md).
+
+## Testing
+
+Some tests depend on a build tag. Run them with:
+
+```sh
+go test -tags test ./...
+```
