@@ -389,6 +389,37 @@ func TestAddWindowNoTitle(t *testing.T) {
 	}
 	currentTheme = prevTheme
 }
+
+func TestSetTitleSizeOverridesTheme(t *testing.T) {
+	windows = nil
+	prevTheme := currentTheme
+	win := &windowData{Title: "win", Size: point{X: 100, Y: 100}}
+	win.AddWindow(false)
+	win.SetTitleSize(30)
+	currentTheme = &Theme{Window: windowData{TitleHeight: 24}}
+	applyThemeToAll()
+	if win.TitleHeight != 30 {
+		t.Fatalf("expected TitleHeight 30, got %v", win.TitleHeight)
+	}
+	currentTheme = prevTheme
+}
+
+func TestNoTitlebar(t *testing.T) {
+	windows = nil
+	prevTheme := currentTheme
+	currentTheme = &Theme{Window: windowData{TitleHeight: 24}}
+	win := &windowData{Title: "win", Size: point{X: 100, Y: 100}}
+	win.AddWindow(false)
+	win.NoTitlebar()
+	if !win.NoTitle || win.TitleHeight != 0 {
+		t.Fatalf("expected no titlebar, got NoTitle=%v TitleHeight=%v", win.NoTitle, win.TitleHeight)
+	}
+	applyThemeToAll()
+	if !win.NoTitle || win.TitleHeight != 0 {
+		t.Fatalf("expected NoTitlebar override to persist, got NoTitle=%v TitleHeight=%v", win.NoTitle, win.TitleHeight)
+	}
+	currentTheme = prevTheme
+}
 func TestSetSizeClampAndScroll(t *testing.T) {
 	win := &windowData{
 		Size:        point{X: 100, Y: 100},

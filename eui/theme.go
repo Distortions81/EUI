@@ -225,8 +225,12 @@ func copyWindowStyle(dst, src *windowData) {
 	dst.BorderPad = src.BorderPad
 	dst.Fillet = src.Fillet
 	dst.Outlined = src.Outlined
-	dst.NoTitle = src.NoTitle
-	dst.TitleHeight = src.TitleHeight
+	if !dst.NoTitleSet {
+		dst.NoTitle = src.NoTitle
+	}
+	if !dst.TitleHeightSet {
+		dst.TitleHeight = src.TitleHeight
+	}
 	dst.DragbarSpacing = src.DragbarSpacing
 	dst.ShowDragbar = src.ShowDragbar
 }
