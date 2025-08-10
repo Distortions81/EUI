@@ -121,6 +121,17 @@ func (target *windowData) AddWindow(toBack bool) {
 		target.Movable = false
 	}
 
+	var customTitleHeight float32
+	if currentTheme != nil {
+		if target.TitleHeight > 0 {
+			customTitleHeight = target.TitleHeight
+		}
+		applyThemeToWindow(target)
+		if customTitleHeight > 0 {
+			target.TitleHeight = customTitleHeight
+		}
+	}
+
 	if target.AutoSize {
 		target.updateAutoSize()
 		target.AutoSizeOnScale = true
@@ -133,10 +144,6 @@ func (target *windowData) AddWindow(toBack bool) {
 	}
 
 	target.clampToScreen()
-
-	if currentTheme != nil {
-		applyThemeToWindow(target)
-	}
 
 	// Closed windows shouldn't steal focus, so add them to the back by
 	// default and don't update the active window.
