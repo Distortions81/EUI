@@ -121,11 +121,7 @@ var (
 )
 
 func LoadStyle(name string) error {
-	dir, err := getBaseDir()
-	if err != nil {
-		return err
-	}
-	file := filepath.Join(dir, "themes", "styles", name+".json")
+	file := filepath.Join("themes", "styles", name+".json")
 	data, err := os.ReadFile(file)
 	if err != nil {
 		data, err = embeddedStyles.ReadFile(filepath.Join("themes", "styles", name+".json"))

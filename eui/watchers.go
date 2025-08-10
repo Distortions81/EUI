@@ -23,12 +23,7 @@ func init() {
 }
 
 func refreshThemeMod() {
-	dir, err := getBaseDir()
-	if err != nil {
-		themeModTime = time.Time{}
-		return
-	}
-	path := filepath.Join(dir, "themes", "palettes", currentThemeName+".json")
+	path := filepath.Join("themes", "palettes", currentThemeName+".json")
 	if info, err := os.Stat(path); err == nil {
 		themeModTime = info.ModTime()
 	} else {
@@ -37,12 +32,7 @@ func refreshThemeMod() {
 }
 
 func refreshStyleMod() {
-	dir, err := getBaseDir()
-	if err != nil {
-		styleModTime = time.Time{}
-		return
-	}
-	path := filepath.Join(dir, "themes", "styles", currentStyleName+".json")
+	path := filepath.Join("themes", "styles", currentStyleName+".json")
 	if info, err := os.Stat(path); err == nil {
 		styleModTime = info.ModTime()
 	} else {
@@ -58,12 +48,7 @@ func checkThemeStyleMods() {
 		return
 	}
 	modCheckTime = time.Now()
-	dir, err := getBaseDir()
-	if err != nil {
-		log.Printf("Unable to get working directory: %v", err)
-		return
-	}
-	path := filepath.Join(dir, "themes", "palettes", currentThemeName+".json")
+	path := filepath.Join("themes", "palettes", currentThemeName+".json")
 	if info, err := os.Stat(path); err == nil {
 		if info.ModTime().After(themeModTime) {
 			log.Println("Palette reload")
@@ -76,7 +61,7 @@ func checkThemeStyleMods() {
 		log.Println("Unable to stat " + currentThemeName + ": " + err.Error())
 	}
 
-	path = filepath.Join(dir, "themes", "styles", currentStyleName+".json")
+	path = filepath.Join("themes", "styles", currentStyleName+".json")
 	if info, err := os.Stat(path); err == nil {
 		if info.ModTime().After(styleModTime) {
 			log.Println("Style theme reload")
