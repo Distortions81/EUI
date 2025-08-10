@@ -176,7 +176,8 @@ func (g *demoGame) Draw(screen *ebiten.Image) {
 }
 func (g *demoGame) Layout(outsideWidth, outsideHeight int) (int, int) {
 	//Your layout handling code here
-	return eui.Layout(outsideWidth, outsideHeight)
+	eui.RenderSize(outsideWidth, outsideHeight)
+	return outsideWidth, outsideHeight
 }
 
 func newGame() *demoGame {

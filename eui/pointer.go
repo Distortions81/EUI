@@ -30,11 +30,6 @@ func pointerPosition() (int, int) {
 	} else {
 		x, y = ebiten.CursorPosition()
 	}
-	if AutoHiDPI {
-		scale := lastDeviceScale
-		x = int(float64(x) * scale)
-		y = int(float64(y) * scale)
-	}
 	return x, y
 }
 
