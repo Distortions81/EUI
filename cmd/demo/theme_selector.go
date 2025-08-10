@@ -21,7 +21,6 @@ func makeThemeSelector() *eui.WindowData {
 	win.Closable = false
 	win.PinTo = eui.PIN_TOP_RIGHT
 	win.AutoSize = true
-	win.Open()
 	mainFlow := &eui.ItemData{ItemType: eui.ITEM_FLOW, Size: win.Size, FlowType: eui.FLOW_VERTICAL}
 	win.AddItem(mainFlow)
 
@@ -106,5 +105,6 @@ func makeThemeSelector() *eui.WindowData {
 	}
 	mainFlow.AddItem(satSlider)
 
+	win.Open()
 	return win
 }

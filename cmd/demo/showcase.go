@@ -10,10 +10,8 @@ import (
 func makeShowcaseWindow() *eui.WindowData {
 	win := eui.NewWindow()
 	win.Title = "Showcase"
-	win.Size = eui.Point{X: 400, Y: 420}
 	win.Position = eui.Point{X: 8, Y: 8}
 	win.AutoSize = true
-	win.Open()
 	win.Movable = true
 	win.Resizable = true
 	win.Closable = false
@@ -219,6 +217,7 @@ func makeShowcaseWindow() *eui.WindowData {
 		txt.FontSize = 8
 		tabFlow.Tabs[1].AddItem(txt)
 	}
+	win.Open()
 
 	return win
 }

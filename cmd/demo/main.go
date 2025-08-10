@@ -53,13 +53,12 @@ func main() {
 	eui.SetUIScale(currentScale)
 
 	makeShowcaseWindow()
-
-	themeSel = makeThemeSelector()
+	makeThemeSelector()
 
 	statusOverlay := &eui.ItemData{
 		ItemType: eui.ITEM_FLOW,
 		FlowType: eui.FLOW_HORIZONTAL,
-		Size:     eui.Point{X: 320, Y: 24},
+		Size:     eui.Point{X: 320, Y: 500},
 		Position: eui.Point{X: 110, Y: 0},
 		PinTo:    eui.PIN_BOTTOM_LEFT,
 	}
