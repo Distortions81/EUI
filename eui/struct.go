@@ -46,7 +46,8 @@ type windowData struct {
 	Scroll   point
 	NoScroll bool
 
-	TitleHeight float32
+	TitleHeight    float32
+	TitleHeightSet bool
 
 	// cached title text metrics
 	titleRaw      string

@@ -517,6 +517,7 @@ func (win *windowData) titleTextWidth() point {
 
 func (win *windowData) SetTitleSize(size float32) {
 	win.TitleHeight = size / uiScale
+	win.TitleHeightSet = true
 	win.invalidateTitleCache()
 	win.Dirty = true
 	win.resizeFlows()
