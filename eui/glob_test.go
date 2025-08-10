@@ -37,8 +37,7 @@ var (
 	currentTheme     *Theme
 	currentThemeName string
 
-	lastDeviceScale float64 = 1.0
-	notoTTF                 = defaultTTF
+	notoTTF = defaultTTF
 
 	MinWinSizeX float32 = minWinSizeX
 	MinWinSizeY float32 = minWinSizeY

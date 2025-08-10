@@ -25,11 +25,7 @@ building a game UI. Highlights include:
 - **UI scaling** – call `eui.SetUIScale()` to adapt to any resolution or
   `eui.UIScale()` to read the current value. The scale is clamped between 0.5
   and 2.5. Windows using `AutoSize` adjust their dimensions automatically when
-  the scale changes. When HiDPI scaling is enabled the effective scale may
-  change on the first layout pass. Call `eui.UIScale()` after `eui.Layout` to
-  obtain the final value.
-- **HiDPI support** – automatically adjusts the UI scale and screen resolution
-  to match the device scale factor. Disable by setting `eui.AutoHiDPI = false`.
+  the scale changes.
 - **Image caching** – widgets cache their drawing for better performance.
   Enable `eui.DumpMode` to write the cached images to disk for inspection.
 - **Tree dump** – press <kbd>Shift</kbd>+<kbd>`</kbd> or run the demo with
@@ -98,8 +94,6 @@ The library loads the built in `AccentDark` palette, `RoundHybrid` style and a d
 // _ = eui.LoadTheme("MyTheme")
 // _ = eui.LoadStyle("MyStyle")
 ```
-HiDPI scaling is enabled by default so the UI keeps the same size on screen when switching between standard and high‑DPI displays. `eui.Layout` automatically scales the game screen to the device resolution. Set `eui.AutoHiDPI = false` to disable this behavior.
-
 See [themes/README.md](eui/themes/README.md) for a list of the bundled schemes and details on creating your own.
 
 ## Project Layout

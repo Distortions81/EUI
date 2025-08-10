@@ -165,10 +165,6 @@ var (
 	// before exiting when enabled.
 	TreeMode bool
 
-	// AutoHiDPI enables automatic scaling when the device scale factor
-	// changes, keeping the UI size consistent on HiDPI displays. It is
-	// enabled by default and can be disabled if needed.
-	AutoHiDPI bool = true
 )
 var (
 
@@ -207,9 +203,9 @@ func EnsureFontSource(ttf []byte) error
 func FontSource() *text.GoTextFaceSource
     FontSource returns the current text face source.
 
-func Layout(outsideWidth, outsideHeight int) (int, int)
-    Layout reports the dimensions for the game's screen. Pass Ebiten's outside
-    size values to this from your Layout function.
+func RenderSize(outsideWidth, outsideHeight int)
+    RenderSize sets the current screen size from Ebiten's layout values. Pass
+    Ebiten's outside size values to this from your Layout function.
 
 func ListStyles() ([]string, error)
     ListStyles returns the available style theme names.
@@ -273,8 +269,6 @@ func SetScreenSize(w, h int)
     SetScreenSize sets the current screen size used for layout calculations.
 
 func SetUIScale(scale float32)
-func SyncHiDPIScale()
-    SyncHiDPIScale adjusts the UI scale when the device scale factor changes.
     It preserves the current UI scale relative to the previous factor so the
     interface keeps the same on-screen size.
 

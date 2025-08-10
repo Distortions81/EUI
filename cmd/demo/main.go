@@ -135,7 +135,7 @@ func (g *demoGame) Draw(screen *ebiten.Image) {
 	eui.Draw(screen)
 }
 func (g *demoGame) Layout(outsideWidth, outsideHeight int) (int, int) {
-	eui.Layout(outsideWidth, outsideHeight)
+	eui.RenderSize(outsideWidth, outsideHeight)
 	return outsideWidth, outsideHeight
 }
 
