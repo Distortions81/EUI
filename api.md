@@ -430,6 +430,10 @@ func (win *WindowData) Open()
     Open marks the window open and brings it forward if necessary. Windows
     with zero or negative dimensions are ignored.
 
+func (win *WindowData) NoTitlebar()
+    NoTitlebar removes the title bar and prevents themed title sizes from
+    overriding it.
+
 func (win *WindowData) Refresh()
     Refresh marks the window dirty and recalculates layout if open.
 

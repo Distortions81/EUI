@@ -517,6 +517,7 @@ func (win *windowData) titleTextWidth() point {
 
 func (win *windowData) SetTitleSize(size float32) {
 	win.TitleHeight = size / uiScale
+	win.TitleHeightSet = true
 	win.invalidateTitleCache()
 	win.Dirty = true
 	win.resizeFlows()
@@ -529,6 +530,17 @@ func (win *windowData) SetTitle(title string) {
 		win.Dirty = true
 		win.resizeFlows()
 	}
+}
+
+func (win *windowData) NoTitlebar() {
+	win.NoTitle = true
+	win.NoTitleSet = true
+	win.TitleHeight = 0
+	win.TitleHeightSet = true
+	win.ShowDragbar = false
+	win.invalidateTitleCache()
+	win.Dirty = true
+	win.resizeFlows()
 }
 
 func (win *windowData) invalidateTitleCache() {

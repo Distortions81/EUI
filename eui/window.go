@@ -121,22 +121,17 @@ func (target *windowData) AddWindow(toBack bool) {
 		target.Movable = false
 	}
 
-	var customTitleHeight float32
-	customNoTitle := target.NoTitle
+	if target.NoTitle {
+		target.NoTitleSet = true
+		target.TitleHeightSet = true
+		target.TitleHeight = 0
+	} else if target.TitleHeight > 0 {
+		target.TitleHeightSet = true
+	}
 	if currentTheme != nil {
-		if !customNoTitle && target.TitleHeight > 0 {
-			customTitleHeight = target.TitleHeight
-		}
 		applyThemeToWindow(target)
-		if customNoTitle {
-			target.NoTitle = true
-		}
-		if target.NoTitle {
-			target.TitleHeight = 0
-		} else if customTitleHeight > 0 {
-			target.TitleHeight = customTitleHeight
-		}
-	} else if target.NoTitle {
+	}
+	if target.NoTitle {
 		target.TitleHeight = 0
 	}
 

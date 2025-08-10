@@ -43,11 +43,13 @@ type windowData struct {
 	MainPortal bool
 
 	// Scroll position and behavior
-	Scroll   point
-	NoScroll bool
-	NoTitle  bool
+	Scroll     point
+	NoScroll   bool
+	NoTitle    bool
+	NoTitleSet bool
 
-	TitleHeight float32
+	TitleHeight    float32
+	TitleHeightSet bool
 
 	// cached title text metrics
 	titleRaw      string
