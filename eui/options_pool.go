@@ -15,6 +15,7 @@ var drawImageOptionsPool = sync.Pool{
 
 func acquireDrawImageOptions() *ebiten.DrawImageOptions {
 	op := drawImageOptionsPool.Get().(*ebiten.DrawImageOptions)
+	*op = ebiten.DrawImageOptions{}
 	op.GeoM.Reset()
 	op.ColorScale.Reset()
 	return op
