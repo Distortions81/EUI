@@ -176,10 +176,8 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 	}
 	win.drawItems(screen)
 	win.drawScrollbars(screen)
-	titleArea := screen.SubImage(win.getTitleRect().getRectangle()).(*ebiten.Image)
-	win.drawWinTitle(titleArea)
-	windowArea := screen.SubImage(win.getWinRect().getRectangle()).(*ebiten.Image)
-	win.drawBorder(windowArea)
+	win.drawWinTitle(screen, win.getTitleRect())
+	win.drawBorder(screen, win.getWinRect())
 	win.drawDebug(screen)
 }
 
@@ -188,7 +186,7 @@ func (win *windowData) drawPortalMask(screen *ebiten.Image) {
 	w := float32(screenWidth)
 	h := float32(screenHeight)
 
-	op := ebiten.DrawImageOptions{CompositeMode: ebiten.CompositeModeCopy}
+	op := ebiten.DrawImageOptions{}
 
 	if r.Y0 > 0 {
 		op.GeoM.Reset()
@@ -241,10 +239,10 @@ func (win *windowData) drawBG(screen *ebiten.Image) {
 	})
 }
 
-func (win *windowData) drawWinTitle(screen *ebiten.Image) {
+func (win *windowData) drawWinTitle(screen *ebiten.Image, r rect) {
 	// Window Title
 	if win.TitleHeight > 0 {
-		screen.Fill(win.Theme.Window.TitleBGColor)
+		drawFilledRect(screen, r.X0, r.Y0, r.X1-r.X0, r.Y1-r.Y0, win.Theme.Window.TitleBGColor, false)
 
 		textSize := ((win.GetTitleSize()) / 2)
 		face := textFace(textSize)
@@ -264,8 +262,8 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image) {
 				SecondaryAlign: text.AlignCenter,
 			}
 			tdop := ebiten.DrawImageOptions{}
-			tdop.GeoM.Translate(float64(win.getPosition().X+((win.GetTitleSize())/4)),
-				float64(win.getPosition().Y+((win.GetTitleSize())/2)))
+			tdop.GeoM.Translate(float64(r.X0+((win.GetTitleSize())/4)),
+				float64(r.Y0+((win.GetTitleSize())/2)))
 
 			top := &text.DrawOptions{DrawImageOptions: tdop, LayoutOptions: loo}
 
@@ -301,18 +299,18 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image) {
 				win.HoverClose = false
 			}
 			strokeLine(screen,
-				win.getPosition().X+win.GetSize().X-(win.GetTitleSize())+xpad,
-				win.getPosition().Y+xpad,
+				r.X1-(win.GetTitleSize())+xpad,
+				r.Y0+xpad,
 
-				win.getPosition().X+win.GetSize().X-xpad,
-				win.getPosition().Y+(win.GetTitleSize())-xpad,
+				r.X1-xpad,
+				r.Y0+(win.GetTitleSize())-xpad,
 				xThick, color, true)
 			strokeLine(screen,
-				win.getPosition().X+win.GetSize().X-xpad,
-				win.getPosition().Y+xpad,
+				r.X1-xpad,
+				r.Y0+xpad,
 
-				win.getPosition().X+win.GetSize().X-(win.GetTitleSize())+xpad,
-				win.getPosition().Y+(win.GetTitleSize())-xpad,
+				r.X1-(win.GetTitleSize())+xpad,
+				r.Y0+(win.GetTitleSize())-xpad,
 				xThick, color, true)
 
 			buttonsWidth += (win.GetTitleSize())
@@ -333,15 +331,15 @@ func (win *windowData) drawWinTitle(screen *ebiten.Image) {
 			}
 			for x := textWidth + float64((win.GetTitleSize())/1.5); x < float64(win.GetSize().X-buttonsWidth); x = x + float64(uiScale*spacing) {
 				strokeLine(screen,
-					win.getPosition().X+float32(x), win.getPosition().Y+dpad,
-					win.getPosition().X+float32(x), win.getPosition().Y+(win.GetTitleSize())-dpad,
+					r.X0+float32(x), r.Y0+dpad,
+					r.X0+float32(x), r.Y0+(win.GetTitleSize())-dpad,
 					xThick, xColor, false)
 			}
 		}
 	}
 }
 
-func (win *windowData) drawBorder(screen *ebiten.Image) {
+func (win *windowData) drawBorder(screen *ebiten.Image, r rect) {
 	//Draw borders
 	if win.Outlined && win.Border > 0 {
 		FrameColor := win.Theme.Window.BorderColor
@@ -352,8 +350,8 @@ func (win *windowData) drawBorder(screen *ebiten.Image) {
 			win.Hovered = false
 		}
 		drawRoundRect(screen, &roundRect{
-			Size:     win.GetSize(),
-			Position: win.getPosition(),
+			Size:     point{X: r.X1 - r.X0, Y: r.Y1 - r.Y0},
+			Position: point{X: r.X0, Y: r.Y0},
 			Fillet:   win.Fillet,
 			Filled:   false,
 			Border:   win.Border,
@@ -1639,10 +1637,4 @@ func drawArrow(screen *ebiten.Image, x0, y0, x1, y1, width float32, col Color) {
 	rightX := x1 - head*float32(math.Cos(angle+math.Pi/6))
 	rightY := y1 - head*float32(math.Sin(angle+math.Pi/6))
 	strokeLine(screen, x1, y1, rightX, rightY, width, col, true)
-}
-
-func drawFPS(screen *ebiten.Image) {
-	drawFilledRect(screen, 0, 0, 58, 16, color.RGBA{R: 0, G: 0, B: 0, A: 192}, false)
-	buf := fmt.Sprintf("%4v FPS", int(math.Round(ebiten.ActualFPS())))
-	ebitenutil.DebugPrintAt(screen, buf, 0, 0)
 }

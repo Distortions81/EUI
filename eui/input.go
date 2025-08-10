@@ -635,11 +635,6 @@ func (item *itemData) setSliderValue(mpos point) {
 	}
 }
 
-func (item *itemData) toggleHide() {
-	item.Hide = !item.Hide
-	item.markDirty()
-}
-
 func (item *itemData) toggleReveal() {
 	item.Reveal = !item.Reveal
 	item.markDirty()
