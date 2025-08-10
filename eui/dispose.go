@@ -42,6 +42,10 @@ func (win *windowData) deallocImages() {
 	if DebugMode {
 		log.Printf("disposing images for window %p (%s)", win, win.Title)
 	}
+	if win.Render != nil {
+		win.Render.Deallocate()
+		win.Render = nil
+	}
 	for _, it := range win.Contents {
 		if it != nil {
 			it.deallocImages()
