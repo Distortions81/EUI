@@ -118,6 +118,7 @@ func (target *windowData) AddWindow(toBack bool) {
 
 	if target.AutoSize {
 		target.updateAutoSize()
+		target.AutoSizeOnScale = true
 		target.AutoSize = false
 	}
 

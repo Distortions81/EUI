@@ -486,7 +486,7 @@ func SetUIScale(scale float32) {
 	}
 	uiScale = scale
 	for _, win := range windows {
-		if win.AutoSize {
+		if win.AutoSize || win.AutoSizeOnScale {
 			win.updateAutoSize()
 		} else {
 			win.resizeFlows()
