@@ -4,9 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"os"
-	"os/signal"
-	"syscall"
 	"time"
 
 	"github.com/Distortions81/EUI/eui"
@@ -18,8 +15,6 @@ var (
 	debugMode    *bool
 	dumpMode     *bool
 	treeMode     *bool
-	themeSel     *eui.WindowData
-	signalHandle chan os.Signal
 	currentScale float32
 )
 
@@ -32,9 +27,6 @@ func main() {
 	eui.DebugMode = *debugMode
 	eui.DumpMode = *dumpMode
 	eui.TreeMode = *treeMode
-
-	signalHandle = make(chan os.Signal, 1)
-	signal.Notify(signalHandle, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 
 	// Load a custom theme or style from files if desired
 	// if err := eui.LoadTheme("AccentDark"); err != nil {
@@ -111,9 +103,7 @@ func main() {
 
 	eui.AddOverlayFlow(scaleOverlay)
 
-	go startEbiten()
-
-	<-signalHandle
+	startEbiten()
 }
 
 func startEbiten() {
@@ -123,19 +113,10 @@ func startEbiten() {
 	ebiten.SetTPS(ebiten.SyncWithFPS)
 
 	/* Set up our window */
-	w, h := eui.ScreenSize()
-	scale := ebiten.Monitor().DeviceScaleFactor()
-	if scale <= 0 {
-		scale = 1
-	}
-	ebiten.SetWindowSize(int(float64(w)/scale), int(float64(h)/scale))
+	ebiten.SetWindowSize(1000, 1000)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 
 	ebiten.SetWindowTitle("EUI Prototype")
-
-	defer func() {
-		signalHandle <- syscall.SIGINT
-	}()
 
 	if err := ebiten.RunGameWithOptions(newGame(), &ebiten.RunGameOptions{}); err != nil {
 		log.Printf("ebiten.RunGameWithOptions error: %v", err)
@@ -154,8 +135,8 @@ func (g *demoGame) Draw(screen *ebiten.Image) {
 	eui.Draw(screen)
 }
 func (g *demoGame) Layout(outsideWidth, outsideHeight int) (int, int) {
-	//Your layout handling code here
-	return eui.Layout(outsideWidth, outsideHeight)
+	eui.Layout(outsideWidth, outsideHeight)
+	return outsideWidth, outsideHeight
 }
 
 func newGame() *demoGame {
