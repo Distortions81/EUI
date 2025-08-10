@@ -345,6 +345,34 @@ func TestFlowContentBounds(t *testing.T) {
 	}
 }
 
+func TestMarginAffectsBounds(t *testing.T) {
+	uiScale = 1
+
+	vflow := &itemData{ItemType: ITEM_FLOW, FlowType: FLOW_VERTICAL}
+	vflow.addItemTo(&itemData{ItemType: ITEM_BUTTON, Size: point{X: 10, Y: 20}, Margin: 5})
+	vflow.addItemTo(&itemData{ItemType: ITEM_BUTTON, Size: point{X: 15, Y: 30}, Margin: 5})
+	wantV := point{X: 25, Y: 65}
+	if got := vflow.contentBounds(); got != wantV {
+		t.Errorf("vertical bounds with margin got %+v want %+v", got, wantV)
+	}
+
+	hflow := &itemData{ItemType: ITEM_FLOW, FlowType: FLOW_HORIZONTAL}
+	hflow.addItemTo(&itemData{ItemType: ITEM_BUTTON, Size: point{X: 10, Y: 20}, Margin: 5})
+	hflow.addItemTo(&itemData{ItemType: ITEM_BUTTON, Size: point{X: 15, Y: 30}, Margin: 5})
+	wantH := point{X: 40, Y: 40}
+	if got := hflow.contentBounds(); got != wantH {
+		t.Errorf("horizontal bounds with margin got %+v want %+v", got, wantH)
+	}
+
+	win := &windowData{AutoSize: true, TitleHeight: 0}
+	win.addItemTo(&itemData{ItemType: ITEM_BUTTON, Size: point{X: 10, Y: 20}, Margin: 5})
+	win.Refresh()
+	wantWin := point{X: 20, Y: 30}
+	if got := win.GetSize(); got != wantWin {
+		t.Errorf("window size with margin got %+v want %+v", got, wantWin)
+	}
+}
+
 func TestWindowRefreshRecalculatesFlow(t *testing.T) {
 	uiScale = 1
 
