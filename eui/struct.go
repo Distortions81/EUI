@@ -31,7 +31,8 @@ type windowData struct {
 	Fillet    float32
 	Outlined  bool
 
-	Open, Hovered, Flow,
+	open bool
+	Hovered, Flow,
 	Closable, Movable, Resizable,
 	HoverClose, HoverDragbar,
 	AutoSize, AutoSizeOnScale, FixedRatio bool

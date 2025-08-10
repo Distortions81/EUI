@@ -420,6 +420,11 @@ func Windows() []*WindowData
     Windows returns the list of active windows.
 
 func (win *WindowData) AddItem(child *ItemData)
+func (win *WindowData) Close()
+func (win *WindowData) Destroy()
+func (win *WindowData) IsOpen() bool
+func (win *WindowData) Open()
+func (win *WindowData) Toggle()
     AddItem appends a child item to the window.
 
 ```

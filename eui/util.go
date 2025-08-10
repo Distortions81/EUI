@@ -237,25 +237,65 @@ func (win *windowData) adjustScrollForResize() {
 }
 
 func (win *windowData) clampToScreen() {
-	pos := win.getPosition()
 	size := win.GetSize()
+	m := win.Margin * uiScale
 
-	if pos.X < 0 {
-		win.Position.X -= pos.X / uiScale
-		pos.X = 0
-	}
-	if pos.Y < 0 {
-		win.Position.Y -= pos.Y / uiScale
-		pos.Y = 0
+	switch win.PinTo {
+	case PIN_TOP_LEFT, PIN_MID_LEFT, PIN_BOTTOM_LEFT:
+		off := win.GetPos().X
+		min := float32(0)
+		max := float32(screenWidth) - size.X - m
+		if off < min {
+			win.Position.X = min / uiScale
+		} else if off > max {
+			win.Position.X = max / uiScale
+		}
+	case PIN_TOP_RIGHT, PIN_MID_RIGHT, PIN_BOTTOM_RIGHT:
+		off := win.GetPos().X
+		min := -m
+		max := float32(screenWidth) - size.X - m
+		if off < min {
+			win.Position.X = min / uiScale
+		} else if off > max {
+			win.Position.X = max / uiScale
+		}
+	case PIN_TOP_CENTER, PIN_MID_CENTER, PIN_BOTTOM_CENTER:
+		off := win.GetPos().X
+		max := float32(screenWidth)/2 - size.X/2
+		if off < -max {
+			win.Position.X = -max / uiScale
+		} else if off > max {
+			win.Position.X = max / uiScale
+		}
 	}
 
-	overX := pos.X + size.X - float32(screenWidth)
-	if overX > 0 {
-		win.Position.X -= overX / uiScale
-	}
-	overY := pos.Y + size.Y - float32(screenHeight)
-	if overY > 0 {
-		win.Position.Y -= overY / uiScale
+	switch win.PinTo {
+	case PIN_TOP_LEFT, PIN_TOP_CENTER, PIN_TOP_RIGHT:
+		off := win.GetPos().Y
+		min := float32(0)
+		max := float32(screenHeight) - size.Y - m
+		if off < min {
+			win.Position.Y = min / uiScale
+		} else if off > max {
+			win.Position.Y = max / uiScale
+		}
+	case PIN_BOTTOM_LEFT, PIN_BOTTOM_CENTER, PIN_BOTTOM_RIGHT:
+		off := win.GetPos().Y
+		min := -m
+		max := float32(screenHeight) - size.Y - m
+		if off < min {
+			win.Position.Y = min / uiScale
+		} else if off > max {
+			win.Position.Y = max / uiScale
+		}
+	case PIN_MID_LEFT, PIN_MID_CENTER, PIN_MID_RIGHT:
+		off := win.GetPos().Y
+		max := float32(screenHeight)/2 - size.Y/2
+		if off < -max {
+			win.Position.Y = -max / uiScale
+		} else if off > max {
+			win.Position.Y = max / uiScale
+		}
 	}
 }
 

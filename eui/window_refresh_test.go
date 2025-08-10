@@ -19,9 +19,9 @@ func TestWindowRefreshRerenders(t *testing.T) {
 	win := *defaultTheme
 	win.Theme = baseTheme
 	win.Contents = []*itemData{&textItem}
-	win.Open = true
 
-	windows = []*windowData{&win}
+	windows = nil
+	win.Open()
 	screen := ebiten.NewImage(200, 200)
 
 	win.Dirty = true
@@ -43,10 +43,9 @@ func TestWindowRefreshTitleUpdates(t *testing.T) {
 
 	win := *defaultTheme
 	win.Theme = baseTheme
-	win.Open = true
+	windows = nil
+	win.Open()
 	win.SetTitle("short")
-
-	windows = []*windowData{&win}
 	screen := ebiten.NewImage(200, 200)
 
 	win.Dirty = true

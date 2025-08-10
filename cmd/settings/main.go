@@ -39,7 +39,7 @@ func main() {
 	eui.SetUIScale(currentScale)
 
 	win := eui.NewWindow()
-	win.Open = true
+	win.Open()
 	win.Resizable = true
 	win.Closable = true
 	win.Title = "Settings"
@@ -138,7 +138,6 @@ func main() {
 	mainFlow.AddItem(tt2)
 
 	win.AddItem(mainFlow)
-	win.AddWindow(false)
 	go startEbiten()
 
 	<-signalHandle

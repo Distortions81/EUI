@@ -27,7 +27,8 @@ func TestSetTitleUpdatesRender(t *testing.T) {
 	win := *defaultTheme
 	win.Theme = baseTheme
 	win.Title = "before"
-	win.Open = true
+	windows = nil
+	win.Open()
 
 	screen := ebiten.NewImage(200, 200)
 	win.Dirty = true
@@ -54,7 +55,8 @@ func TestSetTitleSizeUpdatesRender(t *testing.T) {
 	win := *defaultTheme
 	win.Theme = baseTheme
 	win.Title = "title"
-	win.Open = true
+	windows = nil
+	win.Open()
 
 	screen := ebiten.NewImage(200, 200)
 	win.Dirty = true

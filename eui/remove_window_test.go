@@ -5,9 +5,9 @@ package eui
 import "testing"
 
 func TestRemoveWindowUpdatesActiveWindow(t *testing.T) {
-	win0 := &windowData{Title: "win0", Open: false}
-	win1 := &windowData{Title: "win1", Open: true}
-	win2 := &windowData{Title: "win2", Open: true}
+	win0 := &windowData{Title: "win0", open: false}
+	win1 := &windowData{Title: "win1", open: true}
+	win2 := &windowData{Title: "win2", open: true}
 
 	windows = []*windowData{win0, win1, win2}
 	activeWindow = win2
