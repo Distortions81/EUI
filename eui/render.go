@@ -1296,11 +1296,13 @@ func drawDropShadow(screen *ebiten.Image, rrect *roundRect, size float32, col Co
 }
 
 func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
-	var (
-		path     vector.Path
-		vertices []ebiten.Vertex
-		indices  []uint16
-	)
+	var path vector.Path
+	vertices := getVertices()
+	indices := getIndices()
+	defer func() {
+		putVertices(vertices)
+		putIndices(indices)
+	}()
 
 	width := float32(math.Round(float64(rrect.Border)))
 	off := float32(0)
@@ -1373,10 +1375,10 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 	path.Close()
 
 	if rrect.Filled {
-		vertices, indices = path.AppendVerticesAndIndicesForFilling(vertices[:0], indices[:0])
+		vertices, indices = path.AppendVerticesAndIndicesForFilling(vertices, indices)
 	} else {
 		opv := &vector.StrokeOptions{Width: width}
-		vertices, indices = path.AppendVerticesAndIndicesForStroke(vertices[:0], indices[:0], opv)
+		vertices, indices = path.AppendVerticesAndIndicesForStroke(vertices, indices, opv)
 	}
 
 	col := rrect.Color
@@ -1394,11 +1396,13 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 }
 
 func drawTabShape(screen *ebiten.Image, pos point, size point, col Color, fillet float32, slope float32) {
-	var (
-		path     vector.Path
-		vertices []ebiten.Vertex
-		indices  []uint16
-	)
+	var path vector.Path
+	vertices := getVertices()
+	indices := getIndices()
+	defer func() {
+		putVertices(vertices)
+		putIndices(indices)
+	}()
 
 	// Align to pixel boundaries to avoid artifacts
 	pos.X = float32(math.Round(float64(pos.X)))
@@ -1426,7 +1430,7 @@ func drawTabShape(screen *ebiten.Image, pos point, size point, col Color, fillet
 	path.LineTo(pos.X, pos.Y+size.Y)
 	path.Close()
 
-	vertices, indices = path.AppendVerticesAndIndicesForFilling(vertices[:0], indices[:0])
+	vertices, indices = path.AppendVerticesAndIndicesForFilling(vertices, indices)
 	c := col
 	for i := range vertices {
 		vertices[i].SrcX = 1
@@ -1444,11 +1448,13 @@ func drawTabShape(screen *ebiten.Image, pos point, size point, col Color, fillet
 }
 
 func strokeTabShape(screen *ebiten.Image, pos point, size point, col Color, fillet float32, slope float32, border float32) {
-	var (
-		path     vector.Path
-		vertices []ebiten.Vertex
-		indices  []uint16
-	)
+	var path vector.Path
+	vertices := getVertices()
+	indices := getIndices()
+	defer func() {
+		putVertices(vertices)
+		putIndices(indices)
+	}()
 
 	// Align to pixel boundaries
 	border = float32(math.Round(float64(border)))
@@ -1477,7 +1483,7 @@ func strokeTabShape(screen *ebiten.Image, pos point, size point, col Color, fill
 	path.Close()
 
 	opv := &vector.StrokeOptions{Width: border}
-	vertices, indices = path.AppendVerticesAndIndicesForStroke(vertices[:0], indices[:0], opv)
+	vertices, indices = path.AppendVerticesAndIndicesForStroke(vertices, indices, opv)
 	c := col
 	for i := range vertices {
 		vertices[i].SrcX = 1
@@ -1493,11 +1499,13 @@ func strokeTabShape(screen *ebiten.Image, pos point, size point, col Color, fill
 }
 
 func strokeTabTop(screen *ebiten.Image, pos point, size point, col Color, fillet float32, slope float32, border float32) {
-	var (
-		path     vector.Path
-		vertices []ebiten.Vertex
-		indices  []uint16
-	)
+	var path vector.Path
+	vertices := getVertices()
+	indices := getIndices()
+	defer func() {
+		putVertices(vertices)
+		putIndices(indices)
+	}()
 
 	border = float32(math.Round(float64(border)))
 	off := pixelOffset(border)
@@ -1523,7 +1531,7 @@ func strokeTabTop(screen *ebiten.Image, pos point, size point, col Color, fillet
 	}
 
 	opv := &vector.StrokeOptions{Width: border}
-	vertices, indices = path.AppendVerticesAndIndicesForStroke(vertices[:0], indices[:0], opv)
+	vertices, indices = path.AppendVerticesAndIndicesForStroke(vertices, indices, opv)
 	c := col
 	for i := range vertices {
 		vertices[i].SrcX = 1
@@ -1539,11 +1547,13 @@ func strokeTabTop(screen *ebiten.Image, pos point, size point, col Color, fillet
 }
 
 func drawTriangle(screen *ebiten.Image, pos point, size float32, col Color) {
-	var (
-		path     vector.Path
-		vertices []ebiten.Vertex
-		indices  []uint16
-	)
+	var path vector.Path
+	vertices := getVertices()
+	indices := getIndices()
+	defer func() {
+		putVertices(vertices)
+		putIndices(indices)
+	}()
 
 	// Quantize to pixel boundaries
 	pos.X = float32(math.Round(float64(pos.X)))
@@ -1555,7 +1565,7 @@ func drawTriangle(screen *ebiten.Image, pos point, size float32, col Color) {
 	path.LineTo(pos.X+size/2, pos.Y+size)
 	path.Close()
 
-	vertices, indices = path.AppendVerticesAndIndicesForFilling(vertices[:0], indices[:0])
+	vertices, indices = path.AppendVerticesAndIndicesForFilling(vertices, indices)
 	c := col
 	for i := range vertices {
 		vertices[i].SrcX = 1
@@ -1592,11 +1602,13 @@ func drawEye(screen *ebiten.Image, r rect, col Color) {
 }
 
 func drawCheckmark(screen *ebiten.Image, start, mid, end point, width float32, col Color) {
-	var (
-		path     vector.Path
-		vertices []ebiten.Vertex
-		indices  []uint16
-	)
+	var path vector.Path
+	vertices := getVertices()
+	indices := getIndices()
+	defer func() {
+		putVertices(vertices)
+		putIndices(indices)
+	}()
 
 	width = float32(math.Round(float64(width)))
 	off := pixelOffset(width)
@@ -1606,7 +1618,7 @@ func drawCheckmark(screen *ebiten.Image, start, mid, end point, width float32, c
 	path.LineTo(float32(math.Round(float64(end.X)))+off, float32(math.Round(float64(end.Y)))+off)
 
 	opv := &vector.StrokeOptions{Width: width, LineJoin: vector.LineJoinRound, LineCap: vector.LineCapRound}
-	vertices, indices = path.AppendVerticesAndIndicesForStroke(vertices[:0], indices[:0], opv)
+	vertices, indices = path.AppendVerticesAndIndicesForStroke(vertices, indices, opv)
 	c := col
 	for i := range vertices {
 		vertices[i].SrcX = 1
