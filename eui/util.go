@@ -63,12 +63,16 @@ func (item *itemData) getItemRect(win *windowData) rect {
 
 func (parent *itemData) addItemTo(item *itemData) {
 	item.Parent = parent
+	item.win = parent.win
 	if currentTheme != nil {
 		applyThemeToItem(item)
 	}
 	parent.Contents = append(parent.Contents, item)
 	if parent.ItemType == ITEM_FLOW {
 		parent.resizeFlow(parent.GetSize())
+	}
+	if parent.win != nil {
+		parent.win.Dirty = true
 	}
 }
 
@@ -77,7 +81,9 @@ func (parent *windowData) addItemTo(item *itemData) {
 		applyThemeToItem(item)
 	}
 	parent.Contents = append(parent.Contents, item)
+	item.win = parent
 	item.resizeFlow(parent.GetSize())
+	parent.Dirty = true
 }
 
 func (win *windowData) getMainRect() rect {
@@ -558,6 +564,9 @@ func (item *itemData) GetTextPtr() *string {
 func (item *itemData) markDirty() {
 	if item != nil && item.ItemType != ITEM_FLOW {
 		item.Dirty = true
+		if item.win != nil {
+			item.win.Dirty = true
+		}
 	}
 }
 
@@ -583,6 +592,35 @@ func markAllDirty() {
 	for _, ov := range overlays {
 		markItemTreeDirty(ov)
 	}
+}
+
+func itemTreeDirty(it *itemData) bool {
+	if it == nil {
+		return false
+	}
+	if it.Dirty {
+		return true
+	}
+	for _, child := range it.Contents {
+		if itemTreeDirty(child) {
+			return true
+		}
+	}
+	for _, tab := range it.Tabs {
+		if itemTreeDirty(tab) {
+			return true
+		}
+	}
+	return false
+}
+
+func (win *windowData) itemsDirty() bool {
+	for _, it := range win.Contents {
+		if itemTreeDirty(it) {
+			return true
+		}
+	}
+	return false
 }
 
 func (item *itemData) bounds(offset point) rect {

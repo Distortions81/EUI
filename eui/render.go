@@ -51,7 +51,6 @@ func Draw(screen *ebiten.Image) {
 			for _, it := range win.Contents {
 				markItemTreeDirty(it)
 			}
-			win.Dirty = false
 		}
 		win.Draw(screen)
 	}
@@ -65,7 +64,6 @@ func Draw(screen *ebiten.Image) {
 			for _, it := range win.Contents {
 				markItemTreeDirty(it)
 			}
-			win.Dirty = false
 		}
 		win.Draw(screen)
 	}
@@ -169,16 +167,41 @@ func drawHoveredTooltip(screen *ebiten.Image) {
 }
 
 func (win *windowData) Draw(screen *ebiten.Image) {
+	pos := win.getPosition()
+
+	if win.Render == nil || win.Dirty || win.itemsDirty() {
+		size := win.GetSize()
+		w, h := int(size.X), int(size.Y)
+		if win.Render == nil || win.Render.Bounds().Dx() != w || win.Render.Bounds().Dy() != h {
+			if win.Render != nil {
+				win.Render.Deallocate()
+			}
+			win.Render = ebiten.NewImage(w, h)
+		} else {
+			win.Render.Clear()
+		}
+		origPos := win.Position
+		win.Position = point{}
+		if !win.MainPortal {
+			win.drawBG(win.Render)
+		}
+		win.drawItems(win.Render)
+		win.drawScrollbars(win.Render)
+		win.drawWinTitle(win.Render, win.getTitleRect())
+		win.drawBorder(win.Render, win.getWinRect())
+		win.drawDebug(win.Render)
+		win.Position = origPos
+		win.Dirty = false
+	}
+
 	if win.MainPortal {
 		win.drawPortalMask(screen)
-	} else {
-		win.drawBG(screen)
 	}
-	win.drawItems(screen)
-	win.drawScrollbars(screen)
-	win.drawWinTitle(screen, win.getTitleRect())
-	win.drawBorder(screen, win.getWinRect())
-	win.drawDebug(screen)
+	if win.Render != nil {
+		op := ebiten.DrawImageOptions{}
+		op.GeoM.Translate(float64(pos.X), float64(pos.Y))
+		screen.DrawImage(win.Render, &op)
+	}
 }
 
 func (win *windowData) drawPortalMask(screen *ebiten.Image) {

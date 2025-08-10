@@ -74,10 +74,13 @@ type windowData struct {
 
 	// Dirty marks the window for re-rendering when its contents change.
 	Dirty bool
+	// Render caches the pre-rendered image for this window when Dirty is false.
+	Render *ebiten.Image
 }
 
 type itemData struct {
 	Parent *itemData
+	win    *windowData
 	// Name is used when the item is part of a tabbed flow
 	Name           string
 	Text           string
