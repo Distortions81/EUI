@@ -120,6 +120,7 @@ func Update() error {
 				dragPart = part
 				dragWin = win
 			} else if clickDrag && dragPart != PART_NONE && dragWin == win {
+				origPos := win.Position
 				switch dragPart {
 				case PART_BAR:
 					if win.PinTo == PIN_TOP_LEFT {
@@ -169,6 +170,10 @@ func Update() error {
 					dragWindowScroll(win, mpos, false)
 				}
 				win.clampToScreen()
+				delta := pointSub(win.Position, origPos)
+				if delta.X != 0 || delta.Y != 0 {
+					shiftDrawRects(win, delta)
+				}
 				return true
 			}
 		}
