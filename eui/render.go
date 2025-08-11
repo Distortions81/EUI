@@ -1023,7 +1023,14 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 
 		ratio := 0.0
 		if item.MaxValue > item.MinValue {
-			ratio = float64((item.Value - item.MinValue) / (item.MaxValue - item.MinValue))
+			if item.Log && item.MinValue > 0 && item.MaxValue > 0 {
+				minLog := math.Log(float64(item.MinValue)) / math.Log(float64(item.LogValue))
+				maxLog := math.Log(float64(item.MaxValue)) / math.Log(float64(item.LogValue))
+				valueLog := math.Log(float64(item.Value)) / math.Log(float64(item.LogValue))
+				ratio = (valueLog - minLog) / (maxLog - minLog)
+			} else {
+				ratio = float64((item.Value - item.MinValue) / (item.MaxValue - item.MinValue))
+			}
 		}
 		if ratio < 0 {
 			ratio = 0

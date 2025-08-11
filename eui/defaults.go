@@ -162,6 +162,8 @@ var defaultSlider = &itemData{
 	MaxValue: 100,
 	Value:    0,
 	IntOnly:  false,
+	Log:      false,
+	LogValue: 10,
 	Vertical: false,
 
 	Fillet: 4,

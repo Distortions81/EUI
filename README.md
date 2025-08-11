@@ -38,6 +38,7 @@ building a game UI. Highlights include:
   Mouse scrolling is clamped to +/-3 and rate-limited to 4 events per half-second on WebAssembly.
 - **Image labels** – buttons, sliders, checkboxes, radios and dropdowns can combine image and text labels, with the image drawn before the text and optional custom sizing.
 - **Vertical sliders** – sliders can be oriented vertically.
+- **Logarithmic sliders** – sliders can map values on a logarithmic scale.
 - **Hidden inputs** – text fields can mask their contents and reveal them while the eye icon is pressed.
 - **Tooltips** – optional text hints appear when hovering over any item except flows.
 

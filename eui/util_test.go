@@ -212,6 +212,40 @@ func TestSetSliderValue(t *testing.T) {
 	}
 }
 
+func TestSetSliderValueLog(t *testing.T) {
+	if mplusFaceSource == nil {
+		s, err := text.NewGoTextFaceSource(bytes.NewReader(notoTTF))
+		if err != nil {
+			t.Fatalf("font init: %v", err)
+		}
+		mplusFaceSource = s
+	}
+	item := &itemData{MinValue: 1, MaxValue: 1000, AuxSize: point{X: 8}, AuxSpace: 4, Log: true, LogValue: 10}
+	item.DrawRect = rect{X0: 0, Y0: 0, X1: 100, Y1: 20}
+	item.setSliderValue(point{X: 42})
+	maxLabel := sliderMaxLabel
+	textSize := (item.FontSize * uiScale) + 2
+	face := textFace(textSize)
+	maxW, _ := text.Measure(maxLabel, face, 0)
+	knobW := item.AuxSize.X * uiScale
+	width := item.DrawRect.X1 - item.DrawRect.X0 - knobW - currentStyle.SliderValueGap - float32(maxW)
+	start := item.DrawRect.X0 + knobW/2
+	val := float32(42) - start
+	if val < 0 {
+		val = 0
+	}
+	if val > width {
+		val = width
+	}
+	ratio := val / width
+	minLog := math.Log(float64(item.MinValue)) / math.Log(float64(item.LogValue))
+	maxLog := math.Log(float64(item.MaxValue)) / math.Log(float64(item.LogValue))
+	want := float32(math.Pow(float64(item.LogValue), minLog+float64(ratio)*(maxLog-minLog)))
+	if math.Abs(float64(item.Value-want)) > 0.001 {
+		t.Errorf("log slider value got %v want %v", item.Value, want)
+	}
+}
+
 func sliderTrackLength(item *itemData) float32 {
 	maxSize := item.GetSize()
 	// Use a fixed label size when measuring so sliders with
