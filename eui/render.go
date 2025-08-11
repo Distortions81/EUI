@@ -194,12 +194,12 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 		win.drawBorder(win.Render, win.getWinRect())
 		win.drawDebug(win.Render)
 		win.Position = origPos
-		shift := pointSub(pos, localPos)
+		shift := pointFloor(pointSub(pos, localPos))
 		shiftDrawRects(win, shift)
 		win.Dirty = false
 	}
 
-	shift := pointSub(pos, localPos)
+	shift := pointFloor(pointSub(pos, localPos))
 	if win.MainPortal {
 		win.drawPortalMask(screen)
 	}
@@ -211,7 +211,7 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 }
 
 func (win *windowData) drawPortalMask(screen *ebiten.Image) {
-	r := win.getWinRect()
+	r := rectFloor(win.getWinRect())
 	w := float32(screenWidth)
 	h := float32(screenHeight)
 
