@@ -18,11 +18,12 @@ helper script once to install them (Ubuntu/Debian based distributions):
 ./scripts/setup.sh
 ```
 
-After dependencies are installed you can vet and build the project:
+After dependencies are installed you can vet, build and test the project:
 
 ```sh
 go vet ./...
 go build ./...
+go test -tags test ./...
 ```
 
 Format modified Go files before committing:

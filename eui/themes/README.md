@@ -1,10 +1,18 @@
 # Themes
 
-This directory holds the built-in color palettes and style themes used by EUI. Themes are JSON files that control the appearance and spacing of all widgets. You can load them at runtime or create your own variants.
+This directory holds the built-in color palettes and style themes used by EUI.
+Themes are JSON files that control the appearance and spacing of all widgets.
+You can load them at runtime or create your own variants.
+
+After editing these files, run `python3 scripts/wcag_adjust.py` from the
+repository root to ensure colors meet WCAG contrast recommendations.
 
 ## Palettes
 
-Color palettes live under `themes/palettes`. Each file defines a `Colors` map followed by style blocks for each widget type. Colors may be written as `#RRGGBBAA` hexadecimal strings or as HSV triples (`h,s,v`). Entries in the `Colors` map can be referenced by name in later fields.
+Color palettes live under `themes/palettes`. Each file defines a `Colors` map
+followed by style blocks for each widget type. Colors may be written as
+`#RRGGBBAA` hexadecimal strings or as HSV triples (`h,s,v`). Entries in the
+`Colors` map can be referenced by name in later fields.
 
 ### Structure
 
@@ -28,7 +36,8 @@ Color palettes live under `themes/palettes`. Each file defines a `Colors` map fo
 }
 ```
 
-Each widget block (`Window`, `Button`, `Text`, `Checkbox`, `Radio`, `Input`, `Slider`, `Dropdown`, `Tab`) accepts the following fields:
+Each widget block (`Window`, `Button`, `Text`, `Checkbox`, `Radio`, `Input`,
+`Slider`, `Dropdown`, `Tab`) accepts the following fields:
 
 - `TextColor` – color used for text labels
 - `Color` – main background fill
@@ -39,13 +48,16 @@ Each widget block (`Window`, `Button`, `Text`, `Checkbox`, `Radio`, `Input`, `Sl
 - `SelectedColor` – color for selected state (tabs, sliders, dropdowns)
 - `MaxVisible` – for dropdowns, the maximum visible entries
 
-The `Window` block also supports `TitleColor`, `TitleBGColor`, `BorderColor`, `SizeTabColor`, `DragbarColor`, `HoverTitleColor`, `HoverColor`, `ActiveColor` and `TitleTextColor`.
+The `Window` block also supports `TitleColor`, `TitleBGColor`, `BorderColor`,
+`SizeTabColor`, `DragbarColor`, `HoverTitleColor`, `HoverColor`, `ActiveColor`
+and `TitleTextColor`.
 
 `RecommendedStyle` hints at a style theme that pairs well with the palette.
 
 ## Styles
 
-Style themes are stored in `themes/styles`. They modify padding, border radius and other geometry.
+Style themes are stored in `themes/styles`. They modify padding, border radius
+and other geometry.
 
 ### Structure
 
@@ -76,10 +88,14 @@ Style themes are stored in `themes/styles`. They modify padding, border radius a
 ## Built-in Themes
 
 Palettes:
-`AccentDark`, `AccentLight`, `Black`, `ConcreteGray`, `CorporateBlue`, `ForestMist`, `HighContrast`, `NeonNight`, `OceanWave`, `SlateNight`, `SoftNeutral`, `SolarFlare`.
+`AccentDark`, `AccentLight`, `Black`, `ConcreteGray`, `CorporateBlue`,
+`ForestMist`, `HighContrast`, `NeonNight`, `OceanWave`, `SlateNight`,
+`SoftNeutral`, `SolarFlare`.
 
 Styles:
-`CleanLines`, `MinimalFade`, `MinimalPro`, `MonoEdge`, `NeoRounded`, `RoundFlat`, `RoundHybrid`, `RoundOutline`, `SharpEdge`, `SoftRound`, `SolidBlock`, `SquareFlat`, `SquareOutline`, `ThinOutline`.
+`CleanLines`, `MinimalFade`, `MinimalPro`, `MonoEdge`, `NeoRounded`,
+`RoundFlat`, `RoundHybrid`, `RoundOutline`, `SharpEdge`, `SoftRound`,
+`SolidBlock`, `SquareFlat`, `SquareOutline`, `ThinOutline`.
 
 Use `eui.ListThemes()` and `eui.ListStyles()` to get these names at runtime.
 
@@ -88,5 +104,6 @@ Use `eui.ListThemes()` and `eui.ListStyles()` to get these names at runtime.
 1. Copy an existing file from `palettes` or `styles` as a starting point.
 2. Adjust the values or add new color names in the `Colors` map.
 3. Save the file under the appropriate directory with a new name.
-4. Call `eui.LoadTheme("YourTheme")` and `eui.LoadStyle("YourStyle")` to apply them. Enabling `eui.AutoReload` helps when iterating on your design.
+4. Call `eui.LoadTheme("YourTheme")` and `eui.LoadStyle("YourStyle")` to apply
+   them. Enabling `eui.AutoReload` helps when iterating on your design.
 
