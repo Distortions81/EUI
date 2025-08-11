@@ -48,6 +48,18 @@ func TestPointOperations(t *testing.T) {
 	uiScale = 1
 }
 
+func TestCenterOffset(t *testing.T) {
+	screenWidth = 800
+	screenHeight = 600
+	win := &windowData{Size: normPoint(200, 100)}
+	pos := point{X: 150, Y: 80}
+	got := win.CenterOffset(pos)
+	want := point{X: pos.X - win.GetSize().X/2, Y: pos.Y - win.GetSize().Y/2}
+	if got != want {
+		t.Errorf("center offset got %+v want %+v", got, want)
+	}
+}
+
 func TestUnionRect(t *testing.T) {
 	a := rect{X0: 0, Y0: 0, X1: 10, Y1: 10}
 	b := rect{X0: 5, Y0: 5, X1: 15, Y1: 20}
