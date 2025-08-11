@@ -774,7 +774,8 @@ func TestClampToScreen(t *testing.T) {
 
 func TestSetScreenSizeClamps(t *testing.T) {
 	win := &windowData{Size: point{X: 100, Y: 50}, Position: point{X: 80, Y: 60}}
-	windows = []*windowData{win}
+	win2 := &windowData{Size: point{X: 50, Y: 50}, Position: point{X: 80, Y: 60}}
+	windows = []*windowData{win, win2}
 	oldW, oldH := screenWidth, screenHeight
 	defer func() {
 		screenWidth, screenHeight = oldW, oldH
@@ -784,6 +785,10 @@ func TestSetScreenSizeClamps(t *testing.T) {
 	pos := win.getPosition()
 	if pos.X+win.GetSize().X > float32(screenWidth) || pos.Y+win.GetSize().Y > float32(screenHeight) {
 		t.Errorf("window not clamped after SetScreenSize: %+v", pos)
+	}
+	pos2 := win2.getPosition()
+	if pos2.X+win2.GetSize().X > float32(screenWidth) || pos2.Y+win2.GetSize().Y > float32(screenHeight) {
+		t.Errorf("window not clamped after SetScreenSize: %+v", pos2)
 	}
 }
 
