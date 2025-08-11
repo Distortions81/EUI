@@ -172,7 +172,7 @@ func Update() error {
 				win.clampToScreen()
 				delta := pointSub(win.Position, origPos)
 				if delta.X != 0 || delta.Y != 0 {
-					shiftDrawRects(win, delta)
+					shiftDrawRects(win, pointScaleMul(delta))
 				}
 				return true
 			}
