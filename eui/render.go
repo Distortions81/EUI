@@ -1076,16 +1076,9 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		}
 
 		valueText := fmt.Sprintf("%.2f", item.Value)
-		if item.Log && item.MinValue > 0 && item.MaxValue > 0 {
-			valueText = fmt.Sprintf("%.2f", valueLog)
-		}
 		if item.IntOnly {
 			width := len(maxLabel)
-			if item.Log && item.MinValue > 0 && item.MaxValue > 0 {
-				valueText = fmt.Sprintf("%*d", width, int(valueLog+0.5))
-			} else {
-				valueText = fmt.Sprintf("%*d", width, int(item.Value))
-			}
+			valueText = fmt.Sprintf("%*d", width, int(item.Value))
 		}
 
 		if item.Vertical {
