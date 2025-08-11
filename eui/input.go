@@ -173,9 +173,6 @@ func Update() error {
 			}
 		}
 
-		//Window items
-		win.clickWindowItems(mpos, click)
-
 		// Bring window forward on click if the cursor is over it or an
 		// expanded dropdown. Break so windows behind don't receive the
 		// event.
@@ -185,8 +182,12 @@ func Update() error {
 					win.BringForward()
 				}
 			}
+			win.clickWindowItems(mpos, click)
 			return true
 		}
+
+		// Window items
+		win.clickWindowItems(mpos, click)
 		return false
 	}
 
