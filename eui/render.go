@@ -1280,13 +1280,7 @@ func (item *itemData) ensureRender() {
 		return
 	}
 	size := item.GetSize()
-	w, h := int(size.X), int(size.Y)
-	if w < 1 {
-		w = 1
-	}
-	if h < 1 {
-		h = 1
-	}
+	w, h := int(math.Ceil(float64(size.X))), int(math.Ceil(float64(size.Y)))
 	if item.Render == nil || item.Render.Bounds().Dx() != w || item.Render.Bounds().Dy() != h {
 		item.Render = ebiten.NewImage(w, h)
 		item.Dirty = true
