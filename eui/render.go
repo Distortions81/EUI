@@ -1070,16 +1070,9 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		}
 
 		valueText := fmt.Sprintf("%.2f", item.Value)
-		if item.Log && item.MinValue > 0 && item.MaxValue > 0 {
-			valueText = fmt.Sprintf("%.2f", valueLog)
-		}
 		if item.IntOnly {
 			width := len(maxLabel)
-			if item.Log && item.MinValue > 0 && item.MaxValue > 0 {
-				valueText = fmt.Sprintf("%*d", width, int(valueLog+0.5))
-			} else {
-				valueText = fmt.Sprintf("%*d", width, int(item.Value))
-			}
+			valueText = fmt.Sprintf("%*d", width, int(item.Value))
 		}
 
 		if item.Vertical {
@@ -1288,6 +1281,12 @@ func (item *itemData) ensureRender() {
 	}
 	size := item.GetSize()
 	w, h := int(size.X), int(size.Y)
+	if w < 1 {
+		w = 1
+	}
+	if h < 1 {
+		h = 1
+	}
 	if item.Render == nil || item.Render.Bounds().Dx() != w || item.Render.Bounds().Dy() != h {
 		item.Render = ebiten.NewImage(w, h)
 		item.Dirty = true
