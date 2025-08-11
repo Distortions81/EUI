@@ -482,4 +482,8 @@ func (win *WindowData) Refresh()
 
 func (win *WindowData) Toggle()
 
+func (win *WindowData) CenterOffset(p Point) Point
+    CenterOffset subtracts half of the window size from p, returning
+    coordinates relative to the window's center.
+
 ```

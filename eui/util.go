@@ -634,6 +634,14 @@ func (win *windowData) GetPos() point {
 	return point{X: win.Position.X * float32(screenWidth), Y: win.Position.Y * float32(screenHeight)}
 }
 
+// CenterOffset converts a point relative to the window's top-left corner
+// into coordinates using the window's center as the origin by subtracting
+// half of the window size.
+func (win *windowData) CenterOffset(p point) point {
+	sz := win.GetSize()
+	return point{X: p.X - sz.X/2, Y: p.Y - sz.Y/2}
+}
+
 func (item *itemData) labelHeight() float32 {
 	var imgH, textH float32
 	if item.LabelImage != nil {
