@@ -25,7 +25,7 @@ building a game UI. Highlights include:
 - **Palette and style themes** – JSON files define colors and spacing. Switch
   them at runtime or reload automatically while iterating.
 - **UI scaling** – call `eui.SetUIScale()` to adapt to any resolution or
-  `eui.UIScale()` to read the current value. The scale is clamped between 0.5
+  `eui.UIScale()` to read the current value. The scale is clamped between 1.0
   and 2.5. Windows using `AutoSize` adjust their dimensions automatically when
   the scale changes, and all windows remain within the screen bounds.
 - **Image caching** – widgets cache their drawing for better performance.

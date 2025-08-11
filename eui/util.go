@@ -559,8 +559,8 @@ func (win *windowData) updateTitleCache(face text.Face, size float32) {
 }
 
 func SetUIScale(scale float32) {
-	if scale < 0.5 {
-		scale = 0.5
+	if scale < 1.0 {
+		scale = 1.0
 	}
 	if scale > 2.5 {
 		scale = 2.5
