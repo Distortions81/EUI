@@ -56,8 +56,9 @@ func SetScreenSize(w, h int) {
 			win.resizeFlows()
 			win.adjustScrollForResize()
 			win.Dirty = true
+			win.clampToScreen()
 		}
-		win.clampToScreen()
+
 	}
 }
 
