@@ -18,6 +18,8 @@ building a game UI. Highlights include:
 - **Window management** – draggable, resizable windows with optional pinning and fixed aspect ratios.
 - **Main portal windows** – draw before other UI, black out the rest of the
   screen and leave the window background transparent for game content.
+- **Window transparency** – set `Transparent` with an `Alpha` value to draw
+  windows with partial opacity.
 - **Flow layouts** – vertical or horizontal flows for composing widgets.
 - **Overlay items** – keep controls always on screen.
 - **Palette and style themes** – JSON files define colors and spacing. Switch
