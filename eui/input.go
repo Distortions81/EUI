@@ -67,8 +67,9 @@ func Update() error {
 	wx, wy := pointerWheel()
 	wheelDelta := point{X: float32(wx), Y: float32(wy)}
 
-	posCh := pointScaleDiv(pointSub(mpos, mposOld))
-	sizeCh := pointScaleMul(point{X: posCh.X / uiScale, Y: posCh.Y / uiScale})
+	delta := pointSub(mpos, mposOld)
+	posCh := ScreenToNorm(delta)
+	sizeCh := posCh
 	c := ebiten.CursorShapeDefault
 
 	//Check overlays before windows so clicks aren't stolen by windows below
@@ -172,7 +173,7 @@ func Update() error {
 				win.clampToScreen()
 				delta := pointSub(win.Position, origPos)
 				if delta.X != 0 || delta.Y != 0 {
-					shiftDrawRects(win, pointScaleMul(delta))
+					shiftDrawRects(win, NormToScreen(delta))
 				}
 				return true
 			}

@@ -39,12 +39,16 @@ var (
 
 	notoTTF = defaultTTF
 
-	MinWinSizeX float32 = minWinSizeX
-	MinWinSizeY float32 = minWinSizeY
+	MinWinSizeX float32 = float32(minWinSizeX) / float32(screenWidth)
+	MinWinSizeY float32 = float32(minWinSizeY) / float32(screenHeight)
 )
 
 func init() {
 	whiteImage.Fill(color.White)
 }
+
+func normX(px float32) float32     { return px / float32(screenWidth) }
+func normY(py float32) float32     { return py / float32(screenHeight) }
+func normPoint(x, y float32) point { return point{X: normX(x), Y: normY(y)} }
 
 type Game struct{}

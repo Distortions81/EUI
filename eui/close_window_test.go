@@ -9,8 +9,8 @@ import (
 )
 
 func TestCloseMarksWindowNotOpen(t *testing.T) {
-	win1 := &windowData{Title: "win1", open: true, Size: point{X: 100, Y: 100}}
-	win2 := &windowData{Title: "win2", open: true, Size: point{X: 100, Y: 100}}
+	win1 := &windowData{Title: "win1", open: true, Size: normPoint(100, 100)}
+	win2 := &windowData{Title: "win2", open: true, Size: normPoint(100, 100)}
 
 	windows = []*windowData{win1, win2}
 	activeWindow = win2
@@ -38,7 +38,7 @@ func TestRefreshClosedWindowRerendersOnOpen(t *testing.T) {
 
 	win := *defaultTheme
 	win.Theme = baseTheme
-	win.Size = point{X: 100, Y: 100}
+	win.Size = normPoint(100, 100)
 	win.Contents = []*itemData{&textItem}
 
 	windows = nil
