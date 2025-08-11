@@ -630,7 +630,14 @@ func (item *itemData) setSliderValue(mpos point) {
 			val = height
 		}
 		ratio := val / height
-		item.Value = item.MaxValue - ratio*(item.MaxValue-item.MinValue)
+		if item.Log && item.MinValue > 0 && item.MaxValue > 0 {
+			minLog := math.Log(float64(item.MinValue)) / math.Log(float64(item.LogValue))
+			maxLog := math.Log(float64(item.MaxValue)) / math.Log(float64(item.LogValue))
+			valueLog := maxLog - float64(ratio)*(maxLog-minLog)
+			item.Value = float32(math.Pow(float64(item.LogValue), valueLog))
+		} else {
+			item.Value = item.MaxValue - ratio*(item.MaxValue-item.MinValue)
+		}
 	} else {
 		width := item.DrawRect.X1 - item.DrawRect.X0 - knobW - currentStyle.SliderValueGap - float32(maxW)
 		if width <= 0 {
@@ -645,7 +652,14 @@ func (item *itemData) setSliderValue(mpos point) {
 			val = width
 		}
 		ratio := val / width
-		item.Value = item.MinValue + ratio*(item.MaxValue-item.MinValue)
+		if item.Log && item.MinValue > 0 && item.MaxValue > 0 {
+			minLog := math.Log(float64(item.MinValue)) / math.Log(float64(item.LogValue))
+			maxLog := math.Log(float64(item.MaxValue)) / math.Log(float64(item.LogValue))
+			valueLog := minLog + float64(ratio)*(maxLog-minLog)
+			item.Value = float32(math.Pow(float64(item.LogValue), valueLog))
+		} else {
+			item.Value = item.MinValue + ratio*(item.MaxValue-item.MinValue)
+		}
 	}
 	if item.IntOnly {
 		item.Value = float32(int(item.Value + 0.5))
