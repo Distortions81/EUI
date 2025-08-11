@@ -6,7 +6,9 @@ The project is currently in early development and APIs will likely change.
 
 [Live demo here](https://m45sci.xyz/u/dist/eui/)
 
-## Currently the API is not complete!
+## Status
+
+The API is still evolving and may change between releases.
 
 ![screenshot](https://raw.githubusercontent.com/Distortions81/EUI/refs/heads/main/Screenshot.png)
 
@@ -38,7 +40,9 @@ building a game UI. Highlights include:
 - **Cross platform** – runs anywhere Ebiten does: desktop, web or mobile.
 - **Basic touch support** – with two‑finger scrolling (drag up to scroll up).
   Mouse scrolling is clamped to +/-3 and rate-limited to 4 events per half-second on WebAssembly.
-- **Image labels** – buttons, sliders, checkboxes, radios and dropdowns can combine image and text labels, with the image drawn before the text and optional custom sizing.
+- **Image labels** – buttons, sliders, checkboxes, radios and dropdowns can
+  combine image and text labels, with the image drawn before the text and
+  optional custom sizing.
 - **Vertical sliders** – sliders can be oriented vertically.
 - **Logarithmic sliders** – sliders can map values on a logarithmic scale.
 - **Hidden inputs** – text fields can mask their contents and reveal them while the eye icon is pressed.
@@ -90,7 +94,11 @@ python3 scripts/wcag_adjust.py
 
 ## Customization
 
-The library loads the built in `AccentDark` palette, `RoundHybrid` style and a default font automatically. Additional examples live under [`eui/themes`](eui/themes). Use `eui.ListThemes()` and `eui.ListStyles()` to see the names that are available. To try a different look enable `eui.AutoReload` and load files explicitly:
+The library loads the built-in `AccentDark` palette, `RoundHybrid` style and a
+default font automatically. Additional examples live under
+[`eui/themes`](eui/themes). Use `eui.ListThemes()` and `eui.ListStyles()` to see
+the names that are available. To try a different look enable `eui.AutoReload`
+and load files explicitly:
 
 ```go
 // var ttf []byte
@@ -107,10 +115,15 @@ See [themes/README.md](eui/themes/README.md) for a list of the bundled schemes a
 
 For a generated listing of all library functions see the [API reference](api.md).
 
-## Testing
+## Development
 
-Some tests depend on a build tag. Run them with:
+Install dependencies and run checks before committing:
 
 ```sh
+./scripts/setup.sh   # one-time setup
+go vet ./...
+go build ./...
 go test -tags test ./...
 ```
+
+Some tests depend on the `test` build tag, so include `-tags test` as shown.
