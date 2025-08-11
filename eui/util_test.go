@@ -58,13 +58,13 @@ func TestUnionRect(t *testing.T) {
 }
 
 func TestMergeData(t *testing.T) {
-	orig := &windowData{Title: "orig", Size: point{X: 10, Y: 10}, TitleHeight: 5}
-	upd := &windowData{Title: "new", Size: point{X: 20, Y: 30}}
+	orig := &windowData{Title: "orig", Size: normPoint(10, 10), TitleHeight: 5}
+	upd := &windowData{Title: "new", Size: normPoint(20, 30)}
 	res := mergeData(orig, upd).(*windowData)
 	if res.Title != "new" {
 		t.Errorf("Title=%v", res.Title)
 	}
-	if res.Size != (point{X: 20, Y: 30}) {
+	if res.Size != (normPoint(20, 30)) {
 		t.Errorf("Size=%v", res.Size)
 	}
 	if res.TitleHeight != 5 {
@@ -125,7 +125,7 @@ func TestMergeDataMismatchedStructs(t *testing.T) {
 func TestPinPositions(t *testing.T) {
 	screenWidth = 800
 	screenHeight = 600
-	win := &windowData{Position: point{X: 10, Y: 10}, Size: point{X: 100, Y: 80}, TitleHeight: 10}
+	win := &windowData{Position: normPoint(10, 10), Size: normPoint(100, 80), TitleHeight: 10}
 	var pin pinType = PIN_TOP_RIGHT
 	pos := pin.getWinPosition(win)
 	exp := point{X: 800 - win.GetSize().X - win.GetPos().X, Y: win.GetPos().Y}
@@ -150,7 +150,7 @@ func TestCenterPinOddScreenDimensions(t *testing.T) {
 
 	screenWidth = 801
 	screenHeight = 601
-	win := &windowData{Position: point{X: 0, Y: 0}, Size: point{X: 100, Y: 80}}
+	win := &windowData{Position: normPoint(0, 0), Size: normPoint(100, 80)}
 	var pin pinType = PIN_MID_CENTER
 	pos := pin.getWinPosition(win)
 	exp := point{X: float32(screenWidth)/2 - win.GetSize().X/2 + win.GetPos().X,
@@ -161,7 +161,7 @@ func TestCenterPinOddScreenDimensions(t *testing.T) {
 }
 
 func TestItemOverlap(t *testing.T) {
-	win := &windowData{Size: point{X: 100, Y: 100}, Position: point{X: 0, Y: 0}}
+	win := &windowData{Size: normPoint(100, 100), Position: normPoint(0, 0)}
 	a := &itemData{Position: point{X: 0, Y: 0}, Size: point{X: 60, Y: 60}}
 	b := &itemData{Position: point{X: 50, Y: 50}, Size: point{X: 60, Y: 60}}
 	win.Contents = []*itemData{a, b}
@@ -355,8 +355,8 @@ func TestMarkOpen(t *testing.T) {
 	defer func() { screenWidth, screenHeight = oldW, oldH }()
 	screenWidth, screenHeight = 200, 150
 
-	win1 := &windowData{Title: "win1", open: true, Size: point{X: 100, Y: 100}}
-	win2 := &windowData{Title: "win2", open: false, Size: point{X: 100, Y: 100}, Position: point{X: -50, Y: -50}}
+	win1 := &windowData{Title: "win1", open: true, Size: normPoint(100, 100)}
+	win2 := &windowData{Title: "win2", open: false, Size: normPoint(100, 100), Position: normPoint(-50, -50)}
 	windows = []*windowData{win2, win1}
 	activeWindow = win1
 	win2.MarkOpen()
@@ -376,8 +376,8 @@ func TestMarkOpen(t *testing.T) {
 }
 
 func TestAddWindowReorders(t *testing.T) {
-	win1 := &windowData{Title: "win1", open: true, Size: point{X: 100, Y: 100}}
-	win2 := &windowData{Title: "win2", open: true, Size: point{X: 100, Y: 100}}
+	win1 := &windowData{Title: "win1", open: true, Size: normPoint(100, 100)}
+	win2 := &windowData{Title: "win2", open: true, Size: normPoint(100, 100)}
 	windows = nil
 
 	win1.AddWindow(false)
@@ -400,7 +400,7 @@ func TestAddWindowReorders(t *testing.T) {
 func TestAddWindowRejectsInvalidSize(t *testing.T) {
 	windows = nil
 
-	win := &windowData{Title: "bad", Size: point{X: 0, Y: 50}}
+	win := &windowData{Title: "bad", Size: normPoint(0, 50)}
 	win.AddWindow(false)
 	if len(windows) != 0 {
 		t.Fatalf("expected window with zero width rejected, got %d", len(windows))
@@ -424,7 +424,7 @@ func TestAddWindowNoTitle(t *testing.T) {
 	windows = nil
 	prevTheme := currentTheme
 	currentTheme = &Theme{Window: windowData{TitleHeight: 24}}
-	win := &windowData{Title: "win", Size: point{X: 100, Y: 100}, NoTitle: true}
+	win := &windowData{Title: "win", Size: normPoint(100, 100), NoTitle: true}
 	win.AddWindow(false)
 	if win.TitleHeight != 0 {
 		t.Fatalf("expected TitleHeight 0, got %v", win.TitleHeight)
@@ -435,7 +435,7 @@ func TestAddWindowNoTitle(t *testing.T) {
 func TestSetTitleSizeOverridesTheme(t *testing.T) {
 	windows = nil
 	prevTheme := currentTheme
-	win := &windowData{Title: "win", Size: point{X: 100, Y: 100}}
+	win := &windowData{Title: "win", Size: normPoint(100, 100)}
 	win.AddWindow(false)
 	win.SetTitleSize(30)
 	currentTheme = &Theme{Window: windowData{TitleHeight: 24}}
@@ -450,7 +450,7 @@ func TestNoTitlebar(t *testing.T) {
 	windows = nil
 	prevTheme := currentTheme
 	currentTheme = &Theme{Window: windowData{TitleHeight: 24}}
-	win := &windowData{Title: "win", Size: point{X: 100, Y: 100}}
+	win := &windowData{Title: "win", Size: normPoint(100, 100)}
 	win.AddWindow(false)
 	win.NoTitlebar()
 	if !win.NoTitle || win.TitleHeight != 0 {
@@ -464,7 +464,7 @@ func TestNoTitlebar(t *testing.T) {
 }
 func TestSetSizeClampAndScroll(t *testing.T) {
 	win := &windowData{
-		Size:        point{X: 100, Y: 100},
+		Size:        normPoint(100, 100),
 		Scroll:      point{X: 50, Y: 50},
 		Padding:     0,
 		BorderPad:   0,
@@ -477,32 +477,32 @@ func TestSetSizeClampAndScroll(t *testing.T) {
 		t.Errorf("size not clamped: %+v", win.Size)
 	}
 	// enlarge window so scroll should reset
-	win.setSize(point{X: 200, Y: 200})
+	win.setSize(normPoint(200, 200))
 	if win.Scroll.X != 0 || win.Scroll.Y != 0 {
 		t.Errorf("scroll not reset: %+v", win.Scroll)
 	}
 }
 
 func TestResizeMarksDirty(t *testing.T) {
-	win := &windowData{Size: point{X: 100, Y: 100}}
-	win.setSize(point{X: 150, Y: 150})
+	win := &windowData{Size: normPoint(100, 100)}
+	win.setSize(normPoint(150, 150))
 	if !win.Dirty {
 		t.Fatalf("expected window marked dirty after resize")
 	}
 }
 
 func TestFixedAspectRatio(t *testing.T) {
-	win := &windowData{Size: point{X: 100, Y: 50}, TitleHeight: 10, AspectA: 16, AspectB: 9, FixedRatio: true}
+	win := &windowData{Size: normPoint(100, 50), TitleHeight: 10, AspectA: 16, AspectB: 9, FixedRatio: true}
 
-	win.setSize(point{X: 160, Y: 100})
-	want := point{X: 160, Y: 100}
+	win.setSize(normPoint(160, 100))
+	want := normPoint(160, 100)
 	if win.Size != want {
 		t.Errorf("resize by width got %+v want %+v", win.Size, want)
 	}
 
-	win.Size = point{X: 100, Y: 50}
-	win.setSize(point{X: 120, Y: 120})
-	want = point{X: 195.55556, Y: 120}
+	win.Size = normPoint(100, 50)
+	win.setSize(normPoint(120, 120))
+	want = point{X: 195.55556 / float32(screenWidth), Y: 120 / float32(screenHeight)}
 	if math.Abs(float64(win.Size.X-want.X)) > 0.01 || math.Abs(float64(win.Size.Y-want.Y)) > 0.01 {
 		t.Errorf("resize by height got %+v want %+v", win.Size, want)
 	}
@@ -580,7 +580,7 @@ func TestWindowRefreshRecalculatesFlow(t *testing.T) {
 func TestWindowRefreshKeepsFixedSize(t *testing.T) {
 	uiScale = 1
 
-	win := &windowData{Size: point{X: 100, Y: 50}, TitleHeight: 0}
+	win := &windowData{Size: normPoint(100, 50), TitleHeight: 0}
 	flow := &itemData{ItemType: ITEM_FLOW, FlowType: FLOW_VERTICAL}
 	win.addItemTo(flow)
 	flow.addItemTo(&itemData{ItemType: ITEM_BUTTON, Size: point{X: 10, Y: 20}})
@@ -748,8 +748,8 @@ func TestClampToScreen(t *testing.T) {
 
 	for _, pin := range pins {
 		win := &windowData{
-			Size:     point{X: 100, Y: 50},
-			Position: point{X: -200, Y: -200},
+			Size:     normPoint(100, 50),
+			Position: normPoint(-200, -200),
 			PinTo:    pin,
 		}
 		win.clampToScreen()
@@ -773,8 +773,8 @@ func TestClampToScreen(t *testing.T) {
 }
 
 func TestSetScreenSizeClamps(t *testing.T) {
-	win := &windowData{Size: point{X: 100, Y: 50}, Position: point{X: 80, Y: 60}}
-	win2 := &windowData{Size: point{X: 50, Y: 50}, Position: point{X: 80, Y: 60}}
+	win := &windowData{Size: normPoint(100, 50), Position: normPoint(80, 60)}
+	win2 := &windowData{Size: normPoint(50, 50), Position: normPoint(80, 60)}
 	windows = []*windowData{win, win2}
 	oldW, oldH := screenWidth, screenHeight
 	defer func() {
@@ -825,7 +825,7 @@ func TestSetUIScaleClampsWindows(t *testing.T) {
 		windows = nil
 	}()
 
-	win := &windowData{Title: "win", open: true, Size: point{X: 100, Y: 50}, Position: point{X: 80, Y: 80}}
+	win := &windowData{Title: "win", open: true, Size: normPoint(100, 50), Position: normPoint(80, 80)}
 	windows = []*windowData{win}
 
 	SetUIScale(2)
@@ -886,7 +886,7 @@ func TestClampToScreenCenterMove(t *testing.T) {
 	}()
 
 	m := float32(10)
-	win := &windowData{Size: point{X: 50, Y: 50}, PinTo: PIN_MID_CENTER, Margin: m}
+	win := &windowData{Size: normPoint(50, 50), PinTo: PIN_MID_CENTER, Margin: m}
 
 	win.Position = point{X: -1000, Y: 0}
 	win.clampToScreen()
@@ -924,17 +924,17 @@ func TestClampToScreenCenterResize(t *testing.T) {
 
 	m := float32(10)
 
-	win := &windowData{Size: point{X: 50, Y: 50}, PinTo: PIN_MID_CENTER, Margin: m, Position: point{X: 1000, Y: 0}}
+	win := &windowData{Size: normPoint(50, 50), PinTo: PIN_MID_CENTER, Margin: m, Position: normPoint(1000, 0)}
 	win.clampToScreen()
-	win.Size = point{X: 80, Y: 50}
+	win.Size = normPoint(80, 50)
 	win.clampToScreen()
 	if pos := win.getPosition(); pos.X != float32(screenWidth)-win.GetSize().X-m {
 		t.Fatalf("right resize X=%v", pos.X)
 	}
 
-	win = &windowData{Size: point{X: 50, Y: 50}, PinTo: PIN_MID_CENTER, Margin: m, Position: point{X: 0, Y: 1000}}
+	win = &windowData{Size: normPoint(50, 50), PinTo: PIN_MID_CENTER, Margin: m, Position: normPoint(0, 1000)}
 	win.clampToScreen()
-	win.Size = point{X: 50, Y: 80}
+	win.Size = normPoint(50, 80)
 	win.clampToScreen()
 	if pos := win.getPosition(); pos.Y != float32(screenHeight)-win.GetSize().Y-m {
 		t.Fatalf("bottom resize Y=%v", pos.Y)

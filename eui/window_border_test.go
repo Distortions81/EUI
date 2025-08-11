@@ -21,7 +21,7 @@ func TestWindowBorderScaledRendering(t *testing.T) {
 	win.Fillet = 0
 	win.Border = 2
 	win.Outlined = true
-	win.Size = point{X: 10, Y: 10}
+	win.Size = normPoint(10, 10)
 
 	w, h := int(win.GetSize().X), int(win.GetSize().Y)
 	img := image.NewNRGBA(image.Rect(0, 0, w, h))

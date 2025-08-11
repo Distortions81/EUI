@@ -45,11 +45,11 @@ func SetScreenSize(w, h int) {
 		size := win.GetSize()
 		resized := false
 		if size.X > float32(screenWidth) {
-			win.Size.X = float32(screenWidth) / uiScale
+			win.Size.X = 1
 			resized = true
 		}
 		if size.Y > float32(screenHeight) {
-			win.Size.Y = float32(screenHeight) / uiScale
+			win.Size.Y = 1
 			resized = true
 		}
 		if resized {

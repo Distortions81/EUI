@@ -15,6 +15,18 @@ var (
 	strokeRectFn = vector.StrokeRect
 )
 
+// NormToScreen converts normalized coordinates in the range 0-1 to
+// screen pixel coordinates based on the current Ebiten window size.
+func NormToScreen(p point) point {
+	return point{X: p.X * float32(screenWidth), Y: p.Y * float32(screenHeight)}
+}
+
+// ScreenToNorm converts screen pixel coordinates to normalized coordinates in
+// the range 0-1 using the current Ebiten window size.
+func ScreenToNorm(p point) point {
+	return point{X: p.X / float32(screenWidth), Y: p.Y / float32(screenHeight)}
+}
+
 func (item *itemData) themeStyle() *itemData {
 	if item == nil || item.Theme == nil {
 		return nil
@@ -167,13 +179,21 @@ func (win *windowData) setSize(size point) bool {
 func (win *windowData) clampSize(size point) (point, bool) {
 	tooSmall := false
 
-	// Enforce minimum dimensions and prevent negatives.
-	if size.X < minWinSizeX || size.X < 0 {
-		size.X = minWinSizeX
+	minX := float32(minWinSizeX) / float32(screenWidth)
+	minY := float32(minWinSizeY) / float32(screenHeight)
+	if win.MinSize.X > minX {
+		minX = win.MinSize.X
+	}
+	if win.MinSize.Y > minY {
+		minY = win.MinSize.Y
+	}
+
+	if size.X < minX || size.X < 0 {
+		size.X = minX
 		tooSmall = true
 	}
-	if size.Y < minWinSizeY || size.Y < 0 {
-		size.Y = minWinSizeY
+	if size.Y < minY || size.Y < 0 {
+		size.Y = minY
 		tooSmall = true
 	}
 
@@ -185,26 +205,28 @@ func (win *windowData) applyAspect(size point, useDelta bool) point {
 		return size
 	}
 	aspect := win.AspectA / win.AspectB
-	title := win.TitleHeight
+	s := NormToScreen(size)
+	orig := NormToScreen(win.Size)
+	title := win.GetTitleSize()
 	if useDelta {
-		dx := math.Abs(float64(size.X - win.Size.X))
-		dy := math.Abs(float64(size.Y - win.Size.Y))
+		dx := math.Abs(float64(s.X - orig.X))
+		dy := math.Abs(float64(s.Y - orig.Y))
 		if dx >= dy {
-			contentH := size.X / aspect
-			size.Y = contentH + title
+			contentH := s.X / aspect
+			s.Y = contentH + title
 		} else {
-			contentH := size.Y - title
+			contentH := s.Y - title
 			if contentH < 0 {
 				contentH = 0
 			}
-			size.X = contentH * aspect
-			size.Y = contentH + title
+			s.X = contentH * aspect
+			s.Y = contentH + title
 		}
 	} else {
-		contentH := size.X / aspect
-		size.Y = contentH + title
+		contentH := s.X / aspect
+		s.Y = contentH + title
 	}
-	return size
+	return ScreenToNorm(s)
 }
 
 func (win *windowData) adjustScrollForResize() {
@@ -246,26 +268,26 @@ func (win *windowData) clampToScreen() {
 		min := float32(0)
 		max := float32(screenWidth) - size.X - m
 		if off < min {
-			win.Position.X = min / uiScale
+			win.Position.X = min / float32(screenWidth)
 		} else if off > max {
-			win.Position.X = max / uiScale
+			win.Position.X = max / float32(screenWidth)
 		}
 	case PIN_TOP_RIGHT, PIN_MID_RIGHT, PIN_BOTTOM_RIGHT:
 		off := win.GetPos().X
 		min := float32(0)
 		max := float32(screenWidth) - size.X - m
 		if off < min {
-			win.Position.X = min / uiScale
+			win.Position.X = min / float32(screenWidth)
 		} else if off > max {
-			win.Position.X = max / uiScale
+			win.Position.X = max / float32(screenWidth)
 		}
 	case PIN_TOP_CENTER, PIN_MID_CENTER, PIN_BOTTOM_CENTER:
 		off := win.GetPos().X
 		max := float32(screenWidth)/2 - size.X/2 - m
 		if off < -max {
-			win.Position.X = -max / uiScale
+			win.Position.X = -max / float32(screenWidth)
 		} else if off > max {
-			win.Position.X = max / uiScale
+			win.Position.X = max / float32(screenWidth)
 		}
 	}
 
@@ -275,26 +297,26 @@ func (win *windowData) clampToScreen() {
 		min := float32(0)
 		max := float32(screenHeight) - size.Y - m
 		if off < min {
-			win.Position.Y = min / uiScale
+			win.Position.Y = min / float32(screenHeight)
 		} else if off > max {
-			win.Position.Y = max / uiScale
+			win.Position.Y = max / float32(screenHeight)
 		}
 	case PIN_BOTTOM_LEFT, PIN_BOTTOM_CENTER, PIN_BOTTOM_RIGHT:
 		off := win.GetPos().Y
 		min := float32(0)
 		max := float32(screenHeight) - size.Y - m
 		if off < min {
-			win.Position.Y = min / uiScale
+			win.Position.Y = min / float32(screenHeight)
 		} else if off > max {
-			win.Position.Y = max / uiScale
+			win.Position.Y = max / float32(screenHeight)
 		}
 	case PIN_MID_LEFT, PIN_MID_CENTER, PIN_MID_RIGHT:
 		off := win.GetPos().Y
 		max := float32(screenHeight)/2 - size.Y/2 - m
 		if off < -max {
-			win.Position.Y = -max / uiScale
+			win.Position.Y = -max / float32(screenHeight)
 		} else if off > max {
-			win.Position.Y = max / uiScale
+			win.Position.Y = max / float32(screenHeight)
 
 		}
 	}
@@ -589,11 +611,27 @@ func (win *windowData) GetTitleSize() float32 {
 }
 
 func (win *windowData) GetSize() point {
-	return point{X: win.Size.X * uiScale, Y: win.Size.Y * uiScale}
+	sx := win.Size.X
+	sy := win.Size.Y
+	minX := float32(minWinSizeX) / float32(screenWidth)
+	minY := float32(minWinSizeY) / float32(screenHeight)
+	if win.MinSize.X > minX {
+		minX = win.MinSize.X
+	}
+	if win.MinSize.Y > minY {
+		minY = win.MinSize.Y
+	}
+	if sx < minX {
+		sx = minX
+	}
+	if sy < minY {
+		sy = minY
+	}
+	return point{X: sx * float32(screenWidth), Y: sy * float32(screenHeight)}
 }
 
 func (win *windowData) GetPos() point {
-	return point{X: win.Position.X * uiScale, Y: win.Position.Y * uiScale}
+	return point{X: win.Position.X * float32(screenWidth), Y: win.Position.Y * float32(screenHeight)}
 }
 
 func (item *itemData) labelHeight() float32 {
@@ -803,7 +841,9 @@ func (win *windowData) updateAutoSize() {
 	if size.Y > float32(screenHeight) {
 		size.Y = float32(screenHeight)
 	}
-	win.Size = point{X: size.X / uiScale, Y: size.Y / uiScale}
+	norm := point{X: size.X / float32(screenWidth), Y: size.Y / float32(screenHeight)}
+	norm, _ = win.clampSize(norm)
+	win.Size = norm
 	win.resizeFlows()
 	win.clampToScreen()
 }

@@ -18,8 +18,8 @@ func TestWindowDragClickScaled(t *testing.T) {
 	btn.Margin = 0
 
 	win := &windowData{
-		Position:    point{X: 0, Y: 0},
-		Size:        point{X: 50, Y: 50},
+		Position:    normPoint(0, 0),
+		Size:        normPoint(50, 50),
 		open:        true,
 		Movable:     true,
 		Margin:      0,
@@ -45,7 +45,7 @@ func TestWindowDragClickScaled(t *testing.T) {
 
 	// Simulate dragging the window.
 	oldPos := win.getPosition()
-	win.Position = pointAdd(win.Position, point{X: 5, Y: 7})
+	win.Position = pointAdd(win.Position, normPoint(5, 7))
 	delta := pointSub(win.getPosition(), oldPos)
 	shiftDrawRects(win, delta)
 

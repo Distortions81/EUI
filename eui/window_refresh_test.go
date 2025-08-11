@@ -18,7 +18,7 @@ func TestWindowRefreshRerenders(t *testing.T) {
 
 	win := *defaultTheme
 	win.Theme = baseTheme
-	win.Size = point{X: 100, Y: 100}
+	win.Size = normPoint(100, 100)
 	win.Contents = []*itemData{&textItem}
 
 	windows = nil
@@ -44,7 +44,7 @@ func TestWindowRefreshTitleUpdates(t *testing.T) {
 
 	win := *defaultTheme
 	win.Theme = baseTheme
-	win.Size = point{X: 100, Y: 100}
+	win.Size = normPoint(100, 100)
 	windows = nil
 	win.Open()
 	win.SetTitle("short")

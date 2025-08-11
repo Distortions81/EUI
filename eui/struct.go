@@ -20,6 +20,7 @@ type windowData struct {
 	Title    string
 	Position point
 	Size     point
+	MinSize  point
 	AspectA  float32
 	AspectB  float32
 	PinTo    pinType
