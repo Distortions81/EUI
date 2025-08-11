@@ -42,6 +42,9 @@ type windowData struct {
 	// underlying content can show through.
 	MainPortal bool
 
+	Transparent bool
+	Alpha       float32
+
 	// Scroll position and behavior
 	Scroll     point
 	NoScroll   bool

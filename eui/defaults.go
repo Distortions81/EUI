@@ -21,6 +21,8 @@ var defaultTheme = &windowData{
 	HoverColor:      NewColor(127, 127, 127, 255),
 	BGColor:         NewColor(32, 35, 38, 255),
 	ActiveColor:     NewColor(60, 173, 232, 255),
+	Transparent:     false,
+	Alpha:           1,
 
 	ShadowSize:  16,
 	ShadowColor: NewColor(0, 0, 0, 160),

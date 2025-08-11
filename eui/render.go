@@ -206,6 +206,9 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 	if win.Render != nil {
 		op := ebiten.DrawImageOptions{}
 		op.GeoM.Translate(float64(shift.X), float64(shift.Y))
+		if win.Transparent {
+			op.ColorScale.Scale(1, 1, 1, win.Alpha)
+		}
 		screen.DrawImage(win.Render, &op)
 	}
 }

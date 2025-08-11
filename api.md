@@ -7,6 +7,7 @@ This document lists all exported functions, types and constants in the
 
 - [Setup](#setup)
 - [Pinning Windows and Items](#pinning-windows-and-items)
+- [Window Transparency](#window-transparency)
 
 ## Setup
 
@@ -37,6 +38,12 @@ Windows and items can be anchored to specific corners or edges by setting
 the `PinTo` field. When a value other than `PIN_TOP_LEFT` is used, the
 position is calculated relative to that anchor instead of the top-left
 origin.
+
+## Window Transparency
+
+Windows can render with partial opacity by setting `Transparent` to true and
+providing an `Alpha` value between 0 and 1. The off-screen image is drawn with
+this alpha multiplier when transparency is enabled.
 
 Available anchors:
 
