@@ -295,6 +295,7 @@ func (win *windowData) clampToScreen() {
 			win.Position.Y = -max / uiScale
 		} else if off > max {
 			win.Position.Y = max / uiScale
+
 		}
 	}
 }
