@@ -1,5 +1,7 @@
 package eui
 
+import "log"
+
 // UIEventType defines the kind of event emitted by widgets.
 type UIEventType int
 
@@ -32,13 +34,18 @@ type EventHandler struct {
 	Handle func(UIEvent)
 }
 
-// Emit delivers the event through the channel and callback if present.
+// Emit delivers the event through the channel and callback if present. If the
+// channel is full the event is dropped and logged rather than blocking.
 func (h *EventHandler) Emit(ev UIEvent) {
 	if h == nil {
 		return
 	}
 	if h.Events != nil {
-		h.Events <- ev
+		select {
+		case h.Events <- ev:
+		default:
+			log.Printf("event channel full, dropping event: %v", ev.Type)
+		}
 	}
 	if h.Handle != nil {
 		h.Handle(ev)
