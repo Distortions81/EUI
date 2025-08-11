@@ -211,6 +211,8 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 		}
 		screen.DrawImage(win.Render, &op)
 	}
+
+	win.collectDropdowns()
 }
 
 func (win *windowData) drawPortalMask(screen *ebiten.Image) {
@@ -472,6 +474,37 @@ func shiftDrawRects(win *windowData, delta point) {
 	for _, item := range win.Contents {
 		shiftItemRects(item, delta)
 	}
+}
+
+func collectDropdownsFromItems(items []*itemData) {
+	for _, it := range items {
+		if it.ItemType == ITEM_DROPDOWN && it.Open {
+			dropOff := point{X: it.DrawRect.X0, Y: it.DrawRect.Y0}
+			lh := it.labelHeight()
+			if lh > 0 {
+				dropOff.Y += lh + currentStyle.TextPadding*uiScale
+			}
+			screenClip := rect{X0: 0, Y0: 0, X1: float32(screenWidth), Y1: float32(screenHeight)}
+			pendingDropdowns = append(pendingDropdowns, dropdownRender{item: it, offset: dropOff, clip: screenClip})
+		}
+
+		if it.ItemType == ITEM_FLOW {
+			if len(it.Tabs) > 0 {
+				if it.ActiveTab >= len(it.Tabs) {
+					it.ActiveTab = 0
+				}
+				collectDropdownsFromItems(it.Tabs[it.ActiveTab].Contents)
+			} else {
+				collectDropdownsFromItems(it.Contents)
+			}
+		} else if len(it.Contents) > 0 {
+			collectDropdownsFromItems(it.Contents)
+		}
+	}
+}
+
+func (win *windowData) collectDropdowns() {
+	collectDropdownsFromItems(win.Contents)
 }
 
 func (item *itemData) drawFlows(win *windowData, parent *itemData, offset point, clip rect, screen *ebiten.Image) {
