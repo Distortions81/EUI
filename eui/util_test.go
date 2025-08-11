@@ -875,3 +875,68 @@ func TestStrokeRectBorderRendering(t *testing.T) {
 		}
 	}
 }
+
+func TestClampToScreenCenterMove(t *testing.T) {
+	uiScale = 1
+	oldW, oldH := screenWidth, screenHeight
+	screenWidth, screenHeight = 200, 200
+	defer func() {
+		screenWidth, screenHeight = oldW, oldH
+		uiScale = 1
+	}()
+
+	m := float32(10)
+	win := &windowData{Size: point{X: 50, Y: 50}, PinTo: PIN_MID_CENTER, Margin: m}
+
+	win.Position = point{X: -1000, Y: 0}
+	win.clampToScreen()
+	if pos := win.getPosition(); pos.X != m {
+		t.Fatalf("left edge X=%v want %v", pos.X, m)
+	}
+
+	win.Position = point{X: 1000, Y: 0}
+	win.clampToScreen()
+	if pos := win.getPosition(); pos.X != float32(screenWidth)-win.GetSize().X-m {
+		t.Fatalf("right edge X=%v", pos.X)
+	}
+
+	win.Position = point{X: 0, Y: -1000}
+	win.clampToScreen()
+	if pos := win.getPosition(); pos.Y != m {
+		t.Fatalf("top edge Y=%v want %v", pos.Y, m)
+	}
+
+	win.Position = point{X: 0, Y: 1000}
+	win.clampToScreen()
+	if pos := win.getPosition(); pos.Y != float32(screenHeight)-win.GetSize().Y-m {
+		t.Fatalf("bottom edge Y=%v", pos.Y)
+	}
+}
+
+func TestClampToScreenCenterResize(t *testing.T) {
+	uiScale = 1
+	oldW, oldH := screenWidth, screenHeight
+	screenWidth, screenHeight = 200, 200
+	defer func() {
+		screenWidth, screenHeight = oldW, oldH
+		uiScale = 1
+	}()
+
+	m := float32(10)
+
+	win := &windowData{Size: point{X: 50, Y: 50}, PinTo: PIN_MID_CENTER, Margin: m, Position: point{X: 1000, Y: 0}}
+	win.clampToScreen()
+	win.Size = point{X: 80, Y: 50}
+	win.clampToScreen()
+	if pos := win.getPosition(); pos.X != float32(screenWidth)-win.GetSize().X-m {
+		t.Fatalf("right resize X=%v", pos.X)
+	}
+
+	win = &windowData{Size: point{X: 50, Y: 50}, PinTo: PIN_MID_CENTER, Margin: m, Position: point{X: 0, Y: 1000}}
+	win.clampToScreen()
+	win.Size = point{X: 50, Y: 80}
+	win.clampToScreen()
+	if pos := win.getPosition(); pos.Y != float32(screenHeight)-win.GetSize().Y-m {
+		t.Fatalf("bottom resize Y=%v", pos.Y)
+	}
+}

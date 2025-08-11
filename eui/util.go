@@ -261,7 +261,7 @@ func (win *windowData) clampToScreen() {
 		}
 	case PIN_TOP_CENTER, PIN_MID_CENTER, PIN_BOTTOM_CENTER:
 		off := win.GetPos().X
-		max := float32(screenWidth)/2 - size.X/2
+		max := float32(screenWidth)/2 - size.X/2 - m
 		if off < -max {
 			win.Position.X = -max / uiScale
 		} else if off > max {
@@ -290,7 +290,7 @@ func (win *windowData) clampToScreen() {
 		}
 	case PIN_MID_LEFT, PIN_MID_CENTER, PIN_MID_RIGHT:
 		off := win.GetPos().Y
-		max := float32(screenHeight)/2 - size.Y/2
+		max := float32(screenHeight)/2 - size.Y/2 - m
 		if off < -max {
 			win.Position.Y = -max / uiScale
 		} else if off > max {
