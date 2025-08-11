@@ -173,7 +173,7 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 
 	if win.Render == nil || win.Dirty || win.itemsDirty() {
 		size := win.GetSize()
-		w, h := int(size.X), int(size.Y)
+		w, h := int(math.Ceil(float64(size.X))), int(math.Ceil(float64(size.Y)))
 		if win.Render == nil || win.Render.Bounds().Dx() != w || win.Render.Bounds().Dy() != h {
 			if win.Render != nil {
 				win.Render.Deallocate()
