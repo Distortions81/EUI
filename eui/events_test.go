@@ -5,11 +5,12 @@ package eui
 import (
 	"bytes"
 	"log"
+	"strings"
 	"testing"
 	"time"
 )
 
-func TestEmitDeliversWhenChannelFull(t *testing.T) {
+func TestEmitDropsWhenChannelFull(t *testing.T) {
 	var buf bytes.Buffer
 	orig := log.Writer()
 	log.SetOutput(&buf)
@@ -24,21 +25,22 @@ func TestEmitDeliversWhenChannelFull(t *testing.T) {
 		close(done)
 	}()
 
-	time.Sleep(10 * time.Millisecond)
-	<-h.Events
-
 	select {
 	case <-done:
-	case <-time.After(time.Second):
-		t.Fatal("emit did not complete")
+	case <-time.After(100 * time.Millisecond):
+		t.Fatal("emit blocked")
+	}
+
+	if len(h.Events) != 1 {
+		t.Fatalf("expected 1 event in channel, got %d", len(h.Events))
 	}
 
 	ev := <-h.Events
-	if ev.Type != EventSliderChanged {
-		t.Fatalf("expected EventSliderChanged, got %v", ev.Type)
+	if ev.Type != EventClick {
+		t.Fatalf("expected EventClick, got %v", ev.Type)
 	}
 
-	if buf.Len() != 0 {
-		t.Fatalf("unexpected log output: %s", buf.String())
+	if !strings.Contains(buf.String(), "dropping event") {
+		t.Fatalf("expected log to report dropped event, got %q", buf.String())
 	}
 }
