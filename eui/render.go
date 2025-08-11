@@ -173,7 +173,7 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 
 	if win.Render == nil || win.Dirty || win.itemsDirty() {
 		size := win.GetSize()
-		w, h := int(size.X), int(size.Y)
+		w, h := int(math.Ceil(float64(size.X))), int(math.Ceil(float64(size.Y)))
 		if win.Render == nil || win.Render.Bounds().Dx() != w || win.Render.Bounds().Dy() != h {
 			if win.Render != nil {
 				win.Render.Deallocate()
@@ -1070,16 +1070,9 @@ func (item *itemData) drawItemInternal(parent *itemData, offset point, clip rect
 		}
 
 		valueText := fmt.Sprintf("%.2f", item.Value)
-		if item.Log && item.MinValue > 0 && item.MaxValue > 0 {
-			valueText = fmt.Sprintf("%.2f", valueLog)
-		}
 		if item.IntOnly {
 			width := len(maxLabel)
-			if item.Log && item.MinValue > 0 && item.MaxValue > 0 {
-				valueText = fmt.Sprintf("%*d", width, int(valueLog+0.5))
-			} else {
-				valueText = fmt.Sprintf("%*d", width, int(item.Value))
-			}
+			valueText = fmt.Sprintf("%*d", width, int(item.Value))
 		}
 
 		if item.Vertical {

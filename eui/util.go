@@ -240,47 +240,62 @@ func (win *windowData) clampToScreen() {
 	size := win.GetSize()
 	m := win.Margin * uiScale
 
-	// Clamp horizontal position based on the resolved screen coordinate.
-	pos := win.PinTo.getWinPosition(win)
-	minX := float32(0)
-	maxX := float32(screenWidth) - size.X - m
-	if pos.X < minX {
-		delta := minX - pos.X
-		switch win.PinTo {
-		case PIN_TOP_RIGHT, PIN_MID_RIGHT, PIN_BOTTOM_RIGHT:
-			win.Position.X -= delta / uiScale
-		default:
-			win.Position.X += delta / uiScale
+	switch win.PinTo {
+	case PIN_TOP_LEFT, PIN_MID_LEFT, PIN_BOTTOM_LEFT:
+		off := win.GetPos().X
+		min := float32(0)
+		max := float32(screenWidth) - size.X - m
+		if off < min {
+			win.Position.X = min / uiScale
+		} else if off > max {
+			win.Position.X = max / uiScale
 		}
-	} else if pos.X > maxX {
-		delta := pos.X - maxX
-		switch win.PinTo {
-		case PIN_TOP_RIGHT, PIN_MID_RIGHT, PIN_BOTTOM_RIGHT:
-			win.Position.X += delta / uiScale
-		default:
-			win.Position.X -= delta / uiScale
+	case PIN_TOP_RIGHT, PIN_MID_RIGHT, PIN_BOTTOM_RIGHT:
+		off := win.GetPos().X
+		min := float32(0)
+		max := float32(screenWidth) - size.X - m
+		if off < min {
+			win.Position.X = min / uiScale
+		} else if off > max {
+			win.Position.X = max / uiScale
+		}
+	case PIN_TOP_CENTER, PIN_MID_CENTER, PIN_BOTTOM_CENTER:
+		off := win.GetPos().X
+		max := float32(screenWidth)/2 - size.X/2 - m
+		if off < -max {
+			win.Position.X = -max / uiScale
+		} else if off > max {
+			win.Position.X = max / uiScale
 		}
 	}
 
-	// Clamp vertical position using the resolved screen coordinate.
-	pos = win.PinTo.getWinPosition(win)
-	minY := float32(0)
-	maxY := float32(screenHeight) - size.Y - m
-	if pos.Y < minY {
-		delta := minY - pos.Y
-		switch win.PinTo {
-		case PIN_BOTTOM_LEFT, PIN_BOTTOM_CENTER, PIN_BOTTOM_RIGHT:
-			win.Position.Y -= delta / uiScale
-		default:
-			win.Position.Y += delta / uiScale
+	switch win.PinTo {
+	case PIN_TOP_LEFT, PIN_TOP_CENTER, PIN_TOP_RIGHT:
+		off := win.GetPos().Y
+		min := float32(0)
+		max := float32(screenHeight) - size.Y - m
+		if off < min {
+			win.Position.Y = min / uiScale
+		} else if off > max {
+			win.Position.Y = max / uiScale
 		}
-	} else if pos.Y > maxY {
-		delta := pos.Y - maxY
-		switch win.PinTo {
-		case PIN_BOTTOM_LEFT, PIN_BOTTOM_CENTER, PIN_BOTTOM_RIGHT:
-			win.Position.Y += delta / uiScale
-		default:
-			win.Position.Y -= delta / uiScale
+	case PIN_BOTTOM_LEFT, PIN_BOTTOM_CENTER, PIN_BOTTOM_RIGHT:
+		off := win.GetPos().Y
+		min := float32(0)
+		max := float32(screenHeight) - size.Y - m
+		if off < min {
+			win.Position.Y = min / uiScale
+		} else if off > max {
+			win.Position.Y = max / uiScale
+		}
+	case PIN_MID_LEFT, PIN_MID_CENTER, PIN_MID_RIGHT:
+		off := win.GetPos().Y
+		max := float32(screenHeight)/2 - size.Y/2 - m
+		if off < -max {
+			win.Position.Y = -max / uiScale
+		} else if off > max {
+			win.Position.Y = max / uiScale
+
 		}
 	}
 }
@@ -545,8 +560,8 @@ func (win *windowData) updateTitleCache(face text.Face, size float32) {
 }
 
 func SetUIScale(scale float32) {
-	if scale < 0.5 {
-		scale = 0.5
+	if scale < 1.0 {
+		scale = 1.0
 	}
 	if scale > 2.5 {
 		scale = 2.5
