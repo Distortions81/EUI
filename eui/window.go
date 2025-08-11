@@ -372,6 +372,7 @@ func (target *windowData) MarkOpen() {
 	if target.Dirty {
 		target.Refresh()
 	}
+	target.clampToScreen()
 }
 
 // MarkClosed marks the window as closed and updates the active window.

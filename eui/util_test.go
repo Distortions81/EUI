@@ -351,8 +351,12 @@ func TestVerticalSliderTrackLengthMatch(t *testing.T) {
 }
 
 func TestMarkOpen(t *testing.T) {
+	oldW, oldH := screenWidth, screenHeight
+	defer func() { screenWidth, screenHeight = oldW, oldH }()
+	screenWidth, screenHeight = 200, 150
+
 	win1 := &windowData{Title: "win1", open: true, Size: point{X: 100, Y: 100}}
-	win2 := &windowData{Title: "win2", open: false, Size: point{X: 100, Y: 100}}
+	win2 := &windowData{Title: "win2", open: false, Size: point{X: 100, Y: 100}, Position: point{X: -50, Y: -50}}
 	windows = []*windowData{win2, win1}
 	activeWindow = win1
 	win2.MarkOpen()
@@ -364,6 +368,10 @@ func TestMarkOpen(t *testing.T) {
 	}
 	if len(windows) != 2 || windows[1] != win2 {
 		t.Errorf("window order incorrect: %v", windows)
+	}
+	pos := win2.getPosition()
+	if pos.X < 0 || pos.Y < 0 {
+		t.Errorf("window not clamped: %+v", pos)
 	}
 }
 
@@ -798,6 +806,29 @@ func TestAutoSizeWindowResizesWithScale(t *testing.T) {
 	SetUIScale(2)
 	if got := win.GetSize().X; got != float32(screenWidth) {
 		t.Fatalf("scaled window width got %v want %v", got, screenWidth)
+	}
+}
+
+func TestSetUIScaleClampsWindows(t *testing.T) {
+	uiScale = 1
+	oldW, oldH := screenWidth, screenHeight
+	windows = nil
+	screenWidth, screenHeight = 200, 150
+	defer func() {
+		screenWidth, screenHeight = oldW, oldH
+		uiScale = 1
+		windows = nil
+	}()
+
+	win := &windowData{Title: "win", open: true, Size: point{X: 100, Y: 50}, Position: point{X: 80, Y: 80}}
+	windows = []*windowData{win}
+
+	SetUIScale(2)
+
+	pos := win.getPosition()
+	size := win.GetSize()
+	if pos.X < 0 || pos.Y < 0 || pos.X+size.X > float32(screenWidth) || pos.Y+size.Y > float32(screenHeight) {
+		t.Fatalf("window not clamped: pos=%+v size=%+v", pos, size)
 	}
 }
 
