@@ -27,7 +27,7 @@ building a game UI. Highlights include:
 - **UI scaling** – call `eui.SetUIScale()` to adapt to any resolution or
   `eui.UIScale()` to read the current value. The scale is clamped between 0.5
   and 2.5. Windows using `AutoSize` adjust their dimensions automatically when
-  the scale changes.
+  the scale changes, and all windows remain within the screen bounds.
 - **Image caching** – widgets cache their drawing for better performance.
   Enable `eui.DumpMode` to write the cached images to disk for inspection.
 - **Tree dump** – press <kbd>Shift</kbd>+<kbd>`</kbd> or run the demo with

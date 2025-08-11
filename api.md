@@ -314,8 +314,8 @@ func SetScreenSize(w, h int)
     SetScreenSize sets the current screen size used for layout calculations.
 
 func SetUIScale(scale float32)
-    It preserves the current UI scale relative to the previous factor so the
-    interface keeps the same on-screen size.
+    SetUIScale updates the UI scaling factor and clamps all windows to the
+    screen after the scale changes.
 
 func UIScale() float32
 func Update() error

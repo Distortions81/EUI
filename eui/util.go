@@ -572,6 +572,8 @@ func SetUIScale(scale float32) {
 		} else {
 			win.resizeFlows()
 		}
+		win.adjustScrollForResize()
+		win.clampToScreen()
 	}
 	for _, ov := range overlays {
 		ov.resizeFlow(ov.GetSize())
