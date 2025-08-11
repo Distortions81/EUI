@@ -118,6 +118,41 @@ func main() {
 	c5.Size = eui.Point{X: 150, Y: 24}
 	mainFlow.AddItem(c5)
 
+	c6, _ := eui.NewCheckbox()
+	c6.Text = "Chat Bubbles"
+	c6.Size = eui.Point{X: 150, Y: 24}
+	mainFlow.AddItem(c6)
+	c7, _ := eui.NewCheckbox()
+	c7.Text = "Night Effect"
+	c7.Size = eui.Point{X: 150, Y: 24}
+	mainFlow.AddItem(c7)
+
+	potato, pHandler := eui.NewCheckbox()
+	potato.Text = "Potato Computer"
+	potato.Size = eui.Point{X: 150, Y: 24}
+	mainFlow.AddItem(potato)
+	note, _ := eui.NewText()
+	note.Text = "(requires app relaunch)"
+	note.FontSize = 9
+	note.Size = eui.Point{X: 150, Y: 12}
+	mainFlow.AddItem(note)
+
+	pHandler.Handle = func(ev eui.UIEvent) {
+		if ev.Type == eui.EventCheckboxChanged && ev.Checked {
+			ebiten.SetTPS(ebiten.SyncWithFPS)
+			b1.Checked = false
+			b2.Checked = false
+			b3.Checked = false
+			c1.Checked = false
+			c2.Checked = false
+			c3.Checked = false
+			c4.Checked = false
+			c5.Checked = false
+			c6.Checked = true
+			c7.Checked = true
+		}
+	}
+
 	cFPS := fmt.Sprintf("FPS: %2.2f", ebiten.ActualFPS())
 	tt1, _ := eui.NewText()
 	tt1.Text = cFPS

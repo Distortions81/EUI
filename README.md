@@ -43,6 +43,7 @@ building a game UI. Highlights include:
 - **Logarithmic sliders** – sliders can map values on a logarithmic scale.
 - **Hidden inputs** – text fields can mask their contents and reveal them while the eye icon is pressed.
 - **Tooltips** – optional text hints appear when hovering over any item except flows.
+- **Potato computer mode** – ties the FPS directly to game updates and disables all other options except chat bubbles and the night effect. Requires an app relaunch to take effect.
 
 
 ## Running the Demo
