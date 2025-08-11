@@ -174,6 +174,12 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 	if win.Render == nil || win.Dirty || win.itemsDirty() {
 		size := win.GetSize()
 		w, h := int(size.X), int(size.Y)
+		if w < 1 {
+			w = 1
+		}
+		if h < 1 {
+			h = 1
+		}
 		if win.Render == nil || win.Render.Bounds().Dx() != w || win.Render.Bounds().Dy() != h {
 			if win.Render != nil {
 				win.Render.Deallocate()
@@ -1288,6 +1294,12 @@ func (item *itemData) ensureRender() {
 	}
 	size := item.GetSize()
 	w, h := int(size.X), int(size.Y)
+	if w < 1 {
+		w = 1
+	}
+	if h < 1 {
+		h = 1
+	}
 	if item.Render == nil || item.Render.Bounds().Dx() != w || item.Render.Bounds().Dy() != h {
 		item.Render = ebiten.NewImage(w, h)
 		item.Dirty = true
