@@ -824,6 +824,7 @@ func scrollWindow(win *windowData, delta point) bool {
 		Y: win.GetSize().Y - win.GetTitleSize() - 2*pad,
 	}
 	handled := false
+	origY := win.Scroll.Y
 	if req.Y > avail.Y {
 		win.Scroll.Y -= delta.Y * 16
 		if win.Scroll.Y < 0 {
@@ -837,6 +838,7 @@ func scrollWindow(win *windowData, delta point) bool {
 	} else {
 		win.Scroll.Y = 0
 	}
+	origX := win.Scroll.X
 	if req.X > avail.X {
 		win.Scroll.X -= delta.X * 16
 		if win.Scroll.X < 0 {
@@ -849,6 +851,12 @@ func scrollWindow(win *windowData, delta point) bool {
 		handled = true
 	} else {
 		win.Scroll.X = 0
+	}
+	if win.Scroll.X != origX || win.Scroll.Y != origY {
+		win.Dirty = true
+		for _, it := range win.Contents {
+			markItemTreeDirty(it)
+		}
 	}
 	return handled
 }
