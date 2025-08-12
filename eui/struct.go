@@ -225,7 +225,8 @@ const (
 type pinType int
 
 const (
-	PIN_TOP_LEFT = iota
+	PIN_NONE = iota
+	PIN_TOP_LEFT
 	PIN_TOP_CENTER
 	PIN_TOP_RIGHT
 
