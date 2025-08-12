@@ -418,7 +418,7 @@ func TestAddWindowRejectsInvalidSize(t *testing.T) {
 		t.Fatalf("expected window with zero width rejected, got %d", len(windows))
 	}
 
-	win.Size = point{X: 50, Y: -10}
+	win.Size = normPoint(50, -10)
 	win.AddWindow(false)
 	if len(windows) != 0 {
 		t.Fatalf("expected window with negative height rejected, got %d", len(windows))
@@ -900,25 +900,25 @@ func TestClampToScreenCenterMove(t *testing.T) {
 	m := float32(10)
 	win := &windowData{Size: normPoint(50, 50), PinTo: PIN_MID_CENTER, Margin: m}
 
-	win.Position = point{X: -1000, Y: 0}
+	win.Position = normPoint(-1000, 0)
 	win.clampToScreen()
 	if pos := win.getPosition(); pos.X != m {
 		t.Fatalf("left edge X=%v want %v", pos.X, m)
 	}
 
-	win.Position = point{X: 1000, Y: 0}
+	win.Position = normPoint(1000, 0)
 	win.clampToScreen()
 	if pos := win.getPosition(); pos.X != float32(screenWidth)-win.GetSize().X-m {
 		t.Fatalf("right edge X=%v", pos.X)
 	}
 
-	win.Position = point{X: 0, Y: -1000}
+	win.Position = normPoint(0, -1000)
 	win.clampToScreen()
 	if pos := win.getPosition(); pos.Y != m {
 		t.Fatalf("top edge Y=%v want %v", pos.Y, m)
 	}
 
-	win.Position = point{X: 0, Y: 1000}
+	win.Position = normPoint(0, 1000)
 	win.clampToScreen()
 	if pos := win.getPosition(); pos.Y != float32(screenHeight)-win.GetSize().Y-m {
 		t.Fatalf("bottom edge Y=%v", pos.Y)

@@ -27,7 +27,7 @@ func TestSetTitleUpdatesRender(t *testing.T) {
 	win := *defaultTheme
 	win.Theme = baseTheme
 	win.Title = "before"
-	win.Size = point{X: 100, Y: 100}
+	win.Size = normPoint(100, 100)
 	windows = nil
 	win.Open()
 
@@ -56,7 +56,7 @@ func TestSetTitleSizeUpdatesRender(t *testing.T) {
 	win := *defaultTheme
 	win.Theme = baseTheme
 	win.Title = "title"
-	win.Size = point{X: 100, Y: 100}
+	win.Size = normPoint(100, 100)
 	windows = nil
 	win.Open()
 
