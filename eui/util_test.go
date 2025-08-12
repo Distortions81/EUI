@@ -6,7 +6,9 @@ import (
 	"bytes"
 	"image"
 	"image/color"
+	"log"
 	"math"
+	"strings"
 	"testing"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -57,6 +59,26 @@ func TestCenterOffset(t *testing.T) {
 	want := point{X: pos.X - win.Size.X/2, Y: pos.Y - win.Size.Y/2}
 	if got != want {
 		t.Errorf("center offset got %+v want %+v", got, want)
+	}
+}
+
+func TestGetSizeClampsAndLogs(t *testing.T) {
+	screenWidth = 800
+	screenHeight = 600
+	win := &windowData{Size: point{X: 2, Y: 2}}
+
+	var buf bytes.Buffer
+	orig := log.Writer()
+	log.SetOutput(&buf)
+	defer log.SetOutput(orig)
+
+	got := win.GetSize()
+	want := point{X: float32(screenWidth), Y: float32(screenHeight)}
+	if got != want {
+		t.Fatalf("GetSize clamp got %+v want %+v", got, want)
+	}
+	if !strings.Contains(buf.String(), "clamping") {
+		t.Fatalf("expected log warning, got %q", buf.String())
 	}
 }
 

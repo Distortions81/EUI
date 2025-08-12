@@ -2,6 +2,7 @@ package eui
 
 import (
 	"image/color"
+	"log"
 	"math"
 	"strings"
 
@@ -647,6 +648,16 @@ func (win *windowData) GetSize() point {
 	if sy < minY {
 		sy = minY
 	}
+
+	if sx > 1.0 {
+		log.Printf("GetSize: window width %f out of range, clamping to 1.0", sx)
+		sx = 1.0
+	}
+	if sy > 1.0 {
+		log.Printf("GetSize: window height %f out of range, clamping to 1.0", sy)
+		sy = 1.0
+	}
+
 	return point{X: sx * float32(screenWidth), Y: sy * float32(screenHeight)}
 }
 
