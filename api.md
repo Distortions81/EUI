@@ -209,7 +209,7 @@ var (
 )
 var (
 
-	// DebugMode enables rendering of debug outlines.
+	// DebugMode enables rendering of debPIN_TOP_LEFTug outlines.
 	DebugMode bool
 
 	// DumpMode causes the library to write cached images to disk
