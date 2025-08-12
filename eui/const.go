@@ -1,10 +1,10 @@
 package eui
 
 const (
-	// minWinSizeX and MinWinSizeY enforce a sane minimum window size.
-	// Windows should never be smaller than 100x100 pixels.
-	minWinSizeX = 100
-	minWinSizeY = 100
+	// minWinSizeX and minWinSizeY enforce a sane minimum window size.
+	// Values are normalized (0-1) fractions of the screen dimensions.
+	minWinSizeX float32 = 0.1
+	minWinSizeY float32 = 0.1
 
 	defaultTabWidth  = 128
 	defaultTabHeight = 24

@@ -179,8 +179,8 @@ func (win *windowData) setSize(size point) bool {
 func (win *windowData) clampSize(size point) (point, bool) {
 	tooSmall := false
 
-	minX := float32(minWinSizeX) / float32(screenWidth)
-	minY := float32(minWinSizeY) / float32(screenHeight)
+	minX := minWinSizeX
+	minY := minWinSizeY
 	if win.MinSize.X > minX {
 		minX = win.MinSize.X
 	}
@@ -631,8 +631,8 @@ func (win *windowData) GetTitleSize() float32 {
 func (win *windowData) GetSize() point {
 	sx := win.Size.X
 	sy := win.Size.Y
-	minX := float32(minWinSizeX) / float32(screenWidth)
-	minY := float32(minWinSizeY) / float32(screenHeight)
+	minX := minWinSizeX
+	minY := minWinSizeY
 	if win.MinSize.X > minX {
 		minX = win.MinSize.X
 	}
