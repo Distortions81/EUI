@@ -52,9 +52,9 @@ func TestCenterOffset(t *testing.T) {
 	screenWidth = 800
 	screenHeight = 600
 	win := &windowData{Size: normPoint(200, 100)}
-	pos := point{X: 150, Y: 80}
+	pos := normPoint(150, 80)
 	got := win.CenterOffset(pos)
-	want := point{X: pos.X - win.GetSize().X/2, Y: pos.Y - win.GetSize().Y/2}
+	want := point{X: pos.X - win.Size.X/2, Y: pos.Y - win.Size.Y/2}
 	if got != want {
 		t.Errorf("center offset got %+v want %+v", got, want)
 	}
