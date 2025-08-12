@@ -376,6 +376,12 @@ type PinType = pinType
 
 type Point = point
 
+func PointAdd(a, b Point) Point
+    PointAdd returns the vector sum of a and b.
+
+func PointSub(a, b Point) Point
+    PointSub returns the vector difference of b from a.
+
 type Rect = rect
 
 type RoundRect = roundRect

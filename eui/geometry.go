@@ -22,6 +22,13 @@ func pointAdd(a, b point) point { return point{X: a.X + b.X, Y: a.Y + b.Y} }
 func pointSub(a, b point) point { return point{X: a.X - b.X, Y: a.Y - b.Y} }
 func pointMul(a, b point) point { return point{X: a.X * b.X, Y: a.Y * b.Y} }
 func pointDiv(a, b point) point { return point{X: a.X / b.X, Y: a.Y / b.Y} }
+
+// PointAdd returns the vector sum of a and b.
+func PointAdd(a, b Point) Point { return pointAdd(a, b) }
+
+// PointSub returns the vector difference of b from a.
+func PointSub(a, b Point) Point { return pointSub(a, b) }
+
 func pointFloor(a point) point {
 	return point{X: float32(math.Floor(float64(a.X))), Y: float32(math.Floor(float64(a.Y)))}
 }

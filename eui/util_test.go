@@ -24,13 +24,13 @@ func TestWithinRange(t *testing.T) {
 }
 
 func TestPointOperations(t *testing.T) {
-	a := point{X: 1, Y: 2}
-	b := point{X: 3, Y: 4}
-	if r := pointAdd(a, b); r.X != 4 || r.Y != 6 {
-		t.Errorf("pointAdd result %+v", r)
+	a := Point{X: 1, Y: 2}
+	b := Point{X: 3, Y: 4}
+	if r := PointAdd(a, b); r.X != 4 || r.Y != 6 {
+		t.Errorf("PointAdd result %+v", r)
 	}
-	if r := pointSub(b, a); r.X != 2 || r.Y != 2 {
-		t.Errorf("pointSub result %+v", r)
+	if r := PointSub(b, a); r.X != 2 || r.Y != 2 {
+		t.Errorf("PointSub result %+v", r)
 	}
 	if r := pointMul(a, b); r.X != 3 || r.Y != 8 {
 		t.Errorf("pointMul result %+v", r)
@@ -42,7 +42,7 @@ func TestPointOperations(t *testing.T) {
 	if r := pointScaleMul(a); r.X != 2 || r.Y != 4 {
 		t.Errorf("pointScaleMul result %+v", r)
 	}
-	if r := pointScaleDiv(point{X: 4, Y: 6}); r.X != 2 || r.Y != 3 {
+	if r := pointScaleDiv(Point{X: 4, Y: 6}); r.X != 2 || r.Y != 3 {
 		t.Errorf("pointScaleDiv result %+v", r)
 	}
 	uiScale = 1
