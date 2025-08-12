@@ -952,3 +952,45 @@ func TestClampToScreenCenterResize(t *testing.T) {
 		t.Fatalf("bottom resize Y=%v", pos.Y)
 	}
 }
+
+func TestClampToScreenLargeWindow(t *testing.T) {
+	oldW, oldH := screenWidth, screenHeight
+	screenWidth, screenHeight = 100, 100
+	defer func() {
+		screenWidth, screenHeight = oldW, oldH
+	}()
+
+	win := &windowData{Size: normPoint(200, 200), Position: normPoint(0, 0)}
+	win.clampToScreen()
+	pos := win.Position
+	if pos != normPoint(0, 0) {
+		t.Fatalf("first clamp pos=%v", pos)
+	}
+	for i := 0; i < 5; i++ {
+		win.clampToScreen()
+		if win.Position != pos {
+			t.Fatalf("position changed at iter %d: %v -> %v", i, pos, win.Position)
+		}
+	}
+}
+
+func TestClampToScreenLargeWindowCenter(t *testing.T) {
+	oldW, oldH := screenWidth, screenHeight
+	screenWidth, screenHeight = 100, 100
+	defer func() {
+		screenWidth, screenHeight = oldW, oldH
+	}()
+
+	win := &windowData{Size: normPoint(200, 200), PinTo: PIN_MID_CENTER, Position: normPoint(0, 0)}
+	win.clampToScreen()
+	pos := win.Position
+	if pos != normPoint(0, 0) {
+		t.Fatalf("first clamp pos=%v", pos)
+	}
+	for i := 0; i < 5; i++ {
+		win.clampToScreen()
+		if win.Position != pos {
+			t.Fatalf("position changed at iter %d: %v -> %v", i, pos, win.Position)
+		}
+	}
+}
