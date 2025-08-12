@@ -44,6 +44,11 @@ func main() {
 	currentScale = 1.5
 	eui.SetUIScale(currentScale)
 
+	// Set the screen size before adding any pinned windows or overlays.
+	const winWidth, winHeight = 1000, 1000
+	ebiten.SetWindowSize(winWidth, winHeight)
+	eui.SetScreenSize(winWidth, winHeight)
+
 	makeShowcaseWindow()
 	makeThemeSelector()
 
@@ -113,7 +118,6 @@ func startEbiten() {
 	ebiten.SetTPS(ebiten.SyncWithFPS)
 
 	/* Set up our window */
-	ebiten.SetWindowSize(1000, 1000)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 
 	ebiten.SetWindowTitle("EUI Prototype")
