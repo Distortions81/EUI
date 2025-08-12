@@ -485,7 +485,7 @@ func TestSetSizeClampAndScroll(t *testing.T) {
 	// content smaller than window
 	win.Contents = []*itemData{{Size: point{X: 50, Y: 50}}}
 	win.setSize(point{-10, -10})
-	if win.Size.X < MinWinSizeX || win.Size.Y < MinWinSizeY {
+	if win.Size.X < minWinSizeX || win.Size.Y < minWinSizeY {
 		t.Errorf("size not clamped: %+v", win.Size)
 	}
 	// enlarge window so scroll should reset

@@ -38,9 +38,6 @@ var (
 	currentThemeName string
 
 	notoTTF = defaultTTF
-
-	MinWinSizeX float32 = float32(minWinSizeX) / float32(screenWidth)
-	MinWinSizeY float32 = float32(minWinSizeY) / float32(screenHeight)
 )
 
 func init() {
