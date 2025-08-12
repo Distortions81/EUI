@@ -267,6 +267,9 @@ func (win *windowData) clampToScreen() {
 		off := win.GetPos().X
 		min := float32(0)
 		max := float32(screenWidth) - size.X - m
+		if max < min {
+			max = min
+		}
 		if off < min {
 			win.Position.X = min / float32(screenWidth)
 		} else if off > max {
@@ -276,6 +279,9 @@ func (win *windowData) clampToScreen() {
 		off := win.GetPos().X
 		min := float32(0)
 		max := float32(screenWidth) - size.X - m
+		if max < min {
+			max = min
+		}
 		if off < min {
 			win.Position.X = min / float32(screenWidth)
 		} else if off > max {
@@ -284,6 +290,9 @@ func (win *windowData) clampToScreen() {
 	case PIN_TOP_CENTER, PIN_MID_CENTER, PIN_BOTTOM_CENTER:
 		off := win.GetPos().X
 		max := float32(screenWidth)/2 - size.X/2 - m
+		if max < 0 {
+			max = 0
+		}
 		if off < -max {
 			win.Position.X = -max / float32(screenWidth)
 		} else if off > max {
@@ -296,6 +305,9 @@ func (win *windowData) clampToScreen() {
 		off := win.GetPos().Y
 		min := float32(0)
 		max := float32(screenHeight) - size.Y - m
+		if max < min {
+			max = min
+		}
 		if off < min {
 			win.Position.Y = min / float32(screenHeight)
 		} else if off > max {
@@ -305,6 +317,9 @@ func (win *windowData) clampToScreen() {
 		off := win.GetPos().Y
 		min := float32(0)
 		max := float32(screenHeight) - size.Y - m
+		if max < min {
+			max = min
+		}
 		if off < min {
 			win.Position.Y = min / float32(screenHeight)
 		} else if off > max {
@@ -313,6 +328,9 @@ func (win *windowData) clampToScreen() {
 	case PIN_MID_LEFT, PIN_MID_CENTER, PIN_MID_RIGHT:
 		off := win.GetPos().Y
 		max := float32(screenHeight)/2 - size.Y/2 - m
+		if max < 0 {
+			max = 0
+		}
 		if off < -max {
 			win.Position.Y = -max / float32(screenHeight)
 		} else if off > max {
