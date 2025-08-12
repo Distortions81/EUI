@@ -10,7 +10,7 @@ import (
 func makeShowcaseWindow() *eui.WindowData {
 	win := eui.NewWindow()
 	win.Title = "Showcase"
-	win.Position = eui.Point{X: 8, Y: 8}
+	win.Position = eui.ScreenToNorm(eui.Point{X: 8, Y: 8})
 	win.AutoSize = true
 	win.Movable = true
 	win.Resizable = true
