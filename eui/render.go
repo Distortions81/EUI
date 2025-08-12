@@ -1495,11 +1495,11 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 	// When stroking, keep the outline fully inside the rectangle so
 	// sub-images do not clip the bottom and right edges.
 	if !rrect.Filled && width > 0 {
-		inset := width / 2
+		inset := width/2 - pixelOffset(width)
 		x += inset
 		y += inset
-		w -= width
-		h -= width
+		w -= 2 * inset
+		h -= 2 * inset
 		if w < 0 {
 			w = 0
 		}
