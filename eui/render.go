@@ -183,7 +183,9 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 			win.Render.Clear()
 		}
 		origPos := win.Position
+		origRender := win.renderPos
 		win.Position = point{}
+		win.renderPos = point{}
 		localPos = win.getPosition()
 		if !win.MainPortal {
 			win.drawBG(win.Render)
@@ -194,6 +196,7 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 		win.drawBorder(win.Render, win.getWinRect())
 		win.drawDebug(win.Render)
 		win.Position = origPos
+		win.renderPos = origRender
 		shift := pointFloor(pointSub(pos, localPos))
 		shiftDrawRects(win, shift)
 		win.Dirty = false

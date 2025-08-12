@@ -53,6 +53,7 @@ func SetScreenSize(w, h int) {
 			resized = true
 		}
 		if resized {
+			win.renderSize = win.Size
 			win.resizeFlows()
 			win.adjustScrollForResize()
 			win.Dirty = true

@@ -17,12 +17,14 @@ func (c Color) RGBA() (r, g, b, a uint32) {
 func (c Color) ToRGBA() color.RGBA { return color.RGBA(c) }
 
 type windowData struct {
-	Title    string
-	Position point
-	Size     point
-	AspectA  float32
-	AspectB  float32
-	PinTo    pinType
+	Title      string
+	Position   point
+	Size       point
+	renderPos  point
+	renderSize point
+	AspectA    float32
+	AspectB    float32
+	PinTo      pinType
 
 	Padding   float32
 	Margin    float32

@@ -28,6 +28,9 @@ building a game UI. Highlights include:
   `eui.UIScale()` to read the current value. The scale is clamped between 1.0
   and 2.5. Windows using `AutoSize` adjust their dimensions automatically when
   the scale changes, and all windows remain within the screen bounds.
+- **Clamped coordinates** – windows keep their requested `Position` and `Size`
+  while drawing and hit-testing use clamped values available via `GetPos` and
+  `GetSize`.
 - **Image caching** – widgets cache their drawing for better performance.
   Enable `eui.DumpMode` to write the cached images to disk for inspection.
 - **Tree dump** – press <kbd>Shift</kbd>+<kbd>`</kbd> or run the demo with

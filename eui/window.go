@@ -146,6 +146,8 @@ func (target *windowData) AddWindow(toBack bool) {
 		return
 	}
 
+	target.renderSize = target.Size
+	target.renderPos = target.Position
 	target.clampToScreen()
 
 	// Closed windows shouldn't steal focus, so add them to the back by
@@ -576,7 +578,7 @@ func (win windowData) itemOverlap(size point) (bool, bool) {
 
 	rectList := []rect{}
 
-	win.Size = size
+	win.renderSize = size
 
 	for _, item := range win.Contents {
 		rectList = append(rectList, item.getItemRect(&win))
