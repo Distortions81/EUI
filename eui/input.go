@@ -737,6 +737,7 @@ func scrollFlow(items []*itemData, mpos point, delta point) bool {
 						if it.Scroll.Y > max {
 							it.Scroll.Y = max
 						}
+						it.markDirty()
 						return true
 					} else if it.FlowType == FLOW_HORIZONTAL && req.X > size.X {
 						it.Scroll.X -= delta.X * 16
@@ -747,14 +748,21 @@ func scrollFlow(items []*itemData, mpos point, delta point) bool {
 						if it.Scroll.X > max {
 							it.Scroll.X = max
 						}
+						it.markDirty()
 						return true
 					}
 				} else {
-					if req.Y <= size.Y {
+					changed := false
+					if req.Y <= size.Y && it.Scroll.Y != 0 {
 						it.Scroll.Y = 0
+						changed = true
 					}
-					if req.X <= size.X {
+					if req.X <= size.X && it.Scroll.X != 0 {
 						it.Scroll.X = 0
+						changed = true
+					}
+					if changed {
+						it.markDirty()
 					}
 				}
 			}
@@ -795,6 +803,7 @@ func scrollDropdown(items []*itemData, mpos point, delta point) bool {
 				if it.Scroll.Y > maxScroll {
 					it.Scroll.Y = maxScroll
 				}
+				it.markDirty()
 				return true
 			}
 		}
