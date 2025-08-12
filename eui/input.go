@@ -736,6 +736,7 @@ func scrollFlow(items []*itemData, mpos point, delta point) bool {
 						if it.Scroll.Y > max {
 							it.Scroll.Y = max
 						}
+						it.markDirty()
 						return true
 					} else if it.FlowType == FLOW_HORIZONTAL && req.X > size.X {
 						it.Scroll.X -= delta.X * 16
@@ -746,14 +747,17 @@ func scrollFlow(items []*itemData, mpos point, delta point) bool {
 						if it.Scroll.X > max {
 							it.Scroll.X = max
 						}
+						it.markDirty()
 						return true
 					}
 				} else {
 					if req.Y <= size.Y {
 						it.Scroll.Y = 0
+						it.markDirty()
 					}
 					if req.X <= size.X {
 						it.Scroll.X = 0
+						it.markDirty()
 					}
 				}
 			}
@@ -794,6 +798,7 @@ func scrollDropdown(items []*itemData, mpos point, delta point) bool {
 				if it.Scroll.Y > maxScroll {
 					it.Scroll.Y = maxScroll
 				}
+				it.markDirty()
 				return true
 			}
 		}
@@ -832,9 +837,11 @@ func scrollWindow(win *windowData, delta point) bool {
 		if win.Scroll.Y > max {
 			win.Scroll.Y = max
 		}
+		win.Dirty = true
 		handled = true
 	} else {
 		win.Scroll.Y = 0
+		win.Dirty = true
 	}
 	if req.X > avail.X {
 		win.Scroll.X -= delta.X * 16
@@ -845,9 +852,11 @@ func scrollWindow(win *windowData, delta point) bool {
 		if win.Scroll.X > max {
 			win.Scroll.X = max
 		}
+		win.Dirty = true
 		handled = true
 	} else {
 		win.Scroll.X = 0
+		win.Dirty = true
 	}
 	return handled
 }
@@ -875,11 +884,14 @@ func dragWindowScroll(win *windowData, mpos point, vert bool) {
 		}
 		if avail.Y-barH > 0 {
 			win.Scroll.Y = (pos / (avail.Y - barH)) * maxScroll
+			win.Dirty = true
 		} else {
 			win.Scroll.Y = 0
+			win.Dirty = true
 		}
 	} else if vert {
 		win.Scroll.Y = 0
+		win.Dirty = true
 	}
 	if !vert && req.X > avail.X {
 		barW := avail.X * avail.X / req.X
@@ -894,11 +906,14 @@ func dragWindowScroll(win *windowData, mpos point, vert bool) {
 		}
 		if avail.X-barW > 0 {
 			win.Scroll.X = (pos / (avail.X - barW)) * maxScroll
+			win.Dirty = true
 		} else {
 			win.Scroll.X = 0
+			win.Dirty = true
 		}
 	} else if !vert {
 		win.Scroll.X = 0
+		win.Dirty = true
 	}
 }
 func dropdownOpenContains(items []*itemData, mpos point) bool {
