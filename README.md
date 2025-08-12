@@ -4,6 +4,11 @@ EUI is a minimal retained‑mode UI built with the [Ebiten](https://ebiten.org/)
 It provides basic window management, flows and widgets built entirely with vector graphics.
 The project is currently in early development and APIs will likely change.
 
+Before creating any windows or overlay items that use the `PinTo` field, set the
+screen size by calling `eui.RenderSize` (usually from Ebiten's `Layout`
+callback) or `eui.SetScreenSize(width, height)` with the window dimensions so
+anchors resolve correctly.
+
 [Live demo here](https://m45sci.xyz/u/dist/eui/)
 
 ## Currently the API is not complete!

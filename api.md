@@ -46,6 +46,11 @@ the `PinTo` field. When a value other than `PIN_TOP_LEFT` is used, the
 position is calculated relative to that anchor instead of the top-left
 origin.
 
+Call `eui.RenderSize` (typically from Ebiten's `Layout` callback) or
+`eui.SetScreenSize(width, height)` with the window dimensions before adding
+any pinned windows or items so the anchors resolve to the correct screen
+coordinates.
+
 ## Window Transparency
 
 Windows can render with partial opacity by setting `Transparent` to true and
