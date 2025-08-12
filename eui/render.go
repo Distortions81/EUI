@@ -173,7 +173,7 @@ func (win *windowData) Draw(screen *ebiten.Image) {
 
 	if win.Render == nil || win.Dirty || win.itemsDirty() {
 		size := win.GetSize()
-		w, h := int(math.Ceil(float64(size.X))), int(math.Ceil(float64(size.Y)))
+		w, h := int(math.Ceil(float64(size.X)))+1, int(math.Ceil(float64(size.Y)))+1
 		if win.Render == nil || win.Render.Bounds().Dx() != w || win.Render.Bounds().Dy() != h {
 			if win.Render != nil {
 				win.Render.Deallocate()
@@ -1283,7 +1283,7 @@ func (item *itemData) ensureRender() {
 		return
 	}
 	size := item.GetSize()
-	w, h := int(math.Ceil(float64(size.X))), int(math.Ceil(float64(size.Y)))
+	w, h := int(math.Ceil(float64(size.X)))+1, int(math.Ceil(float64(size.Y)))+1
 	if item.Render == nil || item.Render.Bounds().Dx() != w || item.Render.Bounds().Dy() != h {
 		item.Render = ebiten.NewImage(w, h)
 		item.Dirty = true
@@ -1495,11 +1495,11 @@ func drawRoundRect(screen *ebiten.Image, rrect *roundRect) {
 	// When stroking, keep the outline fully inside the rectangle so
 	// sub-images do not clip the bottom and right edges.
 	if !rrect.Filled && width > 0 {
-		inset := width/2 - pixelOffset(width)
+		inset := width / 2
 		x += inset
 		y += inset
-		w -= 2 * inset
-		h -= 2 * inset
+		w -= width
+		h -= width
 		if w < 0 {
 			w = 0
 		}
