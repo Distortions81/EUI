@@ -47,6 +47,32 @@ building a game UI. Highlights include:
 - **Logarithmic sliders** – sliders can map values on a logarithmic scale.
 - **Hidden inputs** – text fields can mask their contents and reveal them while the eye icon is pressed.
 - **Tooltips** – optional text hints appear when hovering over any item except flows.
+- **Normalized coordinates** – specify window and item positions and sizes using
+  normalized values in the range 0–1. Helper functions like `ScreenToNorm` and
+  `NormToScreen` convert to and from pixel units.
+
+
+## Coordinate System
+
+EUI expresses all positions and sizes as values between 0 and 1 relative to the
+current screen dimensions. Convert pixel measurements before assigning them to
+windows or items:
+
+```go
+size := eui.ScreenToNorm(eui.Point{X: 200, Y: 100})
+pos  := eui.ScreenToNorm(eui.Point{X: 50, Y: 50})
+win := &eui.WindowData{
+    Title:    "Stats",
+    Position: pos,
+    Size:     size,
+}
+```
+
+To obtain pixel values from normalized coordinates use `NormToScreen`:
+
+```go
+px := eui.NormToScreen(win.GetSize())
+```
 
 
 ## Running the Demo

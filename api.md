@@ -6,6 +6,7 @@ This document lists all exported functions, types and constants in the
 ## Table of Contents
 
 - [Setup](#setup)
+- [Coordinate System](#coordinate-system)
 - [Pinning Windows and Items](#pinning-windows-and-items)
 - [Window Transparency](#window-transparency)
 
@@ -30,6 +31,29 @@ Format modified Go files before committing:
 
 ```sh
 gofmt -w <files>
+```
+
+
+## Coordinate System
+
+EUI uses normalized coordinates for all positions and sizes. Values must be in
+the range 0–1 relative to the current screen dimensions. Convert pixel values
+before assigning them to windows or items:
+
+```go
+size := eui.ScreenToNorm(eui.Point{X: 200, Y: 100})
+pos  := eui.ScreenToNorm(eui.Point{X: 50, Y: 50})
+win := &eui.WindowData{
+    Title:    "Stats",
+    Position: pos,
+    Size:     size,
+}
+```
+
+To convert normalized values back to pixels use `NormToScreen`:
+
+```go
+px := eui.NormToScreen(win.GetSize())
 ```
 
 
@@ -61,9 +85,10 @@ Available anchors:
 Example anchoring a window to the bottom-right of the screen:
 
 ```go
+size := eui.ScreenToNorm(eui.Point{X: 200, Y: 100})
 win := &eui.WindowData{
     Title: "Stats",
-    Size:  eui.Point{X: 200, Y: 100},
+    Size:  size,
     PinTo: eui.PIN_BOTTOM_RIGHT,
 }
 
