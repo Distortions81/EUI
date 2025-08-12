@@ -440,33 +440,35 @@ func (win *windowData) getResizePart(mpos point) dragType {
 		return PART_NONE
 	}
 
-	t := scrollTolerance * uiScale
-	ct := cornerTolerance * uiScale
+	tX := scrollTolerance * float32(screenWidth) * uiScale
+	tY := scrollTolerance * float32(screenHeight) * uiScale
+	ctX := cornerTolerance * float32(screenWidth) * uiScale
+	ctY := cornerTolerance * float32(screenHeight) * uiScale
 	winRect := win.getWinRect()
 	// Check enlarged corner areas first
-	if mpos.X >= winRect.X0-ct && mpos.X <= winRect.X0+ct && mpos.Y >= winRect.Y0-ct && mpos.Y <= winRect.Y0+ct {
+	if mpos.X >= winRect.X0-ctX && mpos.X <= winRect.X0+ctX && mpos.Y >= winRect.Y0-ctY && mpos.Y <= winRect.Y0+ctY {
 		return PART_TOP_LEFT
 	}
-	if mpos.X >= winRect.X1-ct && mpos.X <= winRect.X1+ct && mpos.Y >= winRect.Y0-ct && mpos.Y <= winRect.Y0+ct {
+	if mpos.X >= winRect.X1-ctX && mpos.X <= winRect.X1+ctX && mpos.Y >= winRect.Y0-ctY && mpos.Y <= winRect.Y0+ctY {
 		return PART_TOP_RIGHT
 	}
-	if mpos.X >= winRect.X0-ct && mpos.X <= winRect.X0+ct && mpos.Y >= winRect.Y1-ct && mpos.Y <= winRect.Y1+ct {
+	if mpos.X >= winRect.X0-ctX && mpos.X <= winRect.X0+ctX && mpos.Y >= winRect.Y1-ctY && mpos.Y <= winRect.Y1+ctY {
 		return PART_BOTTOM_LEFT
 	}
-	if mpos.X >= winRect.X1-ct && mpos.X <= winRect.X1+ct && mpos.Y >= winRect.Y1-ct && mpos.Y <= winRect.Y1+ct {
+	if mpos.X >= winRect.X1-ctX && mpos.X <= winRect.X1+ctX && mpos.Y >= winRect.Y1-ctY && mpos.Y <= winRect.Y1+ctY {
 		return PART_BOTTOM_RIGHT
 	}
 	outRect := winRect
-	outRect.X0 -= t
-	outRect.X1 += t
-	outRect.Y0 -= t
-	outRect.Y1 += t
+	outRect.X0 -= tX
+	outRect.X1 += tX
+	outRect.Y0 -= tY
+	outRect.Y1 += tY
 
 	inRect := winRect
-	inRect.X0 += t
-	inRect.X1 -= t
-	inRect.Y0 += t
-	inRect.Y1 -= t
+	inRect.X0 += tX
+	inRect.X1 -= tX
+	inRect.Y0 += tY
+	inRect.Y1 -= tY
 
 	if outRect.containsPoint(mpos) && !inRect.containsPoint(mpos) {
 		top := mpos.Y < inRect.Y0
