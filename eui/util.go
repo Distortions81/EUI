@@ -133,7 +133,8 @@ func (win *windowData) dragbarRect() rect {
 }
 
 func (win *windowData) setSize(size point) bool {
-	orig := win.Size
+	orig := win.renderSize
+	req := size
 
 	size = win.applyAspect(size, true)
 	size, tooSmall := win.clampSize(size)
@@ -143,21 +144,23 @@ func (win *windowData) setSize(size point) bool {
 
 	xc, yc := win.itemOverlap(size)
 	if !xc {
-		win.Size.X = size.X
+		win.renderSize.X = size.X
 	}
 	if !yc {
-		win.Size.Y = size.Y
+		win.renderSize.Y = size.Y
 	}
 	if yc && xc {
 		tooSmall = true
 	}
+
+	win.Size = req
 
 	win.BringForward()
 	win.resizeFlows()
 	win.adjustScrollForResize()
 	win.clampToScreen()
 
-	if win.Size != orig {
+	if win.renderSize != orig {
 		win.Dirty = true
 	}
 
@@ -187,8 +190,8 @@ func (win *windowData) applyAspect(size point, useDelta bool) point {
 	aspect := win.AspectA / win.AspectB
 	title := win.TitleHeight
 	if useDelta {
-		dx := math.Abs(float64(size.X - win.Size.X))
-		dy := math.Abs(float64(size.Y - win.Size.Y))
+		dx := math.Abs(float64(size.X - win.renderSize.X))
+		dy := math.Abs(float64(size.Y - win.renderSize.Y))
 		if dx >= dy {
 			contentH := size.X / aspect
 			size.Y = contentH + title
@@ -237,67 +240,73 @@ func (win *windowData) adjustScrollForResize() {
 }
 
 func (win *windowData) clampToScreen() {
-	size := win.GetSize()
+	size := win.renderSize
+	if size == (point{}) {
+		size = win.Size
+	}
+	sizeScaled := point{X: size.X * uiScale, Y: size.Y * uiScale}
 	m := win.Margin * uiScale
+	pos := win.Position
 
 	switch win.PinTo {
 	case PIN_TOP_LEFT, PIN_MID_LEFT, PIN_BOTTOM_LEFT:
-		off := win.GetPos().X
+		off := pos.X * uiScale
 		min := float32(0)
-		max := float32(screenWidth) - size.X - m
+		max := float32(screenWidth) - sizeScaled.X - m
 		if off < min {
-			win.Position.X = min / uiScale
+			pos.X = min / uiScale
 		} else if off > max {
-			win.Position.X = max / uiScale
+			pos.X = max / uiScale
 		}
 	case PIN_TOP_RIGHT, PIN_MID_RIGHT, PIN_BOTTOM_RIGHT:
-		off := win.GetPos().X
+		off := pos.X * uiScale
 		min := float32(0)
-		max := float32(screenWidth) - size.X - m
+		max := float32(screenWidth) - sizeScaled.X - m
 		if off < min {
-			win.Position.X = min / uiScale
+			pos.X = min / uiScale
 		} else if off > max {
-			win.Position.X = max / uiScale
+			pos.X = max / uiScale
 		}
 	case PIN_TOP_CENTER, PIN_MID_CENTER, PIN_BOTTOM_CENTER:
-		off := win.GetPos().X
-		max := float32(screenWidth)/2 - size.X/2 - m
+		off := pos.X * uiScale
+		max := float32(screenWidth)/2 - sizeScaled.X/2 - m
 		if off < -max {
-			win.Position.X = -max / uiScale
+			pos.X = -max / uiScale
 		} else if off > max {
-			win.Position.X = max / uiScale
+			pos.X = max / uiScale
 		}
 	}
 
 	switch win.PinTo {
 	case PIN_TOP_LEFT, PIN_TOP_CENTER, PIN_TOP_RIGHT:
-		off := win.GetPos().Y
+		off := pos.Y * uiScale
 		min := float32(0)
-		max := float32(screenHeight) - size.Y - m
+		max := float32(screenHeight) - sizeScaled.Y - m
 		if off < min {
-			win.Position.Y = min / uiScale
+			pos.Y = min / uiScale
 		} else if off > max {
-			win.Position.Y = max / uiScale
+			pos.Y = max / uiScale
 		}
 	case PIN_BOTTOM_LEFT, PIN_BOTTOM_CENTER, PIN_BOTTOM_RIGHT:
-		off := win.GetPos().Y
+		off := pos.Y * uiScale
 		min := float32(0)
-		max := float32(screenHeight) - size.Y - m
+		max := float32(screenHeight) - sizeScaled.Y - m
 		if off < min {
-			win.Position.Y = min / uiScale
+			pos.Y = min / uiScale
 		} else if off > max {
-			win.Position.Y = max / uiScale
+			pos.Y = max / uiScale
 		}
 	case PIN_MID_LEFT, PIN_MID_CENTER, PIN_MID_RIGHT:
-		off := win.GetPos().Y
-		max := float32(screenHeight)/2 - size.Y/2 - m
+		off := pos.Y * uiScale
+		max := float32(screenHeight)/2 - sizeScaled.Y/2 - m
 		if off < -max {
-			win.Position.Y = -max / uiScale
+			pos.Y = -max / uiScale
 		} else if off > max {
-			win.Position.Y = max / uiScale
-
+			pos.Y = max / uiScale
 		}
 	}
+
+	win.renderPos = pos
 }
 
 // dropdownOpenRect returns the rectangle used for drawing and input handling of
@@ -589,11 +598,19 @@ func (win *windowData) GetTitleSize() float32 {
 }
 
 func (win *windowData) GetSize() point {
-	return point{X: win.Size.X * uiScale, Y: win.Size.Y * uiScale}
+	sz := win.renderSize
+	if sz == (point{}) {
+		sz = win.Size
+	}
+	return point{X: sz.X * uiScale, Y: sz.Y * uiScale}
 }
 
 func (win *windowData) GetPos() point {
-	return point{X: win.Position.X * uiScale, Y: win.Position.Y * uiScale}
+	pos := win.renderPos
+	if pos == (point{}) {
+		pos = win.Position
+	}
+	return point{X: pos.X * uiScale, Y: pos.Y * uiScale}
 }
 
 func (item *itemData) labelHeight() float32 {
@@ -804,6 +821,7 @@ func (win *windowData) updateAutoSize() {
 		size.Y = float32(screenHeight)
 	}
 	win.Size = point{X: size.X / uiScale, Y: size.Y / uiScale}
+	win.renderSize = win.Size
 	win.resizeFlows()
 	win.clampToScreen()
 }

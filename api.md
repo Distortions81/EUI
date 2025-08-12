@@ -6,6 +6,7 @@ This document lists all exported functions, types and constants in the
 ## Table of Contents
 
 - [Setup](#setup)
+- [Coordinates](#coordinates)
 - [Pinning Windows and Items](#pinning-windows-and-items)
 - [Window Transparency](#window-transparency)
 
@@ -31,6 +32,12 @@ Format modified Go files before committing:
 gofmt -w <files>
 ```
 
+
+## Coordinates
+
+Windows keep their requested `Position` and `Size` values. Clamped
+coordinates used for drawing and hit-testing are stored separately and
+returned by `GetPos` and `GetSize`.
 
 ## Pinning Windows and Items
 

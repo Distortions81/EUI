@@ -46,6 +46,7 @@ func TestWindowDragClickScaled(t *testing.T) {
 	// Simulate dragging the window.
 	oldPos := win.getPosition()
 	win.Position = pointAdd(win.Position, point{X: 5, Y: 7})
+	win.clampToScreen()
 	delta := pointSub(win.getPosition(), oldPos)
 	shiftDrawRects(win, delta)
 

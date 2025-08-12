@@ -473,8 +473,8 @@ func TestSetSizeClampAndScroll(t *testing.T) {
 	// content smaller than window
 	win.Contents = []*itemData{{Size: point{X: 50, Y: 50}}}
 	win.setSize(point{-10, -10})
-	if win.Size.X < MinWinSizeX || win.Size.Y < MinWinSizeY {
-		t.Errorf("size not clamped: %+v", win.Size)
+	if win.renderSize.X < MinWinSizeX || win.renderSize.Y < MinWinSizeY {
+		t.Errorf("size not clamped: %+v", win.renderSize)
 	}
 	// enlarge window so scroll should reset
 	win.setSize(point{X: 200, Y: 200})
@@ -496,15 +496,15 @@ func TestFixedAspectRatio(t *testing.T) {
 
 	win.setSize(point{X: 160, Y: 100})
 	want := point{X: 160, Y: 100}
-	if win.Size != want {
-		t.Errorf("resize by width got %+v want %+v", win.Size, want)
+	if win.renderSize != want {
+		t.Errorf("resize by width got %+v want %+v", win.renderSize, want)
 	}
 
-	win.Size = point{X: 100, Y: 50}
+	win.setSize(point{X: 100, Y: 50})
 	win.setSize(point{X: 120, Y: 120})
 	want = point{X: 195.55556, Y: 120}
-	if math.Abs(float64(win.Size.X-want.X)) > 0.01 || math.Abs(float64(win.Size.Y-want.Y)) > 0.01 {
-		t.Errorf("resize by height got %+v want %+v", win.Size, want)
+	if math.Abs(float64(win.renderSize.X-want.X)) > 0.01 || math.Abs(float64(win.renderSize.Y-want.Y)) > 0.01 {
+		t.Errorf("resize by height got %+v want %+v", win.renderSize, want)
 	}
 }
 
@@ -759,14 +759,14 @@ func TestClampToScreen(t *testing.T) {
 		}
 		switch pin {
 		case PIN_TOP_RIGHT, PIN_MID_RIGHT, PIN_BOTTOM_RIGHT:
-			if win.Position.X != 0 {
-				t.Errorf("pin %v X offset %v not clamped to 0", pin, win.Position.X)
+			if win.renderPos.X != 0 {
+				t.Errorf("pin %v X offset %v not clamped to 0", pin, win.renderPos.X)
 			}
 		}
 		switch pin {
 		case PIN_BOTTOM_LEFT, PIN_BOTTOM_CENTER, PIN_BOTTOM_RIGHT:
-			if win.Position.Y != 0 {
-				t.Errorf("pin %v Y offset %v not clamped to 0", pin, win.Position.Y)
+			if win.renderPos.Y != 0 {
+				t.Errorf("pin %v Y offset %v not clamped to 0", pin, win.renderPos.Y)
 			}
 		}
 	}
@@ -926,7 +926,7 @@ func TestClampToScreenCenterResize(t *testing.T) {
 
 	win := &windowData{Size: point{X: 50, Y: 50}, PinTo: PIN_MID_CENTER, Margin: m, Position: point{X: 1000, Y: 0}}
 	win.clampToScreen()
-	win.Size = point{X: 80, Y: 50}
+	win.setSize(point{X: 80, Y: 50})
 	win.clampToScreen()
 	if pos := win.getPosition(); pos.X != float32(screenWidth)-win.GetSize().X-m {
 		t.Fatalf("right resize X=%v", pos.X)
@@ -934,7 +934,7 @@ func TestClampToScreenCenterResize(t *testing.T) {
 
 	win = &windowData{Size: point{X: 50, Y: 50}, PinTo: PIN_MID_CENTER, Margin: m, Position: point{X: 0, Y: 1000}}
 	win.clampToScreen()
-	win.Size = point{X: 50, Y: 80}
+	win.setSize(point{X: 50, Y: 80})
 	win.clampToScreen()
 	if pos := win.getPosition(); pos.Y != float32(screenHeight)-win.GetSize().Y-m {
 		t.Fatalf("bottom resize Y=%v", pos.Y)
